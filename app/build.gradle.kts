@@ -80,6 +80,7 @@ android {
     }
 }
 
+
 dependencies {
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
@@ -110,6 +111,10 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Web3j: library to interact with smart contracts and integrate applications with Ethereum blockchain.
+    implementation("org.web3j:core:4.9.4")
+
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
