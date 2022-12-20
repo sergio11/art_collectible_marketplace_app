@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.local.contracts;
+package com.dreamsoftware.artcollectibles.data.blockchain.contracts;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
