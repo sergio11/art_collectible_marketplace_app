@@ -43,6 +43,15 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https:\"")
+        buildConfigField(type = "Long", name = "CHAIN_ID", value = "85L")
+        buildConfigField(type = "Long", name = "GAS_PRICE", value = "1000000000L")
+        buildConfigField(type = "Long", name = "GAS_LIMIT", value = "993613L")
+        // ArtCollectible contract deployed to 0xc341CC01DB1cA6A2Eb1C864EBC8a2AADe725D55e
+        buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0xc341CC01DB1cA6A2Eb1C864EBC8a2AADe725D55e\"")
+        // ArtMarketplace contract deployed to 0xc9F57EA9418190f14bbF2d00E776462105ffe677
+        buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0xc9F57EA9418190f14bbF2d00E776462105ffe677\"")
     }
 
     buildTypes {
@@ -64,7 +73,7 @@ android {
     buildFeatures {
         compose = true
         aidl = false
-        buildConfig = false
+        buildConfig = true
         renderScript = false
         shaders = false
     }

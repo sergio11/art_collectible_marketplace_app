@@ -4,6 +4,6 @@ import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBl
 import kotlinx.coroutines.flow.Flow
 
 interface IArtCollectibleDataSource {
-    fun getTokensCreated(): Flow<ArtCollectibleBlockchainEntity>
-    fun getTokensOwned(): Flow<ArtCollectibleBlockchainEntity>
+    suspend fun getTokensCreated(): Flow<ArtCollectibleBlockchainEntity>
+    suspend fun getTokensOwned(): Flow<ArtCollectibleBlockchainEntity>
 }
