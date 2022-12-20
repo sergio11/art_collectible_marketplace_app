@@ -7,6 +7,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollecti
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainEntity
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
+import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -17,6 +18,7 @@ import org.web3j.tx.FastRawTransactionManager
 class ArtCollectibleDataSourceImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val blockchainConfig: BlockchainConfig,
+    private val preferencesDataSource: IPreferencesDataSource,
     private val walletDataSource: IWalletDataSource,
     private val web3j: Web3j
 ): IArtCollectibleDataSource {

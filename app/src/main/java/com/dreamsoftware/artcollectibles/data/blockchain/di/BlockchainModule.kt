@@ -10,9 +10,12 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMark
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.WalletDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
+import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
+import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import org.web3j.protocol.Web3j
@@ -20,7 +23,7 @@ import org.web3j.protocol.http.HttpService
 import javax.inject.Singleton
 
 
-@Module
+@Module(includes = [ PreferencesModule::class ])
 @InstallIn(SingletonComponent::class)
 class BlockchainModule {
 
@@ -64,7 +67,7 @@ class BlockchainModule {
      */
     @Provides
     @Singleton
-    fun providerWalletDataSource(appContext: Context): IWalletDataSource =
+    fun providerWalletDataSource(@ApplicationContext appContext: Context): IWalletDataSource =
         WalletDataSourceImpl(appContext)
 
     /**
@@ -75,12 +78,14 @@ class BlockchainModule {
     fun provideArtCollectibleDataSource(
         artCollectibleMapper: ArtCollectibleMapper,
         blockchainConfig: BlockchainConfig,
+        preferencesDataSource: IPreferencesDataSource,
         walletDataSource: IWalletDataSource,
         web3j: Web3j
     ): IArtCollectibleDataSource =
         ArtCollectibleDataSourceImpl(
             artCollectibleMapper,
             blockchainConfig,
+            preferencesDataSource,
             walletDataSource,
             web3j
         )
@@ -93,12 +98,14 @@ class BlockchainModule {
     fun provideArtMarketplaceDataSource(
         artMarketplaceMapper: ArtMarketplaceMapper,
         blockchainConfig: BlockchainConfig,
+        preferencesDataSource: IPreferencesDataSource,
         walletDataSource: IWalletDataSource,
         web3j: Web3j
     ): IArtMarketplaceDataSource =
         ArtMarketplaceDataSourceImpl(
             artMarketplaceMapper,
             blockchainConfig,
+            preferencesDataSource,
             walletDataSource,
             web3j
         )

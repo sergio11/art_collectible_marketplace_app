@@ -23,7 +23,10 @@ class WalletDataSourceImpl(
         try {
             WalletUtils.loadCredentials(password, getInternalWalletDirectory())
         } catch (ex: Exception) {
-            throw LoadWalletCredentialsException(message = "An error occurred when loading credentials", ex)
+            throw LoadWalletCredentialsException(
+                message = "An error occurred when loading credentials",
+                ex
+            )
         }
     }
 

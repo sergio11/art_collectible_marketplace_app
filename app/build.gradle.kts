@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dreamsoftware.artcollectibles"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -123,6 +123,8 @@ dependencies {
 
     // Web3j: library to interact with smart contracts and integrate applications with Ethereum blockchain.
     implementation("org.web3j:core:4.9.4")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
