@@ -57,11 +57,6 @@ class ArtMarketplaceDataSourceImpl(
         preferencesDataSource.getWalletPassword()
             .map { walletPassword -> walletDataSource.loadCredentials(walletPassword) }
             .map { credentials -> FastRawTransactionManager(web3j, credentials, chainId) }
-            .map { txManager ->
-                ArtMarketplaceContract.load(
-                    blockchainConfig.artCollectibleContractAddress,
-                    web3j, txManager, gasProvider
-                );
-            }
+            .map { txManager -> ArtMarketplaceContract.load(artCollectibleContractAddress, web3j, txManager, gasProvider); }
     }
 }
