@@ -44,6 +44,11 @@ android {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
 
+        // Pinata configuration
+        buildConfigField(type = "String", name = "PINATA_BASE_URL", value = "\"https://api.pinata.cloud/\"")
+        buildConfigField(type = "String", name = "PINATA_GATEWAY_BASE_URL", value = "\"https://gateway.pinata.cloud/ipfs/\"")
+
+        // Blockchain Configuration
         buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https:\"")
         buildConfigField(type = "Long", name = "CHAIN_ID", value = "85L")
         buildConfigField(type = "Long", name = "GAS_PRICE", value = "1000000000L")
@@ -125,6 +130,9 @@ dependencies {
     implementation("org.web3j:core:4.9.4")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
