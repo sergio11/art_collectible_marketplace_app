@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 /**
  * { "name": "MyFile",  "keyvalues": { "company": "Pinata" } }
  */
-data class PinataMetadataDTO(
+data class SavePinataMetadataDTO(
     @field:Json(name = "name")
     val name: String,
     @field:Json(name = "keyvalues")
