@@ -47,7 +47,6 @@ class BlockchainModule {
     ))
 
 
-
     /**
      * Provide Art Collectible Mapper
      */
