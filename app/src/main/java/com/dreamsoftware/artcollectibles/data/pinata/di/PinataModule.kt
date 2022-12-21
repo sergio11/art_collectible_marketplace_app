@@ -6,6 +6,7 @@ import com.dreamsoftware.artcollectibles.data.pinata.datasource.IPinataDataSourc
 import com.dreamsoftware.artcollectibles.data.pinata.datasource.impl.PinataDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.pinata.serder.DateJsonAdapter
 import com.dreamsoftware.artcollectibles.data.pinata.service.IPinataPinningService
+import com.dreamsoftware.artcollectibles.data.pinata.service.IPinataQueryFilesService
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -16,6 +17,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -97,13 +99,25 @@ class PinataModule {
     ): IPinataPinningService = retrofit.create(IPinataPinningService::class.java)
 
     /**
+     * Provide Pinata Query Files Service
+     */
+    @Provides
+    @Singleton
+    fun providePinataQueryFilesService(
+        retrofit: Retrofit
+    ): IPinataQueryFilesService = retrofit.create(IPinataQueryFilesService::class.java)
+
+    /**
      * Provide Pinata Data Source
+     * @param pinataPinningService
+     * @param pinataQueryFilesService
      */
     @Provides
     @Singleton
     fun providePinataDataSource(
-        pinataPinningService: IPinataPinningService
+        pinataPinningService: IPinataPinningService,
+        pinataQueryFilesService: IPinataQueryFilesService
     ): IPinataDataSource =
-        PinataDataSourceImpl(pinataPinningService)
+        PinataDataSourceImpl(pinataPinningService, pinataQueryFilesService)
 
 }
