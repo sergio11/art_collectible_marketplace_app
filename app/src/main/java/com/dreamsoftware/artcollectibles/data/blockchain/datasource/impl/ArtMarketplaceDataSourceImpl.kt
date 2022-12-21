@@ -60,7 +60,7 @@ class ArtMarketplaceDataSourceImpl(
                         EthFilter(
                             DefaultBlockParameterName.LATEST,
                             DefaultBlockParameterName.LATEST,
-                            blockchainConfig.artCollectibleContractAddress
+                            blockchainConfig.artMarketplaceContractAddress
                         )
                     )
                         .firstOrError()

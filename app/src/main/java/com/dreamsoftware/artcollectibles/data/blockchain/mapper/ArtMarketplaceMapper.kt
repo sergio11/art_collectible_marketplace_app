@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.data.blockchain.mapper
 
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleForSaleEntity
+import com.dreamsoftware.artcollectibles.utils.IMapper
 
 class ArtMarketplaceMapper : IMapper<ArtCollectibleForSale, ArtCollectibleForSaleEntity> {
 

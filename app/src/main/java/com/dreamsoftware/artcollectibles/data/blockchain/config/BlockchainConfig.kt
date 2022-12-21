@@ -21,5 +21,6 @@ class BlockchainConfig {
     val gasProvider: StaticGasProvider
         get() = StaticGasProvider(
             BigInteger.valueOf(BuildConfig.GAS_PRICE),
-            BigInteger.valueOf(BuildConfig.GAS_LIMIT))
+            BigInteger.valueOf(BuildConfig.GAS_LIMIT)
+        )
 }

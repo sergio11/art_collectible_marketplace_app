@@ -6,9 +6,17 @@ import org.web3j.crypto.Credentials
 
 interface IWalletDataSource {
 
+    /**
+     * Load credentials from wallet
+     * @param password
+     */
     @Throws(LoadWalletCredentialsException::class)
     suspend fun loadCredentials(password: String): Credentials
 
+    /**
+     * Generate wallet
+     * @param password
+     */
     @Throws(GenerateWalletException::class)
     suspend fun generate(password: String): String
 

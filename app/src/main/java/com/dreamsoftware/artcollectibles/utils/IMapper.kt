@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.blockchain.mapper
+package com.dreamsoftware.artcollectibles.utils
 
 interface IMapper<IN, OUT> {
     fun mapInToOut(input: IN): OUT

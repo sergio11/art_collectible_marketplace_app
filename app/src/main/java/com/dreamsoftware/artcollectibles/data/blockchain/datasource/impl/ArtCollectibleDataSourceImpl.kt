@@ -16,7 +16,10 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.tx.FastRawTransactionManager
+import java.math.BigInteger
 
 class ArtCollectibleDataSourceImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
@@ -25,6 +28,24 @@ class ArtCollectibleDataSourceImpl(
     private val walletDataSource: IWalletDataSource,
     private val web3j: Web3j
 ) : IArtCollectibleDataSource {
+
+    override suspend fun mintToken(metadataCid: String, royalty: Long): Flow<BigInteger> =
+        withContext(Dispatchers.IO) {
+            loadContract()
+                .map {
+                    it.mintToken(metadataCid, BigInteger.valueOf(royalty)).send()
+                    it.artCollectibleMintedEventFlowable(
+                        EthFilter(
+                            DefaultBlockParameterName.LATEST,
+                            DefaultBlockParameterName.LATEST,
+                            blockchainConfig.artCollectibleContractAddress
+                        )
+                    )
+                        .firstOrError()
+                        .map(ArtCollectibleContract.ArtCollectibleMintedEventResponse::tokenId)
+                        .blockingGet()
+                }
+        }
 
     @OptIn(FlowPreview::class)
     override suspend fun getTokensCreated(): Flow<ArtCollectibleBlockchainEntity> =
