@@ -6,7 +6,9 @@ import com.dreamsoftware.artcollectibles.data.api.impl.ArtCollectibleRepositoryI
 import com.dreamsoftware.artcollectibles.data.api.impl.ArtMarketplaceRepositoryImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
+import com.dreamsoftware.artcollectibles.data.ipfs.config.PinataConfig
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
@@ -29,9 +31,16 @@ class DataModule {
     @Singleton
     fun provideArtCollectiblesRepository(
         artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
-        ipfsDataSource: IpfsDataSource
+        pinataConfig: PinataConfig,
+        ipfsDataSource: IpfsDataSource,
+        walletDataSource: IWalletDataSource
     ): IArtCollectibleRepository =
-        ArtCollectibleRepositoryImpl(artCollectibleDataSource, ipfsDataSource)
+        ArtCollectibleRepositoryImpl(
+            artCollectibleDataSource,
+            pinataConfig,
+            ipfsDataSource,
+            walletDataSource
+        )
 
 
     /**

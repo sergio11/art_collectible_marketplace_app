@@ -23,7 +23,7 @@ import org.web3j.protocol.http.HttpService
 import javax.inject.Singleton
 
 
-@Module(includes = [ PreferencesModule::class ])
+@Module(includes = [PreferencesModule::class])
 @InstallIn(SingletonComponent::class)
 class BlockchainModule {
 
@@ -41,10 +41,12 @@ class BlockchainModule {
      */
     @Provides
     @Singleton
-    fun provideWeb3j(blockchainConfig: BlockchainConfig): Web3j = Web3j.build(HttpService(
-        blockchainConfig.alchemyUrl,
-        OkHttpClient.Builder().build()
-    ))
+    fun provideWeb3j(blockchainConfig: BlockchainConfig): Web3j = Web3j.build(
+        HttpService(
+            blockchainConfig.alchemyUrl,
+            OkHttpClient.Builder().build()
+        )
+    )
 
 
     /**
@@ -66,8 +68,11 @@ class BlockchainModule {
      */
     @Provides
     @Singleton
-    fun providerWalletDataSource(@ApplicationContext appContext: Context): IWalletDataSource =
-        WalletDataSourceImpl(appContext)
+    fun providerWalletDataSource(
+        @ApplicationContext appContext: Context,
+        preferencesDataSource: IPreferencesDataSource,
+    ): IWalletDataSource =
+        WalletDataSourceImpl(appContext, preferencesDataSource)
 
     /**
      * Provide Art Collectible Data Source
@@ -77,14 +82,12 @@ class BlockchainModule {
     fun provideArtCollectibleDataSource(
         artCollectibleMapper: ArtCollectibleMapper,
         blockchainConfig: BlockchainConfig,
-        preferencesDataSource: IPreferencesDataSource,
         walletDataSource: IWalletDataSource,
         web3j: Web3j
     ): IArtCollectibleBlockchainDataSource =
         ArtCollectibleBlockchainDataSourceImpl(
             artCollectibleMapper,
             blockchainConfig,
-            preferencesDataSource,
             walletDataSource,
             web3j
         )
@@ -97,14 +100,12 @@ class BlockchainModule {
     fun provideArtMarketplaceDataSource(
         artMarketplaceMapper: ArtMarketplaceMapper,
         blockchainConfig: BlockchainConfig,
-        preferencesDataSource: IPreferencesDataSource,
         walletDataSource: IWalletDataSource,
         web3j: Web3j
     ): IArtMarketplaceBlockchainDataSource =
         ArtMarketplaceBlockchainDataSourceImpl(
             artMarketplaceMapper,
             blockchainConfig,
-            preferencesDataSource,
             walletDataSource,
             web3j
         )

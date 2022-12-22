@@ -29,6 +29,12 @@ interface IpfsDataSource {
     suspend fun fetchByCreatorAddress(creatorAddress: String): Flow<FilePinnedDTO>
 
     /**
+     * Fetch By Owner Address
+     * @param ownerAddress
+     */
+    suspend fun fetchByOwnerAddress(ownerAddress: String): Flow<FilePinnedDTO>
+
+    /**
      * Update Metadata
      * @param metadata
      */

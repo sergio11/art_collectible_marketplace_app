@@ -23,4 +23,19 @@ data class FilePinnedMetadataDTO(
     val name: String,
     @field:Json(name = "keyvalues")
     val keyValues: Map<String, String>
-)
+) {
+    val description: String
+        get() = keyValues["description"].orEmpty()
+
+    val ownerAddress: String
+        get() = keyValues["owner_address"].orEmpty()
+
+    val authorAddress: String
+        get() = keyValues["author_address"].orEmpty()
+
+    val authorName: String
+        get() = keyValues["author_name"].orEmpty()
+
+    val authorContact: String
+        get() = keyValues["author_contact"].orEmpty()
+}

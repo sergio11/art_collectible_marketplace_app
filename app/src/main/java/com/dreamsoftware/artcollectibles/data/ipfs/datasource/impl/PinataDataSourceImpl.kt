@@ -40,6 +40,12 @@ internal class PinataDataSourceImpl(
             .asFlow()
     }
 
+    override suspend fun fetchByOwnerAddress(ownerAddress: String): Flow<FilePinnedDTO> = safeNetworkCall {
+        pinataQueryFilesService.getPinnedFileByOwnerAddress(ownerAddress)
+            .rows
+            .asFlow()
+    }
+
     override suspend fun updateMetadata(metadata: UpdateFileMetadataDTO) {
         TODO("Not yet implemented")
     }

@@ -8,7 +8,6 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleForSaleEntity
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
-import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -22,7 +21,6 @@ import java.math.BigInteger
 internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val artMarketplaceMapper: ArtMarketplaceMapper,
     private val blockchainConfig: BlockchainConfig,
-    private val preferencesDataSource: IPreferencesDataSource,
     private val walletDataSource: IWalletDataSource,
     private val web3j: Web3j,
 ) : IArtMarketplaceBlockchainDataSource {
@@ -98,8 +96,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         .map { artMarketplaceMapper.mapInToOut(it) }
 
     private suspend fun loadContract(): Flow<ArtMarketplaceContract> = with(blockchainConfig) {
-        preferencesDataSource.getWalletPassword()
-            .map { walletPassword -> walletDataSource.loadCredentials(walletPassword) }
+        walletDataSource.loadCredentials()
             .map { credentials -> FastRawTransactionManager(web3j, credentials, chainId) }
             .map { txManager ->
                 ArtMarketplaceContract.load(
