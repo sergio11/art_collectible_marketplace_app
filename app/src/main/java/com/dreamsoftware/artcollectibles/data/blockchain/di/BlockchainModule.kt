@@ -2,11 +2,11 @@ package com.dreamsoftware.artcollectibles.data.blockchain.di
 
 import android.content.Context
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtCollectibleDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMarketplaceDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtCollectibleBlockchainDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMarketplaceBlockchainDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.WalletDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
@@ -80,8 +80,8 @@ class BlockchainModule {
         preferencesDataSource: IPreferencesDataSource,
         walletDataSource: IWalletDataSource,
         web3j: Web3j
-    ): IArtCollectibleDataSource =
-        ArtCollectibleDataSourceImpl(
+    ): IArtCollectibleBlockchainDataSource =
+        ArtCollectibleBlockchainDataSourceImpl(
             artCollectibleMapper,
             blockchainConfig,
             preferencesDataSource,
@@ -100,8 +100,8 @@ class BlockchainModule {
         preferencesDataSource: IPreferencesDataSource,
         walletDataSource: IWalletDataSource,
         web3j: Web3j
-    ): IArtMarketplaceDataSource =
-        ArtMarketplaceDataSourceImpl(
+    ): IArtMarketplaceBlockchainDataSource =
+        ArtMarketplaceBlockchainDataSourceImpl(
             artMarketplaceMapper,
             blockchainConfig,
             preferencesDataSource,

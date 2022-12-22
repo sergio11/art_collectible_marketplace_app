@@ -1,49 +1,50 @@
-/*
- * Copyright (C) 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.dreamsoftware.artcollectibles.data.di
 
-import dagger.Binds
+import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
+import com.dreamsoftware.artcollectibles.data.api.IArtMarketplaceRepository
+import com.dreamsoftware.artcollectibles.data.api.impl.ArtCollectibleRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.api.impl.ArtMarketplaceRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
+import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
+import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
+import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import com.dreamsoftware.artcollectibles.data.MainRepository
-import com.dreamsoftware.artcollectibles.data.DefaultMainRepository
-import javax.inject.Inject
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [BlockchainModule::class, IPFSModule::class, PreferencesModule::class])
 @InstallIn(SingletonComponent::class)
-interface DataModule {
+class DataModule {
 
+    /**
+     * Provide Art Collectibles Repository
+     * @param artCollectibleDataSource
+     * @param ipfsDataSource
+     */
+    @Provides
     @Singleton
-    @Binds
-    fun bindsMainRepository(
-        mainRepository: DefaultMainRepository
-    ): MainRepository
+    fun provideArtCollectiblesRepository(
+        artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
+        ipfsDataSource: IpfsDataSource
+    ): IArtCollectibleRepository =
+        ArtCollectibleRepositoryImpl(artCollectibleDataSource, ipfsDataSource)
+
+
+    /**
+     * Provide Art Marketplace Repository
+     * @param artMarketplaceBlockchainDataSource
+     * @param ipfsDataSource
+     */
+    @Provides
+    @Singleton
+    fun provideArtMarketplaceRepository(
+        artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
+        ipfsDataSource: IpfsDataSource
+    ): IArtMarketplaceRepository =
+        ArtMarketplaceRepositoryImpl(artMarketplaceBlockchainDataSource, ipfsDataSource)
+
 }
-
-class FakeMainRepository @Inject constructor() : MainRepository {
-    override val mains: Flow<List<String>> = flowOf(fakeMains)
-
-    override suspend fun add(name: String) {
-        throw NotImplementedError()
-    }
-}
-
-val fakeMains = listOf("One", "Two", "Three")

@@ -10,7 +10,7 @@ import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
 import java.io.File
 
-class WalletDataSourceImpl(
+internal class WalletDataSourceImpl(
     private val appContext: Context,
 ): IWalletDataSource {
 
