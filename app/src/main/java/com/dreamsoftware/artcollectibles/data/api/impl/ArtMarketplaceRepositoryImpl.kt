@@ -8,7 +8,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ArtMarketplaceRepositoryImpl(
+internal class ArtMarketplaceRepositoryImpl(
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
     private val artCollectibleRepository: IArtCollectibleRepository
 ): IArtMarketplaceRepository {

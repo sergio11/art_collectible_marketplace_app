@@ -13,36 +13,35 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
-class ArtCollectibleRepositoryImpl(
+internal class ArtCollectibleRepositoryImpl(
     private val artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
     private val pinataConfig: PinataConfig,
     private val ipfsDataSource: IpfsDataSource,
     private val walletDataSource: IWalletDataSource
 ) : IArtCollectibleRepository {
 
-    override suspend fun getTokensOwned(): Iterable<ArtCollectible> = withContext(Dispatchers.Default) {
-        val credentials = walletDataSource.loadCredentials()
-        val tokenFiles = ipfsDataSource.fetchByOwnerAddress(credentials.address)
-        val tokens = artCollectibleDataSource.getTokensOwned()
-        tokenFiles.zip(tokens).map {
-            mapToArtCollectible(it.first, it.second)
+    override suspend fun getTokensOwned(): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            val credentials = walletDataSource.loadCredentials()
+            val tokenFiles = ipfsDataSource.fetchByOwnerAddress(credentials.address)
+            val tokens = artCollectibleDataSource.getTokensOwned()
+            tokenFiles.zip(tokens).map { mapToArtCollectible(it.first, it.second) }
         }
-    }
 
-    override suspend fun getTokensCreated(): Iterable<ArtCollectible> = withContext(Dispatchers.Default) {
-        val credentials = walletDataSource.loadCredentials()
-        val tokenFiles = ipfsDataSource.fetchByCreatorAddress(credentials.address)
-        val tokens = artCollectibleDataSource.getTokensCreated()
-        tokenFiles.zip(tokens).map {
-            mapToArtCollectible(it.first, it.second)
+    override suspend fun getTokensCreated(): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            val credentials = walletDataSource.loadCredentials()
+            val tokenFiles = ipfsDataSource.fetchByCreatorAddress(credentials.address)
+            val tokens = artCollectibleDataSource.getTokensCreated()
+            tokenFiles.zip(tokens).map { mapToArtCollectible(it.first, it.second) }
         }
-    }
 
-    override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible = withContext(Dispatchers.Default) {
-        val token = artCollectibleDataSource.getTokenById(tokenId)
-        val tokenMetadata = ipfsDataSource.fetchByCid(token.metadataCID)
-        mapToArtCollectible(tokenMetadata, token)
-    }
+    override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible =
+        withContext(Dispatchers.Default) {
+            val token = artCollectibleDataSource.getTokenById(tokenId)
+            val tokenMetadata = ipfsDataSource.fetchByCid(token.metadataCID)
+            mapToArtCollectible(tokenMetadata, token)
+        }
 
     private fun mapToArtCollectible(
         file: FilePinnedDTO,
