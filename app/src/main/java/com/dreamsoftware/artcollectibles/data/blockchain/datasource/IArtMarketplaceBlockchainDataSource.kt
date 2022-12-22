@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleForSaleEntity
-import kotlinx.coroutines.flow.Flow
 import java.math.BigInteger
 
 interface IArtMarketplaceBlockchainDataSource {
@@ -9,29 +8,29 @@ interface IArtMarketplaceBlockchainDataSource {
     /**
      * Fetch non sold and non canceled market items
      */
-    suspend fun fetchAvailableMarketItems(): Flow<ArtCollectibleForSaleEntity>
+    suspend fun fetchAvailableMarketItems(): Iterable<ArtCollectibleForSaleEntity>
 
     /**
      * Fetch market items that are being listed by the current authenticated user
      */
-    suspend fun fetchSellingMarketItems(): Flow<ArtCollectibleForSaleEntity>
+    suspend fun fetchSellingMarketItems(): Iterable<ArtCollectibleForSaleEntity>
 
     /**
      * Fetch market items that are owned by the current authenticated user
      */
-    suspend fun fetchOwnedMarketItems(): Flow<ArtCollectibleForSaleEntity>
+    suspend fun fetchOwnedMarketItems(): Iterable<ArtCollectibleForSaleEntity>
 
     /**
      * Allow us to fetch market history
      */
-    suspend fun fetchMarketHistory(): Flow<ArtCollectibleForSaleEntity>
+    suspend fun fetchMarketHistory(): Iterable<ArtCollectibleForSaleEntity>
 
     /**
      * list an item with a `tokenId` for a `price`
      * @param tokenId
      * @param price
      */
-    suspend fun putItemForSale(tokenId: BigInteger, price: BigInteger): Flow<BigInteger>
+    suspend fun putItemForSale(tokenId: BigInteger, price: BigInteger): BigInteger
 
     /**
      * Cancel a listing of an item with a `tokenId`

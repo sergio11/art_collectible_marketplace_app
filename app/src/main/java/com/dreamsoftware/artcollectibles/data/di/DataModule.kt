@@ -46,14 +46,14 @@ class DataModule {
     /**
      * Provide Art Marketplace Repository
      * @param artMarketplaceBlockchainDataSource
-     * @param ipfsDataSource
+     * @param artCollectibleRepository
      */
     @Provides
     @Singleton
     fun provideArtMarketplaceRepository(
         artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
-        ipfsDataSource: IpfsDataSource
+        artCollectibleRepository: IArtCollectibleRepository
     ): IArtMarketplaceRepository =
-        ArtMarketplaceRepositoryImpl(artMarketplaceBlockchainDataSource, ipfsDataSource)
+        ArtMarketplaceRepositoryImpl(artMarketplaceBlockchainDataSource, artCollectibleRepository)
 
 }

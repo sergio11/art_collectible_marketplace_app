@@ -7,8 +7,6 @@ import com.dreamsoftware.artcollectibles.data.ipfs.models.request.UpdateFileMeta
 import com.dreamsoftware.artcollectibles.data.ipfs.models.response.FilePinnedDTO
 import com.dreamsoftware.artcollectibles.data.ipfs.service.IPinataPinningService
 import com.dreamsoftware.artcollectibles.data.ipfs.service.IPinataQueryFilesService
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -23,34 +21,30 @@ internal class PinataDataSourceImpl(
         file: File,
         mediaType: String,
         metadataDTO: FileMetadataDTO
-    ): Flow<FilePinnedDTO> = safeNetworkCallAsFlow {
+    ): FilePinnedDTO = safeNetworkCall {
         val requestBody = file.asRequestBody(mediaType.toMediaType())
         val filePart = MultipartBody.Part.createFormData("file", file.name, requestBody)
         val response = pinataPinningService.pinFileToIPFS(filePart, metadataDTO)
         pinataQueryFilesService.getPinnedFileByCid(response.ipfsHash).rows.first()
     }
 
-    override suspend fun fetchByCid(cid: String): Flow<FilePinnedDTO>  = safeNetworkCallAsFlow {
+    override suspend fun fetchByCid(cid: String): FilePinnedDTO = safeNetworkCall {
         pinataQueryFilesService.getPinnedFileByCid(cid).rows.first()
     }
 
-    override suspend fun fetchByCreatorAddress(creatorAddress: String): Flow<FilePinnedDTO> = safeNetworkCall {
-        pinataQueryFilesService.getPinnedFileByCreatorAddress(creatorAddress)
-            .rows
-            .asFlow()
+    override suspend fun fetchByCreatorAddress(creatorAddress: String): Iterable<FilePinnedDTO> = safeNetworkCall {
+        pinataQueryFilesService.getPinnedFileByCreatorAddress(creatorAddress).rows
     }
 
-    override suspend fun fetchByOwnerAddress(ownerAddress: String): Flow<FilePinnedDTO> = safeNetworkCall {
-        pinataQueryFilesService.getPinnedFileByOwnerAddress(ownerAddress)
-            .rows
-            .asFlow()
+    override suspend fun fetchByOwnerAddress(ownerAddress: String): Iterable<FilePinnedDTO> = safeNetworkCall {
+        pinataQueryFilesService.getPinnedFileByOwnerAddress(ownerAddress).rows
     }
 
     override suspend fun updateMetadata(metadata: UpdateFileMetadataDTO) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun delete(cid: String) = safeNetworkCallAsFlow {
+    override suspend fun delete(cid: String) = safeNetworkCall {
         pinataPinningService.unpinFile(cid)
     }
 

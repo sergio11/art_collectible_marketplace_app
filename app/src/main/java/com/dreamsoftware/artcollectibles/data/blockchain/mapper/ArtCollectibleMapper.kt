@@ -8,7 +8,10 @@ class ArtCollectibleMapper : IMapper<ArtCollectible, ArtCollectibleBlockchainEnt
 
     override fun mapInToOut(input: ArtCollectible): ArtCollectibleBlockchainEntity =
         ArtCollectibleBlockchainEntity(
-            creator = input.creator, royalty = input.royalty, isExist = input.isExist
+            creator = input.creator,
+            royalty = input.royalty,
+            metadataCID = "",
+            isExist = input.isExist
         )
 
     override fun mapInListToOutList(input: Iterable<ArtCollectible>): Iterable<ArtCollectibleBlockchainEntity> =

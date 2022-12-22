@@ -5,5 +5,6 @@ import java.math.BigInteger
 data class ArtCollectibleBlockchainEntity(
     val creator: String,
     val royalty: BigInteger,
+    val metadataCID: String,
     val isExist: Boolean
 )

@@ -14,25 +14,25 @@ interface IpfsDataSource {
      * @param mediaType
      * @param metadataDTO
      */
-    suspend fun saveFile(file: File, mediaType: String, metadataDTO: FileMetadataDTO): Flow<FilePinnedDTO>
+    suspend fun saveFile(file: File, mediaType: String, metadataDTO: FileMetadataDTO): FilePinnedDTO
 
     /**
      * Fetch file by CID
      * @param cid
      */
-    suspend fun fetchByCid(cid: String): Flow<FilePinnedDTO>
+    suspend fun fetchByCid(cid: String): FilePinnedDTO
 
     /**
      * Fetch By Creator Address
      * @param creatorAddress
      */
-    suspend fun fetchByCreatorAddress(creatorAddress: String): Flow<FilePinnedDTO>
+    suspend fun fetchByCreatorAddress(creatorAddress: String): Iterable<FilePinnedDTO>
 
     /**
      * Fetch By Owner Address
      * @param ownerAddress
      */
-    suspend fun fetchByOwnerAddress(ownerAddress: String): Flow<FilePinnedDTO>
+    suspend fun fetchByOwnerAddress(ownerAddress: String): Iterable<FilePinnedDTO>
 
     /**
      * Update Metadata
@@ -45,5 +45,5 @@ interface IpfsDataSource {
      * @param cid
      *
      */
-    suspend fun delete(cid: String): Flow<Unit>
+    suspend fun delete(cid: String)
 }

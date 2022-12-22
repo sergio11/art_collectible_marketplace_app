@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainEntity
-import kotlinx.coroutines.flow.Flow
 import java.math.BigInteger
 
 interface IArtCollectibleBlockchainDataSource {
@@ -9,15 +8,20 @@ interface IArtCollectibleBlockchainDataSource {
     /**
      * Allow us to mint a new token
      */
-    suspend fun mintToken(metadataCid: String, royalty: Long): Flow<BigInteger>
+    suspend fun mintToken(metadataCid: String, royalty: Long): BigInteger
 
     /**
      * Allows you to retrieve the list of tokens created
      */
-    suspend fun getTokensCreated(): Flow<ArtCollectibleBlockchainEntity>
+    suspend fun getTokensCreated(): Iterable<ArtCollectibleBlockchainEntity>
 
     /**
      * Allows you to retrieve the list of tokens owned
      */
-    suspend fun getTokensOwned(): Flow<ArtCollectibleBlockchainEntity>
+    suspend fun getTokensOwned(): Iterable<ArtCollectibleBlockchainEntity>
+
+    /**
+     * Retrieve token information by id
+     */
+    suspend fun getTokenById(tokenId: BigInteger): ArtCollectibleBlockchainEntity
 }

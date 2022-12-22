@@ -1,17 +1,22 @@
 package com.dreamsoftware.artcollectibles.data.api
 
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import kotlinx.coroutines.flow.Flow
+import java.math.BigInteger
 
 interface IArtCollectibleRepository {
 
     /**
      * Allows you to retrieve the list of tokens owned
      */
-    suspend fun getTokensOwned(): Flow<ArtCollectible>
+    suspend fun getTokensOwned(): Iterable<ArtCollectible>
 
     /**
      * Allows you to retrieve the list of tokens created
      */
-    suspend fun getTokensCreated(): Flow<ArtCollectible>
+    suspend fun getTokensCreated(): Iterable<ArtCollectible>
+
+    /**
+     * Retrieve token information by id
+     */
+    suspend fun getTokenById(tokenId: BigInteger): ArtCollectible
 }
