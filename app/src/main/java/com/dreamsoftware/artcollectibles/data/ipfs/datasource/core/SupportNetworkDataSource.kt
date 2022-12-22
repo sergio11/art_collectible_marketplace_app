@@ -2,6 +2,8 @@ package com.dreamsoftware.artcollectibles.data.ipfs.datasource.core
 
 import com.dreamsoftware.artcollectibles.data.ipfs.exception.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 
@@ -18,13 +20,21 @@ const val FORBIDDEN_CODE: Int = 403
 internal abstract class SupportNetworkDataSource {
 
     /**
+     * Wrap for safe network call as flow
+     * @param onExecuted
+     */
+    protected suspend fun <T> safeNetworkCallAsFlow(onExecuted: suspend () -> T): Flow<T> = flow {
+        emit(safeNetworkCall(onExecuted))
+    }
+
+    /**
      * Wrap for safe Network Call
      * @param onExecuted
      */
-    protected suspend fun <T> safeNetworkCall(onExecuted: suspend () -> T): Flow<T> = flow {
+    protected suspend fun <T> safeNetworkCall(onExecuted: suspend () -> T): T =
         try {
-            emit(onExecuted())
-        } catch (exception: IOException){
+            onExecuted()
+        } catch (exception: IOException) {
             // map interrupted I/O to Network No Internet Exception
             throw NetworkNoInternetException()
         } catch (ex: NetworkException) {
@@ -42,21 +52,39 @@ internal abstract class SupportNetworkDataSource {
                 }
             }
         }
-    }
 
     /**
      * Map HTTP Error codes to exceptions to easy handler
      * @param apiException
      */
-    open fun onApiException(apiException: RetrofitException): Exception = apiException.response?.let {
-        when(it.code()) {
-            BAD_REQUEST_CODE -> NetworkBadRequestException(message = it.message(), cause = apiException)
-            UNAUTHORIZED_CODE -> NetworkUnauthorizedException(message = it.message(), cause = apiException)
-            FORBIDDEN_CODE -> NetworkForbiddenException(message = it.message(), cause = apiException)
-            NOT_FOUND_CODE -> NetworkNoResultException(message = it.message(), cause = apiException)
-            INTERNAL_SERVER_ERROR_CODE -> NetworkErrorException(message = it.message(), cause = apiException)
-            CONFLICT_ERROR_CODE -> NetworkUnverifiedAccountException(message = it.message(), cause = apiException)
-            else -> NetworkErrorException()
-        }
-    } ?: NetworkErrorException()
+    open fun onApiException(apiException: RetrofitException): Exception =
+        apiException.response?.let {
+            when (it.code()) {
+                BAD_REQUEST_CODE -> NetworkBadRequestException(
+                    message = it.message(),
+                    cause = apiException
+                )
+                UNAUTHORIZED_CODE -> NetworkUnauthorizedException(
+                    message = it.message(),
+                    cause = apiException
+                )
+                FORBIDDEN_CODE -> NetworkForbiddenException(
+                    message = it.message(),
+                    cause = apiException
+                )
+                NOT_FOUND_CODE -> NetworkNoResultException(
+                    message = it.message(),
+                    cause = apiException
+                )
+                INTERNAL_SERVER_ERROR_CODE -> NetworkErrorException(
+                    message = it.message(),
+                    cause = apiException
+                )
+                CONFLICT_ERROR_CODE -> NetworkUnverifiedAccountException(
+                    message = it.message(),
+                    cause = apiException
+                )
+                else -> NetworkErrorException()
+            }
+        } ?: NetworkErrorException()
 }
