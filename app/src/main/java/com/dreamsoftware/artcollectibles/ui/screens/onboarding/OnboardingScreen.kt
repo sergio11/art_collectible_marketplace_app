@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingScreen(
-    navigateAction: () -> Unit
+    onNavigateAction: () -> Unit
 ) {
     Scaffold { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -68,12 +69,12 @@ fun OnBoardingScreen(
                         Spacer(modifier = Modifier.padding(bottom = 10.dp))
                         Text(
                             "You can buy and sell the NFTs of the best artists in the world.",
-                            color = Purple500,
+                            color = Purple700,
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.padding(bottom = 27.dp))
                         Button(
-                            onClick = navigateAction,
+                            onClick = onNavigateAction,
                             shape = RoundedCornerShape(percent = 50),
                             modifier = Modifier.border(
                                 width = 1.dp,
