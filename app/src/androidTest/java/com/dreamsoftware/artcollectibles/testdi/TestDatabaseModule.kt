@@ -16,13 +16,10 @@
 
 package com.dreamsoftware.artcollectibles.testdi
 
-import dagger.Binds
+import com.dreamsoftware.artcollectibles.data.di.DataModule
 import dagger.Module
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
-import com.dreamsoftware.artcollectibles.data.MainRepository
-import com.dreamsoftware.artcollectibles.data.di.DataModule
-import com.dreamsoftware.artcollectibles.data.di.FakeMainRepository
 
 @Module
 @TestInstallIn(
@@ -31,8 +28,4 @@ import com.dreamsoftware.artcollectibles.data.di.FakeMainRepository
 )
 interface FakeDataModule {
 
-    @Binds
-    abstract fun bindRepository(
-        fakeRepository: FakeMainRepository
-    ): MainRepository
 }

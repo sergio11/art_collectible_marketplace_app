@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
-import com.dreamsoftware.artcollectibles.ui.theme.MyApplicationTheme
+import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 
 @Composable
@@ -95,7 +95,7 @@ internal fun MainScreen(
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
-    MyApplicationTheme {
+    ArtCollectibleMarketplaceTheme {
         MainScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
     }
 }
@@ -103,7 +103,7 @@ private fun DefaultPreview() {
 @Preview(showBackground = true, widthDp = 480)
 @Composable
 private fun PortraitPreview() {
-    MyApplicationTheme {
+    ArtCollectibleMarketplaceTheme {
         MainScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
     }
 }
