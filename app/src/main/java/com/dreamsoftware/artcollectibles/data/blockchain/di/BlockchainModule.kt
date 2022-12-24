@@ -10,8 +10,6 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMark
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.WalletDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
-import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
-import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,8 +20,7 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import javax.inject.Singleton
 
-
-@Module(includes = [PreferencesModule::class])
+@Module
 @InstallIn(SingletonComponent::class)
 class BlockchainModule {
 
@@ -69,10 +66,9 @@ class BlockchainModule {
     @Provides
     @Singleton
     fun providerWalletDataSource(
-        @ApplicationContext appContext: Context,
-        preferencesDataSource: IPreferencesDataSource,
+        @ApplicationContext appContext: Context
     ): IWalletDataSource =
-        WalletDataSourceImpl(appContext, preferencesDataSource)
+        WalletDataSourceImpl(appContext)
 
     /**
      * Provide Art Collectible Data Source
@@ -82,13 +78,11 @@ class BlockchainModule {
     fun provideArtCollectibleDataSource(
         artCollectibleMapper: ArtCollectibleMapper,
         blockchainConfig: BlockchainConfig,
-        walletDataSource: IWalletDataSource,
         web3j: Web3j
     ): IArtCollectibleBlockchainDataSource =
         ArtCollectibleBlockchainDataSourceImpl(
             artCollectibleMapper,
             blockchainConfig,
-            walletDataSource,
             web3j
         )
 
@@ -106,7 +100,6 @@ class BlockchainModule {
         ArtMarketplaceBlockchainDataSourceImpl(
             artMarketplaceMapper,
             blockchainConfig,
-            walletDataSource,
             web3j
         )
 }

@@ -5,11 +5,11 @@ import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplac
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleAddedForSaleEventResponse
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleForSaleEntity
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.EthFilter
@@ -19,38 +19,38 @@ import java.math.BigInteger
 internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val artMarketplaceMapper: ArtMarketplaceMapper,
     private val blockchainConfig: BlockchainConfig,
-    private val walletDataSource: IWalletDataSource,
     private val web3j: Web3j,
 ) : IArtMarketplaceBlockchainDataSource {
 
     private enum class MarketItemType { AVAILABLE, SELLING, OWNED, HISTORY }
 
-    override suspend fun fetchAvailableMarketItems(): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchAvailableMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.AVAILABLE)
+            fetchMarketItemsBy(type = MarketItemType.AVAILABLE, credentials = credentials)
         }
 
-    override suspend fun fetchSellingMarketItems(): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchSellingMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.SELLING)
+            fetchMarketItemsBy(type = MarketItemType.SELLING, credentials = credentials)
         }
 
-    override suspend fun fetchOwnedMarketItems(): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchOwnedMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.OWNED)
+            fetchMarketItemsBy(type = MarketItemType.OWNED, credentials = credentials)
         }
 
-    override suspend fun fetchMarketHistory(): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchMarketHistory(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.HISTORY)
+            fetchMarketItemsBy(type = MarketItemType.HISTORY, credentials = credentials)
         }
 
     override suspend fun putItemForSale(
         tokenId: BigInteger,
-        price: BigInteger
+        price: BigInteger,
+        credentials: Credentials
     ): BigInteger =
         withContext(Dispatchers.IO) {
-            with(loadContract()) {
+            with(loadContract(credentials)) {
                 putItemForSale(tokenId, price, DEFAULT_COST_OF_PUTTING_FOR_SALE().send())
                 artCollectibleAddedForSaleEventFlowable(
                     EthFilter(
@@ -65,19 +65,19 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
             }
         }
 
-    override suspend fun withdrawFromSale(tokenId: BigInteger) {
+    override suspend fun withdrawFromSale(tokenId: BigInteger, credentials: Credentials) {
         withContext(Dispatchers.IO) {
-            loadContract().withdrawFromSale(tokenId).send()
+            loadContract(credentials).withdrawFromSale(tokenId).send()
         }
     }
 
-    override suspend fun buyItem(tokenId: BigInteger, price: BigInteger) {
+    override suspend fun buyItem(tokenId: BigInteger, price: BigInteger, credentials: Credentials) {
         withContext(Dispatchers.IO) {
-            loadContract().buyItem(tokenId, price).send()
+            loadContract(credentials).buyItem(tokenId, price).send()
         }
     }
 
-    private suspend fun fetchMarketItemsBy(type: MarketItemType) = with(loadContract()) {
+    private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) = with(loadContract(credentials)) {
         val marketItems = when (type) {
             MarketItemType.AVAILABLE -> fetchAvailableMarketItems()
             MarketItemType.SELLING -> fetchSellingMarketItems()
@@ -87,8 +87,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         artMarketplaceMapper.mapInListToOutList(marketItems)
     }
 
-    private suspend fun loadContract(): ArtMarketplaceContract = with(blockchainConfig) {
-        val credentials = walletDataSource.loadCredentials()
+    private fun loadContract(credentials: Credentials): ArtMarketplaceContract = with(blockchainConfig) {
         val txManager = FastRawTransactionManager(web3j, credentials, chainId)
         ArtMarketplaceContract.load(
             artCollectibleContractAddress,

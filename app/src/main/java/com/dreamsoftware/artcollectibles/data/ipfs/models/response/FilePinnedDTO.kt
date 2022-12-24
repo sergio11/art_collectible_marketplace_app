@@ -15,7 +15,8 @@ data class FilePinnedDTO(
     @field:Json(name = "date_pinned")
     val datePinned: Date,
     @field:Json(name = "metadata")
-    val metadata: FilePinnedMetadataDTO
+    val metadata: FilePinnedMetadataDTO,
+    val imageUrl: String = ""
 )
 
 data class FilePinnedMetadataDTO(

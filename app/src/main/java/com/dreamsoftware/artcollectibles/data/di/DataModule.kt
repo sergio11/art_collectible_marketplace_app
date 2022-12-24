@@ -4,11 +4,10 @@ import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.IArtMarketplaceRepository
 import com.dreamsoftware.artcollectibles.data.api.impl.ArtCollectibleRepositoryImpl
 import com.dreamsoftware.artcollectibles.data.api.impl.ArtMarketplaceRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
-import com.dreamsoftware.artcollectibles.data.ipfs.config.PinataConfig
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
@@ -23,23 +22,29 @@ import javax.inject.Singleton
 class DataModule {
 
     /**
+     * Provide User Credentials Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideUserCredentialsMapper(): UserCredentialsMapper = UserCredentialsMapper()
+
+    /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
      * @param ipfsDataSource
+     * @param userCredentialsMapper
      */
     @Provides
     @Singleton
     fun provideArtCollectiblesRepository(
         artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
-        pinataConfig: PinataConfig,
         ipfsDataSource: IpfsDataSource,
-        walletDataSource: IWalletDataSource
+        userCredentialsMapper: UserCredentialsMapper
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
-            pinataConfig,
             ipfsDataSource,
-            walletDataSource
+            userCredentialsMapper
         )
 
 
@@ -47,13 +52,19 @@ class DataModule {
      * Provide Art Marketplace Repository
      * @param artMarketplaceBlockchainDataSource
      * @param artCollectibleRepository
+     * @param userCredentialsMapper
      */
     @Provides
     @Singleton
     fun provideArtMarketplaceRepository(
         artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
-        artCollectibleRepository: IArtCollectibleRepository
+        artCollectibleRepository: IArtCollectibleRepository,
+        userCredentialsMapper: UserCredentialsMapper
     ): IArtMarketplaceRepository =
-        ArtMarketplaceRepositoryImpl(artMarketplaceBlockchainDataSource, artCollectibleRepository)
+        ArtMarketplaceRepositoryImpl(
+            artMarketplaceBlockchainDataSource,
+            artCollectibleRepository,
+            userCredentialsMapper
+        )
 
 }

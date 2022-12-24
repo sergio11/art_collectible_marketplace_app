@@ -7,6 +7,7 @@ import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCase
 class GetTokensCreatedUseCase(
     private val artCollectibleRepository: IArtCollectibleRepository
 ): BaseUseCase<Iterable<ArtCollectible>>() {
-    override suspend fun onExecuted(): Iterable<ArtCollectible> =
-        artCollectibleRepository.getTokensCreated()
+    override suspend fun onExecuted(): Iterable<ArtCollectible> {
+        TODO()
+    }
 }

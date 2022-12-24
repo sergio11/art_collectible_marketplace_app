@@ -4,11 +4,11 @@ import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract.ArtCollectible
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainEntity
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.EthFilter
@@ -18,13 +18,12 @@ import java.math.BigInteger
 internal class ArtCollectibleBlockchainDataSourceImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val blockchainConfig: BlockchainConfig,
-    private val walletDataSource: IWalletDataSource,
     private val web3j: Web3j
 ) : IArtCollectibleBlockchainDataSource {
 
-    override suspend fun mintToken(metadataCid: String, royalty: Long): BigInteger =
+    override suspend fun mintToken(metadataCid: String, royalty: Long, credentials: Credentials): BigInteger =
         withContext(Dispatchers.IO) {
-            with(loadContract()) {
+            with(loadContract(credentials)) {
                 mintToken(metadataCid, BigInteger.valueOf(royalty)).send()
                 artCollectibleMintedEventFlowable(
                     EthFilter(
@@ -38,26 +37,25 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
             }
         }
 
-    override suspend fun getTokensCreated(): Iterable<ArtCollectibleBlockchainEntity> =
+    override suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity> =
         withContext(Dispatchers.IO) {
-            val collectibles = loadContract().tokensCreatedByMe.send().filterIsInstance<ArtCollectible>()
+            val collectibles = loadContract(credentials).tokensCreatedByMe.send().filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
-    override suspend fun getTokensOwned(): Iterable<ArtCollectibleBlockchainEntity> =
+    override suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity> =
         withContext(Dispatchers.IO) {
-            val collectibles = loadContract().tokensOwnedByMe.send().filterIsInstance<ArtCollectible>()
+            val collectibles = loadContract(credentials).tokensOwnedByMe.send().filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
-    override suspend fun getTokenById(tokenId: BigInteger): ArtCollectibleBlockchainEntity =
+    override suspend fun getTokenById(tokenId: BigInteger, credentials: Credentials): ArtCollectibleBlockchainEntity =
         withContext(Dispatchers.IO) {
-            val collectible = loadContract().getTokenById(tokenId).send()
+            val collectible = loadContract(credentials).getTokenById(tokenId).send()
             artCollectibleMapper.mapInToOut(collectible)
         }
 
-    private suspend fun loadContract(): ArtCollectibleContract = with(blockchainConfig) {
-        val credentials = walletDataSource.loadCredentials()
+    private fun loadContract(credentials: Credentials): ArtCollectibleContract = with(blockchainConfig) {
         val txManager = FastRawTransactionManager(web3j, credentials, chainId)
         ArtCollectibleContract.load(
             artCollectibleContractAddress, web3j, txManager, gasProvider

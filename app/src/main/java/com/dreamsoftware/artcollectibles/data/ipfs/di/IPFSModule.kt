@@ -110,13 +110,15 @@ class IPFSModule {
      * Provide Pinata Data Source
      * @param pinataPinningService
      * @param pinataQueryFilesService
+     * @param pinataConfig
      */
     @Provides
     @Singleton
     fun providePinataDataSource(
         pinataPinningService: IPinataPinningService,
-        pinataQueryFilesService: IPinataQueryFilesService
+        pinataQueryFilesService: IPinataQueryFilesService,
+        pinataConfig: PinataConfig
     ): IpfsDataSource =
-        PinataDataSourceImpl(pinataPinningService, pinataQueryFilesService)
+        PinataDataSourceImpl(pinataPinningService, pinataQueryFilesService, pinataConfig)
 
 }

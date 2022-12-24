@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainEntity
+import org.web3j.crypto.Credentials
 import java.math.BigInteger
 
 interface IArtCollectibleBlockchainDataSource {
@@ -8,20 +9,20 @@ interface IArtCollectibleBlockchainDataSource {
     /**
      * Allow us to mint a new token
      */
-    suspend fun mintToken(metadataCid: String, royalty: Long): BigInteger
+    suspend fun mintToken(metadataCid: String, royalty: Long, credentials: Credentials): BigInteger
 
     /**
      * Allows you to retrieve the list of tokens created
      */
-    suspend fun getTokensCreated(): Iterable<ArtCollectibleBlockchainEntity>
+    suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity>
 
     /**
      * Allows you to retrieve the list of tokens owned
      */
-    suspend fun getTokensOwned(): Iterable<ArtCollectibleBlockchainEntity>
+    suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity>
 
     /**
      * Retrieve token information by id
      */
-    suspend fun getTokenById(tokenId: BigInteger): ArtCollectibleBlockchainEntity
+    suspend fun getTokenById(tokenId: BigInteger, credentials: Credentials): ArtCollectibleBlockchainEntity
 }

@@ -8,6 +8,7 @@ class FetchSellingMarketItemsUseCase(
     private val artMarketplaceRepository: IArtMarketplaceRepository
 ): BaseUseCase<Iterable<ArtCollectibleForSale>>() {
 
-    override suspend fun onExecuted(): Iterable<ArtCollectibleForSale> =
-        artMarketplaceRepository.fetchSellingMarketItems()
+    override suspend fun onExecuted(): Iterable<ArtCollectibleForSale> {
+        TODO()
+    }
 }
