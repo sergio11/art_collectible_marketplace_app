@@ -58,5 +58,4 @@ internal class PinataDataSourceImpl(
 
     private fun FilePinnedDTO.configureImageUrl(): FilePinnedDTO =
         copy(imageUrl = pinataConfig.pinataGatewayBaseUrl.plus(ipfsPinHash))
-
 }

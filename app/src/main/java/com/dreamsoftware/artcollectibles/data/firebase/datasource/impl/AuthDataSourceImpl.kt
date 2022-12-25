@@ -1,10 +1,10 @@
-package com.dreamsoftware.artcollectibles.data.auth.datasource.impl
+package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 
-import com.dreamsoftware.artcollectibles.data.auth.datasource.IAuthDataSource
-import com.dreamsoftware.artcollectibles.data.auth.exception.AuthException
-import com.dreamsoftware.artcollectibles.data.auth.mapper.AuthUserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.exception.FirebaseException
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.AuthUserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.model.AuthUserDTO
 import com.dreamsoftware.artcollectibles.domain.models.AuthTypeEnum
-import com.dreamsoftware.artcollectibles.domain.models.AuthUser
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -12,6 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+/**
+ * Auth Data Source Implementation
+ * @param authUserMapper
+ * @param firebaseAuth
+ */
 internal class AuthDataSourceImpl(
     private val authUserMapper: AuthUserMapper,
     private val firebaseAuth: FirebaseAuth
@@ -21,11 +26,11 @@ internal class AuthDataSourceImpl(
         firebaseAuth.currentUser != null
     }
 
-    @Throws(AuthException::class)
+    @Throws(FirebaseException::class)
     override suspend fun signInWithAccessToken(
         accessToken: String,
         authTypeEnum: AuthTypeEnum
-    ): AuthUser = withContext(Dispatchers.IO) {
+    ): AuthUserDTO = withContext(Dispatchers.IO) {
         try {
             firebaseAuth.signInWithCredential(
                 getCredentials(accessToken, authTypeEnum)
@@ -33,16 +38,16 @@ internal class AuthDataSourceImpl(
                 ?.user?.let { authUserMapper.mapInToOut(it) }
                 ?: throw IllegalStateException("Auth user cannot be null")
         } catch (ex: Exception) {
-            throw AuthException("Login failed", ex)
+            throw FirebaseException("Login failed", ex)
         }
     }
 
-    @Throws(AuthException::class)
+    @Throws(FirebaseException::class)
     override suspend fun closeSession() = withContext(Dispatchers.IO) {
         try {
             firebaseAuth.signOut()
         } catch (ex: Exception) {
-            throw AuthException("Logout failed", ex)
+            throw FirebaseException("Logout failed", ex)
         }
     }
 

@@ -15,3 +15,14 @@
  */
 
 // Root build.gradle.kts
+
+buildscript {
+    repositories {
+        google()  // Google's Maven repository
+        mavenCentral()  // Maven Central repository
+    }
+    dependencies {
+        // Add the dependency for the Google services Gradle plugin
+        classpath("com.google.gms:google-services:4.3.14")
+    }
+}

@@ -7,12 +7,6 @@ data class ArtCollectible(
     val name: String,
     val imageUrl: String,
     val description: String,
-    val author: AuthorInfo
-)
-
-data class AuthorInfo(
-    val fullName: String,
-    val contact: String,
     val royalty: BigInteger,
-    val address: String
+    val author: UserInfo
 )

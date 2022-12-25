@@ -23,6 +23,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.ksp)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -131,13 +132,13 @@ dependencies {
     implementation("org.web3j:core:4.9.4")
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:31.1.1"))
-    // Add the dependency for the Firebase Authentication library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
+    //Firebase Authentication library
     implementation("com.google.firebase:firebase-auth-ktx")
-    // Also add the dependency for the Google Play services library and specify its version
+    //Cloud Firestore library
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    // Google Play services library
     implementation("com.google.android.gms:play-services-auth:20.4.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 

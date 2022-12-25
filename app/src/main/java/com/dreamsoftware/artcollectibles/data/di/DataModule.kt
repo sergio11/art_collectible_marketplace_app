@@ -2,12 +2,17 @@ package com.dreamsoftware.artcollectibles.data.di
 
 import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.IArtMarketplaceRepository
+import com.dreamsoftware.artcollectibles.data.api.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.api.impl.ArtCollectibleRepositoryImpl
 import com.dreamsoftware.artcollectibles.data.api.impl.ArtMarketplaceRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
+import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
+import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
@@ -17,9 +22,23 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module(includes = [BlockchainModule::class, IPFSModule::class, PreferencesModule::class])
+@Module(includes = [FirebaseModule::class, BlockchainModule::class, IPFSModule::class, PreferencesModule::class])
 @InstallIn(SingletonComponent::class)
 class DataModule {
+
+    /**
+     * Provide User Info Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideUserInfoMapper(): UserInfoMapper = UserInfoMapper()
+
+    /**
+     * Provide Art Collectible Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideArtCollectibleMapper(userInfoMapper: UserInfoMapper): ArtCollectibleMapper = ArtCollectibleMapper(userInfoMapper)
 
     /**
      * Provide User Credentials Mapper
@@ -39,11 +58,17 @@ class DataModule {
     fun provideArtCollectiblesRepository(
         artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
         ipfsDataSource: IpfsDataSource,
+        userDataSource: IUsersDataSource,
+        artCollectibleMapper: ArtCollectibleMapper,
+        walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
             ipfsDataSource,
+            userDataSource,
+            artCollectibleMapper,
+            walletRepository,
             userCredentialsMapper
         )
 
@@ -59,11 +84,17 @@ class DataModule {
     fun provideArtMarketplaceRepository(
         artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
         artCollectibleRepository: IArtCollectibleRepository,
+        userDataSource: IUsersDataSource,
+        userInfoMapper: UserInfoMapper,
+        walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper
     ): IArtMarketplaceRepository =
         ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource,
             artCollectibleRepository,
+            userDataSource,
+            userInfoMapper,
+            walletRepository,
             userCredentialsMapper
         )
 

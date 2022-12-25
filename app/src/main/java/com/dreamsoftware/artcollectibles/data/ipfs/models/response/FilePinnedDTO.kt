@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.ipfs.models.response
 
 import com.squareup.moshi.Json
+import java.math.BigInteger
 import java.util.Date
 
 data class FilePinnedDTO(
@@ -34,9 +35,10 @@ data class FilePinnedMetadataDTO(
     val authorAddress: String
         get() = keyValues["author_address"].orEmpty()
 
-    val authorName: String
-        get() = keyValues["author_name"].orEmpty()
-
-    val authorContact: String
-        get() = keyValues["author_contact"].orEmpty()
+    val tokenId: BigInteger?
+        get() = keyValues["token_id"]?.let {
+            runCatching {
+                BigInteger.valueOf(it.toLong())
+            }.getOrNull()
+        }
 }
