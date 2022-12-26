@@ -4,13 +4,13 @@ import com.dreamsoftware.artcollectibles.data.firebase.model.AuthUserDTO
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 import com.google.firebase.auth.FirebaseUser
 
-class AuthUserMapper : IOneSideMapper<FirebaseUser, AuthUserDTO> {
+class FirebaseUserMapper : IOneSideMapper<FirebaseUser, AuthUserDTO> {
 
     override fun mapInToOut(input: FirebaseUser): AuthUserDTO = with(input) {
         AuthUserDTO(
             uid = uid,
-            displayName = displayName.orEmpty(),
-            email = email.orEmpty()
+            displayName = displayName,
+            email = email
         )
     }
 

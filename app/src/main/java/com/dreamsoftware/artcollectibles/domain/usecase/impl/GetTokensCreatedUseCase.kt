@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
-import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCase
 

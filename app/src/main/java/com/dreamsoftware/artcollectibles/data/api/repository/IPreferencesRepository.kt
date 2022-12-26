@@ -1,7 +1,6 @@
-package com.dreamsoftware.artcollectibles.data.preferences.datasource
+package com.dreamsoftware.artcollectibles.data.api.repository
 
-
-interface IPreferencesDataSource {
+interface IPreferencesRepository {
 
     suspend fun saveAuthUserUid(uid: String)
 

@@ -1,11 +1,15 @@
 package com.dreamsoftware.artcollectibles.data.firebase.di
 
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ISecretsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.AuthDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.SecretsDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.UsersDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.firebase.mapper.AuthUserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.FirebaseUserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.SecretMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserMapper
+import com.dreamsoftware.artcollectibles.utils.CryptoUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -25,7 +29,15 @@ class FirebaseModule {
      */
     @Provides
     @Singleton
-    fun provideAuthUserMapper(): AuthUserMapper = AuthUserMapper()
+    fun provideFirebaseUserMapper(): FirebaseUserMapper = FirebaseUserMapper()
+
+    /**
+     * Provide Secret Mapper
+     * @param cryptoUtils
+     */
+    @Provides
+    @Singleton
+    fun provideSecretMapper(cryptoUtils: CryptoUtils): SecretMapper = SecretMapper(cryptoUtils)
 
     /**
      * Provide User Mapper
@@ -50,16 +62,16 @@ class FirebaseModule {
 
     /**
      * Provide Auth Data Source
-     * @param authUserMapper
+     * @param firebaseUserMapper
      * @param firebaseAuth
      */
     @Provides
     @Singleton
     fun provideAuthDataSource(
-        authUserMapper: AuthUserMapper,
+        firebaseUserMapper: FirebaseUserMapper,
         firebaseAuth: FirebaseAuth
     ): IAuthDataSource = AuthDataSourceImpl(
-        authUserMapper,
+        firebaseUserMapper,
         firebaseAuth
     )
 
@@ -74,4 +86,16 @@ class FirebaseModule {
         userMapper: UserMapper,
         firebaseStore: FirebaseFirestore
     ): IUsersDataSource = UsersDataSourceImpl(userMapper, firebaseStore)
+
+    /**
+     * Provide Secrets Data Source
+     * @param firebaseStore
+     * @param secretMapper
+     */
+    @Provides
+    @Singleton
+    fun provideSecretsDataSource(
+        firebaseStore: FirebaseFirestore,
+        secretMapper: SecretMapper
+    ): ISecretsDataSource = SecretsDataSourceImpl(firebaseStore, secretMapper)
 }

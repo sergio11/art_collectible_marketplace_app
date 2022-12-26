@@ -1,21 +1,28 @@
 package com.dreamsoftware.artcollectibles.data.di
 
-import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
-import com.dreamsoftware.artcollectibles.data.api.IArtMarketplaceRepository
-import com.dreamsoftware.artcollectibles.data.api.IWalletRepository
-import com.dreamsoftware.artcollectibles.data.api.impl.ArtCollectibleRepositoryImpl
-import com.dreamsoftware.artcollectibles.data.api.impl.ArtMarketplaceRepositoryImpl
 import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
+import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
+import com.dreamsoftware.artcollectibles.data.api.repository.*
+import com.dreamsoftware.artcollectibles.data.api.repository.impl.*
+import com.dreamsoftware.artcollectibles.data.api.repository.impl.ArtCollectibleRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.api.repository.impl.ArtMarketplaceRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.api.repository.impl.UserRepositoryImpl
+import com.dreamsoftware.artcollectibles.data.api.repository.impl.WalletRepositoryImpl
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ISecretsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
+import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
+import com.dreamsoftware.artcollectibles.utils.SecretUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +32,14 @@ import javax.inject.Singleton
 @Module(includes = [FirebaseModule::class, BlockchainModule::class, IPFSModule::class, PreferencesModule::class])
 @InstallIn(SingletonComponent::class)
 class DataModule {
+
+
+    /**
+     * Provide Auth User Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideAuthUserMapper(): AuthUserMapper = AuthUserMapper()
 
     /**
      * Provide User Info Mapper
@@ -38,7 +53,8 @@ class DataModule {
      */
     @Provides
     @Singleton
-    fun provideArtCollectibleMapper(userInfoMapper: UserInfoMapper): ArtCollectibleMapper = ArtCollectibleMapper(userInfoMapper)
+    fun provideArtCollectibleMapper(userInfoMapper: UserInfoMapper): ArtCollectibleMapper =
+        ArtCollectibleMapper(userInfoMapper)
 
     /**
      * Provide User Credentials Mapper
@@ -98,4 +114,60 @@ class DataModule {
             userCredentialsMapper
         )
 
+    /**
+     * Provide User Repository
+     * @param authDataSource
+     * @param userDataSource
+     * @param userInfoMapper
+     */
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        authDataSource: IAuthDataSource,
+        userDataSource: IUsersDataSource,
+        userInfoMapper: UserInfoMapper,
+        authUserMapper: AuthUserMapper
+    ): IUserRepository =
+        UserRepositoryImpl(
+            authDataSource,
+            userDataSource,
+            userInfoMapper,
+            authUserMapper
+        )
+
+    /**
+     * Provide Wallet Repository
+     * @param userCredentialsMapper
+     * @param preferencesDataSource
+     * @param secretDataSource
+     * @param secretUtils
+     * @param walletDataSource
+     */
+    @Provides
+    @Singleton
+    fun provideWalletRepository(
+        userCredentialsMapper: UserCredentialsMapper,
+        preferencesDataSource: IPreferencesDataSource,
+        secretDataSource: ISecretsDataSource,
+        secretUtils: SecretUtils,
+        walletDataSource: IWalletDataSource
+    ): IWalletRepository =
+        WalletRepositoryImpl(
+            userCredentialsMapper,
+            preferencesDataSource,
+            secretDataSource,
+            secretUtils,
+            walletDataSource
+        )
+
+    /**
+     * Provide Preferences Repository
+     * @param preferencesDataSource
+     */
+    @Provides
+    @Singleton
+    fun providePreferencesRepository(
+        preferencesDataSource: IPreferencesDataSource
+    ): IPreferencesRepository =
+        PreferencesRepositoryImpl(preferencesDataSource)
 }

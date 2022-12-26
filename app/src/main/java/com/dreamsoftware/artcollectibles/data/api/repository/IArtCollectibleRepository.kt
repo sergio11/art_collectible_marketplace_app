@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.api
+package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import java.math.BigInteger

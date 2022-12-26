@@ -3,7 +3,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.mapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.dreamsoftware.artcollectibles.utils.IMapper
 
-class UserMapper: IMapper<UserDTO, Map<String, Any>> {
+class UserMapper: IMapper<UserDTO, Map<String, Any?>> {
 
     private companion object {
         const val UID_KEY = "uid"
@@ -13,7 +13,7 @@ class UserMapper: IMapper<UserDTO, Map<String, Any>> {
         const val CONTACT_KEY = "contact"
     }
 
-    override fun mapInToOut(input: UserDTO): Map<String, Any> = with(input) {
+    override fun mapInToOut(input: UserDTO): Map<String, Any?> = with(input) {
         hashMapOf(
             UID_KEY to uid,
             NAME_KEY to name,
@@ -23,10 +23,10 @@ class UserMapper: IMapper<UserDTO, Map<String, Any>> {
         )
     }
 
-    override fun mapInListToOutList(input: Iterable<UserDTO>): Iterable<Map<String, Any>> =
+    override fun mapInListToOutList(input: Iterable<UserDTO>): Iterable<Map<String, Any?>> =
         input.map(::mapInToOut)
 
-    override fun mapOutToIn(input: Map<String, Any>): UserDTO = with(input) {
+    override fun mapOutToIn(input: Map<String, Any?>): UserDTO = with(input) {
         UserDTO(
             uid = get(UID_KEY) as String,
             name = get(NAME_KEY) as String,
@@ -36,6 +36,6 @@ class UserMapper: IMapper<UserDTO, Map<String, Any>> {
         )
     }
 
-    override fun mapOutListToInList(input: Iterable<Map<String, Any>>): Iterable<UserDTO> =
+    override fun mapOutListToInList(input: Iterable<Map<String, Any?>>): Iterable<UserDTO> =
         input.map(::mapOutToIn)
 }

@@ -1,8 +1,8 @@
-package com.dreamsoftware.artcollectibles.data.api.impl
+package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
-import com.dreamsoftware.artcollectibles.data.api.IArtMarketplaceRepository
-import com.dreamsoftware.artcollectibles.data.api.IWalletRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IArtMarketplaceRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource

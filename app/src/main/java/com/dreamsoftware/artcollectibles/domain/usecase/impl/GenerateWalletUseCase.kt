@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
-import com.dreamsoftware.artcollectibles.data.api.IWalletRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
 

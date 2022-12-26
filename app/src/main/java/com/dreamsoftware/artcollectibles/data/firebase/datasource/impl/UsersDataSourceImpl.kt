@@ -31,7 +31,7 @@ internal class UsersDataSourceImpl(
         try {
             firebaseStore.collection(USERS_COLLECTION_NAME)
                 .document(user.uid)
-                .set(user)
+                .set(userMapper.mapInToOut(user))
                 .await()
         } catch (ex: Exception) {
             throw SaveUserException("An error occurred when trying to save user information", ex)

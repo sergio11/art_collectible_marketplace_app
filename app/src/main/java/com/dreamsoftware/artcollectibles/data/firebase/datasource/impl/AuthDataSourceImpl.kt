@@ -2,7 +2,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.FirebaseException
-import com.dreamsoftware.artcollectibles.data.firebase.mapper.AuthUserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.FirebaseUserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.AuthUserDTO
 import com.dreamsoftware.artcollectibles.domain.models.AuthTypeEnum
 import com.google.firebase.auth.FacebookAuthProvider
@@ -14,11 +14,11 @@ import kotlinx.coroutines.withContext
 
 /**
  * Auth Data Source Implementation
- * @param authUserMapper
+ * @param firebaseUserMapper
  * @param firebaseAuth
  */
 internal class AuthDataSourceImpl(
-    private val authUserMapper: AuthUserMapper,
+    private val firebaseUserMapper: FirebaseUserMapper,
     private val firebaseAuth: FirebaseAuth
 ) : IAuthDataSource {
 
@@ -35,7 +35,7 @@ internal class AuthDataSourceImpl(
             firebaseAuth.signInWithCredential(
                 getCredentials(accessToken, authTypeEnum)
             ).await()
-                ?.user?.let { authUserMapper.mapInToOut(it) }
+                ?.user?.let { firebaseUserMapper.mapInToOut(it) }
                 ?: throw IllegalStateException("Auth user cannot be null")
         } catch (ex: Exception) {
             throw FirebaseException("Login failed", ex)

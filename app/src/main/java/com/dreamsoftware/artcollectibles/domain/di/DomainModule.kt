@@ -1,11 +1,7 @@
 package com.dreamsoftware.artcollectibles.domain.di
 
-import com.dreamsoftware.artcollectibles.data.api.IArtCollectibleRepository
-import com.dreamsoftware.artcollectibles.data.api.IArtMarketplaceRepository
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchAvailableMarketItemsUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchSellingMarketItemsUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetTokensCreatedUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetTokensOwnedUseCase
+import com.dreamsoftware.artcollectibles.data.api.repository.*
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,4 +51,18 @@ class DomainModule {
         artCollectibleRepository: IArtCollectibleRepository
     ) =
         GetTokensOwnedUseCase(artCollectibleRepository)
+
+    /**
+     * Provide Sign In Use case
+     * @param userRepository
+     * @param preferencesRepository
+     * @param walletRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideSignInUseCase(
+        userRepository: IUserRepository,
+        preferencesRepository: IPreferencesRepository,
+        walletRepository: IWalletRepository
+    ) = SignInUseCase(userRepository, preferencesRepository, walletRepository)
 }
