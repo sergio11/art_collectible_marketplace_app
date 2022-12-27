@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
 import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
-import com.dreamsoftware.artcollectibles.data.api.repository.IPreferencesRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.firebase.exception.UserNotFoundException
@@ -13,7 +12,6 @@ import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithPara
 
 class SignInUseCase(
     private val userRepository: IUserRepository,
-    private val preferencesRepository: IPreferencesRepository,
     private val walletRepository: IWalletRepository,
 ): BaseUseCaseWithParams<SignInUseCase.Params, UserInfo>() {
 
@@ -24,7 +22,6 @@ class SignInUseCase(
                 authTypeEnum = params.authTypeEnum
             )
         )
-        preferencesRepository.saveAuthUserUid(authUser.uid)
         return try {
             userRepository.get(uid = authUser.uid)
         } catch (ex: UserDataException) {

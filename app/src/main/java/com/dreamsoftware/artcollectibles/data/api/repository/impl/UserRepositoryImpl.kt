@@ -6,6 +6,7 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
+import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.AuthRequest
 import com.dreamsoftware.artcollectibles.domain.models.AuthUser
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
@@ -13,13 +14,15 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 internal class UserRepositoryImpl(
     private val authDataSource: IAuthDataSource,
     private val userDataSource: IUsersDataSource,
+    private val preferencesDataSource: IPreferencesDataSource,
     private val userInfoMapper: UserInfoMapper,
     private val authUserMapper: AuthUserMapper
 ): IUserRepository {
 
     @Throws(UserDataException::class)
     override suspend fun isAuthenticated(): Boolean = try {
-        authDataSource.isAuthenticated()
+        authDataSource.isAuthenticated() &&
+                preferencesDataSource.getAuthUserUid().isNotBlank()
     } catch (ex: Exception) {
         throw UserDataException("An error occurred when trying to check if user is already authenticated", ex)
     }
@@ -27,6 +30,7 @@ internal class UserRepositoryImpl(
     @Throws(UserDataException::class)
     override suspend fun signIn(authRequest: AuthRequest): AuthUser = try {
         val authUser = authDataSource.signInWithAccessToken(authRequest.accessToken, authRequest.authTypeEnum)
+        preferencesDataSource.saveAuthUserUid(authUser.uid)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
         throw UserDataException("An error occurred when trying to sign in user", ex)
@@ -51,6 +55,7 @@ internal class UserRepositoryImpl(
     override suspend fun closeSession() {
         try {
             authDataSource.closeSession()
+            preferencesDataSource.clearData()
         } catch (ex: Exception) {
             throw UserDataException("An error occurred when trying to close user session", ex)
         }

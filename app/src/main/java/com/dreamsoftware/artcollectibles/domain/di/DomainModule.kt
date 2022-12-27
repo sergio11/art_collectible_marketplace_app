@@ -55,14 +55,12 @@ class DomainModule {
     /**
      * Provide Sign In Use case
      * @param userRepository
-     * @param preferencesRepository
      * @param walletRepository
      */
     @Provides
     @ViewModelScoped
     fun provideSignInUseCase(
         userRepository: IUserRepository,
-        preferencesRepository: IPreferencesRepository,
         walletRepository: IWalletRepository
-    ) = SignInUseCase(userRepository, preferencesRepository, walletRepository)
+    ) = SignInUseCase(userRepository, walletRepository)
 }

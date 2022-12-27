@@ -125,12 +125,14 @@ class DataModule {
     fun provideUserRepository(
         authDataSource: IAuthDataSource,
         userDataSource: IUsersDataSource,
+        preferencesDataSource: IPreferencesDataSource,
         userInfoMapper: UserInfoMapper,
         authUserMapper: AuthUserMapper
     ): IUserRepository =
         UserRepositoryImpl(
             authDataSource,
             userDataSource,
+            preferencesDataSource,
             userInfoMapper,
             authUserMapper
         )
@@ -159,15 +161,4 @@ class DataModule {
             secretUtils,
             walletDataSource
         )
-
-    /**
-     * Provide Preferences Repository
-     * @param preferencesDataSource
-     */
-    @Provides
-    @Singleton
-    fun providePreferencesRepository(
-        preferencesDataSource: IPreferencesDataSource
-    ): IPreferencesRepository =
-        PreferencesRepositoryImpl(preferencesDataSource)
 }
