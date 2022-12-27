@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.models.response
+package com.dreamsoftware.artcollectibles.data.ipfs.pinata.models.response
 
 import com.squareup.moshi.Json
 

@@ -1,11 +1,7 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.models.response
+package com.dreamsoftware.artcollectibles.data.ipfs.pinata.models.response
 
-import com.dreamsoftware.artcollectibles.data.ipfs.utils.TOKEN_AUTHOR_ADDRESS
-import com.dreamsoftware.artcollectibles.data.ipfs.utils.TOKEN_DESCRIPTION_KEY
-import com.dreamsoftware.artcollectibles.data.ipfs.utils.TOKEN_OWNER_ADDRESS
 import com.squareup.moshi.Json
-import java.math.BigInteger
-import java.util.Date
+import java.util.*
 
 data class FilePinnedDTO(
     @field:Json(name = "id")
@@ -28,13 +24,4 @@ data class FilePinnedMetadataDTO(
     val name: String,
     @field:Json(name = "keyvalues")
     val keyValues: Map<String, String>
-) {
-    val description: String
-        get() = keyValues[TOKEN_DESCRIPTION_KEY].orEmpty()
-
-    val ownerAddress: String
-        get() = keyValues[TOKEN_OWNER_ADDRESS].orEmpty()
-
-    val authorAddress: String
-        get() = keyValues[TOKEN_AUTHOR_ADDRESS].orEmpty()
-}
+)

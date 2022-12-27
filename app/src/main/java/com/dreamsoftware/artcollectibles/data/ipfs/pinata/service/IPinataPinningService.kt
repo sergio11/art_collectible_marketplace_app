@@ -1,8 +1,8 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.service
+package com.dreamsoftware.artcollectibles.data.ipfs.pinata.service
 
-import com.dreamsoftware.artcollectibles.data.ipfs.models.request.FileMetadataDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.models.request.UpdateFileMetadataDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.models.response.PinFileToIpfsResponseDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.models.request.FileMetadataDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.models.request.UpdateFileMetadataDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.models.response.PinFileToIpfsResponseDTO
 import okhttp3.MultipartBody
 import retrofit2.http.*
 

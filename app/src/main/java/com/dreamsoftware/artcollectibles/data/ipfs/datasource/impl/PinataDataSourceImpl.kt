@@ -1,61 +1,68 @@
 package com.dreamsoftware.artcollectibles.data.ipfs.datasource.impl
 
-import com.dreamsoftware.artcollectibles.data.ipfs.config.PinataConfig
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.core.SupportNetworkDataSource
-import com.dreamsoftware.artcollectibles.data.ipfs.models.request.FileMetadataDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.models.request.UpdateFileMetadataDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.models.response.FilePinnedDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.service.IPinataPinningService
-import com.dreamsoftware.artcollectibles.data.ipfs.service.IPinataQueryFilesService
+import com.dreamsoftware.artcollectibles.data.ipfs.mapper.CreateTokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.mapper.TokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.mapper.UpdateTokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.models.CreateTokenMetadataDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.models.TokenMetadataDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.models.UpdateTokenMetadataDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataPinningService
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataQueryFilesService
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 
 internal class PinataDataSourceImpl(
     private val pinataPinningService: IPinataPinningService,
     private val pinataQueryFilesService: IPinataQueryFilesService,
-    private val pinataConfig: PinataConfig
+    private val createTokenMetadataMapper: CreateTokenMetadataMapper,
+    private val updateTokenMetadataMapper: UpdateTokenMetadataMapper,
+    private val tokenMetadataMapper: TokenMetadataMapper
 ) : SupportNetworkDataSource(), IpfsDataSource {
 
-    override suspend fun saveFile(
-        file: File,
-        mediaType: String,
-        metadataDTO: FileMetadataDTO
-    ): FilePinnedDTO = safeNetworkCall {
-        val requestBody = file.asRequestBody(mediaType.toMediaType())
-        val filePart = MultipartBody.Part.createFormData("file", file.name, requestBody)
-        val response = pinataPinningService.pinFileToIPFS(filePart, metadataDTO)
-        pinataQueryFilesService.getPinnedFileByCid(response.ipfsHash)
-            .rows.first().configureImageUrl()
-    }
-
-    override suspend fun fetchByCid(cid: String): FilePinnedDTO = safeNetworkCall {
-        pinataQueryFilesService.getPinnedFileByCid(cid).rows.first()
-            .configureImageUrl()
-    }
-
-    override suspend fun fetchByCreatorAddress(creatorAddress: String): Iterable<FilePinnedDTO> =
+    override suspend fun create(tokenMetadata: CreateTokenMetadataDTO): TokenMetadataDTO =
         safeNetworkCall {
-            pinataQueryFilesService.getPinnedFileByCreatorAddress(creatorAddress)
-                .rows.map { it.configureImageUrl() }
+            with(tokenMetadata) {
+                val requestBody = file.asRequestBody(mediaType.toMediaType())
+                val filePart = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                val fileMetadataDTO = createTokenMetadataMapper.mapInToOut(tokenMetadata)
+                val response = pinataPinningService.pinFileToIPFS(filePart, fileMetadataDTO)
+                tokenMetadataMapper.mapInToOut(
+                    pinataQueryFilesService.getPinnedFileByCid(response.ipfsHash)
+                        .rows.first()
+                )
+            }
         }
 
-    override suspend fun fetchByOwnerAddress(ownerAddress: String): Iterable<FilePinnedDTO> =
-        safeNetworkCall {
-            pinataQueryFilesService.getPinnedFileByOwnerAddress(ownerAddress)
-                .rows.map { it.configureImageUrl() }
-        }
-
-    override suspend fun updateMetadata(metadata: UpdateFileMetadataDTO) {
-        TODO("Not yet implemented")
+    override suspend fun update(metadata: UpdateTokenMetadataDTO) = safeNetworkCall {
+        val tokenMetadataToUpdate = updateTokenMetadataMapper.mapInToOut(metadata)
+        pinataPinningService.updateMetadata(tokenMetadataToUpdate)
     }
 
     override suspend fun delete(cid: String) = safeNetworkCall {
         pinataPinningService.unpinFile(cid)
     }
 
-    private fun FilePinnedDTO.configureImageUrl(): FilePinnedDTO =
-        copy(imageUrl = pinataConfig.pinataGatewayBaseUrl.plus(ipfsPinHash))
+    override suspend fun fetchByCid(cid: String): TokenMetadataDTO = safeNetworkCall {
+        tokenMetadataMapper.mapInToOut(pinataQueryFilesService.getPinnedFileByCid(cid).rows.first())
+    }
+
+    override suspend fun fetchByCreatorAddress(creatorAddress: String): Iterable<TokenMetadataDTO> =
+        safeNetworkCall {
+            tokenMetadataMapper.mapInListToOutList(
+                pinataQueryFilesService.getPinnedFileByCreatorAddress(creatorAddress)
+                    .rows
+            )
+        }
+
+    override suspend fun fetchByOwnerAddress(ownerAddress: String): Iterable<TokenMetadataDTO> =
+        safeNetworkCall {
+            tokenMetadataMapper.mapInListToOutList(
+                pinataQueryFilesService.getPinnedFileByOwnerAddress(ownerAddress)
+                    .rows
+            )
+        }
+
 }

@@ -1,6 +1,6 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.service
+package com.dreamsoftware.artcollectibles.data.ipfs.pinata.service
 
-import com.dreamsoftware.artcollectibles.data.ipfs.models.response.PinnedFilesResponseDTO
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.models.response.PinnedFilesResponseDTO
 import retrofit2.http.*
 
 /**

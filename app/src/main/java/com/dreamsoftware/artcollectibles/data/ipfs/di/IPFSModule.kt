@@ -4,9 +4,12 @@ import android.content.Context
 import com.dreamsoftware.artcollectibles.data.ipfs.config.PinataConfig
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.impl.PinataDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.ipfs.serder.DateJsonAdapter
-import com.dreamsoftware.artcollectibles.data.ipfs.service.IPinataPinningService
-import com.dreamsoftware.artcollectibles.data.ipfs.service.IPinataQueryFilesService
+import com.dreamsoftware.artcollectibles.data.ipfs.mapper.CreateTokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.mapper.TokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.mapper.UpdateTokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.serder.DateJsonAdapter
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataPinningService
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataQueryFilesService
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -35,6 +38,28 @@ class IPFSModule {
     @Provides
     @Singleton
     fun providePinataConfig() = PinataConfig()
+
+    /**
+     * Provide Create Token Metadata Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideCreateTokenMetadataMapper() = CreateTokenMetadataMapper()
+
+    /**
+     * Provide Update Token Metadata Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideUpdateTokenMetadataMapper() = UpdateTokenMetadataMapper()
+
+    /**
+     * Provide Token Metadata Mapper
+     * @param pinataConfig
+     */
+    @Provides
+    @Singleton
+    fun provideTokenMetadataMapper(pinataConfig: PinataConfig) = TokenMetadataMapper(pinataConfig)
 
     /**
      * Provide Converter Factory
@@ -110,15 +135,25 @@ class IPFSModule {
      * Provide Pinata Data Source
      * @param pinataPinningService
      * @param pinataQueryFilesService
-     * @param pinataConfig
+     * @param createTokenMetadataMapper
+     * @param updateTokenMetadataMapper
+     * @param tokenMetadataMapper
      */
     @Provides
     @Singleton
     fun providePinataDataSource(
         pinataPinningService: IPinataPinningService,
         pinataQueryFilesService: IPinataQueryFilesService,
-        pinataConfig: PinataConfig
+        createTokenMetadataMapper: CreateTokenMetadataMapper,
+        updateTokenMetadataMapper: UpdateTokenMetadataMapper,
+        tokenMetadataMapper: TokenMetadataMapper
     ): IpfsDataSource =
-        PinataDataSourceImpl(pinataPinningService, pinataQueryFilesService, pinataConfig)
+        PinataDataSourceImpl(
+            pinataPinningService,
+            pinataQueryFilesService,
+            createTokenMetadataMapper,
+            updateTokenMetadataMapper,
+            tokenMetadataMapper
+        )
 
 }

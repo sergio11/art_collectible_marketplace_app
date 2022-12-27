@@ -4,7 +4,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract.ArtCollectible
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainEntity
+import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -43,19 +43,19 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
         }
     }
 
-    override suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity> =
+    override suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
             val collectibles = loadContract(credentials).tokensCreatedByMe.send().filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
-    override suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity> =
+    override suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
             val collectibles = loadContract(credentials).tokensOwnedByMe.send().filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
-    override suspend fun getTokenById(tokenId: BigInteger, credentials: Credentials): ArtCollectibleBlockchainEntity =
+    override suspend fun getTokenById(tokenId: BigInteger, credentials: Credentials): ArtCollectibleBlockchainDTO =
         withContext(Dispatchers.IO) {
             val collectible = loadContract(credentials).getTokenById(tokenId).send()
             artCollectibleMapper.mapInToOut(collectible)
