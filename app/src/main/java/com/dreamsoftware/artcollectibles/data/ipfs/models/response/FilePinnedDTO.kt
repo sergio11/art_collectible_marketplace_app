@@ -1,5 +1,8 @@
 package com.dreamsoftware.artcollectibles.data.ipfs.models.response
 
+import com.dreamsoftware.artcollectibles.data.ipfs.utils.TOKEN_AUTHOR_ADDRESS
+import com.dreamsoftware.artcollectibles.data.ipfs.utils.TOKEN_DESCRIPTION_KEY
+import com.dreamsoftware.artcollectibles.data.ipfs.utils.TOKEN_OWNER_ADDRESS
 import com.squareup.moshi.Json
 import java.math.BigInteger
 import java.util.Date
@@ -27,18 +30,11 @@ data class FilePinnedMetadataDTO(
     val keyValues: Map<String, String>
 ) {
     val description: String
-        get() = keyValues["description"].orEmpty()
+        get() = keyValues[TOKEN_DESCRIPTION_KEY].orEmpty()
 
     val ownerAddress: String
-        get() = keyValues["owner_address"].orEmpty()
+        get() = keyValues[TOKEN_OWNER_ADDRESS].orEmpty()
 
     val authorAddress: String
-        get() = keyValues["author_address"].orEmpty()
-
-    val tokenId: BigInteger?
-        get() = keyValues["token_id"]?.let {
-            runCatching {
-                BigInteger.valueOf(it.toLong())
-            }.getOrNull()
-        }
+        get() = keyValues[TOKEN_AUTHOR_ADDRESS].orEmpty()
 }

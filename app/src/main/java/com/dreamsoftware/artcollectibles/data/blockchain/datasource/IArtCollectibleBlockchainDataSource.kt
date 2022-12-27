@@ -12,6 +12,11 @@ interface IArtCollectibleBlockchainDataSource {
     suspend fun mintToken(metadataCid: String, royalty: Long, credentials: Credentials): BigInteger
 
     /**
+     * Allow us to burn a token
+     */
+    suspend fun burnToken(tokenId: BigInteger, credentials: Credentials)
+
+    /**
      * Allows you to retrieve the list of tokens created
      */
     suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity>

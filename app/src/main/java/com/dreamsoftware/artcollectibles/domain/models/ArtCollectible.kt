@@ -2,7 +2,7 @@ package com.dreamsoftware.artcollectibles.domain.models
 
 import java.math.BigInteger
 
-data class ArtCollectible(
+class ArtCollectible(
     val id: BigInteger,
     val name: String,
     val imageUrl: String,

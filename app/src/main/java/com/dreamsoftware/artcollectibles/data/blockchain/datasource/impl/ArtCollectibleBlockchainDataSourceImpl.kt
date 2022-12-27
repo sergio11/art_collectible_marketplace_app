@@ -37,6 +37,12 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
             }
         }
 
+    override suspend fun burnToken(tokenId: BigInteger, credentials: Credentials) {
+        withContext(Dispatchers.IO) {
+            loadContract(credentials).burn(tokenId).send()
+        }
+    }
+
     override suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainEntity> =
         withContext(Dispatchers.IO) {
             val collectibles = loadContract(credentials).tokensCreatedByMe.send().filterIsInstance<ArtCollectible>()
