@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.onboarding
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.FacebookLoginButton
 import com.dreamsoftware.artcollectibles.ui.components.GoogleLoginButton
@@ -29,6 +31,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingScreen(
+    modifier: Modifier = Modifier,
+    viewModel: OnBoardingViewModel = hiltViewModel(),
     onNavigateAction: () -> Unit
 ) {
     Scaffold { paddingValues ->
@@ -41,7 +45,8 @@ fun OnBoardingScreen(
             )
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 32.dp, vertical = 80.dp)
+                    .padding(horizontal = 32.dp)
+                    .padding(top = 80.dp)
                     .fillMaxSize()
             ) {
                 Text(
@@ -51,7 +56,7 @@ fun OnBoardingScreen(
                     lineHeight = 40.sp,
                     fontWeight = FontWeight.Black
                 )
-                Spacer(Modifier.fillMaxSize(0.50f))
+                Spacer(Modifier.fillMaxSize(0.40f))
                 Card(
                     elevation = CardDefaults.cardElevation(4.dp),
                     colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
@@ -83,7 +88,13 @@ fun OnBoardingScreen(
                             onError = {}
                         )
                         GoogleLoginButton(
-                            modifier = Modifier.padding(horizontal = 20.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            onAuthFailed = {
+                                Log.d("GOOGLE_LOGIN", "onAuthFailed CALLED!")
+                            },
+                            onAuthSuccess = {
+                                Log.d("GOOGLE_LOGIN", "onAuthSuccess $it CALLED!")
+                            }
                         )
                     }
                 }

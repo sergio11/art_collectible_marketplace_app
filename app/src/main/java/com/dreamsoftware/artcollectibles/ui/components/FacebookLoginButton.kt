@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.utils.FacebookUtil
+import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
@@ -20,11 +20,11 @@ import com.facebook.login.widget.LoginButton
 fun FacebookLoginButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    onSuccess: (LoginResult) -> Unit,
+    onSuccess: (token: String) -> Unit,
     onCancel: () -> Unit,
-    onError: (FacebookException?) -> Unit,
+    onError: () -> Unit,
 ) {
-    val callbackManager = FacebookUtil.callbackManager
+    val callbackManager = CallbackManager.Factory.create()
     val facebookLoginText = stringResource(R.string.txt_connect_with_facebook)
     AndroidView(
         modifier = modifier.fillMaxWidth().height(50.dp),
@@ -36,18 +36,18 @@ fun FacebookLoginButton(
                 registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
                     override fun onSuccess(result: LoginResult) {
                         LoginManager.getInstance().logOut()
-                        onSuccess(result)
                         Log.d("FACEBOOK_LOGIN", "Token : ${result.accessToken.token}")
                         Log.d("FACEBOOK_LOGIN", "RecentlyGrantedPermissions : ${result.recentlyGrantedPermissions.joinToString(",")}")
                         Log.d("FACEBOOK_LOGIN", "RecentlyDeniedPermissions : ${result.recentlyDeniedPermissions.joinToString(",")}")
+                        onSuccess(result.accessToken.token)
                     }
                     override fun onCancel() {
-                        onCancel()
                         Log.d("FACEBOOK_LOGIN", "Login : On Cancel")
+                        onCancel()
                     }
                     override fun onError(error: FacebookException) {
-                        onError(error)
                         Log.d("FACEBOOK_LOGIN", "Login : ${error.localizedMessage}")
+                        onError()
                     }
                 })
             }

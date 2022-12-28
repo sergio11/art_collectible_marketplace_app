@@ -47,11 +47,12 @@ android {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
 
-        // Configure Facebook resources
+        // Configure Social Auth resources
         with(gradleLocalProperties(rootDir)) {
             resValue("string", "facebook_app_id", getProperty("facebook.applicationId"))
             resValue("string", "facebook_client_token", getProperty("facebook.clientToken"))
             resValue("string", "facebook_login_protocol_scheme", getProperty("facebook.loginProtocolScheme"))
+            resValue("string", "google_client_id", getProperty("googleClientId"))
         }
         // Pinata configuration
         buildConfigField(type = "String", name = "PINATA_BASE_URL", value = "\"https://api.pinata.cloud/\"")
