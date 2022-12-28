@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.FacebookLoginButton
+import com.dreamsoftware.artcollectibles.ui.components.GoogleLoginButton
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -43,13 +45,13 @@ fun OnBoardingScreen(
                     .fillMaxSize()
             ) {
                 Text(
-                    "Welcome to NFT Marketplace",
+                    stringResource(R.string.onboarding_main_title_text),
                     color = Color.White,
                     fontSize = 37.sp,
                     lineHeight = 40.sp,
                     fontWeight = FontWeight.Black
                 )
-                Spacer(Modifier.fillMaxSize(0.58f))
+                Spacer(Modifier.fillMaxSize(0.50f))
                 Card(
                     elevation = CardDefaults.cardElevation(4.dp),
                     colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
@@ -61,7 +63,7 @@ fun OnBoardingScreen(
                         modifier = Modifier.padding(27.dp)
                     ) {
                         Text(
-                            "Explore and Mint NFTs",
+                            stringResource(R.string.onboarding_subtitle_text),
                             color = Purple500,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
@@ -69,37 +71,20 @@ fun OnBoardingScreen(
                         )
                         Spacer(modifier = Modifier.padding(bottom = 10.dp))
                         Text(
-                            "You can buy and sell the NFTs of the best artists in the world.",
+                            stringResource(R.string.onboarding_description_text),
                             color = Purple700,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                        Spacer(modifier = Modifier.padding(bottom = 5.dp))
                         FacebookLoginButton(
-                            modifier = Modifier.padding(20.dp),
+                            modifier = Modifier.padding(horizontal = 20.dp),
                             onSuccess = {},
                             onCancel = {},
                             onError = {}
                         )
-                        /*Button(
-                            onClick = onNavigateAction,
-                            shape = RoundedCornerShape(percent = 50),
-                            modifier = Modifier.border(
-                                width = 1.dp,
-                                color = Color.White,
-                                shape = RoundedCornerShape(percent = 50)
-                            ),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Purple500,
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(
-                                "Get Started Now",
-                                modifier = Modifier.padding(horizontal = 40.dp, vertical = 4.dp),
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }*/
+                        GoogleLoginButton(
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        )
                     }
                 }
             }
