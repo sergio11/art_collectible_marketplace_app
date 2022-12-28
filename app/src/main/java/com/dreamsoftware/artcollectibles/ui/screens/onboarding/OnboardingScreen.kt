@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.FacebookLoginButton
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -72,8 +73,14 @@ fun OnBoardingScreen(
                             color = Purple700,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.padding(bottom = 27.dp))
-                        Button(
+                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                        FacebookLoginButton(
+                            modifier = Modifier.padding(20.dp),
+                            onSuccess = {},
+                            onCancel = {},
+                            onError = {}
+                        )
+                        /*Button(
                             onClick = onNavigateAction,
                             shape = RoundedCornerShape(percent = 50),
                             modifier = Modifier.border(
@@ -92,7 +99,7 @@ fun OnBoardingScreen(
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
-                        }
+                        }*/
                     }
                 }
             }

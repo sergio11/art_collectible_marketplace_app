@@ -24,8 +24,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.dreamsoftware.artcollectibles.ui.screens.RootScreen
-import dagger.hilt.android.AndroidEntryPoint
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

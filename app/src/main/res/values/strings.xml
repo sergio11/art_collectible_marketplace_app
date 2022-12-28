@@ -16,4 +16,5 @@
 
 <resources>
     <string name="app_name">ArtCollectiblesMarketplace</string>
+    <string name="txt_connect_with_facebook">Continue with Facebook</string>
 </resources>

@@ -46,10 +46,16 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        // Configure Facebook resources
+        with(gradleLocalProperties(rootDir)) {
+            resValue("string", "facebook_app_id", getProperty("facebook.applicationId"))
+            resValue("string", "facebook_client_token", getProperty("facebook.clientToken"))
+            resValue("string", "facebook_login_protocol_scheme", getProperty("facebook.loginProtocolScheme"))
+        }
         // Pinata configuration
         buildConfigField(type = "String", name = "PINATA_BASE_URL", value = "\"https://api.pinata.cloud/\"")
         buildConfigField(type = "String", name = "PINATA_GATEWAY_BASE_URL", value = "\"https://gateway.pinata.cloud/ipfs/\"")
-
         // Blockchain Configuration
         buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https://polygon-mumbai.g.alchemy.com/v2/${gradleLocalProperties(rootDir).getProperty("alchemyAccountPrivateKey")}\"")
         buildConfigField(type = "Long", name = "CHAIN_ID", value = "80001L")
@@ -142,6 +148,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
+    // Facebook Login SDK
+    implementation("com.facebook.android:facebook-login:latest.release")
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

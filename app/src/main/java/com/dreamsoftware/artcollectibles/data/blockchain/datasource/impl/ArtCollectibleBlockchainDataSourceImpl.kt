@@ -15,6 +15,12 @@ import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.tx.FastRawTransactionManager
 import java.math.BigInteger
 
+/**
+ * Art Collectible Blockchain Data Source Impl
+ * @param artCollectibleMapper
+ * @param blockchainConfig
+ * @param web3j
+ */
 internal class ArtCollectibleBlockchainDataSourceImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val blockchainConfig: BlockchainConfig,
