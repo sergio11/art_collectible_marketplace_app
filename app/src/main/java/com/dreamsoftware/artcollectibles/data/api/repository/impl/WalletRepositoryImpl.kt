@@ -9,6 +9,9 @@ import com.dreamsoftware.artcollectibles.data.firebase.model.SecretDTO
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
 import com.dreamsoftware.artcollectibles.utils.SecretUtils
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.security.Security
+
 
 /**
  * Wallet Repository Implementation
@@ -27,6 +30,10 @@ internal class WalletRepositoryImpl(
 
     private companion object {
         const val WALLET_SECRET_LENGTH = 30
+    }
+
+    init {
+        setupBouncyCastle()
     }
 
     override suspend fun loadCredentials(): UserWalletCredentials = try {
@@ -52,6 +59,23 @@ internal class WalletRepositoryImpl(
         secretsDataSource.save(SecretDTO(userUid, walletSecret))
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
+        ex.printStackTrace()
         throw DataRepositoryException("An error occurred when generating a new wallet", ex)
+    }
+
+    private fun setupBouncyCastle() {
+        val provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
+            ?: // Web3j will set up the provider lazily when it's first used.
+            return
+        if (provider.javaClass == BouncyCastleProvider::class.java) {
+            // BC with same package name, shouldn't happen in real life.
+            return
+        }
+        // Android registers its own BC provider. As it might be outdated and might not include
+        // all needed ciphers, we substitute it with a known BC bundled in the app.
+        // Android's BC has its package rewritten to "com.android.org.bouncycastle" and because
+        // of that it's possible to have another BC implementation loaded in VM.
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
+        Security.insertProviderAt(BouncyCastleProvider(), 1)
     }
 }

@@ -11,13 +11,12 @@ class SecretMapper(
     private companion object {
         const val SECRET_KEY = "secret"
         const val UID_KEY = "uid"
-        const val SECURITY_KEY_ALIAS = "secrets"
     }
 
     override fun mapInToOut(input: SecretDTO): Map<String, Any?> = with(input) {
         hashMapOf(
             UID_KEY to uid,
-            SECRET_KEY to cryptoUtils.encryptData(SECURITY_KEY_ALIAS, secret)
+            SECRET_KEY to cryptoUtils.encryptAndEncode(secret)
         )
     }
 
@@ -27,7 +26,7 @@ class SecretMapper(
     override fun mapOutToIn(input: Map<String, Any?>): SecretDTO = with(input) {
         SecretDTO(
             uid = get(UID_KEY) as String,
-            secret = cryptoUtils.decryptData(SECURITY_KEY_ALIAS, get(SECRET_KEY) as ByteArray)
+            secret = cryptoUtils.decodeAndDecrypt(get(SECRET_KEY) as String)
         )
     }
 

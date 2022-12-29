@@ -14,7 +14,15 @@ abstract class BaseUseCaseWithParams<ParamsType, ReturnType> {
     // in the child class
     abstract suspend fun onExecuted(params: ParamsType): ReturnType
 
-    suspend operator fun invoke(params: ParamsType) = withContext(dispatcher) {
-        onExecuted(params)
+    suspend operator fun invoke(
+        params: ParamsType,
+        onSuccess: (result: ReturnType) -> Unit,
+        onError: (error: Exception) -> Unit
+    ) = withContext(dispatcher) {
+        try {
+            onSuccess(onExecuted(params))
+        } catch (ex: Exception) {
+            onError(ex)
+        }
     }
 }

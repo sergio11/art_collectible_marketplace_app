@@ -41,7 +41,7 @@ internal class UserRepositoryImpl(
         val userInfo = userDataSource.getById(uid)
         userInfoMapper.mapInToOut(userInfo)
     } catch (ex: Exception) {
-        throw UserDataException("An error occurred when trying to sign in user", ex)
+        throw UserDataException("An error occurred when trying to get the user information", ex)
     }
 
     @Throws(UserDataException::class)

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -24,10 +25,12 @@ fun FacebookLoginButton(
     onCancel: () -> Unit,
     onError: () -> Unit,
 ) {
-    val callbackManager = CallbackManager.Factory.create()
+    val callbackManager = remember { CallbackManager.Factory.create() }
     val facebookLoginText = stringResource(R.string.txt_connect_with_facebook)
     AndroidView(
-        modifier = modifier.fillMaxWidth().height(50.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(50.dp),
         factory = ::LoginButton,
         update = { button ->
             button.apply {

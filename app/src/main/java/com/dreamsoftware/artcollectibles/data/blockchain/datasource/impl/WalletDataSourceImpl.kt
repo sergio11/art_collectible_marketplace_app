@@ -34,8 +34,8 @@ internal class WalletDataSourceImpl(
     @Throws(GenerateWalletException::class)
     override suspend fun generate(password: String): Credentials = withContext(Dispatchers.IO) {
         try {
-            WalletUtils.generateLightNewWalletFile(password, getInternalWalletDirectory())
-            WalletUtils.loadCredentials(password, getInternalWalletDirectory())
+            val walletName = WalletUtils.generateLightNewWalletFile(password, getInternalWalletDirectory())
+            WalletUtils.loadCredentials(password, File(getInternalWalletDirectory(), walletName))
         } catch (ex: Exception) {
             throw GenerateWalletException(
                 message = "An error occurred when creating a new wallet file",
