@@ -6,10 +6,16 @@ import com.dreamsoftware.artcollectibles.data.blockchain.exception.GenerateWalle
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.LoadWalletCredentialsException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
 import java.io.File
+import java.security.Security
 
+/**
+ * Wallet Data Source Implementation
+ * @param appContext
+ */
 internal class WalletDataSourceImpl(
     private val appContext: Context
 ) : IWalletDataSource {
@@ -18,11 +24,15 @@ internal class WalletDataSourceImpl(
         const val INTERNAL_DIRECTORY_NAME = "wallets_internal_data"
     }
 
+    init {
+        setupBouncyCastle()
+    }
+
     @Throws(LoadWalletCredentialsException::class)
-    override suspend fun loadCredentials(password: String): Credentials =
+    override suspend fun loadCredentials(name: String, password: String): Credentials =
         withContext(Dispatchers.IO) {
             try {
-                WalletUtils.loadCredentials(password, getInternalWalletDirectory())
+                WalletUtils.loadCredentials(password, File(getInternalWalletDirectory(), name))
             } catch (ex: Exception) {
                 throw LoadWalletCredentialsException(
                     message = "An error occurred when loading credentials",
@@ -32,10 +42,9 @@ internal class WalletDataSourceImpl(
         }
 
     @Throws(GenerateWalletException::class)
-    override suspend fun generate(password: String): Credentials = withContext(Dispatchers.IO) {
+    override suspend fun generate(password: String): String = withContext(Dispatchers.IO) {
         try {
-            val walletName = WalletUtils.generateLightNewWalletFile(password, getInternalWalletDirectory())
-            WalletUtils.loadCredentials(password, File(getInternalWalletDirectory(), walletName))
+            WalletUtils.generateLightNewWalletFile(password, getInternalWalletDirectory())
         } catch (ex: Exception) {
             throw GenerateWalletException(
                 message = "An error occurred when creating a new wallet file",
@@ -50,4 +59,21 @@ internal class WalletDataSourceImpl(
                 it.mkdir()
             }
         }
+
+
+    private fun setupBouncyCastle() {
+        val provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)
+            ?: // Web3j will set up the provider lazily when it's first used.
+            return
+        if (provider.javaClass == BouncyCastleProvider::class.java) {
+            // BC with same package name, shouldn't happen in real life.
+            return
+        }
+        // Android registers its own BC provider. As it might be outdated and might not include
+        // all needed ciphers, we substitute it with a known BC bundled in the app.
+        // Android's BC has its package rewritten to "com.android.org.bouncycastle" and because
+        // of that it's possible to have another BC implementation loaded in VM.
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
+        Security.insertProviderAt(BouncyCastleProvider(), 1)
+    }
 }

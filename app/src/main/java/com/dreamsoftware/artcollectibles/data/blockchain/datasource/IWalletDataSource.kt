@@ -8,16 +8,17 @@ interface IWalletDataSource {
 
     /**
      * Load credentials from wallet
+     * @param name
      * @param password
      */
     @Throws(LoadWalletCredentialsException::class)
-    suspend fun loadCredentials(password: String): Credentials
+    suspend fun loadCredentials(name: String, password: String): Credentials
 
     /**
      * Generate wallet
      * @param password
      */
     @Throws(GenerateWalletException::class)
-    suspend fun generate(password: String): Credentials
+    suspend fun generate(password: String): String
 
 }

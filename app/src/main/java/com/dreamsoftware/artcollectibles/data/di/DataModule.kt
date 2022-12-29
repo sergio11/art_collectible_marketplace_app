@@ -16,7 +16,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.ISecretsDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
@@ -150,7 +150,7 @@ class DataModule {
     fun provideWalletRepository(
         userCredentialsMapper: UserCredentialsMapper,
         preferencesDataSource: IPreferencesDataSource,
-        secretDataSource: ISecretsDataSource,
+        secretDataSource: IWalletSecretsDataSource,
         secretUtils: SecretUtils,
         walletDataSource: IWalletDataSource
     ): IWalletRepository =

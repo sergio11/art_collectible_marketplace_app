@@ -1,13 +1,13 @@
 package com.dreamsoftware.artcollectibles.data.firebase.di
 
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.ISecretsDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.AuthDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.SecretsDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.WalletSecretsDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.UsersDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.FirebaseUserMapper
-import com.dreamsoftware.artcollectibles.data.firebase.mapper.SecretMapper
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.WalletSecretMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserMapper
 import com.dreamsoftware.artcollectibles.utils.CryptoUtils
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +37,7 @@ class FirebaseModule {
      */
     @Provides
     @Singleton
-    fun provideSecretMapper(cryptoUtils: CryptoUtils): SecretMapper = SecretMapper(cryptoUtils)
+    fun provideSecretMapper(cryptoUtils: CryptoUtils): WalletSecretMapper = WalletSecretMapper(cryptoUtils)
 
     /**
      * Provide User Mapper
@@ -88,14 +88,14 @@ class FirebaseModule {
     ): IUsersDataSource = UsersDataSourceImpl(userMapper, firebaseStore)
 
     /**
-     * Provide Secrets Data Source
+     * Provide Wallet Secrets Data Source
      * @param firebaseStore
-     * @param secretMapper
+     * @param walletSecretMapper
      */
     @Provides
     @Singleton
-    fun provideSecretsDataSource(
+    fun provideWalletSecretsDataSource(
         firebaseStore: FirebaseFirestore,
-        secretMapper: SecretMapper
-    ): ISecretsDataSource = SecretsDataSourceImpl(firebaseStore, secretMapper)
+        walletSecretMapper: WalletSecretMapper
+    ): IWalletSecretsDataSource = WalletSecretsDataSourceImpl(firebaseStore, walletSecretMapper)
 }
