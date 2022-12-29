@@ -27,9 +27,12 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AuthTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.FacebookLoginButton
 import com.dreamsoftware.artcollectibles.ui.components.GoogleLoginButton
+import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun OnBoardingScreen(
@@ -44,11 +47,18 @@ fun OnBoardingScreen(
         key2 = viewModel
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
+            viewModel.uiState.collect {
+                if(it is OnBoardingUiState.OnSignInSuccess) {
+                    onNavigateAction()
+                } else {
+                    value = it
+                }
+            }
         }
     }
     val snackBarHostState = remember { SnackbarHostState() }
-    OnBoardingComponent(modifier, state, snackBarHostState) { token, authType ->
+    val coroutineScope = rememberCoroutineScope()
+    OnBoardingComponent(modifier, state, snackBarHostState, coroutineScope) { token, authType ->
         viewModel.signIn(token, authType)
     }
 }
@@ -60,16 +70,19 @@ internal fun OnBoardingComponent(
     modifier: Modifier = Modifier,
     state: OnBoardingUiState,
     snackBarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope,
     onSignIn: (token: String, authType: AuthTypeEnum) -> Unit
 ) {
     Log.d("SIGN_IN", "OnBoardingComponent state -> $state")
     if (state is OnBoardingUiState.OnSignInError) {
+        val loginFailedText = stringResource(id = R.string.onboarding_login_failed)
         LaunchedEffect(snackBarHostState) {
             snackBarHostState.showSnackbar(
-                message = "An error occurred when trying to sign in user"
+                message = loginFailedText
             )
         }
     }
+    LoadingDialog(isShowingDialog = state is OnBoardingUiState.OnSignInProgress)
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { paddingValues ->
@@ -118,18 +131,40 @@ internal fun OnBoardingComponent(
                             textAlign = TextAlign.Center
                         )
                         Spacer(modifier = Modifier.padding(bottom = 5.dp))
+                        val loginFBCancelledText = stringResource(id = R.string.onboarding_login_facebook_cancelled)
+                        val loginFBFailedText = stringResource(id = R.string.onboarding_login_facebook_failed)
                         FacebookLoginButton(
+                            enabled = state is OnBoardingUiState.NoSignIn,
                             modifier = Modifier.padding(horizontal = 20.dp),
                             onSuccess = {
                                 onSignIn(it, AuthTypeEnum.FACEBOOK)
                             },
-                            onCancel = {},
-                            onError = {}
+                            onCancel = {
+                                coroutineScope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = loginFBCancelledText
+                                    )
+                                }
+                            },
+                            onError = {
+                                coroutineScope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = loginFBFailedText
+                                    )
+                                }
+                            }
                         )
+                        val loginGGFailedText = stringResource(id = R.string.onboarding_login_google_failed)
                         GoogleLoginButton(
+                            enabled = state is OnBoardingUiState.NoSignIn,
                             modifier = Modifier.padding(horizontal = 20.dp),
                             onAuthFailed = {
                                 Log.d("GOOGLE_LOGIN", "onAuthFailed CALLED!")
+                                coroutineScope.launch {
+                                    snackBarHostState.showSnackbar(
+                                        message = loginGGFailedText
+                                    )
+                                }
                             },
                             onAuthSuccess = {
                                 onSignIn(it, AuthTypeEnum.GOOGLE)
