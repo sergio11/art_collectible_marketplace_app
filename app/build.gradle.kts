@@ -139,10 +139,12 @@ dependencies {
     implementation("org.web3j:core:4.9.4")
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:31.1.1"))
-    //Firebase Authentication library
+    // Firebase Authentication library
     implementation("com.google.firebase:firebase-auth-ktx")
-    //Cloud Firestore library
+    // Cloud Firestore library
     implementation("com.google.firebase:firebase-firestore-ktx")
+    // Cloud Storage library
+    implementation("com.google.firebase:firebase-storage-ktx")
     // Google Play services library
     implementation("com.google.android.gms:play-services-auth:20.4.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")

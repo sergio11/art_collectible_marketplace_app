@@ -12,3 +12,7 @@ class UserErrorException(message: String? = null, cause: Throwable? = null): Fir
 // Secrets Data Source
 class SecretNotFoundException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class SaveSecretException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+// Storage Data Source
+class FileNotFoundException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class SaveFileException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

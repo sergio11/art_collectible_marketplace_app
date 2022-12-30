@@ -1,8 +1,9 @@
 package com.dreamsoftware.artcollectibles.data.firebase.model
 
-data class AuthUserDTO(
+data class UpdateUserDTO(
     val uid: String,
-    val displayName: String? = null,
-    val email: String? = null,
+    val name: String? = null,
+    val info: String? = null,
+    val contact: String? = null,
     val photoUrl: String? = null
 )

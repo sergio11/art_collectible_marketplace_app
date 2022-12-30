@@ -1,23 +1,17 @@
 package com.dreamsoftware.artcollectibles.data.di
 
-import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
+import com.dreamsoftware.artcollectibles.data.api.mapper.*
 import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.data.api.repository.impl.*
-import com.dreamsoftware.artcollectibles.data.api.repository.impl.ArtCollectibleRepositoryImpl
-import com.dreamsoftware.artcollectibles.data.api.repository.impl.ArtMarketplaceRepositoryImpl
-import com.dreamsoftware.artcollectibles.data.api.repository.impl.UserRepositoryImpl
-import com.dreamsoftware.artcollectibles.data.api.repository.impl.WalletRepositoryImpl
-import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
@@ -47,6 +41,20 @@ class DataModule {
     @Provides
     @Singleton
     fun provideUserInfoMapper(): UserInfoMapper = UserInfoMapper()
+
+    /**
+     * Provide Create User Info Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideCreateUserInfoMapper(): CreateUserInfoMapper = CreateUserInfoMapper()
+
+    /**
+     * Provide Update User Info Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideUpdateUserInfoMapper(): UpdateUserInfoMapper = UpdateUserInfoMapper()
 
     /**
      * Provide Art Collectible Mapper
@@ -125,15 +133,21 @@ class DataModule {
     fun provideUserRepository(
         authDataSource: IAuthDataSource,
         userDataSource: IUsersDataSource,
+        storageDataSource: IStorageDataSource,
         preferencesDataSource: IPreferencesDataSource,
         userInfoMapper: UserInfoMapper,
+        createUserInfoMapper: CreateUserInfoMapper,
+        updateUserInfoMapper: UpdateUserInfoMapper,
         authUserMapper: AuthUserMapper
     ): IUserRepository =
         UserRepositoryImpl(
             authDataSource,
             userDataSource,
+            storageDataSource,
             preferencesDataSource,
             userInfoMapper,
+            createUserInfoMapper,
+            updateUserInfoMapper,
             authUserMapper
         )
 

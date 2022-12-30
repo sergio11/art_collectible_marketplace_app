@@ -5,9 +5,14 @@ import com.dreamsoftware.artcollectibles.data.firebase.exception.FirebaseExcepti
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SaveUserException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.UserErrorException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.UserNotFoundException
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.CreateUserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.mapper.UpdateUserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserMapper
+import com.dreamsoftware.artcollectibles.data.firebase.model.CreateUserDTO
+import com.dreamsoftware.artcollectibles.data.firebase.model.UpdateUserDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -19,6 +24,8 @@ import kotlinx.coroutines.withContext
  */
 internal class UsersDataSourceImpl(
     private val userMapper: UserMapper,
+    private val createUserMapper: CreateUserMapper,
+    private val updateUserMapper: UpdateUserMapper,
     private val firebaseStore: FirebaseFirestore
 ) : IUsersDataSource {
 
@@ -27,14 +34,26 @@ internal class UsersDataSourceImpl(
     }
 
     @Throws(SaveUserException::class)
-    override suspend fun save(user: UserDTO): Unit = withContext(Dispatchers.IO) {
+    override suspend fun create(user: CreateUserDTO): Unit = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(USERS_COLLECTION_NAME)
                 .document(user.uid)
-                .set(userMapper.mapInToOut(user))
+                .set(createUserMapper.mapInToOut(user))
                 .await()
         } catch (ex: Exception) {
             throw SaveUserException("An error occurred when trying to save user information", ex)
+        }
+    }
+
+    @Throws(SaveUserException::class)
+    override suspend fun update(user: UpdateUserDTO): Unit = withContext(Dispatchers.IO) {
+        try {
+            firebaseStore.collection(USERS_COLLECTION_NAME)
+                .document(user.uid)
+                .set(updateUserMapper.mapInToOut(user), SetOptions.merge())
+                .await()
+        } catch (ex: Exception) {
+            throw SaveUserException("An error occurred when trying to update user information", ex)
         }
     }
 

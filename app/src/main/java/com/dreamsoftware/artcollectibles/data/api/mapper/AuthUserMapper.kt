@@ -10,7 +10,8 @@ class AuthUserMapper: IOneSideMapper<AuthUserDTO, AuthUser> {
         AuthUser(
             uid = uid,
             displayName = displayName.orEmpty(),
-            email = email.orEmpty()
+            email = email.orEmpty(),
+            photoUrl = photoUrl.orEmpty()
         )
     }
 

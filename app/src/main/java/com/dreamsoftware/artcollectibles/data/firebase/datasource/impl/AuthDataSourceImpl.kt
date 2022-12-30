@@ -35,7 +35,7 @@ internal class AuthDataSourceImpl(
             firebaseAuth.signInWithCredential(
                 getCredentials(accessToken, authTypeEnum)
             ).await()
-                ?.user?.let { firebaseUserMapper.mapInToOut(it) }
+                ?.user?.let { firebaseUserMapper.mapInToOut(Triple(it, accessToken, authTypeEnum)) }
                 ?: throw IllegalStateException("Auth user cannot be null")
         } catch (ex: Exception) {
             throw FirebaseException("Login failed", ex)

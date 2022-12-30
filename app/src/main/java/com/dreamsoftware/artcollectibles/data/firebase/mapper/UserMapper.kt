@@ -30,9 +30,9 @@ class UserMapper: IMapper<UserDTO, Map<String, Any?>> {
         UserDTO(
             uid = get(UID_KEY) as String,
             name = get(NAME_KEY) as String,
-            info = get(INFO_KEY) as String,
+            info = get(INFO_KEY) as? String,
             walletAddress = get(WALLET_ADDRESS_KEY) as String,
-            contact = get(CONTACT_KEY) as String
+            contact = get(CONTACT_KEY) as? String
         )
     }
 

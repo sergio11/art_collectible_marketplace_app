@@ -3,15 +3,25 @@ package com.dreamsoftware.artcollectibles.data.firebase.datasource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SaveUserException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.UserErrorException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.UserNotFoundException
+import com.dreamsoftware.artcollectibles.data.firebase.model.CreateUserDTO
+import com.dreamsoftware.artcollectibles.data.firebase.model.UpdateUserDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 
 interface IUsersDataSource {
 
     /**
+     * Create user information
      * @param user
      */
     @Throws(SaveUserException::class)
-    suspend fun save(user: UserDTO)
+    suspend fun create(user: CreateUserDTO)
+
+    /**
+     * Update User information
+     * @param user
+     */
+    @Throws(SaveUserException::class)
+    suspend fun update(user: UpdateUserDTO)
 
     /**
      * @param uid

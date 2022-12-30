@@ -1,9 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
-import com.dreamsoftware.artcollectibles.domain.models.AuthRequest
-import com.dreamsoftware.artcollectibles.domain.models.AuthUser
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.models.*
 
 interface IUserRepository {
 
@@ -17,7 +15,10 @@ interface IUserRepository {
     suspend fun get(uid: String): UserInfo
 
     @Throws(UserDataException::class)
-    suspend fun save(userInfo: UserInfo)
+    suspend fun create(userInfo: CreateUserInfo)
+
+    @Throws(UserDataException::class)
+    suspend fun update(userInfo: UpdateUserInfo)
 
     @Throws(UserDataException::class)
     suspend fun closeSession()
