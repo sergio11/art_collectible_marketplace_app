@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.signin
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ExternalAuthTypeEnum
@@ -16,11 +17,36 @@ class SignInViewModel @Inject constructor(
     private val signInUserCase: SignInUseCase
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<OnSignInUiState> = MutableStateFlow(OnSignInUiState.NoSignIn)
-    val uiState: StateFlow<OnSignInUiState> = _uiState
+    private companion object {
+        const val MIN_PASSWORD_LENGTH = 6
+    }
 
-    fun signIn(email: String, password: String) {
-        signIn(SignInUseCase.AuthParams(email, password))
+    private val _uiState: MutableStateFlow<SignInUiState> =
+        MutableStateFlow(SignInUiState())
+    val uiState: StateFlow<SignInUiState> = _uiState
+
+    fun onEmailChanged(newEmail: String) {
+        updateState {
+            it.copy(
+                email = newEmail,
+                isLoginButtonEnabled = loginButtonShouldBeEnabled()
+            )
+        }
+    }
+
+    fun onPasswordChanged(newPassword: String) {
+        updateState {
+            it.copy(
+                password = newPassword,
+                isLoginButtonEnabled = loginButtonShouldBeEnabled()
+            )
+        }
+    }
+
+    fun signIn() {
+        with(_uiState.value) {
+            signIn(SignInUseCase.AuthParams(email.orEmpty(), password.orEmpty()))
+        }
     }
 
     fun signIn(accessToken: String, authType: ExternalAuthTypeEnum) {
@@ -31,25 +57,41 @@ class SignInViewModel @Inject constructor(
      * Private Methods
      */
 
+    private fun updateState(reducer: (currentState: SignInUiState) -> SignInUiState) {
+        _uiState.value = reducer(_uiState.value)
+    }
+
+    private fun loginButtonShouldBeEnabled() = with(_uiState.value) {
+        Patterns.EMAIL_ADDRESS.matcher(email.orEmpty()).matches()
+                && password.orEmpty().length > MIN_PASSWORD_LENGTH
+    }
+
     private fun signIn(params: SignInUseCase.Params) {
         viewModelScope.launch {
-            _uiState.value = OnSignInUiState.OnSignInProgress
+            updateState { it.copy(loginState = LoginState.OnLoginInProgress) }
             signInUserCase.invoke(
                 params = params,
-                onSuccess = {
-                    _uiState.value = OnSignInUiState.OnSignInSuccess(it)
+                onSuccess = { userInfo ->
+                    updateState { it.copy(loginState = LoginState.OnLoginSuccess(userInfo)) }
                 },
-                onError = {
-                    _uiState.value = OnSignInUiState.OnSignInError(it)
+                onError = { ex ->
+                    updateState { it.copy(loginState = LoginState.OnLoginError(ex)) }
                 })
         }
     }
 
 }
 
-sealed interface OnSignInUiState {
-    object NoSignIn : OnSignInUiState
-    object OnSignInProgress : OnSignInUiState
-    data class OnSignInError(val throwable: Throwable) : OnSignInUiState
-    data class OnSignInSuccess(val userInfo: UserInfo) : OnSignInUiState
+data class SignInUiState(
+    val email: String? = null,
+    val password: String? = null,
+    val isLoginButtonEnabled: Boolean = false,
+    val loginState: LoginState = LoginState.NoLogin
+)
+
+sealed class LoginState {
+    object NoLogin : LoginState()
+    object OnLoginInProgress : LoginState()
+    data class OnLoginSuccess(val userInfo: UserInfo) : LoginState()
+    data class OnLoginError(val error: Throwable) : LoginState()
 }

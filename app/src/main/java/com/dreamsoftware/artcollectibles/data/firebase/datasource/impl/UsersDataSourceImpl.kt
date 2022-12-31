@@ -48,7 +48,7 @@ internal class UsersDataSourceImpl(
         try {
             firebaseStore.collection(USERS_COLLECTION_NAME)
                 .document(uid).get().await()?.data?.let {
-                    userMapper.mapOutToIn(it)
+                    userMapper.mapInToOut(it)
                 } ?: throw UserNotFoundException("User not found")
         } catch (ex: FirebaseException) {
             throw ex
@@ -63,7 +63,7 @@ internal class UsersDataSourceImpl(
             firebaseStore.collection(USERS_COLLECTION_NAME)
                 .whereEqualTo("walletAddress", userAddress)
                 .get().await()?.documents?.firstOrNull()?.data?.let {
-                    userMapper.mapOutToIn(it)
+                    userMapper.mapInToOut(it)
                 } ?: throw UserNotFoundException("User not found")
         }  catch (ex: FirebaseException) {
             throw ex
@@ -79,6 +79,6 @@ internal class UsersDataSourceImpl(
     override suspend fun getAll(): Iterable<UserDTO> = withContext(Dispatchers.IO) {
         firebaseStore.collection(USERS_COLLECTION_NAME).get()
             .await().documents.mapNotNull { it.data }
-            .map { userMapper.mapOutToIn(it) }
+            .map { userMapper.mapInToOut(it) }
     }
 }

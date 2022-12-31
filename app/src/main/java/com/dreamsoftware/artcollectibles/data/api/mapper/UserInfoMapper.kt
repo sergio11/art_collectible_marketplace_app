@@ -12,7 +12,8 @@ class UserInfoMapper: IMapper<UserDTO, UserInfo> {
             name = name,
             info = info.orEmpty(),
             contact = contact.orEmpty(),
-            walletAddress = walletAddress
+            walletAddress = walletAddress,
+            photoUrl = photoUrl
         )
     }
 

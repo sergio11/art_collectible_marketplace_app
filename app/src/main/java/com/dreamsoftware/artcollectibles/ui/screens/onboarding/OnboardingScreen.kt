@@ -89,7 +89,7 @@ internal fun OnBoardingComponent(
                             color = Purple700,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.padding(bottom = 5.dp))
+                        Spacer(modifier = Modifier.padding(bottom = 20.dp))
                         CommonButton(
                             modifier = Modifier.padding(bottom = 8.dp),
                             text = R.string.onboarding_start_now_button_text,

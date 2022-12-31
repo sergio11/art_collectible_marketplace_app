@@ -32,6 +32,7 @@
     <string name="signin_input_email_placeholder">Introduce email address</string>
     <string name="signin_input_password_placeholder">Introduce password</string>
     <string name="signin_login_button_text">Login</string>
+    <string name="signin_alternative_login_text" translatable="false">OR</string>
 
 
 </resources>

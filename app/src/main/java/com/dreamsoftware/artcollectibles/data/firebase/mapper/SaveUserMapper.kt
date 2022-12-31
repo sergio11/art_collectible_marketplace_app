@@ -20,9 +20,9 @@ class SaveUserMapper: IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
             NAME_KEY to name,
             WALLET_ADDRESS_KEY to walletAddress,
         ).apply {
-            contact?.let { CONTACT_KEY to it }
-            photoUrl?.let { PHOTO_KEY to it }
-            info?.let { INFO_KEY to it }
+            contact?.let { put(CONTACT_KEY, it) }
+            photoUrl?.let { put(PHOTO_KEY, it) }
+            info?.let { put(INFO_KEY, it) }
         }
     }
 

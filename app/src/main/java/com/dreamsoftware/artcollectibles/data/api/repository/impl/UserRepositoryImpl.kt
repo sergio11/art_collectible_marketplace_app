@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
 import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
@@ -42,6 +43,7 @@ internal class UserRepositoryImpl(
     @Throws(UserDataException::class)
     override suspend fun signIn(authRequest: AuthRequest): AuthUser = try {
         val authUser = authDataSource.signIn(authRequest.email, authRequest.password)
+        Log.d("USER_REPO", "authUser.photoUrl -> ${authUser.photoUrl} CALLED!")
         preferencesDataSource.saveAuthUserUid(authUser.uid)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
@@ -51,6 +53,7 @@ internal class UserRepositoryImpl(
     @Throws(UserDataException::class)
     override suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser = try {
         val authUser = authDataSource.signInWithExternalProvider(authRequest.accessToken, authRequest.externalAuthTypeEnum)
+        Log.d("USER_REPO", "authUser.photoUrl -> ${authUser.photoUrl} CALLED!")
         preferencesDataSource.saveAuthUserUid(authUser.uid)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {

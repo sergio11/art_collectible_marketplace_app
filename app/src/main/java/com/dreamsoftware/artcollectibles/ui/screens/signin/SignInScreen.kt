@@ -5,7 +5,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,7 +15,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -31,7 +29,6 @@ import com.dreamsoftware.artcollectibles.domain.models.ExternalAuthTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
-import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -42,14 +39,14 @@ fun SignInScreen(
     onSignInSuccess: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val state by produceState<OnSignInUiState>(
-        initialValue = OnSignInUiState.NoSignIn,
+    val state by produceState<SignInUiState>(
+        initialValue = SignInUiState(),
         key1 = lifecycle,
         key2 = viewModel
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
             viewModel.uiState.collect {
-                if(it is OnSignInUiState.OnSignInSuccess) {
+                if (it.loginState is LoginState.OnLoginSuccess) {
                     onSignInSuccess()
                 } else {
                     value = it
@@ -63,10 +60,20 @@ fun SignInScreen(
         modifier,
         state,
         snackBarHostState,
-        coroutineScope
-    ) { token, authType ->
-        viewModel.signIn(token, authType)
-    }
+        coroutineScope,
+        onEmailChanged = {
+            viewModel.onEmailChanged(newEmail = it)
+        },
+        onPasswordChanged = {
+            viewModel.onPasswordChanged(newPassword = it)
+        },
+        onSignIn = {
+            viewModel.signIn()
+        },
+        onSocialSignIn = { token, authType ->
+            viewModel.signIn(token, authType)
+        }
+    )
 }
 
 
@@ -74,13 +81,16 @@ fun SignInScreen(
 @Composable
 internal fun SignInComponent(
     modifier: Modifier = Modifier,
-    state: OnSignInUiState,
+    state: SignInUiState,
     snackBarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
-    onSignIn: (token: String, authType: ExternalAuthTypeEnum) -> Unit
+    onEmailChanged: (email: String) -> Unit,
+    onPasswordChanged: (password: String) -> Unit,
+    onSignIn: () -> Unit,
+    onSocialSignIn: (token: String, authType: ExternalAuthTypeEnum) -> Unit
 ) {
     Log.d("SIGN_IN", "SignInComponent state -> $state")
-    if (state is OnSignInUiState.OnSignInError) {
+    if (state.loginState is LoginState.OnLoginError) {
         val loginFailedText = stringResource(id = R.string.signin_login_failed)
         LaunchedEffect(snackBarHostState) {
             snackBarHostState.showSnackbar(
@@ -88,17 +98,12 @@ internal fun SignInComponent(
             )
         }
     }
-    LoadingDialog(isShowingDialog = state is OnSignInUiState.OnSignInProgress)
+    LoadingDialog(isShowingDialog = state.loginState is LoginState.OnLoginInProgress)
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            Image(
-                painter = painterResource(id = R.drawable.onboarding_bg_1),
-                contentDescription = "Background Image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            ScreenBackgroundImage()
             Column(
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
@@ -135,33 +140,37 @@ internal fun SignInComponent(
                         CommonTextField(
                             modifier = Modifier.padding(horizontal = 20.dp),
                             placeHolderRes = R.string.signin_input_email_placeholder,
-                            keyboardType = KeyboardType.Email
-                        ) {
-
-                        }
+                            keyboardType = KeyboardType.Email,
+                            value = state.email,
+                            onValueChanged = onEmailChanged
+                        )
                         Spacer(modifier = Modifier.padding(bottom = 30.dp))
                         CommonTextField(
                             modifier = Modifier.padding(horizontal = 20.dp),
                             placeHolderRes = R.string.signin_input_password_placeholder,
-                            keyboardType = KeyboardType.Password
-                        ) {
-
-                        }
+                            keyboardType = KeyboardType.Password,
+                            value = state.password,
+                            onValueChanged = onPasswordChanged
+                        )
                         Spacer(modifier = Modifier.padding(bottom = 30.dp))
                         CommonButton(
                             modifier = Modifier.padding(bottom = 8.dp),
-                            text = R.string.signin_login_button_text
-                        ) {
-
-                        }
-                        Spacer(modifier = Modifier.padding(bottom = 30.dp))
-                        val loginFBCancelledText = stringResource(id = R.string.signin_login_facebook_cancelled)
-                        val loginFBFailedText = stringResource(id = R.string.signin_login_facebook_failed)
+                            enabled = state.isLoginButtonEnabled,
+                            text = R.string.signin_login_button_text,
+                            onClick = onSignIn
+                        )
+                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                        AlternativeLoginDivider()
+                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                        val loginFBCancelledText =
+                            stringResource(id = R.string.signin_login_facebook_cancelled)
+                        val loginFBFailedText =
+                            stringResource(id = R.string.signin_login_facebook_failed)
                         FacebookLoginButton(
-                            enabled = state !is OnSignInUiState.OnSignInProgress,
+                            enabled = state.loginState !is LoginState.OnLoginInProgress,
                             modifier = Modifier.padding(horizontal = 20.dp),
                             onSuccess = {
-                                onSignIn(it, ExternalAuthTypeEnum.FACEBOOK)
+                                onSocialSignIn(it, ExternalAuthTypeEnum.FACEBOOK)
                             },
                             onCancel = {
                                 coroutineScope.launch {
@@ -178,9 +187,10 @@ internal fun SignInComponent(
                                 }
                             }
                         )
-                        val loginGGFailedText = stringResource(id = R.string.signin_login_google_failed)
+                        val loginGGFailedText =
+                            stringResource(id = R.string.signin_login_google_failed)
                         GoogleLoginButton(
-                            enabled = state !is OnSignInUiState.OnSignInProgress,
+                            enabled = state.loginState !is LoginState.OnLoginInProgress,
                             modifier = Modifier.padding(horizontal = 20.dp),
                             onAuthFailed = {
                                 Log.d("GOOGLE_LOGIN", "onAuthFailed CALLED!")
@@ -191,7 +201,7 @@ internal fun SignInComponent(
                                 }
                             },
                             onAuthSuccess = {
-                                onSignIn(it, ExternalAuthTypeEnum.GOOGLE)
+                                onSocialSignIn(it, ExternalAuthTypeEnum.GOOGLE)
                                 Log.d("GOOGLE_LOGIN", "onAuthSuccess $it CALLED!")
                             }
                         )
@@ -199,6 +209,37 @@ internal fun SignInComponent(
                 }
             }
         }
+    }
+}
+
+@Composable
+internal fun ScreenBackgroundImage() {
+    Image(
+        painter = painterResource(id = R.drawable.onboarding_bg_1),
+        contentDescription = "Background Image",
+        modifier = Modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+internal fun AlternativeLoginDivider() {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Divider(
+            modifier = Modifier.weight(1f),
+            thickness = 1.dp,
+            color = Color.Gray
+        )
+        Text(
+            modifier = Modifier.padding(16.dp),
+            text = stringResource(id = R.string.signin_alternative_login_text),
+            color = Color.Gray
+        )
+        Divider(
+            modifier = Modifier.weight(1f),
+            thickness = 1.dp,
+            color = Color.Gray
+        )
     }
 }
 
