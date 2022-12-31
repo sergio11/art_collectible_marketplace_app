@@ -9,6 +9,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,15 +24,20 @@ fun CommonButton(
     @StringRes text: Int,
     onClick: () -> Unit,
 ) {
+    val buttonShape = RoundedCornerShape(percent = 50)
     Button(
         onClick = onClick,
         enabled = enabled,
-        shape = RoundedCornerShape(percent = 50),
-        modifier = Modifier.border(
-            width = 1.dp,
-            color = Color.White,
-            shape = RoundedCornerShape(percent = 50)
-        ).then(modifier),
+        modifier = modifier.then(
+            Modifier
+                .clip(buttonShape)
+                .border(
+                    width = 1.dp,
+                    color = Color.White,
+                    shape = buttonShape
+                )
+        ),
+        shape = buttonShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = Purple500,
             contentColor = Color.White

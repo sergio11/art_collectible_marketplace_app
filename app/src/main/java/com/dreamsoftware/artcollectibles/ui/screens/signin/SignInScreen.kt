@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,7 +16,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,9 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ExternalAuthTypeEnum
-import com.dreamsoftware.artcollectibles.ui.components.FacebookLoginButton
-import com.dreamsoftware.artcollectibles.ui.components.GoogleLoginButton
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -105,14 +106,15 @@ internal fun SignInComponent(
                     .fillMaxSize()
             ) {
                 Text(
-                    stringResource(R.string.onboarding_main_title_text),
+                    stringResource(R.string.signin_main_title_text),
                     color = Color.White,
                     fontSize = 37.sp,
                     lineHeight = 40.sp,
                     fontWeight = FontWeight.Black
                 )
-                Spacer(Modifier.fillMaxSize(0.40f))
+                Spacer(Modifier.weight(1f))
                 Card(
+                    modifier = Modifier.padding(bottom = 20.dp),
                     elevation = CardDefaults.cardElevation(4.dp),
                     colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
                     shape = RoundedCornerShape(27.dp),
@@ -129,13 +131,30 @@ internal fun SignInComponent(
                             fontSize = 20.sp,
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                        Text(
-                            stringResource(R.string.onboarding_description_text),
-                            color = Purple700,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.padding(bottom = 5.dp))
+                        Spacer(modifier = Modifier.padding(bottom = 50.dp))
+                        CommonTextField(
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            placeHolderRes = R.string.signin_input_email_placeholder,
+                            keyboardType = KeyboardType.Email
+                        ) {
+
+                        }
+                        Spacer(modifier = Modifier.padding(bottom = 30.dp))
+                        CommonTextField(
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            placeHolderRes = R.string.signin_input_password_placeholder,
+                            keyboardType = KeyboardType.Password
+                        ) {
+
+                        }
+                        Spacer(modifier = Modifier.padding(bottom = 30.dp))
+                        CommonButton(
+                            modifier = Modifier.padding(bottom = 8.dp),
+                            text = R.string.signin_login_button_text
+                        ) {
+
+                        }
+                        Spacer(modifier = Modifier.padding(bottom = 30.dp))
                         val loginFBCancelledText = stringResource(id = R.string.signin_login_facebook_cancelled)
                         val loginFBFailedText = stringResource(id = R.string.signin_login_facebook_failed)
                         FacebookLoginButton(

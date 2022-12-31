@@ -64,8 +64,9 @@ internal fun OnBoardingComponent(
                     lineHeight = 40.sp,
                     fontWeight = FontWeight.Black
                 )
-                Spacer(Modifier.fillMaxSize(0.40f))
+                Spacer(Modifier.weight(1f))
                 Card(
+                    modifier = Modifier.padding(bottom = 20.dp),
                     elevation = CardDefaults.cardElevation(4.dp),
                     colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
                     shape = RoundedCornerShape(27.dp),
