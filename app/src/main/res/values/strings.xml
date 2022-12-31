@@ -21,9 +21,12 @@
     <string name="onboarding_main_title_text">Welcome to NFT Marketplace</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
     <string name="onboarding_description_text">You can buy and sell the NFTs of the best artists in the world.</string>
-    <string name="onboarding_login_facebook_cancelled">Login with facebook was cancelled</string>
-    <string name="onboarding_login_facebook_failed">Login with facebook failed</string>
-    <string name="onboarding_login_google_failed">Login with Google failed</string>
-    <string name="onboarding_login_failed">An error occurred when trying to sign in, please try again later</string>
+    <string name="onboarding_start_now_button_text">Get started now</string>
+    <!-- Sign In -->
+    <string name="signin_login_facebook_cancelled">Login with facebook was cancelled</string>
+    <string name="signin_login_facebook_failed">Login with facebook failed</string>
+    <string name="signin_login_google_failed">Login with Google failed</string>
+    <string name="signin_login_failed">An error occurred when trying to sign in, please try again later</string>
     <string name="txt_connect_with_facebook">Continue with Facebook</string>
+
 </resources>

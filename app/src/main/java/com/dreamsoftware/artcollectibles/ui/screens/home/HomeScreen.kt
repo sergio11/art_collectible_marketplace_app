@@ -13,14 +13,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCategoryList
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleList
+import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Scaffold(
+        bottomBar = {
+            BottomBar(navController)
+        },
         topBar = {
             TopAppBar(title = {
                 Text(
@@ -69,6 +75,7 @@ fun HomeScreen() {
 @Preview
 fun PreviewHomeScreen() {
     ArtCollectibleMarketplaceTheme {
-        HomeScreen()
+        val navigationController = rememberNavController()
+        HomeScreen(navigationController)
     }
 }

@@ -12,13 +12,16 @@ interface IUserRepository {
     suspend fun signIn(authRequest: AuthRequest): AuthUser
 
     @Throws(UserDataException::class)
+    suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser
+
+    @Throws(UserDataException::class)
+    suspend fun signUp(email: String, password: String): AuthUser
+
+    @Throws(UserDataException::class)
     suspend fun get(uid: String): UserInfo
 
     @Throws(UserDataException::class)
-    suspend fun create(userInfo: CreateUserInfo)
-
-    @Throws(UserDataException::class)
-    suspend fun update(userInfo: UpdateUserInfo)
+    suspend fun save(userInfo: SaveUserInfo)
 
     @Throws(UserDataException::class)
     suspend fun closeSession()

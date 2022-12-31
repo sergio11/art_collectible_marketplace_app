@@ -1,10 +1,8 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
 import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.CreateUserInfoMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.UpdateUserInfoMapper
+import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
@@ -20,8 +18,7 @@ import com.dreamsoftware.artcollectibles.domain.models.*
  * @param storageDataSource
  * @param preferencesDataSource
  * @param userInfoMapper
- * @param createUserInfoMapper
- * @param updateUserInfoMapper
+ * @param saveUserInfoMapper
  * @param authUserMapper
  */
 internal class UserRepositoryImpl(
@@ -30,8 +27,7 @@ internal class UserRepositoryImpl(
     private val storageDataSource: IStorageDataSource,
     private val preferencesDataSource: IPreferencesDataSource,
     private val userInfoMapper: UserInfoMapper,
-    private val createUserInfoMapper: CreateUserInfoMapper,
-    private val updateUserInfoMapper: UpdateUserInfoMapper,
+    private val saveUserInfoMapper: SaveUserInfoMapper,
     private val authUserMapper: AuthUserMapper
 ): IUserRepository {
 
@@ -45,12 +41,28 @@ internal class UserRepositoryImpl(
 
     @Throws(UserDataException::class)
     override suspend fun signIn(authRequest: AuthRequest): AuthUser = try {
-        val authUser = authDataSource.signInWithAccessToken(authRequest.accessToken, authRequest.authTypeEnum)
-        Log.d("USER_REPO", "authUser.photoUrl -> ${authUser.photoUrl}")
+        val authUser = authDataSource.signIn(authRequest.email, authRequest.password)
         preferencesDataSource.saveAuthUserUid(authUser.uid)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
         throw UserDataException("An error occurred when trying to sign in user", ex)
+    }
+
+    @Throws(UserDataException::class)
+    override suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser = try {
+        val authUser = authDataSource.signInWithExternalProvider(authRequest.accessToken, authRequest.externalAuthTypeEnum)
+        preferencesDataSource.saveAuthUserUid(authUser.uid)
+        authUserMapper.mapInToOut(authUser)
+    } catch (ex: Exception) {
+        throw UserDataException("An error occurred when trying to sign in user", ex)
+    }
+
+    @Throws(UserDataException::class)
+    override suspend fun signUp(email: String, password: String): AuthUser = try {
+        val authUser = authDataSource.signUp(email, password)
+        authUserMapper.mapInToOut(authUser)
+    } catch (ex: Exception) {
+        throw UserDataException("An error occurred when trying to sign up user", ex)
     }
 
     @Throws(UserDataException::class)
@@ -63,33 +75,10 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(UserDataException::class)
-    override suspend fun create(userInfo: CreateUserInfo) = try {
-        userDataSource.create(createUserInfoMapper.mapInToOut(userInfo.let {
-            Log.d("USER_REPO", "it.photoUrl -> ${it.photoUrl}")
-            if(!it.photoUrl.isNullOrBlank()) {
-                val fileSavedUri = storageDataSource.save("${userInfo.uid}_profile_photo", it.photoUrl)
-                Log.d("USER_REPO", "fileSavedUri.toString() -> $fileSavedUri")
-                it.copy(photoUrl = fileSavedUri.toString())
-            } else {
-                it
-            }
-        }))
+    override suspend fun save(userInfo: SaveUserInfo) = try {
+        userDataSource.save(saveUserInfoMapper.mapInToOut(userInfo))
     } catch (ex: Exception) {
         throw UserDataException("An error occurred when trying to create the user", ex)
-    }
-
-    @Throws(UserDataException::class)
-    override suspend fun update(userInfo: UpdateUserInfo) = try {
-        userDataSource.update(updateUserInfoMapper.mapInToOut(userInfo.let {
-            if(!it.photoUrl.isNullOrBlank()) {
-                val fileSavedUri = storageDataSource.save("${userInfo.uid}_profile_photo", it.photoUrl)
-                it.copy(photoUrl = fileSavedUri.toString())
-            } else {
-                it
-            }
-        }))
-    } catch (ex: Exception) {
-        throw UserDataException("An error occurred when trying to update the user", ex)
     }
 
     @Throws(UserDataException::class)

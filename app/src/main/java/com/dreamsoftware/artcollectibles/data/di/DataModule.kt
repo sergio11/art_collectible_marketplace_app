@@ -47,14 +47,7 @@ class DataModule {
      */
     @Provides
     @Singleton
-    fun provideCreateUserInfoMapper(): CreateUserInfoMapper = CreateUserInfoMapper()
-
-    /**
-     * Provide Update User Info Mapper
-     */
-    @Provides
-    @Singleton
-    fun provideUpdateUserInfoMapper(): UpdateUserInfoMapper = UpdateUserInfoMapper()
+    fun provideCreateUserInfoMapper(): SaveUserInfoMapper = SaveUserInfoMapper()
 
     /**
      * Provide Art Collectible Mapper
@@ -136,8 +129,7 @@ class DataModule {
         storageDataSource: IStorageDataSource,
         preferencesDataSource: IPreferencesDataSource,
         userInfoMapper: UserInfoMapper,
-        createUserInfoMapper: CreateUserInfoMapper,
-        updateUserInfoMapper: UpdateUserInfoMapper,
+        saveUserInfoMapper: SaveUserInfoMapper,
         authUserMapper: AuthUserMapper
     ): IUserRepository =
         UserRepositoryImpl(
@@ -146,8 +138,7 @@ class DataModule {
             storageDataSource,
             preferencesDataSource,
             userInfoMapper,
-            createUserInfoMapper,
-            updateUserInfoMapper,
+            saveUserInfoMapper,
             authUserMapper
         )
 

@@ -18,12 +18,23 @@ class SignInUseCase(
 ) : BaseUseCaseWithParams<SignInUseCase.Params, UserInfo>() {
 
     override suspend fun onExecuted(params: Params): UserInfo {
-        val authUser = userRepository.signIn(
-            AuthRequest(
-                accessToken = params.accessToken,
-                authTypeEnum = params.authTypeEnum
-            )
-        )
+        val authUser = when(params) {
+            is AuthParams ->
+                userRepository.signIn(
+                    AuthRequest(
+                        email = params.email,
+                        password = params.password
+                    )
+                )
+            is ExternalAuthParams ->
+                userRepository.signIn(
+                    ExternalProviderAuthRequest(
+                        accessToken = params.accessToken,
+                        externalAuthTypeEnum = params.externalAuthTypeEnum
+                    )
+                )
+            else -> throw IllegalStateException("Auth method not supported")
+        }
         return try {
             userRepository.get(uid = authUser.uid)
         } catch (ex: UserDataException) {
@@ -42,8 +53,8 @@ class SignInUseCase(
     private suspend fun createUser(authUser: AuthUser): UserInfo {
         val userWalletCredentials = walletRepository.generate()
         return with(authUser) {
-            userRepository.create(
-                CreateUserInfo(
+            userRepository.save(
+                SaveUserInfo(
                     uid = uid,
                     name = displayName,
                     contact = email,
@@ -55,8 +66,15 @@ class SignInUseCase(
         }
     }
 
-    data class Params(
+    interface Params
+
+    data class ExternalAuthParams(
         val accessToken: String,
-        val authTypeEnum: AuthTypeEnum
-    )
+        val externalAuthTypeEnum: ExternalAuthTypeEnum
+    ): Params
+
+    data class AuthParams(
+        val email: String,
+        val password: String
+    ): Params
 }

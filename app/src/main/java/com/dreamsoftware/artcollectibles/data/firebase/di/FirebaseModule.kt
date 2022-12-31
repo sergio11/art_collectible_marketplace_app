@@ -27,11 +27,18 @@ import javax.inject.Singleton
 class FirebaseModule {
 
     /**
-     * Provide Auth User Mapper
+     * Provide External User Authenticated
      */
     @Provides
     @Singleton
-    fun provideFirebaseUserMapper(): FirebaseUserMapper = FirebaseUserMapper()
+    fun provideExternalUserAuthenticated(): ExternalUserAuthenticatedMapper = ExternalUserAuthenticatedMapper()
+
+    /**
+     * Provide User Authenticated Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideUserAuthenticatedMapper(): UserAuthenticatedMapper = UserAuthenticatedMapper()
 
     /**
      * Provide Secret Mapper
@@ -54,14 +61,7 @@ class FirebaseModule {
      */
     @Provides
     @Singleton
-    fun provideCreateUserMapper(): CreateUserMapper = CreateUserMapper()
-
-    /**
-     * Provide Update User Mapper
-     */
-    @Provides
-    @Singleton
-    fun provideUpdateUserMapper(): UpdateUserMapper = UpdateUserMapper()
+    fun provideCreateUserMapper(): SaveUserMapper = SaveUserMapper()
 
     /**
      * Provide Firebase Auth
@@ -86,36 +86,37 @@ class FirebaseModule {
 
     /**
      * Provide Auth Data Source
-     * @param firebaseUserMapper
+     * @param externalUserAuthenticatedMapper
      * @param firebaseAuth
      */
     @Provides
     @Singleton
     fun provideAuthDataSource(
-        firebaseUserMapper: FirebaseUserMapper,
+        externalUserAuthenticatedMapper: ExternalUserAuthenticatedMapper,
+        userAuthenticatedMapper: UserAuthenticatedMapper,
         firebaseAuth: FirebaseAuth
     ): IAuthDataSource = AuthDataSourceImpl(
-        firebaseUserMapper,
+        externalUserAuthenticatedMapper,
+        userAuthenticatedMapper,
         firebaseAuth
     )
 
     /**
      * Provide User Data Source
      * @param userMapper
+     * @param saveUserMapper
      * @param firebaseStore
      */
     @Provides
     @Singleton
     fun provideUserDataSource(
         userMapper: UserMapper,
-        createUserMapper: CreateUserMapper,
-        updateUserMapper: UpdateUserMapper,
+        saveUserMapper: SaveUserMapper,
         firebaseStore: FirebaseFirestore
     ): IUsersDataSource =
         UsersDataSourceImpl(
             userMapper,
-            createUserMapper,
-            updateUserMapper,
+            saveUserMapper,
             firebaseStore
         )
 
