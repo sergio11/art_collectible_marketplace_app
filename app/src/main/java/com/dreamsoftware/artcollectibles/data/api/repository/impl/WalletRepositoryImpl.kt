@@ -38,8 +38,7 @@ internal class WalletRepositoryImpl(
         throw DataRepositoryException("An error occurred when trying to load wallet credentials", ex)
     }
 
-    override suspend fun generate(): UserWalletCredentials = try {
-        val userUid = preferencesDataSource.getAuthUserUid()
+    override suspend fun generate(userUid: String): UserWalletCredentials = try {
         // Generate Wallet Secret
         val walletSecret = secretUtils.generatePassword(
             isWithLetters = true,

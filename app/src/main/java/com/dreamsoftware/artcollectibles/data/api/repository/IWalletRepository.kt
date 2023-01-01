@@ -13,7 +13,8 @@ interface IWalletRepository {
 
     /**
      * Generate Credentials
+     * @param userUid
      */
     @Throws(WalletDataException::class)
-    suspend fun generate(): UserWalletCredentials
+    suspend fun generate(userUid: String): UserWalletCredentials
 }

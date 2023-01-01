@@ -2,9 +2,12 @@ package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
@@ -21,6 +25,12 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 fun CommonButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = Purple500,
+        contentColor = Color.White
+    ),
+    widthDp: Dp = 200.dp,
+    heightDp: Dp = 50.dp,
     @StringRes text: Int,
     onClick: () -> Unit,
 ) {
@@ -30,6 +40,8 @@ fun CommonButton(
         enabled = enabled,
         modifier = modifier.then(
             Modifier
+                .width(widthDp)
+                .height(heightDp)
                 .clip(buttonShape)
                 .border(
                     width = 1.dp,
@@ -38,14 +50,11 @@ fun CommonButton(
                 )
         ),
         shape = buttonShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Purple500,
-            contentColor = Color.White
-        )
+        colors = colors
     ) {
         Text(
             stringResource(text),
-            modifier = Modifier.padding(horizontal = 40.dp, vertical = 4.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
             fontSize = 15.sp,
             fontWeight = FontWeight.SemiBold
         )

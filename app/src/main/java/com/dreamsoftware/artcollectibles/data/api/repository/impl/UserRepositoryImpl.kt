@@ -52,7 +52,7 @@ internal class UserRepositoryImpl(
 
     @Throws(UserDataException::class)
     override suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser = try {
-        val authUser = authDataSource.signInWithExternalProvider(authRequest.accessToken, authRequest.externalAuthTypeEnum)
+        val authUser = authDataSource.signInWithExternalProvider(authRequest.accessToken, authRequest.socialAuthTypeEnum)
         Log.d("USER_REPO", "authUser.photoUrl -> ${authUser.photoUrl} CALLED!")
         preferencesDataSource.saveAuthUserUid(authUser.uid)
         authUserMapper.mapInToOut(authUser)
@@ -65,6 +65,7 @@ internal class UserRepositoryImpl(
         val authUser = authDataSource.signUp(email, password)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
+        ex.printStackTrace()
         throw UserDataException("An error occurred when trying to sign up user", ex)
     }
 
@@ -81,6 +82,7 @@ internal class UserRepositoryImpl(
     override suspend fun save(userInfo: SaveUserInfo) = try {
         userDataSource.save(saveUserInfoMapper.mapInToOut(userInfo))
     } catch (ex: Exception) {
+        ex.printStackTrace()
         throw UserDataException("An error occurred when trying to create the user", ex)
     }
 

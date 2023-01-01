@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.onboarding
+package com.dreamsoftware.artcollectibles.ui.screens.account.onboarding
 
 import androidx.lifecycle.ViewModel
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo

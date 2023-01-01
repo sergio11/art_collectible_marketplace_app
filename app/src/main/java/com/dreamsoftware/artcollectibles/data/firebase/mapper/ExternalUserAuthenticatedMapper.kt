@@ -1,18 +1,18 @@
 package com.dreamsoftware.artcollectibles.data.firebase.mapper
 
 import com.dreamsoftware.artcollectibles.data.firebase.model.AuthUserDTO
-import com.dreamsoftware.artcollectibles.domain.models.ExternalAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.SocialAuthTypeEnum
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 import com.google.firebase.auth.FirebaseUser
 
-class ExternalUserAuthenticatedMapper : IOneSideMapper<Triple<FirebaseUser, String, ExternalAuthTypeEnum>, AuthUserDTO> {
+class ExternalUserAuthenticatedMapper : IOneSideMapper<Triple<FirebaseUser, String, SocialAuthTypeEnum>, AuthUserDTO> {
 
-    override fun mapInToOut(input: Triple<FirebaseUser, String, ExternalAuthTypeEnum>): AuthUserDTO = with(input) {
+    override fun mapInToOut(input: Triple<FirebaseUser, String, SocialAuthTypeEnum>): AuthUserDTO = with(input) {
         AuthUserDTO(
             uid = first.uid,
             displayName = first.displayName,
             email = first.email,
-            photoUrl = if(third == ExternalAuthTypeEnum.FACEBOOK) {
+            photoUrl = if(third == SocialAuthTypeEnum.FACEBOOK) {
                 "${first.photoUrl}?width=400&height=400&access_token=${second}"
             } else {
                 first.photoUrl.toString()
@@ -20,6 +20,6 @@ class ExternalUserAuthenticatedMapper : IOneSideMapper<Triple<FirebaseUser, Stri
         )
     }
 
-    override fun mapInListToOutList(input: Iterable<Triple<FirebaseUser, String, ExternalAuthTypeEnum>>): Iterable<AuthUserDTO> =
+    override fun mapInListToOutList(input: Iterable<Triple<FirebaseUser, String, SocialAuthTypeEnum>>): Iterable<AuthUserDTO> =
         input.map(::mapInToOut)
 }
