@@ -18,10 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDialog
-import com.dreamsoftware.artcollectibles.ui.components.CommonTextField
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 
@@ -100,18 +97,19 @@ internal fun SignUpComponent(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.padding(bottom = 50.dp))
-        CommonTextField(
+        CommonDefaultTextField(
             modifier = Modifier.padding(horizontal = 20.dp),
-            placeHolderRes = R.string.signin_input_email_placeholder,
+            labelRes = R.string.signup_input_email_label,
+            placeHolderRes = R.string.signup_input_email_placeholder,
             keyboardType = KeyboardType.Email,
             value = uiState.email,
             onValueChanged = onEmailChanged
         )
         Spacer(modifier = Modifier.padding(bottom = 30.dp))
-        CommonTextField(
+        CommonTextFieldPassword(
             modifier = Modifier.padding(horizontal = 20.dp),
-            placeHolderRes = R.string.signin_input_password_placeholder,
-            keyboardType = KeyboardType.Password,
+            labelRes = R.string.signup_input_password_label,
+            placeHolderRes = R.string.signup_input_password_placeholder,
             value = uiState.password,
             onValueChanged = onPasswordChanged
         )
