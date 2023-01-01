@@ -38,5 +38,7 @@
     <string name="signup_main_title_text">Sign up now</string>
     <string name="signup_signup_button_text">Sign up</string>
     <string name="signup_signup_failed">An error occurred when trying to sign up, please try again later</string>
-
+    <string name="signup_success_dialog_title_text">Your account has been created!</string>
+    <string name="signup_success_dialog_description_text">Welcome to NFT Marketplace!. From now you could buy and sell the NFTs of the best artists in the world</string>
+    <string name="signup_success_dialog_accept_button_text">Accept</string>
 </resources>

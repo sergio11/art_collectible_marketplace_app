@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
+import com.dreamsoftware.artcollectibles.ui.components.CommonDialog
 import com.dreamsoftware.artcollectibles.ui.components.CommonTextField
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
@@ -37,9 +38,7 @@ fun SignUpScreen(
         key2 = viewModel
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
+            viewModel.uiState.collect { value = it }
         }
     }
     val snackBarHostState = remember { SnackbarHostState() }
@@ -55,7 +54,8 @@ fun SignUpScreen(
         },
         onSignUp = {
             viewModel.signUp()
-        }
+        },
+        onSignUpSuccess = onSignUpSuccess
     )
 }
 
@@ -66,7 +66,8 @@ internal fun SignUpComponent(
     snackBarHostState: SnackbarHostState,
     onEmailChanged: (email: String) -> Unit,
     onPasswordChanged: (password: String) -> Unit,
-    onSignUp: () -> Unit
+    onSignUp: () -> Unit,
+    onSignUpSuccess: () -> Unit
 ) {
     Log.d("USER_REPO", "uiState -> $uiState")
     if (uiState.state is SignUpState.OnError) {
@@ -77,12 +78,20 @@ internal fun SignUpComponent(
             )
         }
     }
+    CommonDialog(
+        isVisible = uiState.state is SignUpState.OnSuccess,
+        titleRes = R.string.signup_success_dialog_title_text,
+        descriptionRes = R.string.signup_success_dialog_description_text,
+        acceptRes = R.string.signup_success_dialog_accept_button_text,
+        onAcceptClicked = onSignUpSuccess
+    )
     LoadingDialog(isShowingDialog = uiState.state is SignUpState.InProgress)
     AccountScreen(
         modifier = modifier,
         snackBarHostState = snackBarHostState,
         mainTitleRes = R.string.signup_main_title_text,
-        screenBackgroundRes = R.drawable.onboarding_bg_1) {
+        screenBackgroundRes = R.drawable.onboarding_bg_1
+    ) {
         Text(
             stringResource(R.string.onboarding_subtitle_text),
             color = Purple500,
