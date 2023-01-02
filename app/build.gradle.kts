@@ -153,6 +153,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
+    // Splash screen Api
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
     // Facebook Login SDK
     implementation("com.facebook.android:facebook-login:latest.release")
     // Instrumented tests

@@ -28,8 +28,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ArtCollectiblesMarketplace"
         android:name=".ArtCollectiblesMarketplace"
+        android:theme="@style/Theme.ArtCollectiblesMarketplace"
         tools:targetApi="31">
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
@@ -40,7 +40,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ArtCollectiblesMarketplace">
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

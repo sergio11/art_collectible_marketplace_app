@@ -51,7 +51,7 @@ internal fun OnBoardingComponent(
         modifier = modifier,
         snackBarHostState = snackBarHostState,
         mainTitleRes = R.string.onboarding_main_title_text,
-        screenBackgroundRes = R.drawable.onboarding_bg_1
+        screenBackgroundRes = R.drawable.common_background
     ) {
         Text(
             stringResource(R.string.onboarding_subtitle_text),

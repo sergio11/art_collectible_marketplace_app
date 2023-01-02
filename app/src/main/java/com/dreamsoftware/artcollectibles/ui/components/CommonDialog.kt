@@ -67,17 +67,13 @@ internal fun CommonDialogUI(
             modifier.background(Color.White)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = null, // decorative
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(
-                    color = Purple40
-                ),
                 modifier = Modifier
                     .padding(top = 35.dp)
                     .height(70.dp)
                     .fillMaxWidth(),
-
                 )
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
