@@ -21,6 +21,9 @@ interface IUserRepository {
     suspend fun get(uid: String): UserInfo
 
     @Throws(UserDataException::class)
+    suspend fun get(): UserInfo
+
+    @Throws(UserDataException::class)
     suspend fun save(userInfo: SaveUserInfo)
 
     @Throws(UserDataException::class)

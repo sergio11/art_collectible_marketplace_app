@@ -84,4 +84,25 @@ class DomainModule {
         userRepository: IUserRepository,
         walletRepository: IWalletRepository
     ) = SignUpUseCase(userRepository, walletRepository)
+
+    /**
+     * Provide Close session use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideCloseSessionUseCase(
+        userRepository: IUserRepository
+    ) = CloseSessionUseCase(userRepository)
+
+    /**
+     * Provide get user profile use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetUserProfileUseCase(
+        userRepository: IUserRepository
+    ) =
+        GetUserProfileUseCase(userRepository)
 }

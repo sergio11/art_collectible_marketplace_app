@@ -14,19 +14,22 @@ import androidx.compose.ui.text.input.KeyboardType
 @Composable
 fun CommonDefaultTextField(
     modifier: Modifier,
+    isEnabled: Boolean = true,
     value: String? = null,
     @StringRes labelRes: Int,
     @StringRes placeHolderRes: Int,
     keyboardType: KeyboardType = KeyboardType.Text,
+    isSingleLine: Boolean = true,
     onValueChanged: (newValue: String) -> Unit
 ) {
     TextField(
         modifier = modifier,
         value = value.orEmpty(),
+        enabled = isEnabled,
         label = { Text(stringResource(id = labelRes)) },
         placeholder = { Text(stringResource(id = placeHolderRes)) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
-        singleLine = true,
-        maxLines = 1,
+        singleLine = isSingleLine,
+        maxLines = if(isSingleLine) 1 else Int.MAX_VALUE,
         onValueChange = onValueChanged)
 }

@@ -16,7 +16,7 @@
 
 <resources>
     <string name="app_name">ArtCollectiblesMarketplace</string>
-
+    <string name="image_content_description">Image can not be loaded</string>
     <!-- Onboarding -->
     <string name="onboarding_main_title_text">Welcome to NFT Marketplace</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
@@ -47,4 +47,14 @@
     <string name="signup_success_dialog_title_text">Your account has been created!</string>
     <string name="signup_success_dialog_description_text">Welcome to NFT Marketplace!. From now you could buy and sell the NFTs of the best artists in the world</string>
     <string name="signup_success_dialog_accept_button_text">Accept</string>
+    <!-- Profile -->
+    <string name="profile_save_button_text">Save</string>
+    <string name="profile_sign_off_button_text">Close Session</string>
+    <string name="profile_main_title_text">Your Profile</string>
+    <string name="profile_input_name_label">Name</string>
+    <string name="profile_input_name_placeholder">Your name</string>
+    <string name="profile_input_wallet_address_label">Wallet Address</string>
+    <string name="profile_input_wallet_address_placeholder">Your Wallet Address</string>
+    <string name="profile_input_info_label">Info</string>
+    <string name="profile_input_info_placeholder">Provide information about yourself</string>
 </resources>

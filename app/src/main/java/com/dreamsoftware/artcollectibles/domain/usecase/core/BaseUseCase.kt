@@ -14,7 +14,14 @@ abstract class BaseUseCase<ReturnType> {
     // in the child class
     abstract suspend fun onExecuted(): ReturnType
 
-    suspend operator fun invoke() = withContext(dispatcher) {
-        onExecuted()
+    suspend operator fun invoke(
+        onSuccess: (ReturnType) -> Unit,
+        onError: (error: Exception) -> Unit
+    ) = withContext(dispatcher) {
+        try {
+            onSuccess(onExecuted())
+        } catch (ex: Exception) {
+            onError(ex)
+        }
     }
 }
