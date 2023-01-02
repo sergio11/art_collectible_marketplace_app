@@ -1,12 +1,12 @@
 package com.dreamsoftware.artcollectibles.data.api.mapper
 
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
-import com.dreamsoftware.artcollectibles.domain.models.SaveUserInfo
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 
-class SaveUserInfoMapper: IOneSideMapper<SaveUserInfo, SaveUserDTO> {
+class SaveUserInfoMapper: IOneSideMapper<UserInfo, SaveUserDTO> {
 
-    override fun mapInToOut(input: SaveUserInfo): SaveUserDTO = with(input) {
+    override fun mapInToOut(input: UserInfo): SaveUserDTO = with(input) {
         SaveUserDTO(
             uid = uid,
             name = name,
@@ -17,7 +17,7 @@ class SaveUserInfoMapper: IOneSideMapper<SaveUserInfo, SaveUserDTO> {
         )
     }
 
-    override fun mapInListToOutList(input: Iterable<SaveUserInfo>): Iterable<SaveUserDTO> =
+    override fun mapInListToOutList(input: Iterable<UserInfo>): Iterable<SaveUserDTO> =
         input.map(::mapInToOut)
 
 }

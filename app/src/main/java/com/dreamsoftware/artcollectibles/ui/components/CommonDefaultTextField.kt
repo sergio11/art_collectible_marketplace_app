@@ -15,17 +15,19 @@ import androidx.compose.ui.text.input.KeyboardType
 fun CommonDefaultTextField(
     modifier: Modifier,
     isEnabled: Boolean = true,
+    isReadOnly: Boolean = false,
     value: String? = null,
     @StringRes labelRes: Int,
     @StringRes placeHolderRes: Int,
     keyboardType: KeyboardType = KeyboardType.Text,
     isSingleLine: Boolean = true,
-    onValueChanged: (newValue: String) -> Unit
+    onValueChanged: (newValue: String) -> Unit = {}
 ) {
     TextField(
         modifier = modifier,
         value = value.orEmpty(),
         enabled = isEnabled,
+        readOnly = isReadOnly,
         label = { Text(stringResource(id = labelRes)) },
         placeholder = { Text(stringResource(id = placeHolderRes)) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),

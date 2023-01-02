@@ -37,7 +37,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onSessionClosed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val state by produceState(
@@ -46,23 +47,29 @@ fun ProfileScreen(
         key2 = viewModel
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect { value = it }
+            viewModel.uiState.collect {
+                if(it.isSessionClosed) {
+                    onSessionClosed()
+                } else {
+                    value = it
+                }
+            }
         }
     }
-    LaunchedEffect(viewModel.isProfileLoaded()) {
-        if (!viewModel.isProfileLoaded()) {
-            viewModel.loadProfile()
+    with(viewModel) {
+        LaunchedEffect(isProfileLoaded()) {
+            if (!isProfileLoaded()) {
+                loadProfile()
+            }
         }
+        ProfileComponent(
+            navController = navController,
+            state = state,
+            onNameChanged = ::onNameChanged,
+            onInfoChanged = ::onInfoChanged,
+            onSaveClicked = ::saveUserInfo,
+            onCloseSessionClicked = ::closeSession)
     }
-    ProfileComponent(
-        navController = navController,
-        state = state,
-        onSaveClicked = {
-
-        },
-        onCloseSessionClicked = {
-            viewModel.closeSession()
-        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +77,8 @@ fun ProfileScreen(
 internal fun ProfileComponent(
     navController: NavController,
     state: ProfileUiState,
+    onNameChanged: (String) -> Unit,
+    onInfoChanged: (String) -> Unit,
     onSaveClicked: () -> Unit,
     onCloseSessionClicked: () -> Unit
 ) {
@@ -112,37 +121,38 @@ internal fun ProfileComponent(
                     modifier = Modifier.size(150.dp).clip(CircleShape)
                 )
                 CommonDefaultTextField(
-                    modifier = Modifier.padding(vertical = 20.dp),
+                    modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
                     labelRes = R.string.profile_input_name_label,
                     placeHolderRes = R.string.profile_input_name_placeholder,
                     value = state.userInfo?.name,
-                    onValueChanged = {
-
-                    }
+                    onValueChanged = onNameChanged
                 )
                 CommonDefaultTextField(
-                    modifier = Modifier.padding(vertical = 20.dp),
-                    isEnabled = false,
+                    modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
+                    isReadOnly = true,
+                    labelRes = R.string.profile_input_contact_label,
+                    placeHolderRes = R.string.profile_input_contact_placeholder,
+                    value = state.userInfo?.contact
+                )
+                CommonDefaultTextField(
+                    modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
+                    isReadOnly = true,
                     labelRes = R.string.profile_input_wallet_address_label,
                     placeHolderRes = R.string.profile_input_wallet_address_placeholder,
-                    value = state.userInfo?.walletAddress,
-                    onValueChanged = {
-
-                    }
+                    value = state.userInfo?.walletAddress
                 )
                 CommonDefaultTextField(
                     modifier = Modifier.padding(vertical = 20.dp)
+                        .fillMaxWidth()
                         .height(150.dp),
                     labelRes = R.string.profile_input_info_label,
                     placeHolderRes = R.string.profile_input_info_placeholder,
                     value = state.userInfo?.info,
                     isSingleLine = false,
-                    onValueChanged = {
-
-                    }
+                    onValueChanged = onInfoChanged
                 )
                 CommonButton(
-                    modifier = Modifier.padding(bottom = 10.dp),
+                    modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
                     text = R.string.profile_save_button_text,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Purple700,
@@ -151,7 +161,7 @@ internal fun ProfileComponent(
                     onClick = onSaveClicked
                 )
                 CommonButton(
-                    modifier = Modifier.padding(bottom = 10.dp),
+                    modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
                     text = R.string.profile_sign_off_button_text,
                     onClick = onCloseSessionClicked
                 )

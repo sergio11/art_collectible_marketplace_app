@@ -94,7 +94,7 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(UserDataException::class)
-    override suspend fun save(userInfo: SaveUserInfo) = try {
+    override suspend fun save(userInfo: UserInfo) = try {
         userDataSource.save(saveUserInfoMapper.mapInToOut(userInfo))
     } catch (ex: Exception) {
         ex.printStackTrace()

@@ -105,4 +105,15 @@ class DomainModule {
         userRepository: IUserRepository
     ) =
         GetUserProfileUseCase(userRepository)
+
+    /**
+     * Provide Update User info use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideUpdateUserInfoUseCase(
+        userRepository: IUserRepository
+    ) =
+        UpdateUserInfoUseCase(userRepository)
 }

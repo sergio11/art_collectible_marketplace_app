@@ -57,4 +57,6 @@
     <string name="profile_input_wallet_address_placeholder">Your Wallet Address</string>
     <string name="profile_input_info_label">Info</string>
     <string name="profile_input_info_placeholder">Provide information about yourself</string>
+    <string name="profile_input_contact_label">Contact</string>
+    <string name="profile_input_contact_placeholder">Your contact info</string>
 </resources>

@@ -37,7 +37,7 @@ class SocialSignInUseCase(
     private suspend fun createUser(authUser: AuthUser): UserInfo = with(authUser) {
         val wallet = walletRepository.generate(userUid = uid)
         userRepository.save(
-            SaveUserInfo(
+            UserInfo(
                 uid = uid,
                 name = displayName,
                 contact = email,

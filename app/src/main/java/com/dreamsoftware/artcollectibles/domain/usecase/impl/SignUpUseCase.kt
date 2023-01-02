@@ -2,7 +2,6 @@ package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
-import com.dreamsoftware.artcollectibles.domain.models.SaveUserInfo
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
 
@@ -21,7 +20,7 @@ class SignUpUseCase(
         val wallet = walletRepository.generate(userUid = authUser.uid)
         with(authUser) {
             userRepository.save(
-                SaveUserInfo(
+                UserInfo(
                     uid = uid,
                     name = displayName,
                     contact = email,

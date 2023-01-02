@@ -56,7 +56,11 @@ fun RootScreen(
             Text("Search")
         }
         composable(NavigationItem.Profile.route) {
-            ProfileScreen(navigationController)
+            ProfileScreen(navigationController) {
+                navigationController.navigate(NavigationItem.OnBoarding.route) {
+                    popUpTo(NavigationItem.OnBoarding.route)
+                }
+            }
         }
     }
 }
