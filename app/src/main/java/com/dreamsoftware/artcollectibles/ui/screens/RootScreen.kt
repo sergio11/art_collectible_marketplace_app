@@ -23,6 +23,11 @@ fun RootScreen(
         startDestination = NavigationItem.OnBoarding.route) {
         composable(NavigationItem.OnBoarding.route) {
             OnBoardingScreen(
+                onUserAlreadyAuthenticated = {
+                    navigationController.navigate(NavigationItem.Home.route) {
+                        popUpTo(NavigationItem.Home.route)
+                    }
+                },
                 onNavigateToLogin = {
                     navigationController.navigate(NavigationItem.SignIn.route)
                 },

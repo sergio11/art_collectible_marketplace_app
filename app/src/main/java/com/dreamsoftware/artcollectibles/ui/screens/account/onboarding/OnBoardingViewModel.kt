@@ -1,24 +1,43 @@
 package com.dreamsoftware.artcollectibles.ui.screens.account.onboarding
 
-import androidx.lifecycle.ViewModel
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.SignInUseCase
+import androidx.lifecycle.viewModelScope
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.VerifyUserAuthenticatedUseCase
+import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OnBoardingViewModel @Inject constructor(
-    private val signInUserCase: SignInUseCase
-) : ViewModel() {
+    private val verifyUserAuthenticatedUseCase: VerifyUserAuthenticatedUseCase
+) : SupportViewModel<OnBoardingUiState>() {
 
-    private val _uiState: MutableStateFlow<OnBoardingUiState> = MutableStateFlow(OnBoardingUiState.NoSignIn)
-    val uiState: StateFlow<OnBoardingUiState> = _uiState
+    fun verifyUserSession() {
+        viewModelScope.launch {
+            updateState { OnBoardingUiState.VerificationInProgress }
+            verifyUserAuthenticatedUseCase.invoke(
+                onSuccess = { isAuthenticated ->
+                    updateState {
+                        if (isAuthenticated) {
+                            OnBoardingUiState.UserAlreadyAuthenticated
+                        } else {
+                            OnBoardingUiState.NoAuthenticated
+                        }
+                    }
+                },
+                onError = {
+                    updateState { OnBoardingUiState.NoAuthenticated }
+                }
+            )
+        }
+    }
 
+    override fun onGetDefaultState(): OnBoardingUiState = OnBoardingUiState.NoAuthenticated
 
 }
 
-sealed interface OnBoardingUiState {
-    object NoSignIn : OnBoardingUiState
+sealed class OnBoardingUiState {
+    object NoAuthenticated : OnBoardingUiState()
+    object VerificationInProgress : OnBoardingUiState()
+    object UserAlreadyAuthenticated : OnBoardingUiState()
 }

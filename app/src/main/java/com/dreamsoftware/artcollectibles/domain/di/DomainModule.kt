@@ -116,4 +116,14 @@ class DomainModule {
         userRepository: IUserRepository
     ) =
         UpdateUserInfoUseCase(userRepository)
+
+    /**
+     * Provide Verify User Authenticated Use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideVerifyUserAuthenticatedUseCase(
+        userRepository: IUserRepository
+    ) = VerifyUserAuthenticatedUseCase(userRepository)
 }

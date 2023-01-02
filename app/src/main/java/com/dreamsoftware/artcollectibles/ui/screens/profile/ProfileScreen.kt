@@ -105,11 +105,14 @@ internal fun ProfileComponent(
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .width(300.dp)
+                    .fillMaxWidth()
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val defaultModifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .width(300.dp)
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(state.userInfo?.photoUrl)
@@ -121,30 +124,28 @@ internal fun ProfileComponent(
                     modifier = Modifier.size(150.dp).clip(CircleShape)
                 )
                 CommonDefaultTextField(
-                    modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
+                    modifier = defaultModifier,
                     labelRes = R.string.profile_input_name_label,
                     placeHolderRes = R.string.profile_input_name_placeholder,
                     value = state.userInfo?.name,
                     onValueChanged = onNameChanged
                 )
                 CommonDefaultTextField(
-                    modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
+                    modifier = defaultModifier,
                     isReadOnly = true,
                     labelRes = R.string.profile_input_contact_label,
                     placeHolderRes = R.string.profile_input_contact_placeholder,
                     value = state.userInfo?.contact
                 )
                 CommonDefaultTextField(
-                    modifier = Modifier.padding(vertical = 20.dp).fillMaxWidth(),
+                    modifier = defaultModifier,
                     isReadOnly = true,
                     labelRes = R.string.profile_input_wallet_address_label,
                     placeHolderRes = R.string.profile_input_wallet_address_placeholder,
                     value = state.userInfo?.walletAddress
                 )
                 CommonDefaultTextField(
-                    modifier = Modifier.padding(vertical = 20.dp)
-                        .fillMaxWidth()
-                        .height(150.dp),
+                    modifier = defaultModifier.height(150.dp),
                     labelRes = R.string.profile_input_info_label,
                     placeHolderRes = R.string.profile_input_info_placeholder,
                     value = state.userInfo?.info,
@@ -152,7 +153,9 @@ internal fun ProfileComponent(
                     onValueChanged = onInfoChanged
                 )
                 CommonButton(
-                    modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .width(300.dp),
                     text = R.string.profile_save_button_text,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Purple700,
@@ -161,7 +164,9 @@ internal fun ProfileComponent(
                     onClick = onSaveClicked
                 )
                 CommonButton(
-                    modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .width(300.dp),
                     text = R.string.profile_sign_off_button_text,
                     onClick = onCloseSessionClicked
                 )
