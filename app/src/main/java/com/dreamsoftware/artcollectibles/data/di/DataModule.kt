@@ -166,6 +166,7 @@ class DataModule {
         accountBlockchainDataSource: IAccountBlockchainDataSource,
         userCredentialsMapper: UserCredentialsMapper,
         preferencesDataSource: IPreferencesDataSource,
+        storageDataSource: IStorageDataSource,
         secretDataSource: IWalletSecretsDataSource,
         secretUtils: SecretUtils,
         walletDataSource: IWalletDataSource
@@ -176,6 +177,7 @@ class DataModule {
             userCredentialsMapper,
             preferencesDataSource,
             secretDataSource,
+            storageDataSource,
             secretUtils,
             walletDataSource
         )

@@ -12,13 +12,15 @@ class WalletSecretMapper(
         const val SECRET_KEY = "secret"
         const val NAME_KEY = "name"
         const val UID_KEY = "userUid"
+        const val PATH_KEY = "path"
     }
 
     override fun mapInToOut(input: WalletSecretDTO): Map<String, Any?> = with(input) {
         hashMapOf(
             UID_KEY to userUid,
             SECRET_KEY to cryptoUtils.encryptAndEncode(secret),
-            NAME_KEY to cryptoUtils.encryptAndEncode(name)
+            NAME_KEY to cryptoUtils.encryptAndEncode(name),
+            PATH_KEY to walletUri
         )
     }
 
@@ -29,7 +31,8 @@ class WalletSecretMapper(
         WalletSecretDTO(
             userUid = get(UID_KEY) as String,
             secret = cryptoUtils.decodeAndDecrypt(get(SECRET_KEY) as String),
-            name = cryptoUtils.decodeAndDecrypt(get(NAME_KEY) as String)
+            name = cryptoUtils.decodeAndDecrypt(get(NAME_KEY) as String),
+            walletUri = get(NAME_KEY) as String
         )
     }
 

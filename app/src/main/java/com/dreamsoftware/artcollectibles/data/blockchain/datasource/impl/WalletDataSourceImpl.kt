@@ -1,9 +1,13 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
 import android.content.Context
+import android.net.Uri
+import androidx.core.content.FileProvider
+import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.GenerateWalletException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.LoadWalletCredentialsException
+import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -42,9 +46,10 @@ internal class WalletDataSourceImpl(
         }
 
     @Throws(GenerateWalletException::class)
-    override suspend fun generate(password: String): String = withContext(Dispatchers.IO) {
+    override suspend fun generate(password: String): WalletDTO = withContext(Dispatchers.IO) {
         try {
-            WalletUtils.generateLightNewWalletFile(password, getInternalWalletDirectory())
+            val walletName = WalletUtils.generateLightNewWalletFile(password, getInternalWalletDirectory())
+            WalletDTO(walletName, getUriForWallet(walletName))
         } catch (ex: Exception) {
             throw GenerateWalletException(
                 message = "An error occurred when creating a new wallet file",
@@ -60,6 +65,9 @@ internal class WalletDataSourceImpl(
             }
         }
 
+    private fun getUriForWallet(walletName: String): Uri =
+        FileProvider.getUriForFile(appContext, BuildConfig.APPLICATION_ID + ".provider",
+            File(getInternalWalletDirectory(), walletName))
 
     private fun setupBouncyCastle() {
         val provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)

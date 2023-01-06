@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.GenerateWalletException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.LoadWalletCredentialsException
+import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletDTO
 import org.web3j.crypto.Credentials
 
 interface IWalletDataSource {
@@ -19,6 +20,6 @@ interface IWalletDataSource {
      * @param password
      */
     @Throws(GenerateWalletException::class)
-    suspend fun generate(password: String): String
+    suspend fun generate(password: String): WalletDTO
 
 }

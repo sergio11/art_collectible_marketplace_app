@@ -8,17 +8,19 @@ interface IStorageDataSource {
 
     /**
      * Save file
+     * @param directoryName
      * @param name
      * @param fileUri
      */
     @Throws(SaveFileException::class)
-    suspend fun save(name: String, fileUri: String): Uri
+    suspend fun save(directoryName: String, name: String, fileUri: String): Uri
 
     /**
      * Get file information
+     * @param directoryName
      * @param name
      */
     @Throws(FileNotFoundException::class)
-    suspend fun get(name: String): Uri
+    suspend fun get(directoryName: String, name: String): Uri
 
 }

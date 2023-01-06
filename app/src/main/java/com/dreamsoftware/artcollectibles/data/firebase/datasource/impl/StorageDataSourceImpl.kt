@@ -19,15 +19,16 @@ internal class StorageDataSourceImpl(
 
     /**
      * Save file
+     * @param directoryName
      * @param name
      * @param fileUri
      */
     @Throws(SaveFileException::class)
-    override suspend fun save(name: String, fileUri: String): Uri = withContext(Dispatchers.IO) {
+    override suspend fun save(directoryName: String, name: String, fileUri: String): Uri = withContext(Dispatchers.IO) {
         try {
             with(firebaseStorage.reference) {
-                child(name).putFile(Uri.parse(fileUri)).await()
-                child(name).downloadUrl.await()
+                child(directoryName).child(name).putFile(Uri.parse(fileUri)).await()
+                child(directoryName).child(name).downloadUrl.await()
             }
         } catch (ex: Exception) {
             throw SaveFileException("An error occurred when trying to save a new file", ex)
@@ -36,12 +37,14 @@ internal class StorageDataSourceImpl(
 
     /**
      * Get file information
+     * @param directoryName
      * @param name
      */
     @Throws(FileNotFoundException::class)
-    override suspend fun get(name: String): Uri = withContext(Dispatchers.IO) {
+    override suspend fun get(directoryName: String, name: String): Uri = withContext(Dispatchers.IO) {
         try {
             firebaseStorage.reference
+                .child(directoryName)
                 .child(name)
                 .downloadUrl
                 .await()
