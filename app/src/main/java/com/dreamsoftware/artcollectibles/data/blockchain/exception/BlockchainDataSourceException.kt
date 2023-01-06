@@ -4,3 +4,4 @@ open class BlockchainDataSourceException(message: String? = null, cause: Throwab
 
 class LoadWalletCredentialsException(message: String? = null, cause: Throwable? = null): BlockchainDataSourceException(message, cause)
 class GenerateWalletException(message: String? = null, cause: Throwable? = null): BlockchainDataSourceException(message, cause)
+class InstallWalletException(message: String? = null, cause: Throwable? = null): BlockchainDataSourceException(message, cause)

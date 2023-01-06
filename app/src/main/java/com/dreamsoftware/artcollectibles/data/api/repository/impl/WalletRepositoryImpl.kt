@@ -13,6 +13,8 @@ import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreference
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
 import com.dreamsoftware.artcollectibles.utils.SecretUtils
+import org.web3j.crypto.Credentials
+import java.net.URL
 
 /**
  * Wallet Repository Implementation
@@ -47,8 +49,7 @@ internal class WalletRepositoryImpl(
     @Throws(WalletDataException::class)
     override suspend fun loadCredentials(): UserWalletCredentials = try {
         val userUid = preferencesDataSource.getAuthUserUid()
-        val walletSecret = walletSecretsDataSource.getByUserUid(userUid)
-        val credentials = walletDataSource.loadCredentials(walletSecret.name, walletSecret.secret)
+        val credentials = loadCredentials(userUid)
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
         throw WalletDataException("An error occurred when trying to load wallet credentials", ex)
@@ -73,7 +74,6 @@ internal class WalletRepositoryImpl(
         val credentials = walletDataSource.loadCredentials(walletCreated.name, walletSecret)
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
-        ex.printStackTrace()
         throw WalletDataException("An error occurred when generating a new wallet", ex)
     }
 
@@ -83,12 +83,23 @@ internal class WalletRepositoryImpl(
     @Throws(WalletDataException::class)
     override suspend fun getCurrentBalance(): AccountBalance = try {
         val userUid = preferencesDataSource.getAuthUserUid()
-        val walletSecret = walletSecretsDataSource.getByUserUid(userUid)
-        val credentials = walletDataSource.loadCredentials(walletSecret.name, walletSecret.secret)
+        val credentials = loadCredentials(userUid)
         val balance = accountBlockchainDataSource.getCurrentBalance(credentials)
         accountBalanceMapper.mapInToOut(balance)
     } catch (ex: Exception) {
-        ex.printStackTrace()
         throw WalletDataException("An error occurred when trying to get current balance", ex)
+    }
+
+    /**
+     * Private Methods
+     */
+
+    private suspend fun loadCredentials(userUid: String): Credentials = with(walletDataSource) {
+        with(walletSecretsDataSource.getByUserUid(userUid)) {
+            if(!hasWallet(name)) {
+                walletDataSource.install(name, URL(walletUri))
+            }
+            loadCredentials(name, secret)
+        }
     }
 }
