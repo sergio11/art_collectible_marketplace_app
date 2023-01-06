@@ -5,7 +5,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplac
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleAddedForSaleEventResponse
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleForSaleEntity
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,22 +24,22 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     private enum class MarketItemType { AVAILABLE, SELLING, OWNED, HISTORY }
 
-    override suspend fun fetchAvailableMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchAvailableMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
             fetchMarketItemsBy(type = MarketItemType.AVAILABLE, credentials = credentials)
         }
 
-    override suspend fun fetchSellingMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchSellingMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
             fetchMarketItemsBy(type = MarketItemType.SELLING, credentials = credentials)
         }
 
-    override suspend fun fetchOwnedMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchOwnedMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
             fetchMarketItemsBy(type = MarketItemType.OWNED, credentials = credentials)
         }
 
-    override suspend fun fetchMarketHistory(credentials: Credentials): Iterable<ArtCollectibleForSaleEntity> =
+    override suspend fun fetchMarketHistory(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
             fetchMarketItemsBy(type = MarketItemType.HISTORY, credentials = credentials)
         }

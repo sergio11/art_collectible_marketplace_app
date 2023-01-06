@@ -1,15 +1,20 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.di
 
 import android.content.Context
+import com.dreamsoftware.artcollectibles.data.blockchain.alchemy.service.IAccountInformationService
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.AccountBlockchainDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtCollectibleBlockchainDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMarketplaceBlockchainDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.WalletDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyRetrofit
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
+import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +23,30 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import retrofit2.Converter
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [NetworkModule::class])
 @InstallIn(SingletonComponent::class)
 class BlockchainModule {
+
+    /**
+     * Provide Retrofit
+     */
+    @Provides
+    @Singleton
+    @AlchemyRetrofit
+    fun provideAlchemyRetrofit(
+        converterFactory: Converter.Factory,
+        httpClient: OkHttpClient,
+        blockchainConfig: BlockchainConfig
+    ): Retrofit =
+        Retrofit.Builder()
+            .addConverterFactory(converterFactory)
+            .baseUrl(blockchainConfig.alchemyUrl)
+            .client(httpClient)
+            .build()
 
     /**
      * Provide Blockchain Config
@@ -94,7 +118,6 @@ class BlockchainModule {
     fun provideArtMarketplaceDataSource(
         artMarketplaceMapper: ArtMarketplaceMapper,
         blockchainConfig: BlockchainConfig,
-        walletDataSource: IWalletDataSource,
         web3j: Web3j
     ): IArtMarketplaceBlockchainDataSource =
         ArtMarketplaceBlockchainDataSourceImpl(
@@ -102,4 +125,29 @@ class BlockchainModule {
             blockchainConfig,
             web3j
         )
+
+    /**
+     * Provide Account Blockchain Data Source
+     * @param accountInformationService
+     * @param web3j
+     */
+    @Provides
+    @Singleton
+    fun provideAccountBlockchainDataSource(
+        accountInformationService: IAccountInformationService,
+        web3j: Web3j
+    ): IAccountBlockchainDataSource =
+        AccountBlockchainDataSourceImpl(
+            accountInformationService,
+            web3j
+        )
+
+    /**
+     * Provide Pinata Query Files Service
+     */
+    @Provides
+    @Singleton
+    fun provideAccountInformationService(
+        @AlchemyRetrofit retrofit: Retrofit
+    ): IAccountInformationService = retrofit.create(IAccountInformationService::class.java)
 }

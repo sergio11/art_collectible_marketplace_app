@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
-import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import org.web3j.crypto.Credentials
 import java.math.BigInteger
 

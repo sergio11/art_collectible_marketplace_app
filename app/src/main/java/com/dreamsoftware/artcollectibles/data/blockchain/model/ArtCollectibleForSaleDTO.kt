@@ -1,8 +1,8 @@
-package com.dreamsoftware.artcollectibles.data.blockchain.entity
+package com.dreamsoftware.artcollectibles.data.blockchain.model
 
 import java.math.BigInteger
 
-data class ArtCollectibleForSaleEntity(
+data class ArtCollectibleForSaleDTO(
     val marketItemId: BigInteger,
     val tokenId: BigInteger,
     val creator: String,

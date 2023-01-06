@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.data.di
 import com.dreamsoftware.artcollectibles.data.api.mapper.*
 import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.data.api.repository.impl.*
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
@@ -27,6 +28,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
+    /**
+     * Provide Account Balance Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideAccountBalanceMapper(): AccountBalanceMapper = AccountBalanceMapper()
 
     /**
      * Provide Auth User Mapper
@@ -144,6 +151,8 @@ class DataModule {
 
     /**
      * Provide Wallet Repository
+     * @param accountBalanceMapper
+     * @param accountBlockchainDataSource
      * @param userCredentialsMapper
      * @param preferencesDataSource
      * @param secretDataSource
@@ -153,6 +162,8 @@ class DataModule {
     @Provides
     @Singleton
     fun provideWalletRepository(
+        accountBalanceMapper: AccountBalanceMapper,
+        accountBlockchainDataSource: IAccountBlockchainDataSource,
         userCredentialsMapper: UserCredentialsMapper,
         preferencesDataSource: IPreferencesDataSource,
         secretDataSource: IWalletSecretsDataSource,
@@ -160,6 +171,8 @@ class DataModule {
         walletDataSource: IWalletDataSource
     ): IWalletRepository =
         WalletRepositoryImpl(
+            accountBalanceMapper,
+            accountBlockchainDataSource,
             userCredentialsMapper,
             preferencesDataSource,
             secretDataSource,

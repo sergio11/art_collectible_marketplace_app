@@ -1,6 +1,6 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.datasource.core
+package com.dreamsoftware.artcollectibles.data.core.network
 
-import com.dreamsoftware.artcollectibles.data.ipfs.exception.*
+import com.dreamsoftware.artcollectibles.data.core.network.exception.*
 import java.io.IOException
 
 /**
@@ -28,6 +28,7 @@ internal abstract class SupportNetworkDataSource {
         } catch (ex: NetworkException) {
             throw ex
         } catch (exception: Throwable) {
+            exception.printStackTrace()
             val retrofitException = RetrofitException.asRetrofitException(exception)
             if (retrofitException.kind === RetrofitException.Kind.NETWORK) {
                 throw NetworkErrorException(cause = exception)

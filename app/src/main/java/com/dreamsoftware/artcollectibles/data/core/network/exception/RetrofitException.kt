@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.exception
+package com.dreamsoftware.artcollectibles.data.core.network.exception
 
 import retrofit2.HttpException
 import retrofit2.Response
@@ -34,7 +34,8 @@ class RetrofitException(
         fun networkError(exception: IOException): RetrofitException {
             return RetrofitException(
                 message = exception.message.orEmpty(),
-                kind = Kind.NETWORK)
+                kind = Kind.NETWORK
+            )
         }
 
         @JvmStatic
@@ -57,7 +58,7 @@ class RetrofitException(
             if (throwable is HttpException) {
                 return throwable.response()?.let {
                     httpError(it.raw().request.url.toString(), it)
-                }?:unexpectedError(throwable)
+                }?: unexpectedError(throwable)
             }
             // A network response happened
             return if (throwable is IOException) {

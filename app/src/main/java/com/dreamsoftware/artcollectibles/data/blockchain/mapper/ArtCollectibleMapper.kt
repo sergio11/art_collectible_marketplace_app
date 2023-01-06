@@ -1,7 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.mapper
 
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract.ArtCollectible
-import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 import java.math.BigInteger
 

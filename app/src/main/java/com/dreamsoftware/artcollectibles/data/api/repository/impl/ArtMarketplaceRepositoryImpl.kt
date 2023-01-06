@@ -6,7 +6,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleForSaleEntity
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +54,7 @@ internal class ArtMarketplaceRepositoryImpl(
         mapToArtCollectibleForSale(artCollectibleForSaleList)
     }
 
-    private suspend fun mapToArtCollectibleForSale(items: Iterable<ArtCollectibleForSaleEntity>): Iterable<ArtCollectibleForSale> =
+    private suspend fun mapToArtCollectibleForSale(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
         items.map {
             val token = artCollectibleRepository.getTokenById(it.tokenId)
             val owner = userInfoMapper.mapInToOut(userDataSource.getByAddress(it.owner))

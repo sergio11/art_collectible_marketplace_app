@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.mapper
 
-import com.dreamsoftware.artcollectibles.data.blockchain.entity.ArtCollectibleBlockchainDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.dreamsoftware.artcollectibles.data.ipfs.models.TokenMetadataDTO
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible

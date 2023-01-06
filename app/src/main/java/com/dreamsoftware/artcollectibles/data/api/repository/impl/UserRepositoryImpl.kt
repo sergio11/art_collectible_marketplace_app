@@ -6,6 +6,7 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource

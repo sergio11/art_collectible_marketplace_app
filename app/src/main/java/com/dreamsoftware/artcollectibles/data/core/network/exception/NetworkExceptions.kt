@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.exception
+package com.dreamsoftware.artcollectibles.data.core.network.exception
 
 /**
  * Network Exceptions

@@ -1,7 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.ipfs.datasource.impl
 
+import com.dreamsoftware.artcollectibles.data.core.network.SupportNetworkDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
-import com.dreamsoftware.artcollectibles.data.ipfs.datasource.core.SupportNetworkDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.CreateTokenMetadataMapper
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.TokenMetadataMapper
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.UpdateTokenMetadataMapper
@@ -64,5 +64,4 @@ internal class PinataDataSourceImpl(
                     .rows
             )
         }
-
 }

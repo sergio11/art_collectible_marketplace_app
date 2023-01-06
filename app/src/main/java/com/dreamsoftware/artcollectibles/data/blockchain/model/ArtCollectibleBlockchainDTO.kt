@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.blockchain.entity
+package com.dreamsoftware.artcollectibles.data.blockchain.model
 
 import java.math.BigInteger
 

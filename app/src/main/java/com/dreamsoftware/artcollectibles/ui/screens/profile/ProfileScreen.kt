@@ -59,7 +59,7 @@ fun ProfileScreen(
     with(viewModel) {
         LaunchedEffect(isProfileLoaded()) {
             if (!isProfileLoaded()) {
-                loadProfile()
+                load()
             }
         }
         ProfileComponent(

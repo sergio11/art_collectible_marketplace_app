@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.ipfs.pinata.serder
+package com.dreamsoftware.artcollectibles.data.core.network.serder
 
 import android.annotation.SuppressLint
 import com.squareup.moshi.FromJson

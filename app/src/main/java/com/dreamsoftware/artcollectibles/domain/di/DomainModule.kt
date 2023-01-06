@@ -126,4 +126,14 @@ class DomainModule {
     fun provideVerifyUserAuthenticatedUseCase(
         userRepository: IUserRepository
     ) = VerifyUserAuthenticatedUseCase(userRepository)
+
+    /**
+     * Provide Get Current Balance Use case
+     * @param walletRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetCurrentBalanceUseCase(
+        walletRepository: IWalletRepository
+    ) = GetCurrentBalanceUseCase(walletRepository)
 }
