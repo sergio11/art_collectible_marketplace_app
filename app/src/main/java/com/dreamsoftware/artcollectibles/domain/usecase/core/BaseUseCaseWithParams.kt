@@ -14,6 +14,8 @@ abstract class BaseUseCaseWithParams<ParamsType, ReturnType> {
     // in the child class
     abstract suspend fun onExecuted(params: ParamsType): ReturnType
 
+    open suspend fun onReverted(params: ParamsType) {}
+
     suspend operator fun invoke(
         params: ParamsType,
         onSuccess: (result: ReturnType) -> Unit,
@@ -22,6 +24,7 @@ abstract class BaseUseCaseWithParams<ParamsType, ReturnType> {
         try {
             onSuccess(onExecuted(params))
         } catch (ex: Exception) {
+            onReverted(params)
             onError(ex)
         }
     }

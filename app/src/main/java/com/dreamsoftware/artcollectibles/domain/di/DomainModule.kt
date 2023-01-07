@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.domain.di
 
 import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,56 +56,102 @@ class DomainModule {
     /**
      * Provide Sign In Use case
      * @param userRepository
+     * @param secretRepository
+     * @param preferenceRepository
+     * @param applicationAware
      */
     @Provides
     @ViewModelScoped
     fun provideSignInUseCase(
-        userRepository: IUserRepository
-    ) = SignInUseCase(userRepository)
+        userRepository: IUserRepository,
+        secretRepository: ISecretRepository,
+        preferenceRepository: IPreferenceRepository,
+        applicationAware: IApplicationAware
+    ) = SignInUseCase(
+        userRepository,
+        secretRepository,
+        preferenceRepository,
+        applicationAware
+    )
 
     /**
      * Provide Social Sign In Use Case
      * @param userRepository
+     * @param walletRepository
+     * @param secretRepository
+     * @param preferenceRepository
+     * @param applicationAware
      */
     @Provides
     @ViewModelScoped
     fun provideSocialSignInUseCase(
         userRepository: IUserRepository,
-        walletRepository: IWalletRepository
-    ) = SocialSignInUseCase(userRepository, walletRepository)
+        walletRepository: IWalletRepository,
+        secretRepository: ISecretRepository,
+        preferenceRepository: IPreferenceRepository,
+        applicationAware: IApplicationAware
+    ) = SocialSignInUseCase(
+        userRepository,
+        walletRepository,
+        secretRepository,
+        preferenceRepository,
+        applicationAware
+    )
 
     /**
      * Provide Sign Up Use case
      * @param userRepository
      * @param walletRepository
+     * @param secretRepository
+     * @param preferenceRepository
+     * @param applicationAware
      */
     @Provides
     @ViewModelScoped
     fun provideSignUpUseCase(
         userRepository: IUserRepository,
-        walletRepository: IWalletRepository
-    ) = SignUpUseCase(userRepository, walletRepository)
+        walletRepository: IWalletRepository,
+        secretRepository: ISecretRepository,
+        preferenceRepository: IPreferenceRepository,
+        applicationAware: IApplicationAware
+    ) = SignUpUseCase(
+        userRepository,
+        walletRepository,
+        secretRepository,
+        preferenceRepository,
+        applicationAware
+    )
 
     /**
      * Provide Close session use case
      * @param userRepository
+     * @param preferenceRepository
+     * @param applicationAware
      */
     @Provides
     @ViewModelScoped
     fun provideCloseSessionUseCase(
-        userRepository: IUserRepository
-    ) = CloseSessionUseCase(userRepository)
+        userRepository: IUserRepository,
+        preferenceRepository: IPreferenceRepository,
+        applicationAware: IApplicationAware
+    ) = CloseSessionUseCase(
+        userRepository,
+        preferenceRepository,
+        applicationAware
+    )
 
     /**
      * Provide get user profile use case
      * @param userRepository
+     * @param preferenceRepository
      */
     @Provides
     @ViewModelScoped
     fun provideGetUserProfileUseCase(
-        userRepository: IUserRepository
+        userRepository: IUserRepository,
+        preferenceRepository: IPreferenceRepository
     ) =
-        GetUserProfileUseCase(userRepository)
+        GetUserProfileUseCase(userRepository, preferenceRepository)
 
     /**
      * Provide Update User info use case

@@ -2,7 +2,7 @@ package com.dreamsoftware.artcollectibles.utils
 
 import java.security.SecureRandom
 
-class SecretUtils {
+class PasswordUtils {
 
     private val letters : String = "abcdefghijklmnopqrstuvwxyz"
     private val uppercaseLetters : String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

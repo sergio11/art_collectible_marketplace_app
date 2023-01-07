@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.impl.PreferencesDataSourceImpl
 import com.dreamsoftware.artcollectibles.utils.CryptoUtils
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,12 +35,16 @@ class PreferencesModule {
 
     /**
      * Provide Preference DataSource
-     *
+     * @param applicationAware
      * @param cryptoUtils
      * @param dataStore
      */
     @Singleton
     @Provides
-    fun providePreferenceDataSource(cryptoUtils: CryptoUtils, dataStore: DataStore<Preferences>): IPreferencesDataSource =
-        PreferencesDataSourceImpl(cryptoUtils, dataStore)
+    fun providePreferenceDataSource(
+        applicationAware: IApplicationAware,
+        cryptoUtils: CryptoUtils,
+        dataStore: DataStore<Preferences>
+    ): IPreferencesDataSource =
+        PreferencesDataSourceImpl(applicationAware, cryptoUtils, dataStore)
 }

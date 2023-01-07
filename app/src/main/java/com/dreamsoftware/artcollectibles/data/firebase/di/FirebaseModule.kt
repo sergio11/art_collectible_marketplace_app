@@ -1,15 +1,14 @@
 package com.dreamsoftware.artcollectibles.data.firebase.di
 
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.*
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.AuthDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.StorageDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.UsersDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.WalletSecretsDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.impl.WalletMetadataDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.*
 import com.dreamsoftware.artcollectibles.utils.CryptoUtils
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -31,7 +30,8 @@ class FirebaseModule {
      */
     @Provides
     @Singleton
-    fun provideExternalUserAuthenticated(): ExternalUserAuthenticatedMapper = ExternalUserAuthenticatedMapper()
+    fun provideExternalUserAuthenticated(): ExternalUserAuthenticatedMapper =
+        ExternalUserAuthenticatedMapper()
 
     /**
      * Provide User Authenticated Mapper
@@ -41,13 +41,17 @@ class FirebaseModule {
     fun provideUserAuthenticatedMapper(): UserAuthenticatedMapper = UserAuthenticatedMapper()
 
     /**
-     * Provide Secret Mapper
+     * Provide Wallet Metadata Mapper
      * @param cryptoUtils
+     * @param applicationAware
      */
     @Provides
     @Singleton
-    fun provideSecretMapper(cryptoUtils: CryptoUtils): WalletSecretMapper =
-        WalletSecretMapper(cryptoUtils)
+    fun provideWalletMetadataMapper(
+        cryptoUtils: CryptoUtils,
+        applicationAware: IApplicationAware
+    ): WalletMetadataMapper =
+        WalletMetadataMapper(cryptoUtils, applicationAware)
 
     /**
      * Provide User Mapper
@@ -62,6 +66,13 @@ class FirebaseModule {
     @Provides
     @Singleton
     fun provideCreateUserMapper(): SaveUserMapper = SaveUserMapper()
+
+    /**
+     * Provide Secret Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideSecretMapper(): SecretMapper = SecretMapper()
 
     /**
      * Provide Firebase Auth
@@ -121,16 +132,16 @@ class FirebaseModule {
         )
 
     /**
-     * Provide Wallet Secrets Data Source
+     * Provide Wallet Metadata Data Source
      * @param firebaseStore
-     * @param walletSecretMapper
+     * @param walletMetadataMapper
      */
     @Provides
     @Singleton
-    fun provideWalletSecretsDataSource(
+    fun provideWalletMetadataDataSource(
         firebaseStore: FirebaseFirestore,
-        walletSecretMapper: WalletSecretMapper
-    ): IWalletSecretsDataSource = WalletSecretsDataSourceImpl(firebaseStore, walletSecretMapper)
+        walletMetadataMapper: WalletMetadataMapper
+    ): IWalletMetadataDataSource = WalletMetadataDataSourceImpl(firebaseStore, walletMetadataMapper)
 
     /**
      * Provide Storage Data Source
@@ -143,4 +154,16 @@ class FirebaseModule {
     ): IStorageDataSource =
         StorageDataSourceImpl(firebaseStorage)
 
+    /**
+     * Provider Secret Data Source
+     * @param firebaseStore
+     * @param secretMapper
+     */
+    @Provides
+    @Singleton
+    fun provideSecretDataSource(
+        firebaseStore: FirebaseFirestore,
+        secretMapper: SecretMapper
+    ): ISecretDataSource =
+        SecretDataSourceImpl(firebaseStore, secretMapper)
 }

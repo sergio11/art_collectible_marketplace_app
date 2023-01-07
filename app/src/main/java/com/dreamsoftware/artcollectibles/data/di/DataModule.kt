@@ -3,21 +3,16 @@ package com.dreamsoftware.artcollectibles.data.di
 import com.dreamsoftware.artcollectibles.data.api.mapper.*
 import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.data.api.repository.impl.*
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
-import com.dreamsoftware.artcollectibles.utils.SecretUtils
+import com.dreamsoftware.artcollectibles.utils.CryptoUtils
+import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -134,7 +129,6 @@ class DataModule {
         authDataSource: IAuthDataSource,
         userDataSource: IUsersDataSource,
         storageDataSource: IStorageDataSource,
-        preferencesDataSource: IPreferencesDataSource,
         userInfoMapper: UserInfoMapper,
         saveUserInfoMapper: SaveUserInfoMapper,
         authUserMapper: AuthUserMapper
@@ -143,7 +137,6 @@ class DataModule {
             authDataSource,
             userDataSource,
             storageDataSource,
-            preferencesDataSource,
             userInfoMapper,
             saveUserInfoMapper,
             authUserMapper
@@ -156,7 +149,7 @@ class DataModule {
      * @param userCredentialsMapper
      * @param preferencesDataSource
      * @param secretDataSource
-     * @param secretUtils
+     * @param passwordUtils
      * @param walletDataSource
      */
     @Provides
@@ -167,8 +160,8 @@ class DataModule {
         userCredentialsMapper: UserCredentialsMapper,
         preferencesDataSource: IPreferencesDataSource,
         storageDataSource: IStorageDataSource,
-        secretDataSource: IWalletSecretsDataSource,
-        secretUtils: SecretUtils,
+        secretDataSource: IWalletMetadataDataSource,
+        passwordUtils: PasswordUtils,
         walletDataSource: IWalletDataSource
     ): IWalletRepository =
         WalletRepositoryImpl(
@@ -178,7 +171,31 @@ class DataModule {
             preferencesDataSource,
             secretDataSource,
             storageDataSource,
-            secretUtils,
+            passwordUtils,
             walletDataSource
         )
+
+    /**
+     * Provide Secret Repository
+     * @param cryptoUtils
+     * @param secretDataSource
+     */
+    @Provides
+    @Singleton
+    fun provideSecretRepository(
+        cryptoUtils: CryptoUtils,
+        secretDataSource: ISecretDataSource
+    ): ISecretRepository =
+        SecretRepositoryImpl(secretDataSource, cryptoUtils)
+
+    /**
+     * Provide Preference Repository
+     * @param preferenceDataSource
+     */
+    @Provides
+    @Singleton
+    fun providePreferenceRepository(
+        preferenceDataSource: IPreferencesDataSource
+    ): IPreferenceRepository =
+        PreferenceRepositoryImpl(preferenceDataSource)
 }

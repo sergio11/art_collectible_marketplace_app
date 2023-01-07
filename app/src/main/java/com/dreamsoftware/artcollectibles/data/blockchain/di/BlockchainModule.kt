@@ -3,10 +3,8 @@ package com.dreamsoftware.artcollectibles.data.blockchain.di
 import android.content.Context
 import com.dreamsoftware.artcollectibles.data.blockchain.alchemy.service.IAccountInformationService
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.*
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.AccountBlockchainDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtCollectibleBlockchainDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMarketplaceBlockchainDataSourceImpl
@@ -15,6 +13,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyRet
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -90,9 +89,10 @@ class BlockchainModule {
     @Provides
     @Singleton
     fun providerWalletDataSource(
-        @ApplicationContext appContext: Context
+        @ApplicationContext appContext: Context,
+        applicationAware: IApplicationAware
     ): IWalletDataSource =
-        WalletDataSourceImpl(appContext)
+        WalletDataSourceImpl(appContext, applicationAware)
 
     /**
      * Provide Art Collectible Data Source

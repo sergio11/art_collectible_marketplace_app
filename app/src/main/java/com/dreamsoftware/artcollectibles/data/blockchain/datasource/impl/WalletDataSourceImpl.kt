@@ -3,12 +3,12 @@ package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.GenerateWalletException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.InstallWalletException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.LoadWalletCredentialsException
 import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletDTO
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -23,9 +23,11 @@ import java.security.Security
 /**
  * Wallet Data Source Implementation
  * @param appContext
+ * @param applicationAware
  */
 internal class WalletDataSourceImpl(
-    private val appContext: Context
+    private val appContext: Context,
+    private val applicationAware: IApplicationAware
 ) : IWalletDataSource {
 
     private companion object {
@@ -97,7 +99,7 @@ internal class WalletDataSourceImpl(
         }
 
     private fun getUriForWallet(walletName: String): Uri =
-        FileProvider.getUriForFile(appContext, BuildConfig.APPLICATION_ID + ".provider",
+        FileProvider.getUriForFile(appContext, applicationAware.getFileProviderAuthority(),
             File(getInternalWalletDirectory(), walletName))
 
     private fun setupBouncyCastle() {

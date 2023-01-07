@@ -7,12 +7,12 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletSecretsDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.model.WalletSecretDTO
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletMetadataDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.model.WalletMetadataDTO
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
-import com.dreamsoftware.artcollectibles.utils.SecretUtils
+import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 import org.web3j.crypto.Credentials
 import java.net.URL
 
@@ -24,7 +24,7 @@ import java.net.URL
  * @param preferencesDataSource
  * @param walletSecretsDataSource
  * @param storageDataSource
- * @param secretUtils
+ * @param passwordUtils
  * @param walletDataSource
  */
 internal class WalletRepositoryImpl(
@@ -32,10 +32,10 @@ internal class WalletRepositoryImpl(
     private val accountBlockchainDataSource: IAccountBlockchainDataSource,
     private val userCredentialsMapper: UserCredentialsMapper,
     private val preferencesDataSource: IPreferencesDataSource,
-    private val walletSecretsDataSource: IWalletSecretsDataSource,
+    private val walletSecretsDataSource: IWalletMetadataDataSource,
     private val storageDataSource: IStorageDataSource,
-    private val secretUtils: SecretUtils,
-    private val walletDataSource: IWalletDataSource,
+    private val passwordUtils: PasswordUtils,
+    private val walletDataSource: IWalletDataSource
 ): IWalletRepository {
 
     private companion object {
@@ -61,7 +61,7 @@ internal class WalletRepositoryImpl(
     @Throws(WalletDataException::class)
     override suspend fun generate(userUid: String): UserWalletCredentials = try {
         // Generate Wallet Secret
-        val walletSecret = secretUtils.generatePassword(
+        val walletSecret = passwordUtils.generatePassword(
             isWithLetters = true,
             isWithSpecial = true,
             isWithNumbers = true,
@@ -70,10 +70,11 @@ internal class WalletRepositoryImpl(
         )
         val walletCreated = walletDataSource.generate(walletSecret)
         val walletUri = storageDataSource.save(WALLET_DIRECTORY, walletCreated.name, walletCreated.path.toString())
-        walletSecretsDataSource.save(WalletSecretDTO(userUid, walletCreated.name, walletSecret, walletUri.toString()))
+        walletSecretsDataSource.save(WalletMetadataDTO(userUid, walletCreated.name, walletSecret, walletUri.toString()))
         val credentials = walletDataSource.loadCredentials(walletCreated.name, walletSecret)
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
+        ex.printStackTrace()
         throw WalletDataException("An error occurred when generating a new wallet", ex)
     }
 

@@ -6,15 +6,18 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.utils.CryptoUtils
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
  * Preferences Data Source Impl
+ * @param applicationAware
  * @param cryptoUtils
  * @param dataStore
  */
 internal class PreferencesDataSourceImpl(
+    private val applicationAware: IApplicationAware,
     private val cryptoUtils: CryptoUtils,
     private val dataStore: DataStore<Preferences>
 ) : IPreferencesDataSource {
@@ -26,12 +29,12 @@ internal class PreferencesDataSourceImpl(
 
     override suspend fun saveAuthUserUid(uid: String) {
         dataStore.edit {
-            it[AUTH_USER_UID_KEY] = cryptoUtils.encryptAndEncode(uid)
+            it[AUTH_USER_UID_KEY] = cryptoUtils.encryptAndEncode(applicationAware.getUserSecretKey(), uid)
         }
     }
 
     override suspend fun getAuthUserUid(): String = dataStore.data.map {
-        cryptoUtils.decodeAndDecrypt(it[AUTH_USER_UID_KEY].orEmpty())
+        cryptoUtils.decodeAndDecrypt(applicationAware.getUserSecretKey(), it[AUTH_USER_UID_KEY].orEmpty())
     }.first()
 
     override suspend fun clearData() {

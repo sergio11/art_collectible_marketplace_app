@@ -17,7 +17,22 @@
 package com.dreamsoftware.artcollectibles
 
 import android.app.Application
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class ArtCollectiblesMarketplace : Application()
+class ArtCollectiblesMarketplace : Application(), IApplicationAware {
+
+    private var userSecretKey: String? = null
+
+    override fun getApplicationId(): String = BuildConfig.APPLICATION_ID
+
+    override fun getFileProviderAuthority(): String = BuildConfig.APPLICATION_ID + ".provider"
+
+    override fun setUserSecretKey(key: String?) {
+        userSecretKey = key
+    }
+
+    override fun getUserSecretKey(): String = userSecretKey.orEmpty()
+
+}

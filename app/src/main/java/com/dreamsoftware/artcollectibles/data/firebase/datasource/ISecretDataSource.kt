@@ -2,19 +2,19 @@ package com.dreamsoftware.artcollectibles.data.firebase.datasource
 
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SaveSecretException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SecretNotFoundException
-import com.dreamsoftware.artcollectibles.data.firebase.model.WalletSecretDTO
+import com.dreamsoftware.artcollectibles.data.firebase.model.SecretDTO
 
-interface IWalletSecretsDataSource {
+interface ISecretDataSource {
 
     /**
      * @param secret
      */
     @Throws(SaveSecretException::class)
-    suspend fun save(secret: WalletSecretDTO)
+    suspend fun save(secret: SecretDTO)
 
     /**
      * @param uid
      */
     @Throws(SecretNotFoundException::class)
-    suspend fun getByUserUid(uid: String): WalletSecretDTO
+    suspend fun getByUserUid(uid: String): SecretDTO
 }
