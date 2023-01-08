@@ -22,7 +22,7 @@ class SignUpViewModel @Inject constructor(
         updateState {
             it.copy(
                 email = newEmail,
-                isSignUpButtonEnabled = signUpShouldBeEnabled()
+                isSignUpButtonEnabled = signButtonUpShouldBeEnabled(newEmail, it.password.orEmpty())
             )
         }
     }
@@ -31,7 +31,7 @@ class SignUpViewModel @Inject constructor(
         updateState {
             it.copy(
                 password = newPassword,
-                isSignUpButtonEnabled = signUpShouldBeEnabled()
+                isSignUpButtonEnabled = signButtonUpShouldBeEnabled(it.email.orEmpty(), newPassword)
             )
         }
     }
@@ -63,10 +63,9 @@ class SignUpViewModel @Inject constructor(
         updateState { it.copy(state = SignUpState.OnError(ex)) }
     }
 
-    private fun signUpShouldBeEnabled() = with(uiState.value) {
-        Patterns.EMAIL_ADDRESS.matcher(email.orEmpty()).matches()
-                && password.orEmpty().length > SignUpViewModel.MIN_PASSWORD_LENGTH
-    }
+    private fun signButtonUpShouldBeEnabled(email: String, password: String) =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                && password.length > MIN_PASSWORD_LENGTH
 }
 
 data class SignUpUiState(

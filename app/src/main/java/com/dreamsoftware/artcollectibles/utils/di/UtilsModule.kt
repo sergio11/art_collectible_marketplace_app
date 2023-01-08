@@ -36,5 +36,4 @@ class UtilsModule {
     @Provides
     fun provideApplicationAware(@ApplicationContext context: Context): IApplicationAware =
         context as IApplicationAware
-
 }

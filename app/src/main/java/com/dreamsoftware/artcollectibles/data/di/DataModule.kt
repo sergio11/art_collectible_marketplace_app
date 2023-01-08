@@ -11,7 +11,6 @@ import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
-import com.dreamsoftware.artcollectibles.utils.CryptoUtils
 import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 import dagger.Module
 import dagger.Provides
@@ -71,7 +70,7 @@ class DataModule {
      */
     @Provides
     @Singleton
-    fun provideSecretMapper(): SecretMapper = SecretMapper()
+    fun provideSecretMapper(): PBEDataMapper = PBEDataMapper()
 
     /**
      * Provide Art Collectibles Repository
@@ -186,19 +185,19 @@ class DataModule {
      * Provide Secret Repository
      * @param passwordUtils
      * @param secretDataSource
-     * @param secretMapper
+     * @param PBEDataMapper
      */
     @Provides
     @Singleton
     fun provideSecretRepository(
         passwordUtils: PasswordUtils,
         secretDataSource: ISecretDataSource,
-        secretMapper: SecretMapper
+        PBEDataMapper: PBEDataMapper
     ): ISecretRepository =
         SecretRepositoryImpl(
             secretDataSource,
             passwordUtils,
-            secretMapper
+            PBEDataMapper
         )
 
     /**

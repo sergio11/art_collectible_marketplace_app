@@ -1,23 +1,23 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import com.dreamsoftware.artcollectibles.data.api.exception.SecretDataException
-import com.dreamsoftware.artcollectibles.data.api.mapper.SecretMapper
+import com.dreamsoftware.artcollectibles.data.api.mapper.PBEDataMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.ISecretRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ISecretDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.SecretDTO
-import com.dreamsoftware.artcollectibles.domain.models.Secret
+import com.dreamsoftware.artcollectibles.domain.models.PBEData
 import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 
 /**
  * Secret Repository Impl
  * @param secretDataSource
  * @param passwordUtils
- * @param secretMapper
+ * @param PBEDataMapper
  */
 internal class SecretRepositoryImpl(
     private val secretDataSource: ISecretDataSource,
     private val passwordUtils: PasswordUtils,
-    private val secretMapper: SecretMapper
+    private val PBEDataMapper: PBEDataMapper
 ) : ISecretRepository {
 
     private companion object {
@@ -26,20 +26,20 @@ internal class SecretRepositoryImpl(
     }
 
     @Throws(SecretDataException::class)
-    override suspend fun generate(userUid: String): Secret = try {
+    override suspend fun generate(userUid: String): PBEData = try {
         val secret = passwordUtils.generatePassword(length = SECRET_LENGTH)
         val secretSalt = passwordUtils.generatePassword(length = SECRET_SALT_LENGTH)
         secretDataSource.save(SecretDTO(userUid, secret, secretSalt))
-        secretMapper.mapInToOut(secretDataSource.getByUserUid(userUid))
+        PBEDataMapper.mapInToOut(secretDataSource.getByUserUid(userUid))
     } catch (ex: Exception) {
         ex.printStackTrace()
         throw SecretDataException("An error occurred when trying to save secret information", ex)
     }
 
     @Throws(SecretDataException::class)
-    override suspend fun get(userUid: String): Secret = try {
+    override suspend fun get(userUid: String): PBEData = try {
         val secret = secretDataSource.getByUserUid(userUid)
-        secretMapper.mapInToOut(secret)
+        PBEDataMapper.mapInToOut(secret)
     } catch (ex: Exception) {
         throw SecretDataException("An error occurred when trying to get secret information", ex)
     }

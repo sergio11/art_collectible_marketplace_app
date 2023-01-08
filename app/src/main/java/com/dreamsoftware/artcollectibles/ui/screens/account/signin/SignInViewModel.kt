@@ -25,7 +25,7 @@ class SignInViewModel @Inject constructor(
         updateState {
             it.copy(
                 email = newEmail,
-                isLoginButtonEnabled = loginButtonShouldBeEnabled()
+                isLoginButtonEnabled = loginButtonShouldBeEnabled(newEmail, it.password.orEmpty())
             )
         }
     }
@@ -34,7 +34,7 @@ class SignInViewModel @Inject constructor(
         updateState {
             it.copy(
                 password = newPassword,
-                isLoginButtonEnabled = loginButtonShouldBeEnabled()
+                isLoginButtonEnabled = loginButtonShouldBeEnabled(it.email.orEmpty(), newPassword)
             )
         }
     }
@@ -81,10 +81,9 @@ class SignInViewModel @Inject constructor(
         updateState { it.copy(loginState = LoginState.OnLoginInProgress) }
     }
 
-    private fun loginButtonShouldBeEnabled() = with(uiState.value) {
-        Patterns.EMAIL_ADDRESS.matcher(email.orEmpty()).matches()
-                && password.orEmpty().length > MIN_PASSWORD_LENGTH
-    }
+    private fun loginButtonShouldBeEnabled(email: String, password: String) =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                && password.length > MIN_PASSWORD_LENGTH
 
 }
 

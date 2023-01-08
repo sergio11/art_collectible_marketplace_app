@@ -1,9 +1,14 @@
 package com.dreamsoftware.artcollectibles.data.firebase.mapper
 
 import com.dreamsoftware.artcollectibles.data.firebase.model.SecretDTO
+import com.dreamsoftware.artcollectibles.utils.CryptoUtils
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import com.dreamsoftware.artcollectibles.utils.IMapper
 
-class SecretMapper : IMapper<SecretDTO, Map<String, Any?>> {
+class SecretMapper(
+    private val cryptoUtils: CryptoUtils,
+    private val applicationAware: IApplicationAware
+) : IMapper<SecretDTO, Map<String, Any?>> {
 
     private companion object {
         const val SECRET_KEY = "secret"
@@ -12,10 +17,11 @@ class SecretMapper : IMapper<SecretDTO, Map<String, Any?>> {
     }
 
     override fun mapInToOut(input: SecretDTO): Map<String, Any?> = with(input) {
+        val masterPBE = applicationAware.getMasterSecret()
         hashMapOf(
             UID_KEY to userUid,
-            SECRET_KEY to secret,
-            SALT_KEY to salt
+            SECRET_KEY to cryptoUtils.encryptAndEncode(masterPBE.secret, masterPBE.salt, secret),
+            SALT_KEY to cryptoUtils.encryptAndEncode(masterPBE.secret, masterPBE.salt, salt)
         )
     }
 
@@ -23,10 +29,11 @@ class SecretMapper : IMapper<SecretDTO, Map<String, Any?>> {
         input.map(::mapInToOut)
 
     override fun mapOutToIn(input: Map<String, Any?>): SecretDTO = with(input) {
+        val masterPBE = applicationAware.getMasterSecret()
         SecretDTO(
             userUid = get(UID_KEY) as String,
-            secret = get(SECRET_KEY) as String,
-            salt = get(SALT_KEY) as String
+            secret = cryptoUtils.decodeAndDecrypt(masterPBE.secret, masterPBE.salt, get(SECRET_KEY) as String),
+            salt = cryptoUtils.decodeAndDecrypt(masterPBE.secret, masterPBE.salt, get(SALT_KEY) as String)
         )
     }
 

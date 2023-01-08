@@ -31,3 +31,4 @@ dependencyResolutionManagement {
 rootProject.name = "ArtCollectiblesMarketplace"
 
 include(":app")
+include(":secretsLib")

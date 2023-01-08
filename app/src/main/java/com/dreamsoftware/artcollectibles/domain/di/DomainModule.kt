@@ -167,12 +167,14 @@ class DomainModule {
     /**
      * Provide Verify User Authenticated Use case
      * @param userRepository
+     * @param preferenceRepository
      */
     @Provides
     @ViewModelScoped
     fun provideVerifyUserAuthenticatedUseCase(
-        userRepository: IUserRepository
-    ) = VerifyUserAuthenticatedUseCase(userRepository)
+        userRepository: IUserRepository,
+        preferenceRepository: IPreferenceRepository
+    ) = VerifyUserAuthenticatedUseCase(userRepository, preferenceRepository)
 
     /**
      * Provide Get Current Balance Use case

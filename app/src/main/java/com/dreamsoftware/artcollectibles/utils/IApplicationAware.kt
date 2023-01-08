@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.utils
 
-import com.dreamsoftware.artcollectibles.domain.models.Secret
+import com.dreamsoftware.artcollectibles.domain.models.PBEData
 
 interface IApplicationAware {
 
@@ -14,7 +14,9 @@ interface IApplicationAware {
      */
     fun getFileProviderAuthority(): String
 
-    fun setUserSecret(secret: Secret?)
+    fun getMasterSecret(): PBEData
 
-    fun getUserSecret(): Secret
+    fun setUserSecret(PBEData: PBEData?)
+
+    fun getUserSecret(): PBEData
 }

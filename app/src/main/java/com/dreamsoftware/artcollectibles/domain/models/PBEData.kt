@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.domain.models
 
-data class Secret(
-    val userUid: String,
+data class PBEData(
     val secret: String,
     val salt: String
 )

@@ -158,6 +158,8 @@ dependencies {
 
     // Facebook Login SDK
     implementation("com.facebook.android:facebook-login:latest.release")
+
+    implementation(project(":secretsLib"))
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

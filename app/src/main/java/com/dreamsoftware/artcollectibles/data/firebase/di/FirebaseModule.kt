@@ -69,10 +69,15 @@ class FirebaseModule {
 
     /**
      * Provide Secret Mapper
+     * @param cryptoUtils
+     * @param applicationAware
      */
     @Provides
     @Singleton
-    fun provideSecretMapper(): SecretMapper = SecretMapper()
+    fun provideSecretMapper(
+        cryptoUtils: CryptoUtils,
+        applicationAware: IApplicationAware
+    ): SecretMapper = SecretMapper(cryptoUtils, applicationAware)
 
     /**
      * Provide Firebase Auth
