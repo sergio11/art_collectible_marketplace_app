@@ -15,7 +15,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.WalletUtils
 import java.io.File
-import java.io.FileOutputStream
 import java.net.URL
 import java.nio.channels.Channels
 import java.security.Security
@@ -42,7 +41,7 @@ internal class WalletDataSourceImpl(
     override suspend fun install(name: String, walletUrl: URL) {
         withContext(Dispatchers.IO) {
             try {
-                FileOutputStream(name).channel
+                File(getInternalWalletDirectory(), name).outputStream().channel
                     .transferFrom(Channels.newChannel(walletUrl.openStream()), 0, Long.MAX_VALUE)
             } catch (ex: Exception) {
                 throw InstallWalletException(

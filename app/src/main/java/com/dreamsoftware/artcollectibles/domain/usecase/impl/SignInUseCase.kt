@@ -23,7 +23,7 @@ class SignInUseCase(
 
     override suspend fun onExecuted(params: Params): UserInfo = with(params) {
         val authUser = userRepository.signIn(AuthRequest(email, password))
-        applicationAware.setUserSecretKey(key = secretRepository.get(authUser.uid))
+        applicationAware.setUserSecret(secretRepository.get(authUser.uid))
         preferenceRepository.saveAuthUserUid(uid = authUser.uid)
         userRepository.get(uid = authUser.uid)
     }
@@ -31,7 +31,7 @@ class SignInUseCase(
     override suspend fun onReverted(params: SignInUseCase.Params) {
         userRepository.closeSession()
         preferenceRepository.clearData()
-        applicationAware.setUserSecretKey(null)
+        applicationAware.setUserSecret(null)
     }
 
     data class Params(

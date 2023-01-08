@@ -61,13 +61,7 @@ internal class WalletRepositoryImpl(
     @Throws(WalletDataException::class)
     override suspend fun generate(userUid: String): UserWalletCredentials = try {
         // Generate Wallet Secret
-        val walletSecret = passwordUtils.generatePassword(
-            isWithLetters = true,
-            isWithSpecial = true,
-            isWithNumbers = true,
-            isWithUppercase = true,
-            length = WALLET_SECRET_LENGTH
-        )
+        val walletSecret = passwordUtils.generatePassword(length = WALLET_SECRET_LENGTH)
         val walletCreated = walletDataSource.generate(walletSecret)
         val walletUri = storageDataSource.save(WALLET_DIRECTORY, walletCreated.name, walletCreated.path.toString())
         walletSecretsDataSource.save(WalletMetadataDTO(userUid, walletCreated.name, walletSecret, walletUri.toString()))
@@ -88,6 +82,7 @@ internal class WalletRepositoryImpl(
         val balance = accountBlockchainDataSource.getCurrentBalance(credentials)
         accountBalanceMapper.mapInToOut(balance)
     } catch (ex: Exception) {
+        ex.printStackTrace()
         throw WalletDataException("An error occurred when trying to get current balance", ex)
     }
 
@@ -100,7 +95,7 @@ internal class WalletRepositoryImpl(
             if(!hasWallet(name)) {
                 walletDataSource.install(name, URL(walletUri))
             }
-            loadCredentials(name, secret)
+            loadCredentials(name, password)
         }
     }
 }

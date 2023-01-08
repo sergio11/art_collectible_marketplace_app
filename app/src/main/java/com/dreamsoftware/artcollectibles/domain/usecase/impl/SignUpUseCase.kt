@@ -26,7 +26,7 @@ class SignUpUseCase(
 
     override suspend fun onExecuted(params: Params): UserInfo = with(params) {
         val authUser = userRepository.signUp(email, password)
-        applicationAware.setUserSecretKey(key = secretRepository.generate(authUser.uid))
+        applicationAware.setUserSecret(secretRepository.generate(authUser.uid))
         preferenceRepository.saveAuthUserUid(uid = authUser.uid)
         val wallet = walletRepository.generate(userUid = authUser.uid)
         with(authUser) {
@@ -44,7 +44,7 @@ class SignUpUseCase(
     }
 
     override suspend fun onReverted(params: Params) {
-        applicationAware.setUserSecretKey(null)
+        applicationAware.setUserSecret(null)
         preferenceRepository.clearData()
     }
 

@@ -17,7 +17,7 @@ class CloseSessionUseCase(
     private val applicationAware: IApplicationAware
 ): BaseUseCase<Unit>() {
     override suspend fun onExecuted() {
-        applicationAware.setUserSecretKey(key = null)
+        applicationAware.setUserSecret(null)
         userRepository.closeSession()
         preferenceRepository.clearData()
     }

@@ -11,33 +11,35 @@ class WalletMetadataMapper(
 ) : IMapper<WalletMetadataDTO, Map<String, Any?>> {
 
     private companion object {
-        const val SECRET_KEY = "secret"
+        const val PASSWORD_KEY = "password"
         const val NAME_KEY = "name"
         const val UID_KEY = "userUid"
         const val PATH_KEY = "path"
     }
 
     override fun mapInToOut(input: WalletMetadataDTO): Map<String, Any?> = with(input) {
-        val key = applicationAware.getUserSecretKey()
-        hashMapOf(
-            UID_KEY to userUid,
-            SECRET_KEY to cryptoUtils.encryptAndEncode(key, secret),
-            NAME_KEY to cryptoUtils.encryptAndEncode(key, name),
-            PATH_KEY to walletUri
-        )
+        with(applicationAware.getUserSecret()) {
+            hashMapOf(
+                UID_KEY to userUid,
+                PASSWORD_KEY to cryptoUtils.encryptAndEncode(secret, salt, password),
+                NAME_KEY to cryptoUtils.encryptAndEncode(secret, salt, name),
+                PATH_KEY to walletUri
+            )
+        }
     }
 
     override fun mapInListToOutList(input: Iterable<WalletMetadataDTO>): Iterable<Map<String, Any?>> =
         input.map(::mapInToOut)
 
     override fun mapOutToIn(input: Map<String, Any?>): WalletMetadataDTO = with(input) {
-        val key = applicationAware.getUserSecretKey()
-        WalletMetadataDTO(
-            userUid = get(UID_KEY) as String,
-            secret = cryptoUtils.decodeAndDecrypt(key, get(SECRET_KEY) as String),
-            name = cryptoUtils.decodeAndDecrypt(key, get(NAME_KEY) as String),
-            walletUri = get(NAME_KEY) as String
-        )
+        with(applicationAware.getUserSecret()) {
+            WalletMetadataDTO(
+                userUid = get(UID_KEY) as String,
+                password = cryptoUtils.decodeAndDecrypt(secret, salt, get(PASSWORD_KEY) as String),
+                name = cryptoUtils.decodeAndDecrypt(secret, salt, get(NAME_KEY) as String),
+                walletUri = get(PATH_KEY) as String
+            )
+        }
     }
 
     override fun mapOutListToInList(input: Iterable<Map<String, Any?>>): Iterable<WalletMetadataDTO> =

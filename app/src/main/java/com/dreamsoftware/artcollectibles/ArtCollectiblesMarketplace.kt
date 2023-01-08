@@ -17,22 +17,22 @@
 package com.dreamsoftware.artcollectibles
 
 import android.app.Application
+import com.dreamsoftware.artcollectibles.domain.models.Secret
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class ArtCollectiblesMarketplace : Application(), IApplicationAware {
 
-    private var userSecretKey: String? = null
+    private var sessionUserSecret: Secret? = null
 
     override fun getApplicationId(): String = BuildConfig.APPLICATION_ID
 
     override fun getFileProviderAuthority(): String = BuildConfig.APPLICATION_ID + ".provider"
 
-    override fun setUserSecretKey(key: String?) {
-        userSecretKey = key
+    override fun setUserSecret(secret: Secret?) {
+        sessionUserSecret = secret
     }
 
-    override fun getUserSecretKey(): String = userSecretKey.orEmpty()
-
+    override fun getUserSecret(): Secret = sessionUserSecret ?: throw IllegalStateException("User secret has not been configured")
 }

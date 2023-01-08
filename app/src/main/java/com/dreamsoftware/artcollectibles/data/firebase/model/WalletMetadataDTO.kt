@@ -3,6 +3,6 @@ package com.dreamsoftware.artcollectibles.data.firebase.model
 data class WalletMetadataDTO(
     val userUid: String,
     val name: String,
-    val secret: String,
+    val password: String,
     val walletUri: String
 )

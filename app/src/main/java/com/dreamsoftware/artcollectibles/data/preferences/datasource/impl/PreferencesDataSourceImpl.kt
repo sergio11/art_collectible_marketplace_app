@@ -28,13 +28,17 @@ internal class PreferencesDataSourceImpl(
     }
 
     override suspend fun saveAuthUserUid(uid: String) {
-        dataStore.edit {
-            it[AUTH_USER_UID_KEY] = cryptoUtils.encryptAndEncode(applicationAware.getUserSecretKey(), uid)
+        with(applicationAware.getUserSecret()) {
+            dataStore.edit {
+                it[AUTH_USER_UID_KEY] = cryptoUtils.encryptAndEncode(secret, salt, uid)
+            }
         }
     }
 
     override suspend fun getAuthUserUid(): String = dataStore.data.map {
-        cryptoUtils.decodeAndDecrypt(applicationAware.getUserSecretKey(), it[AUTH_USER_UID_KEY].orEmpty())
+        with(applicationAware.getUserSecret()) {
+            cryptoUtils.decodeAndDecrypt(secret, salt, it[AUTH_USER_UID_KEY].orEmpty())
+        }
     }.first()
 
     override suspend fun clearData() {
@@ -42,5 +46,4 @@ internal class PreferencesDataSourceImpl(
             it.clear()
         }
     }
-
 }

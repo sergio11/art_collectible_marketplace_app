@@ -18,10 +18,10 @@ class PasswordUtils {
      * @param length Int value with the length of the password
      * @return the new password.
      */
-    fun generatePassword(isWithLetters: Boolean,
-                         isWithUppercase: Boolean,
-                         isWithNumbers: Boolean,
-                         isWithSpecial: Boolean,
+    fun generatePassword(isWithLetters: Boolean = true,
+                         isWithUppercase: Boolean = true,
+                         isWithNumbers: Boolean = true,
+                         isWithSpecial: Boolean = true,
                          length: Int) : String {
 
         var result = ""

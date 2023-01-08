@@ -1,5 +1,7 @@
 package com.dreamsoftware.artcollectibles.utils
 
+import com.dreamsoftware.artcollectibles.domain.models.Secret
+
 interface IApplicationAware {
 
     /**
@@ -12,7 +14,7 @@ interface IApplicationAware {
      */
     fun getFileProviderAuthority(): String
 
-    fun setUserSecretKey(key: String?)
+    fun setUserSecret(secret: Secret?)
 
-    fun getUserSecretKey(): String
+    fun getUserSecret(): Secret
 }

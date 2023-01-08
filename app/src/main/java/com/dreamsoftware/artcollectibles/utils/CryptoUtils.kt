@@ -1,20 +1,26 @@
 package com.dreamsoftware.artcollectibles.utils
 
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties.*
 import android.util.Base64
-import android.util.Log
+import java.security.NoSuchAlgorithmException
 import java.security.spec.AlgorithmParameterSpec
+import java.security.spec.InvalidKeySpecException
 import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
 
 class CryptoUtils {
 
     private companion object {
         const val SECRET_KEY_ALIAS = "ART_COLLECTIBLE_USER_SECRET"
-        const val transformation = "AES/CBC/PKCS7Padding"
+        const val SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA256"
+        const val TRANSFORMATION = "AES/CFB/PKCS5Padding"
+        const val ALGORITHM = "AES"
+        const val ITERATION_COUNT = 65536
+        const val KEY_LENGTH = 256
+        const val IV_SIZE = 16
     }
 
     private val charset by lazy {
@@ -23,78 +29,68 @@ class CryptoUtils {
 
     /**
      * Encrypt And Encode as Base64
-     * @param key
+     * @param password
+     * @param salt
      * @param data
      */
-    fun encryptAndEncode(key: String, data: String): String =
-        String(Base64.encode(encrypt(key, data.toByteArray()), Base64.DEFAULT), charset)
+    fun encryptAndEncode(password: String, salt: String, data: String): String =
+        String(Base64.encode(encrypt(password, salt, data.toByteArray()), Base64.DEFAULT), charset)
 
     /**
      * Decode and Decrypt
-     * @param key
+     * @param password
+     * @param salt
      * @param data
      */
-    fun decodeAndDecrypt(key: String, data: String): String =
-        String(decrypt(key, Base64.decode(data, Base64.DEFAULT)), charset)
+    fun decodeAndDecrypt(password: String, salt: String, data: String): String =
+        String(decrypt(password, salt, Base64.decode(data, Base64.DEFAULT)), charset)
 
-    /**
-     * Generate Secret Key
-     */
-    fun generateSecretKey(): String {
-        val keyGenParameters = KeyGenParameterSpec.Builder(SECRET_KEY_ALIAS, PURPOSE_ENCRYPT or PURPOSE_DECRYPT).run {
-            setBlockModes(BLOCK_MODE_CBC)
-            setEncryptionPaddings(ENCRYPTION_PADDING_PKCS7)
-            setRandomizedEncryptionRequired(true)
-            build()
-        }
-        val keyGenerator = KeyGenerator.getInstance(KEY_ALGORITHM_AES).also {
-            it.init(keyGenParameters)
-        }
-
-        val key = keyGenerator.generateKey()
-
-
-
-        Log.d("ART_COLL", "Provider -> ${keyGenerator.provider.name}")
-
-        Log.d("ART_COLL", "key.encoded -> ${key.encoded}")
-        Log.d("ART_COLL", "key.format -> ${key.format}")
-        Log.d("ART_COLL", "key.algorithm -> ${key.algorithm}")
-        return String(Base64.encode(key.encoded, Base64.DEFAULT), charset)
-    }
     /**
      * Private Methods
      */
 
+    @Throws(NoSuchAlgorithmException::class, InvalidKeySpecException::class)
+    private fun getKeyFromPassword(password: String, salt: String): SecretKey {
+        val factory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM)
+        val spec = PBEKeySpec(password.toCharArray(), salt.toByteArray(), ITERATION_COUNT, KEY_LENGTH)
+        return SecretKeySpec(factory.generateSecret(spec).encoded, ALGORITHM)
+    }
+
+
     /**
      * Encrypt data
+     * @param password
+     * @param salt
      * @param data
      */
-    private fun encrypt(key: String, data: ByteArray): ByteArray {
-        val cipher = getCipher(Cipher.ENCRYPT_MODE, key)
+    private fun encrypt(password: String, salt: String, data: ByteArray): ByteArray {
+        val cipher = getCipher(Cipher.ENCRYPT_MODE, password, salt)
         val encrypted = cipher.doFinal(data)
         return encrypted + cipher.iv
     }
 
     /**
      * Decrypt
+     * @param password
+     * @param salt
      * @param data
      */
-    private fun decrypt(key: String, data: ByteArray): ByteArray {
-        val ivSize = 16
-        val encryptedData = data.sliceArray(0 until data.count()-ivSize)
-        val iv = data.sliceArray((data.count()-ivSize) until data.count())
-        val cipher = getCipher(Cipher.DECRYPT_MODE, key, IvParameterSpec(iv))
+    private fun decrypt(password: String, salt: String, data: ByteArray): ByteArray {
+        val encryptedData = data.sliceArray(0 until data.count()-IV_SIZE)
+        val iv = data.sliceArray((data.count()-IV_SIZE) until data.count())
+        val cipher = getCipher(Cipher.DECRYPT_MODE, password, salt, IvParameterSpec(iv))
         return cipher.doFinal(encryptedData)
     }
 
     /**
      * Get Cipher
      * @param mode
+     * @param password
+     * @param salt
      * @param params
      */
-    private fun getCipher(mode: Int, key: String, params: AlgorithmParameterSpec? = null): Cipher=
-        Cipher.getInstance(transformation).also {
-            it.init(mode, SecretKeySpec(Base64.decode(key, Base64.DEFAULT), transformation), params)
+    private fun getCipher(mode: Int, password: String, salt: String, params: AlgorithmParameterSpec? = null): Cipher=
+        Cipher.getInstance(TRANSFORMATION).also {
+            it.init(mode, getKeyFromPassword(password, salt), params)
         }
 }

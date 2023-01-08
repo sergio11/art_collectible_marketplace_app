@@ -1,7 +1,5 @@
 package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
-import android.util.Log
-import com.dreamsoftware.artcollectibles.data.api.exception.SecretDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
 import com.dreamsoftware.artcollectibles.data.api.repository.IPreferenceRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.ISecretRepository
@@ -49,7 +47,7 @@ class SocialSignInUseCase(
     override suspend fun onReverted(params: Params) {
         userRepository.closeSession()
         preferenceRepository.clearData()
-        applicationAware.setUserSecretKey(null)
+        applicationAware.setUserSecret(null)
     }
 
     /**
@@ -71,13 +69,9 @@ class SocialSignInUseCase(
     }
 
     private suspend fun configureUserSecretKey(uid: String) {
-        Log.d("ART_COLL", "configureUserSecretKey uid -> $uid")
-        val secret = runCatching { secretRepository.get(uid) }.getOrElse {
-            Log.d("ART_COLL", "generate -> $uid CALLED!")
-            secretRepository.generate(uid)
-        }
-        Log.d("ART_COLL", "configureUserSecretKey secret -> $secret")
-        applicationAware.setUserSecretKey(key = secret)
+        val secret = runCatching { secretRepository.get(uid) }
+            .getOrElse { secretRepository.generate(uid) }
+        applicationAware.setUserSecret(secret)
     }
 
     data class Params(

@@ -67,6 +67,13 @@ class DataModule {
     fun provideUserCredentialsMapper(): UserCredentialsMapper = UserCredentialsMapper()
 
     /**
+     * Provide Secret Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideSecretMapper(): SecretMapper = SecretMapper()
+
+    /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
      * @param ipfsDataSource
@@ -177,16 +184,22 @@ class DataModule {
 
     /**
      * Provide Secret Repository
-     * @param cryptoUtils
+     * @param passwordUtils
      * @param secretDataSource
+     * @param secretMapper
      */
     @Provides
     @Singleton
     fun provideSecretRepository(
-        cryptoUtils: CryptoUtils,
-        secretDataSource: ISecretDataSource
+        passwordUtils: PasswordUtils,
+        secretDataSource: ISecretDataSource,
+        secretMapper: SecretMapper
     ): ISecretRepository =
-        SecretRepositoryImpl(secretDataSource, cryptoUtils)
+        SecretRepositoryImpl(
+            secretDataSource,
+            passwordUtils,
+            secretMapper
+        )
 
     /**
      * Provide Preference Repository
