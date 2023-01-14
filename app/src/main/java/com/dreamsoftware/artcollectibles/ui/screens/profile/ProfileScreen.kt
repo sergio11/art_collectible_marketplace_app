@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,6 +33,8 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.CommonDatePicker
 import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
@@ -124,18 +127,9 @@ internal fun ProfileComponent(
                 val defaultModifier = Modifier
                     .padding(vertical = 20.dp)
                     .width(300.dp)
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(state.userInfo?.photoUrl)
-                        .crossfade(true)
-                        .build(),
-                    placeholder = painterResource(R.drawable.user_placeholder),
-                    contentDescription = stringResource(R.string.image_content_description),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape)
-                )
+
+                AccountProfilePicture(userInfo = state.userInfo)
+
                 state.accountBalance?.let {
                     CurrentAccountBalance(accountBalance = it) {
                         context.startActivity(
@@ -206,7 +200,42 @@ internal fun ProfileComponent(
 }
 
 @Composable
-internal fun CurrentAccountBalance(accountBalance: AccountBalance, onGetMoreMaticClicked: () -> Unit) {
+internal fun AccountProfilePicture(userInfo: UserInfo? = null) {
+    Box {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(userInfo?.photoUrl)
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(R.drawable.user_placeholder),
+            contentDescription = stringResource(R.string.image_content_description),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(150.dp)
+                .clip(CircleShape)
+        )
+        userInfo?.externalProviderAuthType?.let {
+            Image(
+                painter = painterResource(id = when(it) {
+                    ExternalProviderAuthTypeEnum.FACEBOOK -> R.drawable.facebook_icon
+                    ExternalProviderAuthTypeEnum.GOOGLE -> R.drawable.google_icon_logo
+                }),
+                contentDescription = "External Provider Icon",
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(40.dp)
+                    .zIndex(2f)
+                    .align(Alignment.BottomEnd)
+            )
+        }
+    }
+}
+
+@Composable
+internal fun CurrentAccountBalance(
+    accountBalance: AccountBalance,
+    onGetMoreMaticClicked: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -222,7 +251,10 @@ internal fun CurrentAccountBalance(accountBalance: AccountBalance, onGetMoreMati
                 .height(40.dp)
         )
         Text(
-            text = stringResource(id = R.string.profile_current_matic, accountBalance.erc20.toString()),
+            text = stringResource(
+                id = R.string.profile_current_matic,
+                accountBalance.erc20.toString()
+            ),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 8.dp),
             style = MaterialTheme.typography.titleMedium
