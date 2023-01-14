@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.mapper
 
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.utils.IMapper
 
@@ -13,7 +14,10 @@ class UserInfoMapper: IMapper<UserDTO, UserInfo> {
             info = info.orEmpty(),
             contact = contact.orEmpty(),
             walletAddress = walletAddress,
-            photoUrl = photoUrl
+            photoUrl = photoUrl,
+            externalProviderAuthType = externalProviderAuth?.let {
+                enumValueOf<ExternalProviderAuthTypeEnum>(it)
+            }
         )
     }
 

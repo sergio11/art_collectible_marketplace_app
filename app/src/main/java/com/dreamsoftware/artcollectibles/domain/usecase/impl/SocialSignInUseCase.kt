@@ -8,7 +8,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.firebase.exception.UserNotFoundException
 import com.dreamsoftware.artcollectibles.domain.models.AuthUser
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthRequest
-import com.dreamsoftware.artcollectibles.domain.models.SocialAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
@@ -30,14 +30,14 @@ class SocialSignInUseCase(
 ) : BaseUseCaseWithParams<SocialSignInUseCase.Params, UserInfo>() {
 
     override suspend fun onExecuted(params: Params): UserInfo = with(params) {
-        val authUser = userRepository.signIn(ExternalProviderAuthRequest(accessToken, socialAuthTypeEnum))
+        val authUser = userRepository.signIn(ExternalProviderAuthRequest(accessToken, externalProviderAuthTypeEnum))
         configureUserSecretKey(uid = authUser.uid)
         preferenceRepository.saveAuthUserUid(uid = authUser.uid)
         try {
             userRepository.get(uid = authUser.uid)
         } catch (ex: UserDataException) {
             if (ex.cause is UserNotFoundException) {
-                createUser(authUser)
+                createUser(authUser, params.externalProviderAuthTypeEnum)
             } else {
                 throw ex
             }
@@ -54,7 +54,7 @@ class SocialSignInUseCase(
      * Private Methods
      */
 
-    private suspend fun createUser(authUser: AuthUser): UserInfo = with(authUser) {
+    private suspend fun createUser(authUser: AuthUser, externalProviderAuth: ExternalProviderAuthTypeEnum): UserInfo = with(authUser) {
         val wallet = walletRepository.generate(userUid = uid)
         userRepository.save(
             UserInfo(
@@ -62,7 +62,8 @@ class SocialSignInUseCase(
                 name = displayName,
                 contact = email,
                 photoUrl = photoUrl,
-                walletAddress = wallet.address
+                walletAddress = wallet.address,
+                externalProviderAuthType = externalProviderAuth
             )
         )
         userRepository.get(uid)
@@ -76,6 +77,6 @@ class SocialSignInUseCase(
 
     data class Params(
         val accessToken: String,
-        val socialAuthTypeEnum: SocialAuthTypeEnum
+        val externalProviderAuthTypeEnum: ExternalProviderAuthTypeEnum
     )
 }

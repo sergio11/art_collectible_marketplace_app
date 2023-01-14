@@ -2,7 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.account.signin
 
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
-import com.dreamsoftware.artcollectibles.domain.models.SocialAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.SignInUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.SocialSignInUseCase
@@ -52,7 +52,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun signIn(accessToken: String, authType: SocialAuthTypeEnum) {
+    fun signIn(accessToken: String, authType: ExternalProviderAuthTypeEnum) {
         viewModelScope.launch {
             onLoginInProgress()
             socialSignInUseCase.invoke(

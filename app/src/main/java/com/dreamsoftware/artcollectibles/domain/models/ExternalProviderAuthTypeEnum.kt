@@ -1,5 +1,5 @@
 package com.dreamsoftware.artcollectibles.domain.models
 
-enum class SocialAuthTypeEnum {
+enum class ExternalProviderAuthTypeEnum {
     FACEBOOK, GOOGLE
 }

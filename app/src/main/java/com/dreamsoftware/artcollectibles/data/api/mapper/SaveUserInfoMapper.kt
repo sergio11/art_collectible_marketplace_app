@@ -13,7 +13,8 @@ class SaveUserInfoMapper: IOneSideMapper<UserInfo, SaveUserDTO> {
             walletAddress = walletAddress,
             info = info,
             contact = contact,
-            photoUrl = photoUrl
+            photoUrl = photoUrl,
+            externalAuthProvider = externalProviderAuthType?.name
         )
     }
 

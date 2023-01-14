@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.SocialAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
@@ -84,7 +84,7 @@ internal fun SignInComponent(
     onEmailChanged: (email: String) -> Unit,
     onPasswordChanged: (password: String) -> Unit,
     onSignIn: () -> Unit,
-    onSocialSignIn: (token: String, authType: SocialAuthTypeEnum) -> Unit
+    onSocialSignIn: (token: String, authType: ExternalProviderAuthTypeEnum) -> Unit
 ) {
     Log.d("SIGN_IN", "SignInComponent state -> $state")
     if (state.loginState is LoginState.OnLoginError) {
@@ -143,7 +143,7 @@ internal fun SignInComponent(
             enabled = state.loginState !is LoginState.OnLoginInProgress,
             modifier = Modifier.padding(horizontal = 20.dp),
             onSuccess = {
-                onSocialSignIn(it, SocialAuthTypeEnum.FACEBOOK)
+                onSocialSignIn(it, ExternalProviderAuthTypeEnum.FACEBOOK)
             },
             onCancel = {
                 coroutineScope.launch {
@@ -174,7 +174,7 @@ internal fun SignInComponent(
                 }
             },
             onAuthSuccess = {
-                onSocialSignIn(it, SocialAuthTypeEnum.GOOGLE)
+                onSocialSignIn(it, ExternalProviderAuthTypeEnum.GOOGLE)
                 Log.d("GOOGLE_LOGIN", "onAuthSuccess $it CALLED!")
             }
         )

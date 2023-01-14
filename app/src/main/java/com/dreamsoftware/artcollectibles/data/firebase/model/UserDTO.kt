@@ -6,5 +6,6 @@ data class UserDTO(
     val info: String? = null,
     val contact: String? = null,
     val photoUrl: String? = null,
-    val walletAddress: String
+    val walletAddress: String,
+    val externalProviderAuth: String? = null,
 )

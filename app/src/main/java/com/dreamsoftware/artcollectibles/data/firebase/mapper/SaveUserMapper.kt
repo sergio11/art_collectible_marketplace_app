@@ -3,7 +3,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.mapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 
-class SaveUserMapper: IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
+class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
 
     private companion object {
         const val UID_KEY = "uid"
@@ -12,6 +12,7 @@ class SaveUserMapper: IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
         const val INFO_KEY = "info"
         const val CONTACT_KEY = "contact"
         const val PHOTO_KEY = "photo"
+        const val EXTERNAL_PROVIDER_AUTH = "external_provider_auth"
     }
 
     override fun mapInToOut(input: SaveUserDTO): Map<String, Any?> = with(input) {
@@ -19,6 +20,7 @@ class SaveUserMapper: IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
             UID_KEY to uid,
             NAME_KEY to name,
             WALLET_ADDRESS_KEY to walletAddress,
+            EXTERNAL_PROVIDER_AUTH to externalAuthProvider
         ).apply {
             contact?.let { put(CONTACT_KEY, it) }
             photoUrl?.let { put(PHOTO_KEY, it) }

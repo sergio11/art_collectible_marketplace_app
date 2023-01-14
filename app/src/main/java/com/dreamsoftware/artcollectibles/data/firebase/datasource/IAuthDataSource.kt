@@ -4,7 +4,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.exception.AuthException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SignInException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SignUpException
 import com.dreamsoftware.artcollectibles.data.firebase.model.AuthUserDTO
-import com.dreamsoftware.artcollectibles.domain.models.SocialAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 
 interface IAuthDataSource {
 
@@ -14,10 +14,10 @@ interface IAuthDataSource {
     /**
      * Sign In With External Provider
      * @param accessToken
-     * @param socialAuthTypeEnum
+     * @param externalProviderAuthTypeEnum
      */
     @Throws(SignInException::class)
-    suspend fun signInWithExternalProvider(accessToken: String, socialAuthTypeEnum: SocialAuthTypeEnum): AuthUserDTO
+    suspend fun signInWithExternalProvider(accessToken: String, externalProviderAuthTypeEnum: ExternalProviderAuthTypeEnum): AuthUserDTO
 
     /**
      * Sign In

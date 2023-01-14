@@ -7,7 +7,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.exception.SignUpException
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.ExternalUserAuthenticatedMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserAuthenticatedMapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.AuthUserDTO
-import com.dreamsoftware.artcollectibles.domain.models.SocialAuthTypeEnum
+import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -40,18 +40,18 @@ internal class AuthDataSourceImpl(
     @Throws(SignInException::class)
     override suspend fun signInWithExternalProvider(
         accessToken: String,
-        socialAuthTypeEnum: SocialAuthTypeEnum
+        externalProviderAuthTypeEnum: ExternalProviderAuthTypeEnum
     ): AuthUserDTO = withContext(Dispatchers.IO) {
         try {
             firebaseAuth.signInWithCredential(
-                getCredentials(accessToken, socialAuthTypeEnum)
+                getCredentials(accessToken, externalProviderAuthTypeEnum)
             ).await()
                 ?.user?.let {
                     externalUserAuthenticatedMapper.mapInToOut(
                         Triple(
                             it,
                             accessToken,
-                            socialAuthTypeEnum
+                            externalProviderAuthTypeEnum
                         )
                     )
                 }
@@ -101,11 +101,11 @@ internal class AuthDataSourceImpl(
     /**
      * Get Credentials
      * @param accessToken
-     * @param socialAuthTypeEnum
+     * @param externalProviderAuthTypeEnum
      */
-    private fun getCredentials(accessToken: String, socialAuthTypeEnum: SocialAuthTypeEnum) =
-        when (socialAuthTypeEnum) {
-            SocialAuthTypeEnum.FACEBOOK -> FacebookAuthProvider.getCredential(accessToken)
-            SocialAuthTypeEnum.GOOGLE -> GoogleAuthProvider.getCredential(accessToken, null)
+    private fun getCredentials(accessToken: String, externalProviderAuthTypeEnum: ExternalProviderAuthTypeEnum) =
+        when (externalProviderAuthTypeEnum) {
+            ExternalProviderAuthTypeEnum.FACEBOOK -> FacebookAuthProvider.getCredential(accessToken)
+            ExternalProviderAuthTypeEnum.GOOGLE -> GoogleAuthProvider.getCredential(accessToken, null)
         }
 }

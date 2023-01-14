@@ -50,7 +50,7 @@ internal class UserRepositoryImpl(
     override suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser = try {
         val authUser = authDataSource.signInWithExternalProvider(
             authRequest.accessToken,
-            authRequest.socialAuthTypeEnum
+            authRequest.externalProviderAuthTypeEnum
         )
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
