@@ -127,6 +127,22 @@ class BlockchainModule {
         )
 
     /**
+     * Provide Faucet Blockchain Data Source
+     * @param blockchainConfig
+     * @param web3j
+     */
+    @Provides
+    @Singleton
+    fun provideFaucetBlockchainDataSource(
+        blockchainConfig: BlockchainConfig,
+        web3j: Web3j
+    ): IFaucetBlockchainDataSource =
+        FaucetBlockchainDataSourceImpl(
+            blockchainConfig,
+            web3j
+        )
+
+    /**
      * Provide Account Blockchain Data Source
      * @param accountInformationService
      * @param web3j

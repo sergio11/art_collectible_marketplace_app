@@ -157,6 +157,7 @@ class DataModule {
      * @param secretDataSource
      * @param passwordUtils
      * @param walletDataSource
+     * @param faucetBlockchainDataSource
      */
     @Provides
     @Singleton
@@ -168,7 +169,8 @@ class DataModule {
         storageDataSource: IStorageDataSource,
         secretDataSource: IWalletMetadataDataSource,
         passwordUtils: PasswordUtils,
-        walletDataSource: IWalletDataSource
+        walletDataSource: IWalletDataSource,
+        faucetBlockchainDataSource: IFaucetBlockchainDataSource
     ): IWalletRepository =
         WalletRepositoryImpl(
             accountBalanceMapper,
@@ -178,7 +180,8 @@ class DataModule {
             secretDataSource,
             storageDataSource,
             passwordUtils,
-            walletDataSource
+            walletDataSource,
+            faucetBlockchainDataSource
         )
 
     /**

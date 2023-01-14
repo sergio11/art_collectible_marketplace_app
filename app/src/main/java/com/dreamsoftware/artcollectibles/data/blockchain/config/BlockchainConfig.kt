@@ -15,6 +15,9 @@ class BlockchainConfig {
     val artMarketplaceContractAddress: String
         get() = BuildConfig.ART_MARKETPLACE_CONTRACT_ADDRESS
 
+    val faucetContractAddress: String
+        get() = BuildConfig.FAUCET_CONTRACT_ADDRESS
+
     val chainId: Long
         get() = BuildConfig.CHAIN_ID
 

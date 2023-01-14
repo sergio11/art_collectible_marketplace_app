@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.AccountBalanceMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IFaucetBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletMetadataDataSource
@@ -26,6 +27,7 @@ import java.net.URL
  * @param storageDataSource
  * @param passwordUtils
  * @param walletDataSource
+ * @param faucetDataSource
  */
 internal class WalletRepositoryImpl(
     private val accountBalanceMapper: AccountBalanceMapper,
@@ -35,7 +37,8 @@ internal class WalletRepositoryImpl(
     private val walletSecretsDataSource: IWalletMetadataDataSource,
     private val storageDataSource: IStorageDataSource,
     private val passwordUtils: PasswordUtils,
-    private val walletDataSource: IWalletDataSource
+    private val walletDataSource: IWalletDataSource,
+    private val faucetDataSource: IFaucetBlockchainDataSource
 ): IWalletRepository {
 
     private companion object {
@@ -66,6 +69,7 @@ internal class WalletRepositoryImpl(
         val walletUri = storageDataSource.save(WALLET_DIRECTORY, walletCreated.name, walletCreated.path.toString())
         walletSecretsDataSource.save(WalletMetadataDTO(userUid, walletCreated.name, walletSecret, walletUri.toString()))
         val credentials = walletDataSource.loadCredentials(walletCreated.name, walletSecret)
+        tryToRequestSeedFunds(credentials)
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
         ex.printStackTrace()
@@ -89,6 +93,14 @@ internal class WalletRepositoryImpl(
     /**
      * Private Methods
      */
+
+    private suspend fun tryToRequestSeedFunds(credentials: Credentials) {
+        try {
+            faucetDataSource.requestSeedFunds(credentials)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
 
     private suspend fun loadCredentials(userUid: String): Credentials = with(walletDataSource) {
         with(walletSecretsDataSource.getByUserUid(userUid)) {
