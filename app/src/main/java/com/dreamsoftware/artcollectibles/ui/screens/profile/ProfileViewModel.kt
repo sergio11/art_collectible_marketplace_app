@@ -1,7 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.profile
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.CloseSessionUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCurrentBalanceUseCase
@@ -10,7 +10,6 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.UpdateUserInfoUseCa
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.math.BigInteger
 import javax.inject.Inject
 
 /**
@@ -101,11 +100,15 @@ class ProfileViewModel @Inject constructor(
     private fun loadCurrentBalance() {
         viewModelScope.launch {
             getCurrentBalanceUseCase.invoke(
-                onSuccess = {
-                    Log.d("ART_COLL", "loadCurrentBalance - onSuccess - $it")
+                onSuccess = { balance ->
+                    updateState {
+                        it.copy(accountBalance = balance)
+                    }
                 },
                 onError = {
-                    Log.d("ART_COLL", "loadCurrentBalance - onError - $it")
+                    updateState {
+                        it.copy(accountBalance = null)
+                    }
                 }
             )
         }
@@ -130,7 +133,7 @@ class ProfileViewModel @Inject constructor(
 
 data class ProfileUiState(
     val userInfo: UserInfo? = null,
-    val accountCurrentBalance: BigInteger? = null,
+    val accountBalance: AccountBalance? = null,
     val isLoading: Boolean = false,
     val isSessionClosed: Boolean = false,
 )

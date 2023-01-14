@@ -1,14 +1,17 @@
 package com.dreamsoftware.artcollectibles.ui.screens.profile
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.webkit.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.ButtonDefaults.elevatedShape
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,7 +29,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.CommonDatePicker
 import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
@@ -49,7 +54,7 @@ fun ProfileScreen(
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
             viewModel.uiState.collect {
-                if(it.isSessionClosed) {
+                if (it.isSessionClosed) {
                     onSessionClosed()
                 } else {
                     value = it
@@ -64,19 +69,22 @@ fun ProfileScreen(
             }
         }
         ProfileComponent(
+            context = LocalContext.current,
             navController = navController,
             state = state,
             onNameChanged = ::onNameChanged,
             onInfoChanged = ::onInfoChanged,
             onBirthdateChanged = ::onBirthdateChanged,
             onSaveClicked = ::saveUserInfo,
-            onCloseSessionClicked = ::closeSession)
+            onCloseSessionClicked = ::closeSession
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ProfileComponent(
+    context: Context,
     navController: NavController,
     state: ProfileUiState,
     onNameChanged: (String) -> Unit,
@@ -124,8 +132,20 @@ internal fun ProfileComponent(
                     placeholder = painterResource(R.drawable.user_placeholder),
                     contentDescription = stringResource(R.string.image_content_description),
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(150.dp).clip(CircleShape)
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
                 )
+                state.accountBalance?.let {
+                    CurrentAccountBalance(accountBalance = it) {
+                        context.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                            )
+                        )
+                    }
+                }
                 CommonDefaultTextField(
                     modifier = defaultModifier,
                     labelRes = R.string.profile_input_name_label,
@@ -182,5 +202,41 @@ internal fun ProfileComponent(
                 )
             }
         }
+    }
+}
+
+@Composable
+internal fun CurrentAccountBalance(accountBalance: AccountBalance, onGetMoreMaticClicked: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.matic_icon),
+            contentDescription = "Matic Icon",
+            modifier = Modifier
+                .width(40.dp)
+                .height(40.dp)
+        )
+        Text(
+            text = stringResource(id = R.string.profile_current_matic, accountBalance.erc20.toString()),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            style = MaterialTheme.typography.titleMedium
+        )
+        CommonButton(
+            modifier = Modifier.padding(horizontal = 4.dp),
+            text = R.string.profile_get_more_matic,
+            widthDp = 150.dp,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Purple700,
+                contentColor = Color.White
+            ),
+            buttonShape = elevatedShape,
+            onClick = onGetMoreMaticClicked
+        )
     }
 }

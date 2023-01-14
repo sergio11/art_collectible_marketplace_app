@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -31,10 +32,10 @@ fun CommonButton(
     ),
     widthDp: Dp = 200.dp,
     heightDp: Dp = 50.dp,
+    buttonShape: Shape = RoundedCornerShape(percent = 50),
     @StringRes text: Int,
     onClick: () -> Unit,
 ) {
-    val buttonShape = RoundedCornerShape(percent = 50)
     Button(
         onClick = onClick,
         enabled = enabled,
