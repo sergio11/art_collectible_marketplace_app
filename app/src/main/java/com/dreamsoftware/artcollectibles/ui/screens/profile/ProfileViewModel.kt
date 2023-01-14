@@ -41,6 +41,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onBirthdateChanged(newBirthdate: String) {
+        if(isProfileLoaded()) {
+            updateState {
+                it.copy(userInfo = it.userInfo?.copy(birthdate = newBirthdate))
+            }
+        }
+    }
+
     fun onNameChanged(newName: String) {
         if(isProfileLoaded()) {
             updateState {

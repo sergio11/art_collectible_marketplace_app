@@ -7,5 +7,6 @@ data class SaveUserDTO(
     val info: String? = null,
     val contact: String? = null,
     val photoUrl: String? = null,
+    val birthdate: String? = null,
     val externalAuthProvider: String? = null
 )

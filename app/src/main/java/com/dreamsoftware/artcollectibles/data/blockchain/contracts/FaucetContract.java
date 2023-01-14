@@ -35,7 +35,7 @@ import org.web3j.tx.gas.ContractGasProvider;
  * <p>Generated with web3j version 1.4.2.
  */
 @SuppressWarnings("rawtypes")
-public class IFaucetContract extends Contract {
+public class FaucetContract extends Contract {
     public static final String BINARY = "Bin file was not provided";
 
     public static final String FUNC_DEPOSIT = "deposit";
@@ -44,11 +44,17 @@ public class IFaucetContract extends Contract {
 
     public static final String FUNC_GETINITIALAMOUNT = "getInitialAmount";
 
+    public static final String FUNC_OWNER = "owner";
+
+    public static final String FUNC_RENOUNCEOWNERSHIP = "renounceOwnership";
+
     public static final String FUNC_REQUESTSEEDFUNDS = "requestSeedFunds";
 
     public static final String FUNC_SENDFUNDS = "sendFunds";
 
     public static final String FUNC_SETINITIALAMOUNT = "setInitialAmount";
+
+    public static final String FUNC_TRANSFEROWNERSHIP = "transferOwnership";
 
     public static final Event ONDEPOSIT_EVENT = new Event("OnDeposit", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
@@ -62,21 +68,25 @@ public class IFaucetContract extends Contract {
             Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}, new TypeReference<Uint256>() {}));
     ;
 
+    public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
+    ;
+
     @Deprecated
-    protected IFaucetContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    protected FaucetContract(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected IFaucetContract(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+    protected FaucetContract(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, credentials, contractGasProvider);
     }
 
     @Deprecated
-    protected IFaucetContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected FaucetContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    protected IFaucetContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+    protected FaucetContract(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
@@ -179,6 +189,39 @@ public class IFaucetContract extends Contract {
         return onSendFundsEventFlowable(filter);
     }
 
+    public static List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
+        List<EventValuesWithLog> valueList = staticExtractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
+        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
+        for (EventValuesWithLog eventValues : valueList) {
+            OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new Function<Log, OwnershipTransferredEventResponse>() {
+            @Override
+            public OwnershipTransferredEventResponse apply(Log log) {
+                EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+                typedResponse.log = log;
+                typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+                return typedResponse;
+            }
+        });
+    }
+
+    public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(OWNERSHIPTRANSFERRED_EVENT));
+        return ownershipTransferredEventFlowable(filter);
+    }
+
     public RemoteFunctionCall<TransactionReceipt> deposit(BigInteger weiValue) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_DEPOSIT, 
@@ -199,6 +242,21 @@ public class IFaucetContract extends Contract {
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<String> owner() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_RENOUNCEOWNERSHIP, 
+                Arrays.<Type>asList(), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> requestSeedFunds() {
@@ -226,22 +284,30 @@ public class IFaucetContract extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    @Deprecated
-    public static IFaucetContract load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new IFaucetContract(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public RemoteFunctionCall<TransactionReceipt> transferOwnership(String newOwner) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_TRANSFEROWNERSHIP, 
+                Arrays.<Type>asList(new Address(160, newOwner)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     @Deprecated
-    public static IFaucetContract load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new IFaucetContract(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public static FaucetContract load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new FaucetContract(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    public static IFaucetContract load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new IFaucetContract(contractAddress, web3j, credentials, contractGasProvider);
+    @Deprecated
+    public static FaucetContract load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new FaucetContract(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    public static IFaucetContract load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new IFaucetContract(contractAddress, web3j, transactionManager, contractGasProvider);
+    public static FaucetContract load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return new FaucetContract(contractAddress, web3j, credentials, contractGasProvider);
+    }
+
+    public static FaucetContract load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return new FaucetContract(contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
     public static class OnDepositEventResponse extends BaseEventResponse {
@@ -260,5 +326,11 @@ public class IFaucetContract extends Contract {
         public String account;
 
         public BigInteger amount;
+    }
+
+    public static class OwnershipTransferredEventResponse extends BaseEventResponse {
+        public String previousOwner;
+
+        public String newOwner;
     }
 }

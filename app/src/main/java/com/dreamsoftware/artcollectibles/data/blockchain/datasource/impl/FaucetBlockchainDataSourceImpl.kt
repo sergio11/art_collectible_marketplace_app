@@ -1,7 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
-import com.dreamsoftware.artcollectibles.data.blockchain.contracts.IFaucetContract
+import com.dreamsoftware.artcollectibles.data.blockchain.contracts.FaucetContract
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IFaucetBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.BlockchainDataSourceException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.NotEnoughFundsException
@@ -36,9 +36,9 @@ internal class FaucetBlockchainDataSourceImpl(
         }
     }
 
-    private fun loadContract(credentials: Credentials): IFaucetContract = with(blockchainConfig) {
+    private fun loadContract(credentials: Credentials): FaucetContract = with(blockchainConfig) {
         val txManager = FastRawTransactionManager(web3j, credentials, chainId)
-        IFaucetContract.load(
+        FaucetContract.load(
             faucetContractAddress, web3j, txManager, gasProvider
         )
     }

@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
+import com.dreamsoftware.artcollectibles.ui.components.CommonDatePicker
 import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
@@ -67,6 +68,7 @@ fun ProfileScreen(
             state = state,
             onNameChanged = ::onNameChanged,
             onInfoChanged = ::onInfoChanged,
+            onBirthdateChanged = ::onBirthdateChanged,
             onSaveClicked = ::saveUserInfo,
             onCloseSessionClicked = ::closeSession)
     }
@@ -79,6 +81,7 @@ internal fun ProfileComponent(
     state: ProfileUiState,
     onNameChanged: (String) -> Unit,
     onInfoChanged: (String) -> Unit,
+    onBirthdateChanged: (String) -> Unit,
     onSaveClicked: () -> Unit,
     onCloseSessionClicked: () -> Unit
 ) {
@@ -143,6 +146,13 @@ internal fun ProfileComponent(
                     labelRes = R.string.profile_input_wallet_address_label,
                     placeHolderRes = R.string.profile_input_wallet_address_placeholder,
                     value = state.userInfo?.walletAddress
+                )
+                CommonDatePicker(
+                    modifier = defaultModifier,
+                    labelRes = R.string.profile_input_birthdate_label,
+                    placeHolderRes = R.string.profile_input_birthdate_placeholder,
+                    value = state.userInfo?.birthdate,
+                    onValueChange = onBirthdateChanged
                 )
                 CommonDefaultTextField(
                     modifier = defaultModifier.height(150.dp),

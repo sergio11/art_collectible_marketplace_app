@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.WalletDataException
 import com.dreamsoftware.artcollectibles.data.api.mapper.AccountBalanceMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
@@ -95,9 +96,11 @@ internal class WalletRepositoryImpl(
      */
 
     private suspend fun tryToRequestSeedFunds(credentials: Credentials) {
+        Log.d("FAUCET", "tryToRequestSeedFunds CALLED!")
         try {
             faucetDataSource.requestSeedFunds(credentials)
         } catch (ex: Exception) {
+            Log.d("FAUCET", "ex message ${ex.message} CALLED!")
             ex.printStackTrace()
         }
     }

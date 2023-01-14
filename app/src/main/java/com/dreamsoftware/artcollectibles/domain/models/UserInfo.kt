@@ -7,5 +7,6 @@ data class UserInfo(
     val contact: String,
     val photoUrl: String? = null,
     val walletAddress: String,
+    val birthdate: String? = null,
     val externalProviderAuthType: ExternalProviderAuthTypeEnum? = null
 )
