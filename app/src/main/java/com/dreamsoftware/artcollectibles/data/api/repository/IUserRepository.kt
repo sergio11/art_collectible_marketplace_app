@@ -24,5 +24,8 @@ interface IUserRepository {
     suspend fun save(userInfo: UserInfo)
 
     @Throws(UserDataException::class)
+    suspend fun updateProfilePicture(uid: String, fileUri: String): String
+
+    @Throws(UserDataException::class)
     suspend fun closeSession()
 }

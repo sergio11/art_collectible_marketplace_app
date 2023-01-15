@@ -8,6 +8,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.domain.models.*
 
 /**
@@ -27,6 +28,11 @@ internal class UserRepositoryImpl(
     private val saveUserInfoMapper: SaveUserInfoMapper,
     private val authUserMapper: AuthUserMapper
 ) : IUserRepository {
+
+    private companion object {
+        const val PROFILE_PHOTO_DIRECTORY = "userPhotos"
+        const val PROFILE_PHOTO_FILE_NAME_TEMPLATE = "{uid}_profile_picture.{ext}"
+    }
 
     @Throws(UserDataException::class)
     override suspend fun isAuthenticated(): Boolean = try {
@@ -81,6 +87,28 @@ internal class UserRepositoryImpl(
     } catch (ex: Exception) {
         ex.printStackTrace()
         throw UserDataException("An error occurred when trying to create the user", ex)
+    }
+
+    @Throws(UserDataException::class)
+    override suspend fun updateProfilePicture(uid: String, fileUri: String): String = try {
+        val userInfo = userDataSource.getById(uid)
+        val fileName = PROFILE_PHOTO_FILE_NAME_TEMPLATE.replace("{uid}", userInfo.uid)
+            .replace("{ext}", fileUri.substring(fileUri.lastIndexOf(".") + 1))
+        storageDataSource.save(PROFILE_PHOTO_DIRECTORY, fileName, fileUri).toString().also {
+            with(userInfo) {
+                userDataSource.save(
+                    SaveUserDTO(
+                        uid = uid,
+                        name = name,
+                        walletAddress = walletAddress,
+                        photoUrl = it
+                    )
+                )
+            }
+        }
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        throw UserDataException("An error occurred when trying to save file", ex)
     }
 
     @Throws(UserDataException::class)

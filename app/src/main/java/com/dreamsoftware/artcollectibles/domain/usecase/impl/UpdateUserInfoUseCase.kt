@@ -8,13 +8,26 @@ class UpdateUserInfoUseCase(
     private val userRepository: IUserRepository
 ): BaseUseCaseWithParams<UpdateUserInfoUseCase.Params, UserInfo>() {
 
+
     override suspend fun onExecuted(params: Params): UserInfo = with(params) {
-        userRepository.save(userInfo)
-        userRepository.get(userInfo.uid)
+        with(userInfo) {
+            val profilePhotoUrl = if(isProfilePictureUpdated) {
+                photoUrl?.let {
+                    userRepository.updateProfilePicture(
+                        uid = uid,
+                        fileUri = it
+                    )
+                }
+            } else {
+                photoUrl
+            }
+            userRepository.save(copy(photoUrl = profilePhotoUrl))
+            userRepository.get(uid)
+        }
     }
 
     data class Params(
-        val userInfo: UserInfo
+        val userInfo: UserInfo,
+        val isProfilePictureUpdated: Boolean
     )
-
 }

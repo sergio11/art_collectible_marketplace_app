@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.profile
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
@@ -30,15 +29,14 @@ class ProfileViewModel @Inject constructor(
     private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
     private val closeSessionUseCase: CloseSessionUseCase
-): SupportViewModel<ProfileUiState>() {
+) : SupportViewModel<ProfileUiState>() {
 
     override fun onGetDefaultState(): ProfileUiState = ProfileUiState()
 
-    fun isProfileLoaded() =
-        uiState.value.userInfo != null
+    fun isProfileLoaded() = uiState.value.userInfo != null
 
     fun onInfoChanged(newInfo: String) {
-        if(isProfileLoaded()) {
+        if (isProfileLoaded()) {
             updateState {
                 it.copy(userInfo = it.userInfo?.copy(info = newInfo))
             }
@@ -46,16 +44,18 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onPictureChanged(imageUri: Uri) {
-        if(isProfileLoaded()) {
-            Log.d("ART_COLL", "imageUri.toString() -> $imageUri CALLED!")
+        if (isProfileLoaded()) {
             updateState {
-                it.copy(userInfo = it.userInfo?.copy(photoUrl = imageUri.toString()))
+                it.copy(
+                    userInfo = it.userInfo?.copy(photoUrl = imageUri.toString()),
+                    isProfilePictureUpdated = true
+                )
             }
         }
     }
 
     fun onBirthdateChanged(newBirthdate: String) {
-        if(isProfileLoaded()) {
+        if (isProfileLoaded()) {
             updateState {
                 it.copy(userInfo = it.userInfo?.copy(birthdate = newBirthdate))
             }
@@ -63,7 +63,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onNameChanged(newName: String) {
-        if(isProfileLoaded()) {
+        if (isProfileLoaded()) {
             updateState {
                 it.copy(userInfo = it.userInfo?.copy(name = newName))
             }
@@ -76,18 +76,22 @@ class ProfileViewModel @Inject constructor(
         loadCurrentBalance()
     }
 
-    fun getFileProviderAuthority() =
-        applicationAware.getFileProviderAuthority()
+    fun getFileProviderAuthority() = applicationAware.getFileProviderAuthority()
 
     fun saveUserInfo() {
-        uiState.value.userInfo?.let {
-            viewModelScope.launch {
-                onLoading()
-                updateUserInfoUseCase.invoke(
-                    params = UpdateUserInfoUseCase.Params(it),
-                    onSuccess = ::onProfileLoaded,
-                    onError = ::onErrorOccurred
-                )
+        with(uiState.value) {
+            userInfo?.let {
+                viewModelScope.launch {
+                    onLoading()
+                    updateUserInfoUseCase.invoke(
+                        params = UpdateUserInfoUseCase.Params(
+                            userInfo = it,
+                            isProfilePictureUpdated = isProfilePictureUpdated
+                        ),
+                        onSuccess = ::onProfileLoaded,
+                        onError = ::onErrorOccurred
+                    )
+                }
             }
         }
     }
@@ -108,30 +112,26 @@ class ProfileViewModel @Inject constructor(
     private fun loadProfileData() {
         viewModelScope.launch {
             getUserProfileUseCase.invoke(
-                onSuccess = ::onProfileLoaded,
-                onError = ::onErrorOccurred
+                onSuccess = ::onProfileLoaded, onError = ::onErrorOccurred
             )
         }
     }
 
     private fun loadCurrentBalance() {
         viewModelScope.launch {
-            getCurrentBalanceUseCase.invoke(
-                onSuccess = { balance ->
-                    updateState {
-                        it.copy(accountBalance = balance)
-                    }
-                },
-                onError = {
-                    updateState {
-                        it.copy(accountBalance = null)
-                    }
+            getCurrentBalanceUseCase.invoke(onSuccess = { balance ->
+                updateState {
+                    it.copy(accountBalance = balance)
                 }
-            )
+            }, onError = {
+                updateState {
+                    it.copy(accountBalance = null)
+                }
+            })
         }
     }
 
-    private fun onLoading(){
+    private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
 
@@ -151,6 +151,7 @@ class ProfileViewModel @Inject constructor(
 data class ProfileUiState(
     val userInfo: UserInfo? = null,
     val accountBalance: AccountBalance? = null,
+    val isProfilePictureUpdated: Boolean = false,
     val isLoading: Boolean = false,
     val isSessionClosed: Boolean = false,
 )
