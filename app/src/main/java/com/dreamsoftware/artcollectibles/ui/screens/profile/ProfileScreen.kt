@@ -1,10 +1,16 @@
 package com.dreamsoftware.artcollectibles.ui.screens.profile
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.webkit.*
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -12,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material3.ButtonDefaults.elevatedShape
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -35,11 +43,11 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDatePicker
-import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
+import com.dreamsoftware.artcollectibles.ui.theme.Purple200
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
@@ -73,10 +81,12 @@ fun ProfileScreen(
         }
         ProfileComponent(
             context = LocalContext.current,
+            fileProviderId = getFileProviderAuthority(),
             navController = navController,
             state = state,
             onNameChanged = ::onNameChanged,
             onInfoChanged = ::onInfoChanged,
+            onPictureChanged = ::onPictureChanged,
             onBirthdateChanged = ::onBirthdateChanged,
             onSaveClicked = ::saveUserInfo,
             onCloseSessionClicked = ::closeSession
@@ -88,119 +98,134 @@ fun ProfileScreen(
 @Composable
 internal fun ProfileComponent(
     context: Context,
+    fileProviderId: String,
     navController: NavController,
     state: ProfileUiState,
     onNameChanged: (String) -> Unit,
     onInfoChanged: (String) -> Unit,
     onBirthdateChanged: (String) -> Unit,
+    onPictureChanged: (Uri) -> Unit,
     onSaveClicked: () -> Unit,
     onCloseSessionClicked: () -> Unit
 ) {
+    var isProfilePicturePicker by rememberSaveable { mutableStateOf(false) }
     LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
         bottomBar = {
             BottomBar(navController)
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.padding(paddingValues),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(R.string.profile_main_title_text),
-                textAlign = TextAlign.Center,
-                color = Purple500,
-                modifier = Modifier
-                    .padding(vertical = 20.dp)
-                    .fillMaxWidth(),
-                style = MaterialTheme.typography.headlineMedium
-            )
+        Box {
             Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
+                modifier = Modifier.padding(paddingValues),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val defaultModifier = Modifier
-                    .padding(vertical = 20.dp)
-                    .width(300.dp)
-
-                AccountProfilePicture(userInfo = state.userInfo)
-
-                state.accountBalance?.let {
-                    CurrentAccountBalance(accountBalance = it) {
-                        context.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
-                            )
-                        )
+                Text(
+                    text = stringResource(R.string.profile_main_title_text),
+                    textAlign = TextAlign.Center,
+                    color = Purple500,
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val defaultModifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .width(300.dp)
+                    AccountProfilePicture(userInfo = state.userInfo) {
+                        isProfilePicturePicker = true
                     }
+                    state.accountBalance?.let {
+                        CurrentAccountBalance(accountBalance = it) {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                                )
+                            )
+                        }
+                    }
+                    CommonDefaultTextField(
+                        modifier = defaultModifier,
+                        labelRes = R.string.profile_input_name_label,
+                        placeHolderRes = R.string.profile_input_name_placeholder,
+                        value = state.userInfo?.name,
+                        onValueChanged = onNameChanged
+                    )
+                    CommonDefaultTextField(
+                        modifier = defaultModifier,
+                        isReadOnly = true,
+                        labelRes = R.string.profile_input_contact_label,
+                        placeHolderRes = R.string.profile_input_contact_placeholder,
+                        value = state.userInfo?.contact
+                    )
+                    CommonDefaultTextField(
+                        modifier = defaultModifier,
+                        isReadOnly = true,
+                        labelRes = R.string.profile_input_wallet_address_label,
+                        placeHolderRes = R.string.profile_input_wallet_address_placeholder,
+                        value = state.userInfo?.walletAddress
+                    )
+                    CommonDatePicker(
+                        modifier = defaultModifier,
+                        labelRes = R.string.profile_input_birthdate_label,
+                        placeHolderRes = R.string.profile_input_birthdate_placeholder,
+                        value = state.userInfo?.birthdate,
+                        onValueChange = onBirthdateChanged
+                    )
+                    CommonDefaultTextField(
+                        modifier = defaultModifier.height(150.dp),
+                        labelRes = R.string.profile_input_info_label,
+                        placeHolderRes = R.string.profile_input_info_placeholder,
+                        value = state.userInfo?.info,
+                        isSingleLine = false,
+                        onValueChanged = onInfoChanged
+                    )
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.profile_save_button_text,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Purple700,
+                            contentColor = Color.White
+                        ),
+                        onClick = onSaveClicked
+                    )
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.profile_sign_off_button_text,
+                        onClick = onCloseSessionClicked
+                    )
                 }
-                CommonDefaultTextField(
-                    modifier = defaultModifier,
-                    labelRes = R.string.profile_input_name_label,
-                    placeHolderRes = R.string.profile_input_name_placeholder,
-                    value = state.userInfo?.name,
-                    onValueChanged = onNameChanged
-                )
-                CommonDefaultTextField(
-                    modifier = defaultModifier,
-                    isReadOnly = true,
-                    labelRes = R.string.profile_input_contact_label,
-                    placeHolderRes = R.string.profile_input_contact_placeholder,
-                    value = state.userInfo?.contact
-                )
-                CommonDefaultTextField(
-                    modifier = defaultModifier,
-                    isReadOnly = true,
-                    labelRes = R.string.profile_input_wallet_address_label,
-                    placeHolderRes = R.string.profile_input_wallet_address_placeholder,
-                    value = state.userInfo?.walletAddress
-                )
-                CommonDatePicker(
-                    modifier = defaultModifier,
-                    labelRes = R.string.profile_input_birthdate_label,
-                    placeHolderRes = R.string.profile_input_birthdate_placeholder,
-                    value = state.userInfo?.birthdate,
-                    onValueChange = onBirthdateChanged
-                )
-                CommonDefaultTextField(
-                    modifier = defaultModifier.height(150.dp),
-                    labelRes = R.string.profile_input_info_label,
-                    placeHolderRes = R.string.profile_input_info_placeholder,
-                    value = state.userInfo?.info,
-                    isSingleLine = false,
-                    onValueChanged = onInfoChanged
-                )
-                CommonButton(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(300.dp),
-                    text = R.string.profile_save_button_text,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Purple700,
-                        contentColor = Color.White
-                    ),
-                    onClick = onSaveClicked
-                )
-                CommonButton(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(300.dp),
-                    text = R.string.profile_sign_off_button_text,
-                    onClick = onCloseSessionClicked
-                )
             }
+            ProfilePicturePicker(
+                context = context,
+                fileProviderId = fileProviderId,
+                modifier = Modifier
+                    .zIndex(2f)
+                    .height(400.dp)
+                    .align(Alignment.BottomCenter),
+                isVisible = isProfilePicturePicker,
+                onImageSelected = onPictureChanged
+            ) { isProfilePicturePicker = false }
         }
     }
 }
 
 @Composable
-internal fun AccountProfilePicture(userInfo: UserInfo? = null) {
+internal fun AccountProfilePicture(userInfo: UserInfo? = null, onChangePictureClicked: () -> Unit) {
     Box {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -213,13 +238,20 @@ internal fun AccountProfilePicture(userInfo: UserInfo? = null) {
             modifier = Modifier
                 .size(150.dp)
                 .clip(CircleShape)
+                .clickable {
+                    if (userInfo?.externalProviderAuthType == null) {
+                        onChangePictureClicked()
+                    }
+                }
         )
         userInfo?.externalProviderAuthType?.let {
             Image(
-                painter = painterResource(id = when(it) {
-                    ExternalProviderAuthTypeEnum.FACEBOOK -> R.drawable.facebook_icon
-                    ExternalProviderAuthTypeEnum.GOOGLE -> R.drawable.google_icon_logo
-                }),
+                painter = painterResource(
+                    id = when (it) {
+                        ExternalProviderAuthTypeEnum.FACEBOOK -> R.drawable.facebook_icon
+                        ExternalProviderAuthTypeEnum.GOOGLE -> R.drawable.google_icon_logo
+                    }
+                ),
                 contentDescription = "External Provider Icon",
                 modifier = Modifier
                     .width(40.dp)
@@ -264,11 +296,99 @@ internal fun CurrentAccountBalance(
             text = R.string.profile_get_more_matic,
             widthDp = 150.dp,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Purple700,
+                containerColor = Purple40,
                 contentColor = Color.White
             ),
             buttonShape = elevatedShape,
             onClick = onGetMoreMaticClicked
         )
+    }
+}
+
+@Composable
+internal fun ProfilePicturePicker(
+    context: Context,
+    modifier: Modifier,
+    fileProviderId: String,
+    isVisible: Boolean,
+    onImageSelected: (Uri) -> Unit,
+    onPickerClosed: () -> Unit
+) {
+    if (isVisible) {
+        val photoTmpFile by remember {
+            mutableStateOf(context.createTempImageFile(fileProviderId))
+        }
+        val galleryLauncher =
+            rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                uri?.let(onImageSelected)
+                onPickerClosed()
+            }
+        val takePhotoErrorOccurred = stringResource(id = R.string.profile_take_photo_error_occurred)
+        val cameraLauncher =
+            rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+                if(isSuccess) {
+                    onImageSelected(photoTmpFile)
+                    onPickerClosed()
+                } else {
+                    Toast.makeText(context, takePhotoErrorOccurred, Toast.LENGTH_SHORT).show()
+                }
+            }
+        val permissionGrantedText = stringResource(id = R.string.profile_camera_permission_granted)
+        val permissionDeniedText = stringResource(id = R.string.profile_camera_permission_denied)
+        val permissionLauncher =
+            rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                if (it) {
+                    Toast.makeText(context, permissionGrantedText, Toast.LENGTH_SHORT).show()
+                    cameraLauncher.launch(photoTmpFile)
+                } else {
+                    Toast.makeText(context, permissionDeniedText, Toast.LENGTH_SHORT).show()
+                }
+            }
+        BottomSheetLayout(
+            modifier,
+            onBottomSheetClosed = onPickerClosed
+        ) {
+            Text(
+                text = stringResource(id = R.string.profile_picture_picker_title),
+                textAlign = TextAlign.Center,
+                color = Purple500,
+                modifier = Modifier
+                    .padding(vertical = 20.dp, horizontal = 20.dp)
+                    .fillMaxWidth(),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            CommonButton(
+                modifier = Modifier
+                    .padding(vertical = 10.dp, horizontal = 20.dp)
+                    .fillMaxWidth(),
+                text = R.string.profile_pick_image_from_gallery,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Purple200,
+                    contentColor = Color.White
+                ),
+                buttonShape = elevatedShape,
+                onClick = { galleryLauncher.launch("image/*") }
+            )
+            CommonButton(
+                modifier = Modifier
+                    .padding(vertical = 10.dp, horizontal = 20.dp)
+                    .fillMaxWidth(),
+                text = R.string.profile_pick_from_camera,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Purple40,
+                    contentColor = Color.White
+                ),
+                buttonShape = elevatedShape,
+                onClick = {
+                    val permissionCheckResult =
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+                        cameraLauncher.launch(photoTmpFile)
+                    } else {
+                        permissionLauncher.launch(Manifest.permission.CAMERA)
+                    }
+                }
+            )
+        }
     }
 }

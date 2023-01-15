@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+    <external-cache-path name="camera_photos" path="/"/>
     <files-path name="wallets" path="wallets_internal_data/"/>
 </paths>

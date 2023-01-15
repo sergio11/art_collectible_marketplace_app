@@ -1,5 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.profile
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
@@ -8,12 +10,14 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCurrentBalanceUs
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetUserProfileUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.UpdateUserInfoUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * Profile View Model
+ * @param applicationAware
  * @param getUserProfileUseCase
  * @param getCurrentBalanceUseCase
  * @param updateUserInfoUseCase
@@ -21,6 +25,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
+    private val applicationAware: IApplicationAware,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
@@ -36,6 +41,15 @@ class ProfileViewModel @Inject constructor(
         if(isProfileLoaded()) {
             updateState {
                 it.copy(userInfo = it.userInfo?.copy(info = newInfo))
+            }
+        }
+    }
+
+    fun onPictureChanged(imageUri: Uri) {
+        if(isProfileLoaded()) {
+            Log.d("ART_COLL", "imageUri.toString() -> $imageUri CALLED!")
+            updateState {
+                it.copy(userInfo = it.userInfo?.copy(photoUrl = imageUri.toString()))
             }
         }
     }
@@ -61,6 +75,9 @@ class ProfileViewModel @Inject constructor(
         loadProfileData()
         loadCurrentBalance()
     }
+
+    fun getFileProviderAuthority() =
+        applicationAware.getFileProviderAuthority()
 
     fun saveUserInfo() {
         uiState.value.userInfo?.let {

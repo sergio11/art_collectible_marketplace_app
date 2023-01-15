@@ -63,4 +63,10 @@
     <string name="profile_input_contact_placeholder">Your contact info</string>
     <string name="profile_current_matic">%s MATIC</string>
     <string name="profile_get_more_matic">Get more</string>
+    <string name="profile_picture_picker_title">Pick image from gallery or camera</string>
+    <string name="profile_pick_image_from_gallery">Pick Image From Gallery</string>
+    <string name="profile_pick_from_camera">Pick From Camera</string>
+    <string name="profile_take_photo_error_occurred">An error occurred when trying to take photo</string>
+    <string name="profile_camera_permission_granted">Camera permission granted</string>
+    <string name="profile_camera_permission_denied">Camera permission denied</string>
 </resources>
