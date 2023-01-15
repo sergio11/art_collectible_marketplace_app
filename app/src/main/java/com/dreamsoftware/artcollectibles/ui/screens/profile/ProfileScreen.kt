@@ -227,23 +227,34 @@ internal fun ProfileComponent(
 @Composable
 internal fun AccountProfilePicture(userInfo: UserInfo? = null, onChangePictureClicked: () -> Unit) {
     Box {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(userInfo?.photoUrl)
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(R.drawable.user_placeholder),
-            contentDescription = stringResource(R.string.image_content_description),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(150.dp)
-                .clip(CircleShape)
-                .clickable {
-                    if (userInfo?.externalProviderAuthType == null) {
-                        onChangePictureClicked()
-                    }
+
+        val profilePictureModifier = Modifier
+            .size(150.dp)
+            .clip(CircleShape)
+            .clickable {
+                if (userInfo?.externalProviderAuthType == null) {
+                    onChangePictureClicked()
                 }
-        )
+            }
+        userInfo?.photoUrl?.let {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(it)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.user_placeholder),
+                contentDescription = stringResource(R.string.image_content_description),
+                contentScale = ContentScale.Crop,
+                modifier = profilePictureModifier
+            )
+        } ?: run {
+            Image(
+                painter = painterResource(R.drawable.user_placeholder),
+                contentDescription = "User Placeholder",
+                contentScale = ContentScale.Crop,
+                modifier = profilePictureModifier
+            )
+        }
         userInfo?.externalProviderAuthType?.let {
             Image(
                 painter = painterResource(

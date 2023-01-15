@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 import android.net.Uri
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.FileNotFoundException
+import com.dreamsoftware.artcollectibles.data.firebase.exception.RemoveFileException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.SaveFileException
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,19 @@ internal class StorageDataSourceImpl(
                 .await()
         } catch (ex: Exception) {
             throw FileNotFoundException("An error occurred when trying to get file information", ex)
+        }
+    }
+
+    @Throws(RemoveFileException::class)
+    override suspend fun remove(directoryName: String, name: String): Unit = withContext(Dispatchers.IO) {
+        try {
+            firebaseStorage.reference
+                .child(directoryName)
+                .child(name)
+                .delete()
+                .await()
+        } catch (ex: Exception) {
+            throw RemoveFileException("An error occurred when trying to remove file information", ex)
         }
     }
 }

@@ -23,4 +23,12 @@ interface IStorageDataSource {
     @Throws(FileNotFoundException::class)
     suspend fun get(directoryName: String, name: String): Uri
 
+    /**
+     * Remove file
+     * @param directoryName
+     * @param name
+     */
+    @Throws(FileNotFoundException::class)
+    suspend fun remove(directoryName: String, name: String)
+
 }

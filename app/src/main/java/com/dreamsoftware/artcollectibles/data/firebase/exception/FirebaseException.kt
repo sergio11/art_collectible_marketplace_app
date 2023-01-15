@@ -19,6 +19,7 @@ class SaveWalletMetadataException(message: String? = null, cause: Throwable? = n
 // Storage Data Source
 class FileNotFoundException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class SaveFileException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class RemoveFileException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 
 // Secret Data Source
 class SecretNotFoundException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

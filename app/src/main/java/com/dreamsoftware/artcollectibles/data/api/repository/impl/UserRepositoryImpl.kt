@@ -31,7 +31,7 @@ internal class UserRepositoryImpl(
 
     private companion object {
         const val PROFILE_PHOTO_DIRECTORY = "userPhotos"
-        const val PROFILE_PHOTO_FILE_NAME_TEMPLATE = "{uid}_profile_picture.{ext}"
+        const val PROFILE_PHOTO_FILE_NAME_TEMPLATE = "{uid}_profile_picture"
     }
 
     @Throws(UserDataException::class)
@@ -93,7 +93,9 @@ internal class UserRepositoryImpl(
     override suspend fun updateProfilePicture(uid: String, fileUri: String): String = try {
         val userInfo = userDataSource.getById(uid)
         val fileName = PROFILE_PHOTO_FILE_NAME_TEMPLATE.replace("{uid}", userInfo.uid)
-            .replace("{ext}", fileUri.substring(fileUri.lastIndexOf(".") + 1))
+        if(userInfo.photoUrl != null) {
+            storageDataSource.remove(PROFILE_PHOTO_DIRECTORY, fileName)
+        }
         storageDataSource.save(PROFILE_PHOTO_DIRECTORY, fileName, fileUri).toString().also {
             with(userInfo) {
                 userDataSource.save(
