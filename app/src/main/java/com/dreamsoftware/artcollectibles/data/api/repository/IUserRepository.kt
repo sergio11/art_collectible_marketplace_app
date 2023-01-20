@@ -28,4 +28,7 @@ interface IUserRepository {
 
     @Throws(UserDataException::class)
     suspend fun closeSession()
+
+    @Throws(UserDataException::class)
+    suspend fun findAll(): Iterable<UserInfo>
 }

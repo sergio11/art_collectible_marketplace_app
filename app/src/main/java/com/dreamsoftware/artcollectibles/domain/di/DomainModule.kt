@@ -185,4 +185,14 @@ class DomainModule {
     fun provideGetCurrentBalanceUseCase(
         walletRepository: IWalletRepository
     ) = GetCurrentBalanceUseCase(walletRepository)
+
+    /**
+     * Provide Find All users use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFindAllUsersUseCase(
+        userRepository: IUserRepository
+    ) = FindAllUsersUseCase(userRepository)
 }

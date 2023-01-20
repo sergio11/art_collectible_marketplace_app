@@ -41,7 +41,6 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
-import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
@@ -256,19 +255,13 @@ internal fun AccountProfilePicture(userInfo: UserInfo? = null, onChangePictureCl
             )
         }
         userInfo?.externalProviderAuthType?.let {
-            Image(
-                painter = painterResource(
-                    id = when (it) {
-                        ExternalProviderAuthTypeEnum.FACEBOOK -> R.drawable.facebook_icon
-                        ExternalProviderAuthTypeEnum.GOOGLE -> R.drawable.google_icon_logo
-                    }
-                ),
-                contentDescription = "External Provider Icon",
+            ExternalProviderAuthTypeIndicator(
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp)
                     .zIndex(2f)
-                    .align(Alignment.BottomEnd)
+                    .align(Alignment.BottomEnd),
+                externalProviderAuthTypeEnum = it
             )
         }
     }
@@ -337,7 +330,7 @@ internal fun ProfilePicturePicker(
         val takePhotoErrorOccurred = stringResource(id = R.string.profile_take_photo_error_occurred)
         val cameraLauncher =
             rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
-                if(isSuccess) {
+                if (isSuccess) {
                     onImageSelected(photoTmpFile)
                     onPickerClosed()
                 } else {

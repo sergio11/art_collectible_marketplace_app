@@ -93,7 +93,7 @@ internal class UserRepositoryImpl(
     override suspend fun updateProfilePicture(uid: String, fileUri: String): String = try {
         val userInfo = userDataSource.getById(uid)
         val fileName = PROFILE_PHOTO_FILE_NAME_TEMPLATE.replace("{uid}", userInfo.uid)
-        if(userInfo.photoUrl != null) {
+        if (userInfo.photoUrl != null) {
             storageDataSource.remove(PROFILE_PHOTO_DIRECTORY, fileName)
         }
         storageDataSource.save(PROFILE_PHOTO_DIRECTORY, fileName, fileUri).toString().also {
@@ -120,5 +120,12 @@ internal class UserRepositoryImpl(
         } catch (ex: Exception) {
             throw UserDataException("An error occurred when trying to close user session", ex)
         }
+    }
+
+    @Throws(UserDataException::class)
+    override suspend fun findAll(): Iterable<UserInfo> = try {
+        userInfoMapper.mapInListToOutList(userDataSource.getAll())
+    } catch (ex: Exception) {
+        throw UserDataException("An error occurred when trying to find users", ex)
     }
 }

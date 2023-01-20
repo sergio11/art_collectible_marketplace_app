@@ -12,6 +12,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
+import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 
 @Composable
@@ -58,7 +59,7 @@ fun RootScreen(
             Text("Add")
         }
         composable(NavigationItem.Search.route) {
-            Text("Search")
+            SearchScreen(navigationController)
         }
         composable(NavigationItem.Profile.route) {
             ProfileScreen(navigationController) {
