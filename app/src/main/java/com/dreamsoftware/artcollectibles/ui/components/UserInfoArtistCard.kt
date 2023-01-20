@@ -95,9 +95,6 @@ internal fun UserProfileImage(user: UserInfo) {
                     contentScale = ContentScale.Crop,
                     modifier = imageDefaultModifier,
                     onSuccess = {
-
-                        Palette.from()
-                        it.painter.
                         /*Palette.from(bitmap).generate()
                         it.painter*/
                     }
