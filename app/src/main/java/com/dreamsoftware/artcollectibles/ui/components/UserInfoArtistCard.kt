@@ -10,6 +10,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +23,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -35,12 +39,21 @@ fun UserInfoArtistCard(
     context: Context,
     user: UserInfo
 ) {
+    var infoCardPalette by remember {
+        mutableStateOf(
+            ContextCompat.getDrawable(context, R.drawable.user_placeholder)?.toBitmapOrNull(40, 40)?.let {
+                Palette.from(it).generate()
+            }
+        )
+    }
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(Color.White),
+        colors = CardDefaults.cardColors(infoCardPalette?.darkVibrantSwatch?.rgb?.let {
+            Color(it)
+        } ?: Color.White),
         shape = RoundedCornerShape(27.dp),
-        border = BorderStroke(3.dp, Color.White)
+        border = BorderStroke(3.dp, Color.White),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,36 +62,21 @@ fun UserInfoArtistCard(
                 .fillMaxHeight()
         ) {
             // User Profile Image
-            UserProfileImage(user)
-
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = user.name,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 5.dp)
-                        .fillMaxWidth(),
-                    style = MaterialTheme.typography.labelLarge,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                user.info?.let {
-                    Text(
-                        text = it,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .padding(top = 10.dp, start = 25.dp, end = 25.dp)
-                            .fillMaxWidth(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+            UserProfileImage(context, user) {
+                infoCardPalette = it
             }
+            // User Profile Detail
+            UserProfileDetail(user, infoCardPalette)
         }
     }
 }
 
 @Composable
-internal fun UserProfileImage(user: UserInfo) {
+internal fun UserProfileImage(
+    context: Context,
+    user: UserInfo,
+    onPaletteGenerated: (Palette) -> Unit
+) {
     Box {
         val imageDefaultModifier = Modifier
             .height(155.dp)
@@ -86,18 +84,22 @@ internal fun UserProfileImage(user: UserInfo) {
         with(user) {
             photoUrl?.let {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
+                    model = ImageRequest.Builder(context)
                         .data(it)
+                        // Disable hardware bitmaps as Palette needs to read the image's pixels.
+                        .allowHardware(false)
                         .crossfade(true)
+                        .listener(onSuccess = { _, result ->
+                            // Create the palette on a background thread.
+                            Palette.Builder(result.drawable.toBitmap()).generate { palette ->
+                                palette?.let(onPaletteGenerated)
+                            }
+                        })
                         .build(),
                     placeholder = painterResource(R.drawable.user_placeholder),
                     contentDescription = stringResource(R.string.image_content_description),
                     contentScale = ContentScale.Crop,
-                    modifier = imageDefaultModifier,
-                    onSuccess = {
-                        /*Palette.from(bitmap).generate()
-                        it.painter*/
-                    }
+                    modifier = imageDefaultModifier
                 )
             } ?: run {
                 Image(
@@ -122,6 +124,40 @@ internal fun UserProfileImage(user: UserInfo) {
     }
 }
 
+@Composable
+internal fun UserProfileDetail(user: UserInfo, palette: Palette?) {
+    Column(modifier = Modifier.padding(8.dp)) {
+        Text(
+            text = user.name,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .fillMaxWidth(),
+            style = MaterialTheme.typography.labelLarge,
+            color = palette?.lightVibrantSwatch?.rgb?.let { paletteColor ->
+                Color(paletteColor)
+            } ?: Color.Black,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        user.info?.let {
+            Text(
+                text = it,
+                textAlign = TextAlign.Center,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+                color = palette?.lightMutedSwatch?.rgb?.let { paletteColor ->
+                    Color(paletteColor)
+                } ?: Color.DarkGray,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 25.dp, end = 25.dp)
+                    .fillMaxWidth(),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PreviewUserInfoCard() {
@@ -134,8 +170,8 @@ fun PreviewUserInfoCard() {
             user = UserInfo(
                 uid = "1232REDX",
                 name = "Sergio Sánchez",
-                info = ".....",
-                contact = "dreamsoftware92@gmail.com",
+                info = "Esto es una descripción de prueba ...",
+                contact = "mi_email@gmail.com",
                 walletAddress = "x0343434343434"
             )
         )

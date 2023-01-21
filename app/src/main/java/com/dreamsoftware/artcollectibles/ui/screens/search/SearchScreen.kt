@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.search
 
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,10 +47,12 @@ fun SearchScreen(
         }
     }
     val lazyGridState = rememberLazyGridState()
+    val context = LocalContext.current
     LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
         viewModel.load()
     }
     SearchComponent(
+        context = context,
         state = uiState,
         lazyGridState = lazyGridState,
         navController = navController
@@ -58,6 +62,7 @@ fun SearchScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchComponent(
+    context: Context,
     state: SearchUiState,
     lazyGridState: LazyGridState,
     navController: NavController
@@ -81,6 +86,7 @@ internal fun SearchComponent(
                         modifier = Modifier
                             .height(262.dp)
                             .width(150.dp),
+                        context = context,
                         user = Iterables.get(userResult, index)
                     )
                 }
