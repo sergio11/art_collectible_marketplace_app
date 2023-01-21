@@ -2,7 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.search
 
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FindAllUsersUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.SearchUsersUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 /**
  * Search View Model
- * @param findAllUsersUseCase
+ * @param searchUsersUseCase
  */
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val findAllUsersUseCase: FindAllUsersUseCase
+    private val searchUsersUseCase: SearchUsersUseCase
 ) : SupportViewModel<SearchUiState>() {
 
     override fun onGetDefaultState(): SearchUiState = SearchUiState()
@@ -24,12 +24,26 @@ class SearchViewModel @Inject constructor(
         searchUsers()
     }
 
+    fun onTermChanged(newTerm: String) {
+        updateState { it.copy(searchTerm = newTerm) }
+        searchUsers()
+    }
+
+    fun onResetSearch() {
+        updateState { it.copy(searchTerm = null) }
+        searchUsers()
+    }
+
     private fun searchUsers() {
-        viewModelScope.launch {
-            findAllUsersUseCase.invoke(
-                onSuccess = ::onSearchFinished,
-                onError = ::onErrorOccurred
-            )
+        with(uiState.value) {
+            onLoading()
+            viewModelScope.launch {
+                searchUsersUseCase.invoke(
+                    params = SearchUsersUseCase.Params(term = searchTerm),
+                    onSuccess = ::onSearchFinished,
+                    onError = ::onErrorOccurred
+                )
+            }
         }
     }
 
@@ -47,7 +61,7 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun onErrorOccurred(ex: Exception) {
-
+        updateState { it.copy(isLoading = false) }
     }
 }
 

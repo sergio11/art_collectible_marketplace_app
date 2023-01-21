@@ -194,5 +194,5 @@ class DomainModule {
     @ViewModelScoped
     fun provideFindAllUsersUseCase(
         userRepository: IUserRepository
-    ) = FindAllUsersUseCase(userRepository)
+    ) = SearchUsersUseCase(userRepository)
 }

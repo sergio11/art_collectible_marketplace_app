@@ -123,8 +123,10 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(UserDataException::class)
-    override suspend fun findAll(): Iterable<UserInfo> = try {
-        userInfoMapper.mapInListToOutList(userDataSource.getAll())
+    override suspend fun search(term: String?): Iterable<UserInfo> = try {
+        userInfoMapper.mapInListToOutList(term?.let {
+            userDataSource.findUsersByName(it)
+        } ?: userDataSource.getAll())
     } catch (ex: Exception) {
         throw UserDataException("An error occurred when trying to find users", ex)
     }

@@ -9,6 +9,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.mapper.SaveUserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
@@ -65,7 +66,7 @@ internal class UsersDataSourceImpl(
                 .get().await()?.documents?.firstOrNull()?.data?.let {
                     userMapper.mapInToOut(it)
                 } ?: throw UserNotFoundException("User not found")
-        }  catch (ex: FirebaseException) {
+        } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {
             throw UserErrorException("An error occurred when trying to get user information", ex)
@@ -81,4 +82,19 @@ internal class UsersDataSourceImpl(
             .await().documents.mapNotNull { it.data }
             .map { userMapper.mapInToOut(it) }
     }
+
+    /**
+     * Find Users by name
+     * @param term
+     */
+    @Throws(UserErrorException::class)
+    override suspend fun findUsersByName(term: String): Iterable<UserDTO> =
+        withContext(Dispatchers.IO) {
+            firebaseStore.collection(USERS_COLLECTION_NAME)
+                .whereGreaterThanOrEqualTo("name", term)
+                .whereLessThanOrEqualTo("name", term + "\uf8ff")
+                .get()
+                .await().documents.mapNotNull { it.data }
+                .map { userMapper.mapInToOut(it) }
+        }
 }

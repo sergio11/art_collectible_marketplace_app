@@ -45,17 +45,19 @@ fun SearchScreen(
     }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
-    LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-        viewModel.load()
+    with(viewModel) {
+        LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
+            load()
+        }
+        SearchComponent(
+            context = context,
+            state = uiState,
+            lazyGridState = lazyGridState,
+            navController = navController,
+            onTermChanged = ::onTermChanged,
+            onResetSearch = ::onResetSearch
+        )
     }
-    SearchComponent(
-        context = context,
-        state = uiState,
-        lazyGridState = lazyGridState,
-        navController = navController,
-        onTermChanged = {},
-        onResetSearch = {}
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

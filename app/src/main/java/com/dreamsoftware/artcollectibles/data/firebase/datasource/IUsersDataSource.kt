@@ -34,4 +34,11 @@ interface IUsersDataSource {
     @Throws(UserErrorException::class)
     suspend fun getAll(): Iterable<UserDTO>
 
+    /**
+     * Find Users by name
+     * @param term
+     */
+    @Throws(UserErrorException::class)
+    suspend fun findUsersByName(term: String): Iterable<UserDTO>
+
 }

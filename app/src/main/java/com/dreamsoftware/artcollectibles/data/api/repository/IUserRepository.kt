@@ -30,5 +30,5 @@ interface IUserRepository {
     suspend fun closeSession()
 
     @Throws(UserDataException::class)
-    suspend fun findAll(): Iterable<UserInfo>
+    suspend fun search(term: String? = null): Iterable<UserInfo>
 }

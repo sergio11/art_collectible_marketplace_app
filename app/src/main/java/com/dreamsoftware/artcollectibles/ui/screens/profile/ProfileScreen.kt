@@ -227,7 +227,6 @@ internal fun ProfileComponent(
 @Composable
 internal fun AccountProfilePicture(userInfo: UserInfo? = null, onChangePictureClicked: () -> Unit) {
     Box {
-
         val profilePictureModifier = Modifier
             .size(150.dp)
             .clip(CircleShape)
