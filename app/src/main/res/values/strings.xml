@@ -69,4 +69,6 @@
     <string name="profile_take_photo_error_occurred">An error occurred when trying to take photo</string>
     <string name="profile_camera_permission_granted">Camera permission granted</string>
     <string name="profile_camera_permission_denied">Camera permission denied</string>
+    <string name="search_user_info_name_empty">Anonymous user</string>
+    <string name="search_user_info_description_empty">This user has preferred not to give details about his profile</string>
 </resources>

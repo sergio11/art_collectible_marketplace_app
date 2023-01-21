@@ -136,11 +136,17 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun onProfileLoaded(userInfo: UserInfo) {
-        updateState { it.copy(userInfo = userInfo, isLoading = false) }
+        updateState {
+            it.copy(
+                userInfo = userInfo,
+                isLoading = false,
+                isProfilePictureUpdated = false,
+            )
+        }
     }
 
     private fun onErrorOccurred(ex: Exception) {
-
+        updateState { it.copy(isLoading = false) }
     }
 
     private fun onSessionClosed() {

@@ -93,7 +93,7 @@ internal class UserRepositoryImpl(
     override suspend fun updateProfilePicture(uid: String, fileUri: String): String = try {
         val userInfo = userDataSource.getById(uid)
         val fileName = PROFILE_PHOTO_FILE_NAME_TEMPLATE.replace("{uid}", userInfo.uid)
-        if (userInfo.photoUrl != null) {
+        if (!userInfo.photoUrl.isNullOrBlank()) {
             storageDataSource.remove(PROFILE_PHOTO_DIRECTORY, fileName)
         }
         storageDataSource.save(PROFILE_PHOTO_DIRECTORY, fileName, fileUri).toString().also {

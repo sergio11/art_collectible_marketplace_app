@@ -41,9 +41,10 @@ fun UserInfoArtistCard(
 ) {
     var infoCardPalette by remember {
         mutableStateOf(
-            ContextCompat.getDrawable(context, R.drawable.user_placeholder)?.toBitmapOrNull(40, 40)?.let {
-                Palette.from(it).generate()
-            }
+            ContextCompat.getDrawable(context, R.drawable.user_placeholder)?.toBitmapOrNull(40, 40)
+                ?.let {
+                    Palette.from(it).generate()
+                }
         )
     }
     Card(
@@ -66,7 +67,7 @@ fun UserInfoArtistCard(
                 infoCardPalette = it
             }
             // User Profile Detail
-            UserProfileDetail(user, infoCardPalette)
+            UserProfileDetail(context, user, infoCardPalette)
         }
     }
 }
@@ -125,10 +126,12 @@ internal fun UserProfileImage(
 }
 
 @Composable
-internal fun UserProfileDetail(user: UserInfo, palette: Palette?) {
+internal fun UserProfileDetail(context: Context, user: UserInfo, palette: Palette?) {
     Column(modifier = Modifier.padding(8.dp)) {
         Text(
-            text = user.name,
+            text = user.name.ifBlank {
+                context.getString(R.string.search_user_info_name_empty)
+            },
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 2.dp)
@@ -140,21 +143,24 @@ internal fun UserProfileDetail(user: UserInfo, palette: Palette?) {
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        user.info?.let {
-            Text(
-                text = it,
-                textAlign = TextAlign.Center,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                color = palette?.lightMutedSwatch?.rgb?.let { paletteColor ->
-                    Color(paletteColor)
-                } ?: Color.DarkGray,
-                modifier = Modifier
-                    .padding(top = 10.dp, start = 25.dp, end = 25.dp)
-                    .fillMaxWidth(),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+        Text(
+            text = if (user.info.isNullOrBlank()) {
+                context.getString(R.string.search_user_info_description_empty)
+            } else {
+                user.info
+            },
+            textAlign = TextAlign.Center,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis,
+            color = palette?.lightMutedSwatch?.rgb?.let { paletteColor ->
+                Color(paletteColor)
+            } ?: Color.DarkGray,
+            modifier = Modifier
+                .padding(top = 10.dp, start = 25.dp, end = 25.dp)
+                .fillMaxWidth(),
+            style = MaterialTheme.typography.bodyMedium
+        )
+
     }
 }
 

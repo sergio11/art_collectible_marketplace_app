@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +36,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
             Icon(
                 Icons.Default.Search,
                 contentDescription = "",
+                tint = Color.White,
                 modifier = Modifier
                     .padding(15.dp)
                     .size(24.dp)
@@ -50,9 +53,10 @@ fun SearchView(state: MutableState<TextFieldValue>) {
                     Icon(
                         Icons.Default.Close,
                         contentDescription = "",
+                        tint = Color.White,
                         modifier = Modifier
                             .padding(15.dp)
-                            .size(24.dp)
+                            .size(34.dp)
                     )
                 }
             }
@@ -64,7 +68,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
             cursorColor = Color.White,
             unfocusedLeadingIconColor = Color.White,
             unfocusedTrailingIconColor = Color.White,
-            containerColor = Color.Magenta,
+            containerColor = Purple40,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent

@@ -2,6 +2,9 @@ package com.dreamsoftware.artcollectibles.ui.navigations
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -10,9 +13,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -24,7 +25,7 @@ fun BottomBar(navController: NavController) {
         NavigationItem.Profile
     )
     NavigationBar(
-        containerColor = Color(33, 17, 52),
+        containerColor = Purple40,
         contentColor = Color.White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
