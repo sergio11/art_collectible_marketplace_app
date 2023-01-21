@@ -9,12 +9,10 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.ButtonDefaults.elevatedShape
 import androidx.compose.runtime.*
@@ -114,99 +112,104 @@ internal fun ProfileComponent(
             BottomBar(navController)
         }
     ) { paddingValues ->
-        Box {
-            Column(
-                modifier = Modifier.padding(paddingValues),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        Box(modifier = Modifier.padding(paddingValues)) {
+            ScreenBackgroundImage(imageRes = R.drawable.common_background)
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text(
                     text = stringResource(R.string.profile_main_title_text),
                     textAlign = TextAlign.Center,
-                    color = Purple500,
+                    color = Color.White,
                     modifier = Modifier
                         .padding(vertical = 20.dp)
                         .fillMaxWidth(),
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineLarge
                 )
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Card(
+                    modifier = Modifier.padding(20.dp),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
+                    shape = RoundedCornerShape(27.dp),
+                    border = BorderStroke(3.dp, Color.White)
                 ) {
-                    val defaultModifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .width(300.dp)
-                    AccountProfilePicture(userInfo = state.userInfo) {
-                        isProfilePicturePicker = true
-                    }
-                    state.accountBalance?.let {
-                        CurrentAccountBalance(accountBalance = it) {
-                            context.startActivity(
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
-                                )
-                            )
+                    Column(
+                        modifier = Modifier
+                            .padding(vertical = 20.dp)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        val defaultModifier = Modifier
+                            .padding(vertical = 20.dp)
+                            .width(300.dp)
+                        AccountProfilePicture(userInfo = state.userInfo) {
+                            isProfilePicturePicker = true
                         }
+                        state.accountBalance?.let {
+                            CurrentAccountBalance(accountBalance = it) {
+                                context.startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                                    )
+                                )
+                            }
+                        }
+                        CommonDefaultTextField(
+                            modifier = defaultModifier,
+                            labelRes = R.string.profile_input_name_label,
+                            placeHolderRes = R.string.profile_input_name_placeholder,
+                            value = state.userInfo?.name,
+                            onValueChanged = onNameChanged
+                        )
+                        CommonDefaultTextField(
+                            modifier = defaultModifier,
+                            isReadOnly = true,
+                            labelRes = R.string.profile_input_contact_label,
+                            placeHolderRes = R.string.profile_input_contact_placeholder,
+                            value = state.userInfo?.contact
+                        )
+                        CommonDefaultTextField(
+                            modifier = defaultModifier,
+                            isReadOnly = true,
+                            labelRes = R.string.profile_input_wallet_address_label,
+                            placeHolderRes = R.string.profile_input_wallet_address_placeholder,
+                            value = state.userInfo?.walletAddress
+                        )
+                        CommonDatePicker(
+                            modifier = defaultModifier,
+                            labelRes = R.string.profile_input_birthdate_label,
+                            placeHolderRes = R.string.profile_input_birthdate_placeholder,
+                            value = state.userInfo?.birthdate,
+                            onValueChange = onBirthdateChanged
+                        )
+                        CommonDefaultTextField(
+                            modifier = defaultModifier.height(150.dp),
+                            labelRes = R.string.profile_input_info_label,
+                            placeHolderRes = R.string.profile_input_info_placeholder,
+                            value = state.userInfo?.info,
+                            isSingleLine = false,
+                            onValueChanged = onInfoChanged
+                        )
+                        CommonButton(
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                                .width(300.dp),
+                            text = R.string.profile_save_button_text,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Purple700,
+                                contentColor = Color.White
+                            ),
+                            onClick = onSaveClicked
+                        )
+                        CommonButton(
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                                .width(300.dp),
+                            text = R.string.profile_sign_off_button_text,
+                            onClick = onCloseSessionClicked
+                        )
                     }
-                    CommonDefaultTextField(
-                        modifier = defaultModifier,
-                        labelRes = R.string.profile_input_name_label,
-                        placeHolderRes = R.string.profile_input_name_placeholder,
-                        value = state.userInfo?.name,
-                        onValueChanged = onNameChanged
-                    )
-                    CommonDefaultTextField(
-                        modifier = defaultModifier,
-                        isReadOnly = true,
-                        labelRes = R.string.profile_input_contact_label,
-                        placeHolderRes = R.string.profile_input_contact_placeholder,
-                        value = state.userInfo?.contact
-                    )
-                    CommonDefaultTextField(
-                        modifier = defaultModifier,
-                        isReadOnly = true,
-                        labelRes = R.string.profile_input_wallet_address_label,
-                        placeHolderRes = R.string.profile_input_wallet_address_placeholder,
-                        value = state.userInfo?.walletAddress
-                    )
-                    CommonDatePicker(
-                        modifier = defaultModifier,
-                        labelRes = R.string.profile_input_birthdate_label,
-                        placeHolderRes = R.string.profile_input_birthdate_placeholder,
-                        value = state.userInfo?.birthdate,
-                        onValueChange = onBirthdateChanged
-                    )
-                    CommonDefaultTextField(
-                        modifier = defaultModifier.height(150.dp),
-                        labelRes = R.string.profile_input_info_label,
-                        placeHolderRes = R.string.profile_input_info_placeholder,
-                        value = state.userInfo?.info,
-                        isSingleLine = false,
-                        onValueChanged = onInfoChanged
-                    )
-                    CommonButton(
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .width(300.dp),
-                        text = R.string.profile_save_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Purple700,
-                            contentColor = Color.White
-                        ),
-                        onClick = onSaveClicked
-                    )
-                    CommonButton(
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .width(300.dp),
-                        text = R.string.profile_sign_off_button_text,
-                        onClick = onCloseSessionClicked
-                    )
                 }
             }
             ProfilePicturePicker(

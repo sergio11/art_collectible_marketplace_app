@@ -10,21 +10,21 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.components.SearchView
-import com.google.common.collect.Iterables
 import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
+import com.google.common.collect.Iterables
 
 @Composable
 fun SearchScreen(
@@ -52,7 +52,9 @@ fun SearchScreen(
         context = context,
         state = uiState,
         lazyGridState = lazyGridState,
-        navController = navController
+        navController = navController,
+        onTermChanged = {},
+        onResetSearch = {}
     )
 }
 
@@ -62,7 +64,9 @@ internal fun SearchComponent(
     context: Context,
     state: SearchUiState,
     lazyGridState: LazyGridState,
-    navController: NavController
+    navController: NavController,
+    onTermChanged: (String) -> Unit,
+    onResetSearch: () -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
@@ -70,25 +74,32 @@ internal fun SearchComponent(
             BottomBar(navController)
         }
     ) { paddingValues ->
-        val searchViewState = remember { mutableStateOf(TextFieldValue("")) }
-        Column(modifier = Modifier.padding(paddingValues)) {
-            SearchView(searchViewState)
-            LazyVerticalGrid(
-                modifier = Modifier.padding(8.dp),
-                columns = GridCells.Adaptive(minSize = 150.dp),
-                state = lazyGridState,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                with(state) {
-                    items(Iterables.size(userResult)) { index ->
-                        UserInfoArtistCard(
-                            modifier = Modifier
-                                .height(262.dp)
-                                .width(150.dp),
-                            context = context,
-                            user = Iterables.get(userResult, index)
-                        )
+        Box(modifier = Modifier.padding(paddingValues)) {
+            ScreenBackgroundImage(imageRes = R.drawable.common_background)
+            Column {
+                SearchView(
+                    context = context,
+                    term = state.searchTerm,
+                    onTermChanged = onTermChanged,
+                    onClearClicked = onResetSearch
+                )
+                LazyVerticalGrid(
+                    modifier = Modifier.padding(8.dp),
+                    columns = GridCells.Adaptive(minSize = 150.dp),
+                    state = lazyGridState,
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    with(state) {
+                        items(Iterables.size(userResult)) { index ->
+                            UserInfoArtistCard(
+                                modifier = Modifier
+                                    .height(262.dp)
+                                    .width(150.dp),
+                                context = context,
+                                user = Iterables.get(userResult, index)
+                            )
+                        }
                     }
                 }
             }

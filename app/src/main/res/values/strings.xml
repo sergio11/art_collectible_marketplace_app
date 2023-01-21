@@ -71,4 +71,5 @@
     <string name="profile_camera_permission_denied">Camera permission denied</string>
     <string name="search_user_info_name_empty">Anonymous user</string>
     <string name="search_user_info_description_empty">This user has preferred not to give details about his profile</string>
+    <string name="search_query_empty">Write something here …</string>
 </resources>

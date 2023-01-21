@@ -52,6 +52,7 @@ class SearchViewModel @Inject constructor(
 }
 
 data class SearchUiState(
+    val searchTerm: String? = null,
     val userResult: Iterable<UserInfo> = emptyList(),
     val isLoading: Boolean = false,
 )

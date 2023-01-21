@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
-import androidx.compose.foundation.border
+import android.content.Context
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -9,26 +9,32 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchView(state: MutableState<TextFieldValue>) {
+fun SearchView(
+    context: Context,
+    term: String? = null,
+    onTermChanged: (String) -> Unit,
+    onClearClicked: () -> Unit
+) {
     TextField(
-        value = state.value,
+        value = term.orEmpty(),
         onValueChange = { value ->
-            state.value = value
+            onTermChanged(value)
+        },
+        placeholder = {
+          Text(text = context.getString(R.string.search_query_empty))
         },
         modifier = Modifier.fillMaxWidth(),
         textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
@@ -43,11 +49,10 @@ fun SearchView(state: MutableState<TextFieldValue>) {
             )
         },
         trailingIcon = {
-            if (state.value != TextFieldValue("")) {
+            if (!term.isNullOrBlank()) {
                 IconButton(
                     onClick = {
-                        state.value =
-                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+                        onClearClicked()
                     }
                 ) {
                     Icon(
@@ -80,6 +85,10 @@ fun SearchView(state: MutableState<TextFieldValue>) {
 @Preview(showBackground = true)
 @Composable
 fun SearchViewPreview() {
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
-    SearchView(textState)
+    SearchView(
+        context = LocalContext.current,
+        term = "",
+        onTermChanged = {},
+        onClearClicked = {}
+    )
 }
