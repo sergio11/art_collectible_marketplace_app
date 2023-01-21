@@ -21,6 +21,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun SignUpScreen(
@@ -94,6 +95,7 @@ internal fun SignUpComponent(
             color = Purple500,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
+            fontFamily = montserratFontFamily,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.padding(bottom = 50.dp))

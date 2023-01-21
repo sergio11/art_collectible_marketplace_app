@@ -21,6 +21,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple80
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun CommonDialog(
@@ -84,6 +85,7 @@ internal fun CommonDialogUI(
                         .fillMaxWidth(),
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 2,
+                    fontFamily = montserratFontFamily,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
@@ -92,6 +94,7 @@ internal fun CommonDialogUI(
                     modifier = Modifier
                         .padding(top = 10.dp, start = 25.dp, end = 25.dp)
                         .fillMaxWidth(),
+                    fontFamily = montserratFontFamily,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -109,6 +112,7 @@ internal fun CommonDialogUI(
                             text = stringResource(id = it),
                             fontWeight = FontWeight.Bold,
                             color = Color.Gray,
+                            fontFamily = montserratFontFamily,
                             modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                         )
                     }
@@ -119,6 +123,7 @@ internal fun CommonDialogUI(
                             text = stringResource(id = it),
                             fontWeight = FontWeight.ExtraBold,
                             color = Color.Black,
+                            fontFamily = montserratFontFamily,
                             modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                         )
                     }

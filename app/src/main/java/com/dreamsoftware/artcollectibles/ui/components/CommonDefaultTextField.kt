@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,8 +29,8 @@ fun CommonDefaultTextField(
         value = value.orEmpty(),
         enabled = isEnabled,
         readOnly = isReadOnly,
-        label = { Text(stringResource(id = labelRes)) },
-        placeholder = { Text(stringResource(id = placeHolderRes)) },
+        label = { Text(stringResource(id = labelRes), fontFamily = montserratFontFamily) },
+        placeholder = { Text(stringResource(id = placeHolderRes), fontFamily = montserratFontFamily) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         singleLine = isSingleLine,
         maxLines = if(isSingleLine) 1 else Int.MAX_VALUE,

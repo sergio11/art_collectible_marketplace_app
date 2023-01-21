@@ -31,6 +31,7 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun UserInfoArtistCard(
@@ -132,6 +133,7 @@ internal fun UserProfileDetail(context: Context, user: UserInfo, palette: Palett
                 context.getString(R.string.search_user_info_name_empty)
             },
             textAlign = TextAlign.Center,
+            fontFamily = montserratFontFamily,
             modifier = Modifier
                 .padding(top = 2.dp)
                 .fillMaxWidth(),
@@ -150,6 +152,7 @@ internal fun UserProfileDetail(context: Context, user: UserInfo, palette: Palett
             },
             textAlign = TextAlign.Center,
             maxLines = 3,
+            fontFamily = montserratFontFamily,
             overflow = TextOverflow.Ellipsis,
             color = palette?.lightMutedSwatch?.rgb?.let { paletteColor ->
                 Color(paletteColor)

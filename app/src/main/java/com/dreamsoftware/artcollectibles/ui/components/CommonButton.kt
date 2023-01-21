@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun CommonButton(
@@ -57,6 +58,7 @@ fun CommonButton(
             stringResource(text),
             modifier = Modifier.padding(vertical = 4.dp),
             fontSize = 15.sp,
+            fontFamily = montserratFontFamily,
             fontWeight = FontWeight.SemiBold
         )
     }

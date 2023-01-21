@@ -43,10 +43,7 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
-import com.dreamsoftware.artcollectibles.ui.theme.Purple200
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.Purple500
-import com.dreamsoftware.artcollectibles.ui.theme.Purple700
+import com.dreamsoftware.artcollectibles.ui.theme.*
 
 @Composable
 fun ProfileScreen(
@@ -122,6 +119,7 @@ internal fun ProfileComponent(
                     modifier = Modifier
                         .padding(vertical = 20.dp)
                         .fillMaxWidth(),
+                    fontFamily = montserratFontFamily,
                     style = MaterialTheme.typography.headlineLarge
                 )
                 Card(
@@ -362,6 +360,7 @@ internal fun ProfilePicturePicker(
                 modifier = Modifier
                     .padding(vertical = 20.dp, horizontal = 20.dp)
                     .fillMaxWidth(),
+                fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.headlineSmall
             )
             CommonButton(

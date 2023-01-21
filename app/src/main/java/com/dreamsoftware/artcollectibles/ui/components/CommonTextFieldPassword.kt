@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,8 +28,8 @@ fun CommonTextFieldPassword(
         modifier = modifier,
         value = value.orEmpty(),
         onValueChange = onValueChanged,
-        label = { Text(text = stringResource(id = labelRes)) },
-        placeholder = { Text(text = stringResource(id = placeHolderRes)) },
+        label = { Text(text = stringResource(id = labelRes), fontFamily = montserratFontFamily) },
+        placeholder = { Text(text = stringResource(id = placeHolderRes), fontFamily = montserratFontFamily) },
         visualTransformation = if (passwordVisible)
             VisualTransformation.None
         else

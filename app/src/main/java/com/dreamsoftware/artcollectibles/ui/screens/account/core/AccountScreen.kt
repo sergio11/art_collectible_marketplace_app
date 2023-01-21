@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +43,7 @@ fun AccountScreen(
                     color = Color.White,
                     fontSize = 37.sp,
                     lineHeight = 40.sp,
+                    fontFamily = montserratFontFamily,
                     fontWeight = FontWeight.Black
                 )
                 Spacer(Modifier.weight(1f))

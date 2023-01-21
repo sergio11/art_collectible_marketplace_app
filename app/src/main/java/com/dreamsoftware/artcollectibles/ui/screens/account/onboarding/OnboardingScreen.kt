@@ -26,6 +26,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun OnBoardingScreen(
@@ -87,12 +88,14 @@ internal fun OnBoardingComponent(
             color = Purple500,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
+            fontFamily = montserratFontFamily,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.padding(bottom = 10.dp))
         Text(
             stringResource(R.string.onboarding_description_text),
             color = Purple700,
+            fontFamily = montserratFontFamily,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.padding(bottom = 20.dp))

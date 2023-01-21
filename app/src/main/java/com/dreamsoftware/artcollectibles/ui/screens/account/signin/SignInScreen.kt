@@ -28,6 +28,7 @@ import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -105,6 +106,7 @@ internal fun SignInComponent(
             stringResource(R.string.onboarding_subtitle_text),
             color = Purple500,
             fontWeight = FontWeight.Bold,
+            fontFamily = montserratFontFamily,
             fontSize = 20.sp,
             textAlign = TextAlign.Center
         )
@@ -192,6 +194,7 @@ internal fun AlternativeLoginDivider() {
         Text(
             modifier = Modifier.padding(16.dp),
             text = stringResource(id = R.string.signin_alternative_login_text),
+            fontFamily = montserratFontFamily,
             color = Color.Gray
         )
         Divider(
