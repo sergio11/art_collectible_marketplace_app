@@ -3,15 +3,20 @@ package com.dreamsoftware.artcollectibles.ui.components
 import android.app.DatePickerDialog
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+val CommonDatePickerModifier = Modifier.padding(vertical = 20.dp).width(300.dp)
+
 @Composable
 fun CommonDatePicker(
-    modifier: Modifier,
+    modifier: Modifier = CommonDatePickerModifier,
     @StringRes labelRes: Int,
     @StringRes placeHolderRes: Int,
     value: String? = null,

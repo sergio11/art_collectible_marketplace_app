@@ -4,7 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +35,7 @@ fun AccountScreen(
         Box(modifier = Modifier.padding(paddingValues)) {
             ScreenBackgroundImage(screenBackgroundRes)
             Column(
-                modifier = Modifier
+                modifier = Modifier.verticalScroll(rememberScrollState())
                     .padding(horizontal = 32.dp)
                     .padding(top = 80.dp)
                     .fillMaxSize()
@@ -46,7 +48,7 @@ fun AccountScreen(
                     fontFamily = montserratFontFamily,
                     fontWeight = FontWeight.Black
                 )
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.height(60.dp))
                 Card(
                     modifier = Modifier.padding(bottom = 20.dp),
                     elevation = CardDefaults.cardElevation(4.dp),

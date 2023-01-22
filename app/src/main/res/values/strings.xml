@@ -18,7 +18,7 @@
     <string name="app_name">ArtCollectiblesMarketplace</string>
     <string name="image_content_description">Image can not be loaded</string>
     <!-- Onboarding -->
-    <string name="onboarding_main_title_text">Welcome to NFT Marketplace</string>
+    <string name="onboarding_main_title_text">Welcome to Art Collectible Marketplace</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
     <string name="onboarding_description_text">You can buy and sell the NFTs of the best artists in the world.</string>
     <string name="onboarding_login_button_text">Login</string>

@@ -112,22 +112,18 @@ internal fun SignInComponent(
         )
         Spacer(modifier = Modifier.padding(bottom = 50.dp))
         CommonDefaultTextField(
-            modifier = Modifier.padding(horizontal = 20.dp),
             labelRes = R.string.signin_input_email_label,
             placeHolderRes = R.string.signin_input_email_placeholder,
             keyboardType = KeyboardType.Email,
             value = state.email,
             onValueChanged = onEmailChanged
         )
-        Spacer(modifier = Modifier.padding(bottom = 30.dp))
         CommonTextFieldPassword(
-            modifier = Modifier.padding(horizontal = 20.dp),
             labelRes = R.string.signin_input_password_label,
             placeHolderRes = R.string.signin_input_password_placeholder,
             value = state.password,
             onValueChanged = onPasswordChanged
         )
-        Spacer(modifier = Modifier.padding(bottom = 30.dp))
         CommonButton(
             modifier = Modifier.padding(bottom = 8.dp),
             enabled = state.isLoginButtonEnabled,

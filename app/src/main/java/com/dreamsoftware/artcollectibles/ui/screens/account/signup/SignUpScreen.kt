@@ -100,22 +100,18 @@ internal fun SignUpComponent(
         )
         Spacer(modifier = Modifier.padding(bottom = 50.dp))
         CommonDefaultTextField(
-            modifier = Modifier.padding(horizontal = 20.dp),
             labelRes = R.string.signup_input_email_label,
             placeHolderRes = R.string.signup_input_email_placeholder,
             keyboardType = KeyboardType.Email,
             value = uiState.email,
             onValueChanged = onEmailChanged
         )
-        Spacer(modifier = Modifier.padding(bottom = 30.dp))
         CommonTextFieldPassword(
-            modifier = Modifier.padding(horizontal = 20.dp),
             labelRes = R.string.signup_input_password_label,
             placeHolderRes = R.string.signup_input_password_placeholder,
             value = uiState.password,
             onValueChanged = onPasswordChanged
         )
-        Spacer(modifier = Modifier.padding(bottom = 30.dp))
         CommonButton(
             modifier = Modifier.padding(bottom = 8.dp),
             enabled = uiState.isSignUpButtonEnabled,

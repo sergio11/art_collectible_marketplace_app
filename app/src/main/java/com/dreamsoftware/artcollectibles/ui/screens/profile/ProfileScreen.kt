@@ -136,9 +136,6 @@ internal fun ProfileComponent(
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val defaultModifier = Modifier
-                            .padding(vertical = 20.dp)
-                            .width(300.dp)
                         AccountProfilePicture(userInfo = state.userInfo) {
                             isProfilePicturePicker = true
                         }
@@ -153,35 +150,31 @@ internal fun ProfileComponent(
                             }
                         }
                         CommonDefaultTextField(
-                            modifier = defaultModifier,
                             labelRes = R.string.profile_input_name_label,
                             placeHolderRes = R.string.profile_input_name_placeholder,
                             value = state.userInfo?.name,
                             onValueChanged = onNameChanged
                         )
                         CommonDefaultTextField(
-                            modifier = defaultModifier,
                             isReadOnly = true,
                             labelRes = R.string.profile_input_contact_label,
                             placeHolderRes = R.string.profile_input_contact_placeholder,
                             value = state.userInfo?.contact
                         )
                         CommonDefaultTextField(
-                            modifier = defaultModifier,
                             isReadOnly = true,
                             labelRes = R.string.profile_input_wallet_address_label,
                             placeHolderRes = R.string.profile_input_wallet_address_placeholder,
                             value = state.userInfo?.walletAddress
                         )
                         CommonDatePicker(
-                            modifier = defaultModifier,
                             labelRes = R.string.profile_input_birthdate_label,
                             placeHolderRes = R.string.profile_input_birthdate_placeholder,
                             value = state.userInfo?.birthdate,
                             onValueChange = onBirthdateChanged
                         )
                         CommonDefaultTextField(
-                            modifier = defaultModifier.height(150.dp),
+                            modifier = CommonDefaultTextFieldModifier.height(150.dp),
                             labelRes = R.string.profile_input_info_label,
                             placeHolderRes = R.string.profile_input_info_placeholder,
                             value = state.userInfo?.info,

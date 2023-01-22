@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -12,12 +14,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+
+val CommonTextFieldPasswordModifier = Modifier.padding(vertical = 20.dp).width(300.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonTextFieldPassword(
-    modifier: Modifier,
+    modifier: Modifier = CommonTextFieldPasswordModifier,
     value: String? = null,
     @StringRes labelRes: Int,
     @StringRes placeHolderRes: Int,
