@@ -3,7 +3,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.profile
 import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.webkit.*
 import android.widget.Toast
@@ -29,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -41,6 +39,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
 import com.dreamsoftware.artcollectibles.ui.theme.*
@@ -107,7 +106,9 @@ internal fun ProfileComponent(
     Scaffold(
         bottomBar = {
             BottomBar(navController)
-        }
+        },
+        floatingActionButton = {},
+
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             ScreenBackgroundImage(imageRes = R.drawable.common_background)
@@ -385,13 +386,15 @@ internal fun ProfilePicturePicker(
                 ),
                 buttonShape = elevatedShape,
                 onClick = {
-                    val permissionCheckResult =
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                    if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                        cameraLauncher.launch(photoTmpFile)
-                    } else {
-                        permissionLauncher.launch(Manifest.permission.CAMERA)
-                    }
+                    context.checkPermissionState(
+                        permission = Manifest.permission.CAMERA,
+                        onPermissionGranted = {
+                            cameraLauncher.launch(photoTmpFile)
+                        },
+                        onPermissionDenied = {
+                            permissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    )
                 }
             )
         }

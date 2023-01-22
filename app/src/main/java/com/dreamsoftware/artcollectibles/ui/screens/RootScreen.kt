@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.ui.navigations.NavigationItem
 import com.dreamsoftware.artcollectibles.ui.screens.account.onboarding.OnBoardingScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
+import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
@@ -56,7 +57,7 @@ fun RootScreen(
             Text("Stats")
         }
         composable(NavigationItem.Add.route) {
-            Text("Add")
+            AddNftScreen(navigationController)
         }
         composable(NavigationItem.Search.route) {
             SearchScreen(navigationController)

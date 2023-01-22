@@ -115,8 +115,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
-    // Pallete API
+    // Palette API
     implementation("androidx.palette:palette-ktx:1.0.0")
+    // Jetpack Camera X
+    implementation("androidx.camera:camera-camera2:1.2.0")
+    implementation("androidx.camera:camera-extensions:1.2.0")
+    implementation("androidx.camera:camera-lifecycle:1.2.0")
+    implementation("androidx.camera:camera-view:1.2.0")
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
