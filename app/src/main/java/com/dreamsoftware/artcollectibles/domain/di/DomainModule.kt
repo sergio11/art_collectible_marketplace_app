@@ -195,4 +195,14 @@ class DomainModule {
     fun provideFindAllUsersUseCase(
         userRepository: IUserRepository
     ) = SearchUsersUseCase(userRepository)
+
+    /**
+     * Provide Create Art Collectible Use case
+     * @param artCollectibleRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideCreateArtCollectibleUseCase(
+        artCollectibleRepository: IArtCollectibleRepository
+    ) = CreateArtCollectibleUseCase(artCollectibleRepository)
 }

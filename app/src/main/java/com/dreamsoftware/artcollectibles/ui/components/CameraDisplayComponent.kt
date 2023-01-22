@@ -1,7 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import android.content.Context
-import android.net.Uri
+import android.util.Log
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -27,12 +27,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
 import com.dreamsoftware.artcollectibles.ui.extensions.getCameraProvider
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.Executor
+
+
+private const val PHOTO_FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
 
 @Composable
 fun CameraDisplayComponent(
     lifecycleOwner: LifecycleOwner,
     context: Context,
-    onImageCaptured: (Uri) -> Unit,
+    outputDirectory: File,
+    executor: Executor,
+    onImageCaptured: (File) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
 
@@ -54,13 +63,18 @@ fun CameraDisplayComponent(
         )
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
-
     Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
         AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
         IconButton(
             modifier = Modifier.padding(bottom = 20.dp),
             onClick = {
-
+                takePhoto(
+                    imageCapture = imageCapture,
+                    outputDirectory = outputDirectory,
+                    executor = executor,
+                    onImageCaptured = onImageCaptured,
+                    onError = onError
+                )
             },
             content = {
                 Icon(
@@ -75,5 +89,30 @@ fun CameraDisplayComponent(
             }
         )
     }
+}
 
+private fun takePhoto(
+    imageCapture: ImageCapture,
+    outputDirectory: File,
+    executor: Executor,
+    onImageCaptured: (File) -> Unit,
+    onError: (ImageCaptureException) -> Unit
+) {
+    val photoFile = File(
+        outputDirectory,
+        SimpleDateFormat(PHOTO_FILE_FORMAT, Locale.US)
+            .format(System.currentTimeMillis()) + ".jpg"
+    )
+    imageCapture.takePicture(
+        ImageCapture.OutputFileOptions.Builder(photoFile).build(),
+        executor,
+        object : ImageCapture.OnImageSavedCallback {
+            override fun onError(exception: ImageCaptureException) {
+                Log.e("ART_COLL", "Take photo error:", exception)
+                onError(exception)
+            }
+            override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                onImageCaptured(photoFile)
+            }
+        })
 }

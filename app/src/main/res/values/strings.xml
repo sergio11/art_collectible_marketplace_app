@@ -72,4 +72,12 @@
     <string name="search_user_info_name_empty">Anonymous user</string>
     <string name="search_user_info_description_empty">This user has preferred not to give details about his profile</string>
     <string name="search_query_empty">Write something here …</string>
+    <!-- Add NFT -->
+    <string name="add_nft_main_title_text">Mint new NFT</string>
+    <string name="add_nft_create_button_text">Create</string>
+    <string name="add_nft_cancel_button_text">Cancel</string>
+    <string name="add_nft_input_name_label">Name</string>
+    <string name="add_nft_input_name_placeholder">Art Collectible Name</string>
+    <string name="add_nft_input_description_label">Description</string>
+    <string name="add_nft_input_description_placeholder">Art Collectible Description</string>
 </resources>

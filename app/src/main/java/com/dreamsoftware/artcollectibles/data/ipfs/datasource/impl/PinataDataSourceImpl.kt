@@ -13,6 +13,7 @@ import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataQueryFi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 internal class PinataDataSourceImpl(
     private val pinataPinningService: IPinataPinningService,
@@ -25,6 +26,7 @@ internal class PinataDataSourceImpl(
     override suspend fun create(tokenMetadata: CreateTokenMetadataDTO): TokenMetadataDTO =
         safeNetworkCall {
             with(tokenMetadata) {
+                val file = File(fileUri)
                 val requestBody = file.asRequestBody(mediaType.toMediaType())
                 val filePart = MultipartBody.Part.createFormData("file", file.name, requestBody)
                 val fileMetadataDTO = createTokenMetadataMapper.mapInToOut(tokenMetadata)

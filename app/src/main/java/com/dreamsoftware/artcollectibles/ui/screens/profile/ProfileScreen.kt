@@ -106,9 +106,7 @@ internal fun ProfileComponent(
     Scaffold(
         bottomBar = {
             BottomBar(navController)
-        },
-        floatingActionButton = {},
-
+        }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             ScreenBackgroundImage(imageRes = R.drawable.common_background)
@@ -290,7 +288,7 @@ internal fun CurrentAccountBalance(
         Text(
             text = stringResource(
                 id = R.string.profile_current_matic,
-                accountBalance.erc20.toString()
+                accountBalance.balanceInEth.toString()
             ),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 8.dp),

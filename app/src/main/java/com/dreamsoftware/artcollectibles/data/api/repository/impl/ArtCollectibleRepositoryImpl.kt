@@ -33,7 +33,7 @@ internal class ArtCollectibleRepositoryImpl(
                 val tokenMetadata = ipfsDataSource.create(CreateTokenMetadataDTO(
                     name = name,
                     description = description,
-                    file = file,
+                    fileUri = fileUri,
                     mediaType = mediaType,
                     authorAddress = credentials.address
                 ))
