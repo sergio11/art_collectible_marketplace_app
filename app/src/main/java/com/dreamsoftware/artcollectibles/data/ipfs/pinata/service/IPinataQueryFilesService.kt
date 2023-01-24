@@ -15,20 +15,20 @@ interface IPinataQueryFilesService {
      * Get Pinned File By CID
      * @param cid
      */
-    @GET("data/pinList?status=pinned&ipfs_pin_hash={cid}")
-    suspend fun getPinnedFileByCid(@Path("cid") cid: String): PinnedFilesResponseDTO
+    @GET("data/pinList?status=pinned")
+    suspend fun getPinnedFileByCid(@Query("ipfs_pin_hash") cid: String): PinnedFilesResponseDTO
 
     /**
      * Get Pinned File By Creator Address
      * @param creatorAddress
      */
-    @GET("data/pinList?status=pinned&keyvalues[author_address]={creatorAddress}")
-    suspend fun getPinnedFileByCreatorAddress(@Path("creatorAddress") creatorAddress: String): PinnedFilesResponseDTO
+    @GET("data/pinList?status=pinned")
+    suspend fun getPinnedFileByCreatorAddress(@Query("keyvalues[author_address]") creatorAddress: String): PinnedFilesResponseDTO
 
     /**
      * Get Pinned File By Owner Address
      * @param ownerAddress
      */
-    @GET("data/pinList?status=pinned&keyvalues[owner_address]={ownerAddress}")
-    suspend fun getPinnedFileByOwnerAddress(@Path("ownerAddress") ownerAddress: String): PinnedFilesResponseDTO
+    @GET("data/pinList?status=pinned")
+    suspend fun getPinnedFileByOwnerAddress(@Query("keyvalues[owner_address]") ownerAddress: String): PinnedFilesResponseDTO
 }

@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.utils
 
+import android.net.Uri
 import com.dreamsoftware.artcollectibles.domain.models.PBEData
+import java.io.InputStream
 
 interface IApplicationAware {
 
@@ -19,4 +21,6 @@ interface IApplicationAware {
     fun setUserSecret(PBEData: PBEData?)
 
     fun getUserSecret(): PBEData
+
+    fun resolveContentAsByteArray(contentUri: Uri): ByteArray?
 }

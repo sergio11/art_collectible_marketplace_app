@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.ArtCollectibleDataException
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
@@ -37,15 +38,20 @@ internal class ArtCollectibleRepositoryImpl(
                     mediaType = mediaType,
                     authorAddress = credentials.address
                 ))
+                Log.d("ART_COLL", "create - ipfsDataSource.create COMPLETED!")
                 // Mint new token
                 val tokenId = artCollectibleDataSource.mintToken(tokenMetadata.cid, royalty, credentials)
+                Log.d("ART_COLL", "create - artCollectibleDataSource.mintToken COMPLETED!")
                 // Get detail about the token already minted
                 val tokenMinted = artCollectibleDataSource.getTokenById(tokenId, credentials)
+                Log.d("ART_COLL", "create - artCollectibleDataSource.getTokenById COMPLETED!")
                 // Get the detail about token author
                 val creatorInfo = userDataSource.getByAddress(credentials.address)
                 artCollectibleMapper.mapInToOut(Triple(tokenMetadata, tokenMinted, creatorInfo))
             }
         } catch (ex: Exception) {
+            ex.printStackTrace()
+            Log.d("ART_COLL", "create - ${ex.message} ERROR!")
             throw ArtCollectibleDataException("An error occurred when trying to create a new token", ex)
         }
     }

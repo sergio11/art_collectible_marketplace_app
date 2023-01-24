@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibleContract.ArtCollectible
@@ -27,10 +28,16 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
     private val web3j: Web3j
 ) : IArtCollectibleBlockchainDataSource {
 
-    override suspend fun mintToken(metadataCid: String, royalty: Long, credentials: Credentials): BigInteger =
+    override suspend fun mintToken(
+        metadataCid: String,
+        royalty: Long,
+        credentials: Credentials
+    ): BigInteger =
         withContext(Dispatchers.IO) {
             with(loadContract(credentials)) {
+                Log.d("ART_COLL", "mintToken metadataCid: $metadataCid - address: ${blockchainConfig.artCollectibleContractAddress}")
                 mintToken(metadataCid, BigInteger.valueOf(royalty)).send()
+                Log.d("ART_COLL", "mintToken metadataCid: $metadataCid COMPLETED!")
                 artCollectibleMintedEventFlowable(
                     EthFilter(
                         DefaultBlockParameterName.LATEST,
@@ -51,26 +58,50 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
 
     override suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
-            val collectibles = loadContract(credentials).tokensCreatedByMe.send().filterIsInstance<ArtCollectible>()
+            val collectibles = loadContract(credentials).tokensCreatedByMe.send()
+                .filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
+
+    override suspend fun getTokensCreatedBy(
+        credentials: Credentials,
+        creatorAddress: String
+    ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
+        val collectibles =
+            loadContract(credentials).getTokensCreatedBy(creatorAddress).send().filterIsInstance<ArtCollectible>()
+        artCollectibleMapper.mapInListToOutList(collectibles)
+    }
 
     override suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
-            val collectibles = loadContract(credentials).tokensOwnedByMe.send().filterIsInstance<ArtCollectible>()
+            val collectibles =
+                loadContract(credentials).tokensOwnedByMe.send().filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
-    override suspend fun getTokenById(tokenId: BigInteger, credentials: Credentials): ArtCollectibleBlockchainDTO =
+    override suspend fun getTokensOwnedBy(
+        credentials: Credentials,
+        ownerAddress: String
+    ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
+        val collectibles =
+            loadContract(credentials).getTokensOwnedBy(ownerAddress).send().filterIsInstance<ArtCollectible>()
+        artCollectibleMapper.mapInListToOutList(collectibles)
+    }
+
+    override suspend fun getTokenById(
+        tokenId: BigInteger,
+        credentials: Credentials
+    ): ArtCollectibleBlockchainDTO =
         withContext(Dispatchers.IO) {
             val collectible = loadContract(credentials).getTokenById(tokenId).send()
             artCollectibleMapper.mapInToOut(collectible)
         }
 
-    private fun loadContract(credentials: Credentials): ArtCollectibleContract = with(blockchainConfig) {
-        val txManager = FastRawTransactionManager(web3j, credentials, chainId)
-        ArtCollectibleContract.load(
-            artCollectibleContractAddress, web3j, txManager, gasProvider
-        )
-    }
+    private fun loadContract(credentials: Credentials): ArtCollectibleContract =
+        with(blockchainConfig) {
+            val txManager = FastRawTransactionManager(web3j, credentials, chainId)
+            ArtCollectibleContract.load(
+                artCollectibleContractAddress, web3j, txManager, gasProvider
+            )
+        }
 }

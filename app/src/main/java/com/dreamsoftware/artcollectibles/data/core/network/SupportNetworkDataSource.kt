@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.core.network
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.core.network.exception.*
 import java.io.IOException
 
@@ -23,6 +24,7 @@ internal abstract class SupportNetworkDataSource {
         try {
             onExecuted()
         } catch (exception: IOException) {
+            exception.printStackTrace()
             // map interrupted I/O to Network No Internet Exception
             throw NetworkNoInternetException()
         } catch (ex: NetworkException) {
@@ -48,6 +50,8 @@ internal abstract class SupportNetworkDataSource {
      */
     open fun onApiException(apiException: RetrofitException): Exception =
         apiException.response?.let {
+            Log.d("ART_COLL", "it.message() -> ${it.message()} CALLED!")
+            apiException.printStackTrace()
             when (it.code()) {
                 BAD_REQUEST_CODE -> NetworkBadRequestException(
                     message = it.message(),

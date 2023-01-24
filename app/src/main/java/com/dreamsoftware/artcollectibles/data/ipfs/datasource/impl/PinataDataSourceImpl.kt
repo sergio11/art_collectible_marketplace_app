@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.ipfs.datasource.impl
 
+import android.net.Uri
 import com.dreamsoftware.artcollectibles.data.core.network.SupportNetworkDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.CreateTokenMetadataMapper
@@ -10,12 +11,13 @@ import com.dreamsoftware.artcollectibles.data.ipfs.models.TokenMetadataDTO
 import com.dreamsoftware.artcollectibles.data.ipfs.models.UpdateTokenMetadataDTO
 import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataPinningService
 import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataQueryFilesService
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
+import okhttp3.RequestBody.Companion.toRequestBody
 
 internal class PinataDataSourceImpl(
+    private val applicationAware: IApplicationAware,
     private val pinataPinningService: IPinataPinningService,
     private val pinataQueryFilesService: IPinataQueryFilesService,
     private val createTokenMetadataMapper: CreateTokenMetadataMapper,
@@ -26,9 +28,10 @@ internal class PinataDataSourceImpl(
     override suspend fun create(tokenMetadata: CreateTokenMetadataDTO): TokenMetadataDTO =
         safeNetworkCall {
             with(tokenMetadata) {
-                val file = File(fileUri)
-                val requestBody = file.asRequestBody(mediaType.toMediaType())
-                val filePart = MultipartBody.Part.createFormData("file", file.name, requestBody)
+                val fileContents: ByteArray = applicationAware.resolveContentAsByteArray(Uri.parse(fileUri)) ?:
+                    throw IllegalStateException("Content Uri cannot be opened")
+                val requestBody = fileContents.toRequestBody(mediaType.toMediaType())
+                val filePart = MultipartBody.Part.createFormData("file", "file", requestBody)
                 val fileMetadataDTO = createTokenMetadataMapper.mapInToOut(tokenMetadata)
                 val response = pinataPinningService.pinFileToIPFS(filePart, fileMetadataDTO)
                 tokenMetadataMapper.mapInToOut(

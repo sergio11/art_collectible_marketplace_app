@@ -13,8 +13,8 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicArray;
+import org.web3j.abi.datatypes.DynamicStruct;
 import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.StaticStruct;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -55,7 +55,11 @@ public class ArtCollectibleContract extends Contract {
 
     public static final String FUNC_GETTOKENCREATORBYID = "getTokenCreatorById";
 
+    public static final String FUNC_GETTOKENSCREATEDBY = "getTokensCreatedBy";
+
     public static final String FUNC_GETTOKENSCREATEDBYME = "getTokensCreatedByMe";
+
+    public static final String FUNC_GETTOKENSOWNEDBY = "getTokensOwnedBy";
 
     public static final String FUNC_GETTOKENSOWNEDBYME = "getTokensOwnedByMe";
 
@@ -427,9 +431,39 @@ public class ArtCollectibleContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
+    public RemoteFunctionCall<List> getTokensCreatedBy(String creatorAddress) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOKENSCREATEDBY, 
+                Arrays.<Type>asList(new Address(160, creatorAddress)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
     public RemoteFunctionCall<List> getTokensCreatedByMe() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOKENSCREATEDBYME, 
                 Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> getTokensOwnedBy(String ownedAddress) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOKENSOWNEDBY, 
+                Arrays.<Type>asList(new Address(160, ownedAddress)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
         return new RemoteFunctionCall<List>(function,
                 new Callable<List>() {
@@ -643,26 +677,36 @@ public class ArtCollectibleContract extends Contract {
         return new ArtCollectibleContract(contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public static class ArtCollectible extends StaticStruct {
+    public static class ArtCollectible extends DynamicStruct {
+        public BigInteger tokenId;
+
         public String creator;
 
         public BigInteger royalty;
 
+        public String metadataCID;
+
         public Boolean isExist;
 
-        public ArtCollectible(String creator, BigInteger royalty, Boolean isExist) {
-            super(new Address(160, creator),
+        public ArtCollectible(BigInteger tokenId, String creator, BigInteger royalty, String metadataCID, Boolean isExist) {
+            super(new Uint256(tokenId),
+                    new Address(160, creator),
                     new Uint256(royalty),
+                    new Utf8String(metadataCID),
                     new Bool(isExist));
+            this.tokenId = tokenId;
             this.creator = creator;
             this.royalty = royalty;
+            this.metadataCID = metadataCID;
             this.isExist = isExist;
         }
 
-        public ArtCollectible(Address creator, Uint256 royalty, Bool isExist) {
-            super(creator, royalty, isExist);
+        public ArtCollectible(Uint256 tokenId, Address creator, Uint256 royalty, Utf8String metadataCID, Bool isExist) {
+            super(tokenId, creator, royalty, metadataCID, isExist);
+            this.tokenId = tokenId.getValue();
             this.creator = creator.getValue();
             this.royalty = royalty.getValue();
+            this.metadataCID = metadataCID.getValue();
             this.isExist = isExist.getValue();
         }
     }

@@ -47,28 +47,29 @@ android {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
 
-        // Configure Social Auth resources
         with(gradleLocalProperties(rootDir)) {
+            // Configure Social Auth resources
             resValue("string", "facebook_app_id", getProperty("facebook.applicationId"))
             resValue("string", "facebook_client_token", getProperty("facebook.clientToken"))
             resValue("string", "facebook_login_protocol_scheme", getProperty("facebook.loginProtocolScheme"))
             resValue("string", "google_client_id", getProperty("googleClientId"))
+            // Pinata configuration
+            buildConfigField(type = "String", name = "PINATA_BASE_URL", value = "\"https://api.pinata.cloud/\"")
+            buildConfigField(type = "String", name = "PINATA_GATEWAY_BASE_URL", value = "\"https://gateway.pinata.cloud/ipfs/\"")
+            buildConfigField(type = "String", name = "PINATA_API_KEY", value = "\"${getProperty("pinataApiKey")}\"")
+            // Blockchain Configuration
+            buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https://polygon-mumbai.g.alchemy.com/v2/${gradleLocalProperties(rootDir).getProperty("alchemyAccountPrivateKey")}/\"")
+            buildConfigField(type = "Long", name = "CHAIN_ID", value = "80001L")
+            buildConfigField(type = "Long", name = "GAS_PRICE", value = "1000000000L")
+            buildConfigField(type = "Long", name = "GAS_LIMIT", value = "993613L")
+            buildConfigField(type = "String", name = "MUMBAI_FAUCET_URL", value = "\"https://mumbaifaucet.com/\"")
+            // ArtCollectible contract deployed to 0xc6Ab28F37040Db11b11884812CC0641B70aB8779
+            buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0xc6Ab28F37040Db11b11884812CC0641B70aB8779\"")
+            // ArtMarketplace contract deployed to 0x533B9cFf8bDBb174EB29F833B9E795706f0AB99c
+            buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0x533B9cFf8bDBb174EB29F833B9E795706f0AB99c\"")
+            // Faucet contract deployed to 0x5b5108957d8F9F8c5dcee0141d0E1c6C5068142B
+            buildConfigField(type = "String", name = "FAUCET_CONTRACT_ADDRESS", value = "\"0x5b5108957d8F9F8c5dcee0141d0E1c6C5068142B\"")
         }
-        // Pinata configuration
-        buildConfigField(type = "String", name = "PINATA_BASE_URL", value = "\"https://api.pinata.cloud/\"")
-        buildConfigField(type = "String", name = "PINATA_GATEWAY_BASE_URL", value = "\"https://gateway.pinata.cloud/ipfs/\"")
-        // Blockchain Configuration
-        buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https://polygon-mumbai.g.alchemy.com/v2/${gradleLocalProperties(rootDir).getProperty("alchemyAccountPrivateKey")}/\"")
-        buildConfigField(type = "Long", name = "CHAIN_ID", value = "80001L")
-        buildConfigField(type = "Long", name = "GAS_PRICE", value = "1000000000L")
-        buildConfigField(type = "Long", name = "GAS_LIMIT", value = "993613L")
-        buildConfigField(type = "String", name = "MUMBAI_FAUCET_URL", value = "\"https://mumbaifaucet.com/\"")
-        // ArtCollectible contract deployed to 0x4501579Cf176Ca1C4FF3DC4c75d0f743c17C9971
-        buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0x4501579Cf176Ca1C4FF3DC4c75d0f743c17C9971\"")
-        // ArtMarketplace contract deployed to 0xe98de196B8e272Db40B2058a396fBB3Fa6176c33
-        buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0xe98de196B8e272Db40B2058a396fBB3Fa6176c33\"")
-        // Faucet contract deployed to 0x2BcB11D4fa5689bD75599F786f1C3EE7De4a89Da
-        buildConfigField(type = "String", name = "FAUCET_CONTRACT_ADDRESS", value = "\"0x2BcB11D4fa5689bD75599F786f1C3EE7De4a89Da\"")
     }
 
     buildTypes {

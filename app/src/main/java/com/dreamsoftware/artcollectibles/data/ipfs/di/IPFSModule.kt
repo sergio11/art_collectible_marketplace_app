@@ -4,17 +4,21 @@ import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
 import com.dreamsoftware.artcollectibles.data.ipfs.config.PinataConfig
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.impl.PinataDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.ipfs.di.qualifier.PinataOkHttpClient
 import com.dreamsoftware.artcollectibles.data.ipfs.di.qualifier.PinataRetrofit
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.CreateTokenMetadataMapper
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.TokenMetadataMapper
 import com.dreamsoftware.artcollectibles.data.ipfs.mapper.UpdateTokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.ipfs.pinata.interceptor.PinataAuthInterceptor
 import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataPinningService
 import com.dreamsoftware.artcollectibles.data.ipfs.pinata.service.IPinataQueryFilesService
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import javax.inject.Singleton
@@ -53,14 +57,45 @@ class IPFSModule {
     fun provideTokenMetadataMapper(pinataConfig: PinataConfig) = TokenMetadataMapper(pinataConfig)
 
     /**
+     * Provide Auth Interceptor
+     * @param pinataConfig
+     */
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(
+        pinataConfig: PinataConfig
+    ): PinataAuthInterceptor = PinataAuthInterceptor(pinataConfig)
+
+    /**
+     * Provide Ok HTTP Client
+     * @param pinataAuthInterceptor
+     * @param httpClientBuilder
+     */
+    @Provides
+    @Singleton
+    @PinataOkHttpClient
+    fun providePinataOkHttpClient(
+        pinataAuthInterceptor: PinataAuthInterceptor,
+        httpClientBuilder: OkHttpClient.Builder,
+    ): OkHttpClient = httpClientBuilder.apply {
+        addInterceptor(pinataAuthInterceptor)
+        addInterceptor(HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BASIC)
+        })
+    }.build()
+
+    /**
      * Provide Retrofit
+     * @param converterFactory
+     * @param httpClient,
+     * @param pinataConfig
      */
     @Provides
     @Singleton
     @PinataRetrofit
     fun provideIpfsRetrofit(
         converterFactory: Converter.Factory,
-        httpClient: OkHttpClient,
+        @PinataOkHttpClient httpClient: OkHttpClient,
         pinataConfig: PinataConfig
     ): Retrofit =
         Retrofit.Builder()
@@ -89,6 +124,7 @@ class IPFSModule {
 
     /**
      * Provide Pinata Data Source
+     * @param applicationAware
      * @param pinataPinningService
      * @param pinataQueryFilesService
      * @param createTokenMetadataMapper
@@ -98,6 +134,7 @@ class IPFSModule {
     @Provides
     @Singleton
     fun providePinataDataSource(
+        applicationAware: IApplicationAware,
         pinataPinningService: IPinataPinningService,
         pinataQueryFilesService: IPinataQueryFilesService,
         createTokenMetadataMapper: CreateTokenMetadataMapper,
@@ -105,6 +142,7 @@ class IPFSModule {
         tokenMetadataMapper: TokenMetadataMapper
     ): IpfsDataSource =
         PinataDataSourceImpl(
+            applicationAware,
             pinataPinningService,
             pinataQueryFilesService,
             createTokenMetadataMapper,

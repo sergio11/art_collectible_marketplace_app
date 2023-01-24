@@ -22,9 +22,19 @@ interface IArtCollectibleBlockchainDataSource {
     suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO>
 
     /**
+     * Allows you to retrieve the list of tokens created by the creator address
+     */
+    suspend fun getTokensCreatedBy(credentials: Credentials, creatorAddress: String): Iterable<ArtCollectibleBlockchainDTO>
+
+    /**
      * Allows you to retrieve the list of tokens owned
      */
     suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO>
+
+    /**
+     * Allows you to retrieve the list of tokens owned by the owner address
+     */
+    suspend fun getTokensOwnedBy(credentials: Credentials, ownerAddress: String): Iterable<ArtCollectibleBlockchainDTO>
 
     /**
      * Retrieve token information by id

@@ -17,10 +17,12 @@
 package com.dreamsoftware.artcollectibles
 
 import android.app.Application
+import android.net.Uri
 import com.dreamsoftware.artcollectibles.domain.models.PBEData
 import com.dreamsoftware.artcollectibles.secretsLib.SecretsVaultAPI
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.HiltAndroidApp
+import java.io.InputStream
 
 @HiltAndroidApp
 class ArtCollectiblesMarketplace : Application(), IApplicationAware {
@@ -43,4 +45,9 @@ class ArtCollectiblesMarketplace : Application(), IApplicationAware {
     }
 
     override fun getUserSecret(): PBEData = sessionUserPBEData ?: throw IllegalStateException("User secret has not been configured")
+
+    override fun resolveContentAsByteArray(contentUri: Uri): ByteArray? =
+        contentResolver.openInputStream(contentUri)?.use {
+            it.readBytes()
+        }
 }

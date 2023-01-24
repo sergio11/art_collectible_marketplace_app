@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.add
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.CreateArtCollectibleUseCase
@@ -19,6 +20,7 @@ class AddNftViewModel @Inject constructor(
     override fun onGetDefaultState(): AddNftUiState = AddNftUiState()
 
     fun onImageSelected(imageUri: Uri, mimeType: String) {
+        Log.d("ART_COLL", "imageUri ${imageUri.toString()}, mimeType: $mimeType")
         updateState {
             it.copy(
                 imageUri = imageUri,
@@ -41,13 +43,14 @@ class AddNftViewModel @Inject constructor(
 
     fun getFileProviderAuthority() = applicationAware.getFileProviderAuthority()
 
-    fun create() {
+    fun onCreate() {
         with(uiState.value) {
             viewModelScope.launch {
                 onLoading()
                 createArtCollectibleUseCase.invoke(
                     params = CreateArtCollectibleUseCase.Params(
                         imagePath = imageUri.toString(),
+                        mediaType = mimeType,
                         name = name,
                         description = description,
                         royalty = royalty
@@ -65,10 +68,13 @@ class AddNftViewModel @Inject constructor(
 
     private fun onCreateSuccess(artCollectible: ArtCollectible) {
         updateState { it.copy(isLoading = false) }
+        Log.d("ART_COLL", "onCreateSuccess id: ${artCollectible.id}")
     }
 
     private fun onCreateError(ex: Exception) {
         updateState { it.copy(isLoading = false) }
+        ex.printStackTrace()
+        Log.d("ART_COLL", "onCreateError EX: ${ex.message}")
     }
 
 }

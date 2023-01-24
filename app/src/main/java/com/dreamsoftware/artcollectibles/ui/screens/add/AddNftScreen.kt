@@ -104,7 +104,7 @@ fun AddNftScreen(
             },
             onNameChanged = ::onNameChanged,
             onDescriptionChanged = ::onDescriptionChanged,
-            onCreateClicked = {},
+            onCreateClicked = ::onCreate,
             onCancelClicked = {
                 navController.popBackStack()
             }
@@ -220,6 +220,7 @@ private fun AddNftForm(
                             onValueChanged = onDescriptionChanged
                         )
                         CommonButton(
+                            enabled = !state.isLoading,
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
                                 .width(300.dp),
@@ -231,6 +232,7 @@ private fun AddNftForm(
                             onClick = onCreateClicked
                         )
                         CommonButton(
+                            enabled = !state.isLoading,
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
                                 .width(300.dp),

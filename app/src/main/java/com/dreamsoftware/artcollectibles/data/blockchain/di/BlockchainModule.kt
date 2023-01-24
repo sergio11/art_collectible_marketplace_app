@@ -5,10 +5,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.alchemy.service.IAccoun
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.*
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.AccountBlockchainDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtCollectibleBlockchainDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.ArtMarketplaceBlockchainDataSourceImpl
-import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.WalletDataSourceImpl
+import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyOkHttpClient
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyRetrofit
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
@@ -20,6 +17,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import retrofit2.Converter
@@ -31,6 +29,20 @@ import javax.inject.Singleton
 class BlockchainModule {
 
     /**
+     * Provide Blockchain OkHTTP Client
+     */
+    @Provides
+    @Singleton
+    @AlchemyOkHttpClient
+    fun provideBlockchainOkHttpClient(
+        httpClientBuilder: OkHttpClient.Builder,
+    ): OkHttpClient = httpClientBuilder.apply {
+        addInterceptor(HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BODY)
+        })
+    }.build()
+
+    /**
      * Provide Retrofit
      */
     @Provides
@@ -38,7 +50,7 @@ class BlockchainModule {
     @AlchemyRetrofit
     fun provideAlchemyRetrofit(
         converterFactory: Converter.Factory,
-        httpClient: OkHttpClient,
+        @AlchemyOkHttpClient httpClient: OkHttpClient,
         blockchainConfig: BlockchainConfig
     ): Retrofit =
         Retrofit.Builder()
@@ -61,10 +73,13 @@ class BlockchainModule {
      */
     @Provides
     @Singleton
-    fun provideWeb3j(blockchainConfig: BlockchainConfig): Web3j = Web3j.build(
+    fun provideWeb3j(
+        blockchainConfig: BlockchainConfig,
+        @AlchemyOkHttpClient httpClient: OkHttpClient
+    ): Web3j = Web3j.build(
         HttpService(
             blockchainConfig.alchemyUrl,
-            OkHttpClient.Builder().build()
+            httpClient
         )
     )
 

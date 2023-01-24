@@ -34,17 +34,13 @@ class NetworkModule {
         )
 
     /**
-     * Provide HTTP Client
+     * Provide HTTP Client Builder
      */
     @Provides
     @Singleton
-    fun provideHttpClient(): OkHttpClient = OkHttpClient.Builder()
+    fun provideHttpClientBuilder(): OkHttpClient.Builder = OkHttpClient.Builder()
         .connectTimeout(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES)
         .readTimeout(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES)
         .writeTimeout(TIMEOUT_IN_MINUTES, TimeUnit.MINUTES)
         .retryOnConnectionFailure(true)
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            setLevel(HttpLoggingInterceptor.Level.BODY)
-        })
-        .build()
 }
