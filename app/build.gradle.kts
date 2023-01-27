@@ -60,8 +60,8 @@ android {
             // Blockchain Configuration
             buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https://polygon-mumbai.g.alchemy.com/v2/${gradleLocalProperties(rootDir).getProperty("alchemyAccountPrivateKey")}/\"")
             buildConfigField(type = "Long", name = "CHAIN_ID", value = "80001L")
-            buildConfigField(type = "Long", name = "GAS_PRICE", value = "1000000000L")
-            buildConfigField(type = "Long", name = "GAS_LIMIT", value = "993613L")
+            buildConfigField(type = "Long", name = "GAS_PRICE", value = "50000000000L")
+            buildConfigField(type = "Long", name = "GAS_LIMIT", value = "500000L")
             buildConfigField(type = "String", name = "MUMBAI_FAUCET_URL", value = "\"https://mumbaifaucet.com/\"")
             // ArtCollectible contract deployed to 0xc6Ab28F37040Db11b11884812CC0641B70aB8779
             buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0xc6Ab28F37040Db11b11884812CC0641B70aB8779\"")

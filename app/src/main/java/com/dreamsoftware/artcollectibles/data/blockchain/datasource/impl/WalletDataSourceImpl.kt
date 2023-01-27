@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.FileProvider
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.GenerateWalletException
@@ -68,6 +69,7 @@ internal class WalletDataSourceImpl(
     override suspend fun loadCredentials(name: String, password: String): Credentials =
         withContext(Dispatchers.IO) {
             try {
+                Log.d("ART_COLL", "loadCredentials -> password: $password")
                 WalletUtils.loadCredentials(password, File(getInternalWalletDirectory(), name))
             } catch (ex: Exception) {
                 throw LoadWalletCredentialsException(
