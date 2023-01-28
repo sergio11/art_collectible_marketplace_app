@@ -14,9 +14,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun MyTokensScreen(
@@ -36,6 +38,9 @@ fun MyTokensScreen(
         }
     }
     with(viewModel) {
+        LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
+            loadTokens()
+        }
         MyTokensComponent(
             navController = navController,
             state = uiState,
@@ -51,6 +56,7 @@ internal fun MyTokensComponent(
     state: MyTokensUiState,
     onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit
 ) {
+    LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
         bottomBar = {
             BottomBar(navController)
@@ -80,6 +86,7 @@ private fun MyTokensTabsRow(
                         text = {
                             Text(
                                 text = stringResource(id = tab.titleRes),
+                                fontFamily = montserratFontFamily,
                                 maxLines = 2,
                                 overflow = TextOverflow.Ellipsis
                             )

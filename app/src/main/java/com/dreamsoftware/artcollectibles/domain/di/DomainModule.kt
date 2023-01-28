@@ -41,7 +41,7 @@ class DomainModule {
     fun provideGetTokensCreatedUseCase(
         artCollectibleRepository: IArtCollectibleRepository
     ) =
-        GetTokensCreatedUseCase(artCollectibleRepository)
+        GetMyTokensCreatedUseCase(artCollectibleRepository)
 
     /**
      * @param artCollectibleRepository
@@ -51,7 +51,7 @@ class DomainModule {
     fun provideGetTokensOwnedUseCase(
         artCollectibleRepository: IArtCollectibleRepository
     ) =
-        GetTokensOwnedUseCase(artCollectibleRepository)
+        GetMyTokensOwnedUseCase(artCollectibleRepository)
 
     /**
      * Provide Sign In Use case
