@@ -80,4 +80,7 @@
     <string name="add_nft_input_name_placeholder">Art Collectible Name</string>
     <string name="add_nft_input_description_label">Description</string>
     <string name="add_nft_input_description_placeholder">Art Collectible Description</string>
+    <!-- My Tokens -->
+    <string name="my_tokens_tab_tokens_owned_text">Tokens Owned</string>
+    <string name="my_tokens_tab_tokens_created_text">Tokens Created</string>
 </resources>
