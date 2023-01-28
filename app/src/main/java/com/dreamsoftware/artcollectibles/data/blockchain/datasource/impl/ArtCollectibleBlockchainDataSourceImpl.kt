@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.tx.ReadonlyTransactionManager
 import java.math.BigInteger
 
@@ -43,12 +42,10 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
                     target = blockchainConfig.artCollectibleContractAddress
                 )
                 artCollectibleMintedEventFlowable(
-                    EthFilter(
-                        DefaultBlockParameterName.LATEST,
-                        DefaultBlockParameterName.LATEST,
-                        blockchainConfig.artCollectibleContractAddress
-                    )
-                ).firstOrError()
+                    DefaultBlockParameterName.LATEST,
+                    DefaultBlockParameterName.LATEST
+                )
+                    .firstOrError()
                     .map(ArtCollectibleMintedEventResponse::tokenId)
                     .blockingGet()
             }
@@ -62,8 +59,9 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
 
     override suspend fun getTokensCreated(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
-            val collectibles = loadContract(credentials, readOnlyMode = true).tokensCreatedByMe.send()
-                .filterIsInstance<ArtCollectible>()
+            val collectibles =
+                loadContract(credentials, readOnlyMode = true).tokensCreatedByMe.send()
+                    .filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
@@ -80,7 +78,8 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
     override suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
             val collectibles =
-                loadContract(credentials, readOnlyMode = true).tokensOwnedByMe.send().filterIsInstance<ArtCollectible>()
+                loadContract(credentials, readOnlyMode = true).tokensOwnedByMe.send()
+                    .filterIsInstance<ArtCollectible>()
             artCollectibleMapper.mapInListToOutList(collectibles)
         }
 
@@ -99,7 +98,8 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
         credentials: Credentials
     ): ArtCollectibleBlockchainDTO =
         withContext(Dispatchers.IO) {
-            val collectible = loadContract(credentials, readOnlyMode = true).getTokenById(tokenId).send()
+            val collectible =
+                loadContract(credentials, readOnlyMode = true).getTokenById(tokenId).send()
             artCollectibleMapper.mapInToOut(collectible)
         }
 
