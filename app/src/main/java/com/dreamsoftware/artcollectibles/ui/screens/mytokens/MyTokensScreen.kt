@@ -1,19 +1,24 @@
 package com.dreamsoftware.artcollectibles.ui.screens.mytokens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import android.content.Context
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCard
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
@@ -25,6 +30,7 @@ fun MyTokensScreen(
     navController: NavController,
     viewModel: MyTokensViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
         initialValue = MyTokensUiState(),
@@ -37,13 +43,16 @@ fun MyTokensScreen(
             }
         }
     }
+    val lazyListState = rememberLazyListState()
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             loadTokens()
         }
         MyTokensComponent(
             navController = navController,
+            context = context,
             state = uiState,
+            lazyListState = lazyListState,
             onNewTabSelected = ::onNewTabSelected
         )
     }
@@ -53,7 +62,9 @@ fun MyTokensScreen(
 @Composable
 internal fun MyTokensComponent(
     navController: NavController,
+    context: Context,
     state: MyTokensUiState,
+    lazyListState: LazyListState,
     onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
@@ -66,6 +77,7 @@ internal fun MyTokensComponent(
             ScreenBackgroundImage(imageRes = R.drawable.common_background)
             Column {
                 MyTokensTabsRow(state, onNewTabSelected)
+                MyTokensLazyList(context, state, lazyListState)
             }
         }
     }
@@ -77,7 +89,7 @@ private fun MyTokensTabsRow(
     onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit
 ) {
     with(state) {
-        if(tabs.isNotEmpty()) {
+        if (tabs.isNotEmpty()) {
             TabRow(selectedTabIndex = tabs.indexOfFirst { it.isSelected }) {
                 tabs.forEach { tab ->
                     Tab(
@@ -91,6 +103,33 @@ private fun MyTokensTabsRow(
                                 overflow = TextOverflow.Ellipsis
                             )
                         }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MyTokensLazyList(
+    context: Context,
+    state: MyTokensUiState,
+    lazyListState: LazyListState
+) {
+    with(state) {
+        if(!isLoading) {
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                state = lazyListState,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(tokens.size) { index ->
+                    ArtCollectibleCard(
+                        modifier = Modifier
+                            .height(300.dp)
+                            .fillMaxWidth(),
+                        context = context,
+                        artCollectible = tokens[index]
                     )
                 }
             }

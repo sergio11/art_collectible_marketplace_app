@@ -45,9 +45,6 @@ class MyTokensViewModel @Inject constructor(
         loadTokens()
     }
 
-    private fun getSelectedTabType(): MyTokensTabsTypeEnum? =
-        uiState.value.tabs.find { it.isSelected }?.type
-
     fun loadTokens() {
         onLoading()
         getSelectedTabType()?.let {
@@ -99,6 +96,9 @@ class MyTokensViewModel @Inject constructor(
         Log.d("ART_COLL", "onErrorOccurred ${ex.message} CALLED!")
         updateState { it.copy(isLoading = false) }
     }
+
+    private fun getSelectedTabType(): MyTokensTabsTypeEnum? =
+        uiState.value.tabs.find { it.isSelected }?.type
 }
 
 data class MyTokensUiState(

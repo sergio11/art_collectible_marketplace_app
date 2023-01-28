@@ -73,7 +73,7 @@ fun UserInfoArtistCard(
 }
 
 @Composable
-internal fun UserProfileImage(
+private fun UserProfileImage(
     context: Context,
     user: UserInfo,
     onPaletteGenerated: (Palette) -> Unit

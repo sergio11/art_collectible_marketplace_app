@@ -19,7 +19,7 @@ fun ArtCollectibleList() {
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(nfts) { nft ->
-            ArtCollectibleCard(
+            ArtCollectibleCardOld(
                 title = nft.title,
                 subtitle = nft.subTitle,
                 image = painterResource(id = nft.image),
