@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,7 +38,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.components.CommonButton
+import com.dreamsoftware.artcollectibles.ui.components.CommonDialog
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpState
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -59,7 +63,8 @@ data class TokenDetailScreenArgs(
 fun TokenDetailScreen(
     navController: NavController,
     args: TokenDetailScreenArgs,
-    viewModel: TokenDetailViewModel = hiltViewModel()
+    viewModel: TokenDetailViewModel = hiltViewModel(),
+    onTokenBurned: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -70,7 +75,11 @@ fun TokenDetailScreen(
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
             viewModel.uiState.collect {
-                value = it
+                if(it.isBurned) {
+                    onTokenBurned()
+                } else {
+                    value = it
+                }
             }
         }
     }
@@ -84,7 +93,9 @@ fun TokenDetailScreen(
             context = context,
             uiState = uiState,
             scrollState = scrollState,
-            density = density
+            density = density,
+            onBurnTokenClicked = ::burnToken,
+            onEditTokenClicked = {}
         )
     }
 }
@@ -94,7 +105,9 @@ fun TokenDetailComponent(
     context: Context,
     uiState: TokenDetailUiState,
     scrollState: ScrollState,
-    density: Density
+    density: Density,
+    onBurnTokenClicked: (tokenId: BigInteger) -> Unit,
+    onEditTokenClicked: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -111,7 +124,9 @@ fun TokenDetailComponent(
             )
             TokenDetailBody(
                 scrollState = scrollState,
-                artCollectible = artCollectible
+                artCollectible = artCollectible,
+                onBurnTokenClicked = onBurnTokenClicked,
+                onEditTokenClicked = onEditTokenClicked
             )
             TokenDetailToolbar(
                 scrollState = scrollState,
@@ -169,14 +184,52 @@ private fun TokenDetailHeader(
 @Composable
 private fun TokenDetailBody(
     scrollState: ScrollState,
-    artCollectible: ArtCollectible?
+    artCollectible: ArtCollectible?,
+    onBurnTokenClicked: (tokenId: BigInteger) -> Unit,
+    onEditTokenClicked: (tokenId: BigInteger) -> Unit
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(scrollState)
-    ) {
-        Spacer(Modifier.height(HEADER_HEIGHT))
-
+    artCollectible?.let {
+        var confirmBurnTokenState by rememberSaveable { mutableStateOf(false) }
+        CommonDialog(
+            isVisible = confirmBurnTokenState,
+            titleRes = R.string.token_detail_burn_token_confirm_title_text,
+            descriptionRes = R.string.token_detail_burn_token_confirm_description_text,
+            acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
+            cancelRes = R.string.token_detail_burn_token_confirm_cancel_button_text,
+            onAcceptClicked = {
+                onBurnTokenClicked(it.id)
+                confirmBurnTokenState = false
+            },
+            onCancelClicked = { confirmBurnTokenState = false }
+        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.verticalScroll(scrollState)
+        ) {
+            Spacer(Modifier.height(HEADER_HEIGHT))
+            CommonButton(
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .width(300.dp),
+                text = R.string.token_detail_burn_token_button_text,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White
+                ),
+                onClick = {
+                    confirmBurnTokenState = true
+                }
+            )
+            CommonButton(
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .width(300.dp),
+                text = R.string.token_detail_edit_token_button_text,
+                onClick = {
+                    onEditTokenClicked(it.id)
+                }
+            )
+        }
     }
 }
 
@@ -231,7 +284,8 @@ private fun TokenDetailTitle(
             modifier = Modifier
                 .graphicsLayer {
                     val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                    val collapseFraction: Float = (scrollState.value / collapseRange).coerceIn(0f, 1f)
+                    val collapseFraction: Float =
+                        (scrollState.value / collapseRange).coerceIn(0f, 1f)
 
                     val scaleXY = lerp(
                         TITLE_FONT_SCALE_START.dp,

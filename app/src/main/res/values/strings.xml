@@ -83,4 +83,11 @@
     <!-- My Tokens -->
     <string name="my_tokens_tab_tokens_owned_text">Tokens Owned</string>
     <string name="my_tokens_tab_tokens_created_text">Tokens Created</string>
+    <!-- Token Detail -->
+    <string name="token_detail_burn_token_button_text">Burn token</string>
+    <string name="token_detail_edit_token_button_text">Edit token</string>
+    <string name="token_detail_burn_token_confirm_title_text">Burn token</string>
+    <string name="token_detail_burn_token_confirm_description_text">Burn token</string>
+    <string name="token_detail_burn_token_confirm_accept_button_text">Accept</string>
+    <string name="token_detail_burn_token_confirm_cancel_button_text">Cancel</string>
 </resources>

@@ -215,4 +215,14 @@ class DomainModule {
     fun provideGetTokenDetailUseCase(
         artCollectibleRepository: IArtCollectibleRepository
     ) = GetTokenDetailUseCase(artCollectibleRepository)
+
+    /**
+     * Provide Burn Token Use Case
+     * @param artCollectibleRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideBurnTokenUseCase(
+        artCollectibleRepository: IArtCollectibleRepository
+    ) = BurnTokenUseCase(artCollectibleRepository)
 }
