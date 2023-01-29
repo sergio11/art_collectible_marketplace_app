@@ -281,7 +281,7 @@ internal fun CurrentAccountBalance(
         Text(
             text = stringResource(
                 id = R.string.profile_current_matic,
-                accountBalance.balanceInEth.toString()
+                accountBalance.balanceInEth
             ),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 8.dp),
