@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dreamsoftware.artcollectibles.ui.navigations.NavigationItem
+import com.dreamsoftware.artcollectibles.ui.navigations.DestinationItem
 import com.dreamsoftware.artcollectibles.ui.screens.account.onboarding.OnBoardingScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
@@ -14,6 +14,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
+import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 
 @Composable
@@ -22,51 +23,58 @@ fun RootScreen(
     val navigationController = rememberNavController()
     NavHost(
         navController = navigationController,
-        startDestination = NavigationItem.OnBoarding.route) {
-        composable(NavigationItem.OnBoarding.route) {
+        startDestination = DestinationItem.OnBoarding.route) {
+        composable(DestinationItem.OnBoarding.route) {
             OnBoardingScreen(
                 onUserAlreadyAuthenticated = {
-                    navigationController.navigate(NavigationItem.Home.route) {
-                        popUpTo(NavigationItem.Home.route)
+                    navigationController.navigate(DestinationItem.Home.route) {
+                        popUpTo(DestinationItem.Home.route)
                     }
                 },
                 onNavigateToLogin = {
-                    navigationController.navigate(NavigationItem.SignIn.route)
+                    navigationController.navigate(DestinationItem.SignIn.route)
                 },
                 onNavigateToSignUp = {
-                    navigationController.navigate(NavigationItem.SignUp.route)
+                    navigationController.navigate(DestinationItem.SignUp.route)
                 }
             )
         }
-        composable(NavigationItem.SignIn.route) {
+        composable(DestinationItem.SignIn.route) {
             SignInScreen {
-                navigationController.navigate(NavigationItem.Home.route) {
-                    popUpTo(NavigationItem.Home.route)
+                navigationController.navigate(DestinationItem.Home.route) {
+                    popUpTo(DestinationItem.Home.route)
                 }
             }
         }
-        composable(NavigationItem.SignUp.route) {
+        composable(DestinationItem.SignUp.route) {
             SignUpScreen {
                 navigationController.popBackStack()
             }
         }
-        composable(NavigationItem.Home.route) {
+        composable(DestinationItem.Home.route) {
             HomeScreen(navigationController)
         }
-        composable(NavigationItem.Stats.route) {
-            MyTokensScreen(navigationController)
+        composable(DestinationItem.MyTokens.route) {
+            MyTokensScreen(navigationController) {
+                navigationController.navigate(DestinationItem.TokenDetail.buildRoute(it))
+            }
         }
-        composable(NavigationItem.Add.route) {
+        composable(DestinationItem.Add.route) {
             AddNftScreen(navigationController)
         }
-        composable(NavigationItem.Search.route) {
+        composable(DestinationItem.Search.route) {
             SearchScreen(navigationController)
         }
-        composable(NavigationItem.Profile.route) {
+        composable(DestinationItem.Profile.route) {
             ProfileScreen(navigationController) {
-                navigationController.navigate(NavigationItem.OnBoarding.route) {
-                    popUpTo(NavigationItem.OnBoarding.route)
+                navigationController.navigate(DestinationItem.OnBoarding.route) {
+                    popUpTo(DestinationItem.OnBoarding.route)
                 }
+            }
+        }
+        composable(DestinationItem.TokenDetail.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.getString("id")?.let { tokenId ->
+                TokenDetailScreen(navigationController, tokenId)
             }
         }
     }

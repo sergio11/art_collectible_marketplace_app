@@ -19,7 +19,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 fun BottomBar(navController: NavController) {
     val items = listOf(
         NavigationItem.Home,
-        NavigationItem.Stats,
+        NavigationItem.MyTokens,
         NavigationItem.Add,
         NavigationItem.Search,
         NavigationItem.Profile
@@ -45,9 +45,9 @@ fun BottomBar(navController: NavController) {
                     unselectedTextColor = Color.White.copy(0.4f)
                 ),
                 alwaysShowLabel = false,
-                selected = currentRoute == item.route,
+                selected = currentRoute == item.destination.route,
                 onClick = {
-                    navController.navigate(item.route){
+                    navController.navigate(item.destination.route){
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route){
                                 saveState = true

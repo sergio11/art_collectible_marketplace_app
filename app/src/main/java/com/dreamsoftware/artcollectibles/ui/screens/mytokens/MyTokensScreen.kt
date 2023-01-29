@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.mytokens
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -18,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCard
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
@@ -28,7 +30,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 @Composable
 fun MyTokensScreen(
     navController: NavController,
-    viewModel: MyTokensViewModel = hiltViewModel()
+    viewModel: MyTokensViewModel = hiltViewModel(),
+    onGoToTokenDetail: (token: ArtCollectible) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -53,7 +56,8 @@ fun MyTokensScreen(
             context = context,
             state = uiState,
             lazyListState = lazyListState,
-            onNewTabSelected = ::onNewTabSelected
+            onNewTabSelected = ::onNewTabSelected,
+            onTokenClicked = onGoToTokenDetail
         )
     }
 }
@@ -65,7 +69,8 @@ internal fun MyTokensComponent(
     context: Context,
     state: MyTokensUiState,
     lazyListState: LazyListState,
-    onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit
+    onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit,
+    onTokenClicked: (token: ArtCollectible) -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
@@ -77,7 +82,7 @@ internal fun MyTokensComponent(
             ScreenBackgroundImage(imageRes = R.drawable.common_background)
             Column {
                 MyTokensTabsRow(state, onNewTabSelected)
-                MyTokensLazyList(context, state, lazyListState)
+                MyTokensLazyList(context, state, lazyListState, onTokenClicked)
             }
         }
     }
@@ -114,7 +119,8 @@ private fun MyTokensTabsRow(
 private fun MyTokensLazyList(
     context: Context,
     state: MyTokensUiState,
-    lazyListState: LazyListState
+    lazyListState: LazyListState,
+    onTokenClicked: (token: ArtCollectible) -> Unit
 ) {
     with(state) {
         if(!isLoading) {
@@ -127,7 +133,8 @@ private fun MyTokensLazyList(
                     ArtCollectibleCard(
                         modifier = Modifier
                             .height(300.dp)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .clickable { onTokenClicked(tokens[index]) },
                         context = context,
                         artCollectible = tokens[index]
                     )
