@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.navigations
 
+import android.os.Bundle
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -7,6 +8,9 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
+import okhttp3.internal.toLongOrDefault
+import java.math.BigInteger
 
 sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument> = emptyList()) {
     object OnBoarding : DestinationItem(route = "onBoarding")
@@ -22,11 +26,20 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             type = NavType.StringType
         }
     )) {
+
         fun buildRoute(artCollectible: ArtCollectible): String =
             route.replace(
                 oldValue = "{id}",
                 newValue = "${artCollectible.id}"
             )
+
+        fun parseArgs(args: Bundle): TokenDetailScreenArgs? = with(args) {
+            getString("id")?.toLongOrNull()?.let {
+                TokenDetailScreenArgs(
+                    tokenId = BigInteger.valueOf(it)
+                )
+            }
+        }
     }
 }
 

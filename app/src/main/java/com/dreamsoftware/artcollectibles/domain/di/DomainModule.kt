@@ -205,4 +205,14 @@ class DomainModule {
     fun provideCreateArtCollectibleUseCase(
         artCollectibleRepository: IArtCollectibleRepository
     ) = CreateArtCollectibleUseCase(artCollectibleRepository)
+
+    /**
+     * Provide Get token detail use case
+     * @param artCollectibleRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetTokenDetailUseCase(
+        artCollectibleRepository: IArtCollectibleRepository
+    ) = GetTokenDetailUseCase(artCollectibleRepository)
 }

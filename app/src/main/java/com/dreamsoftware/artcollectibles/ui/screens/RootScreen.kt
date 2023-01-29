@@ -73,8 +73,10 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.TokenDetail.route) { navBackStackEntry ->
-            navBackStackEntry.arguments?.getString("id")?.let { tokenId ->
-                TokenDetailScreen(navigationController, tokenId)
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.TokenDetail.parseArgs(args)?.let { screenArgs ->
+                    TokenDetailScreen(navigationController, screenArgs)
+                }
             }
         }
     }

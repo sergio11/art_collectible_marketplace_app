@@ -102,7 +102,7 @@ internal class ArtCollectibleRepositoryImpl(
             val credentials = walletRepository.loadCredentials()
             val token = artCollectibleDataSource.getTokenById(tokenId, userCredentialsMapper.mapOutToIn(credentials))
             val tokenMetadata = ipfsDataSource.fetchByCid(token.metadataCID)
-            val tokenAuthor = userDataSource.getById(tokenMetadata.ownerAddress)
+            val tokenAuthor = userDataSource.getByAddress(tokenMetadata.ownerAddress)
             artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenAuthor))
         }
 }
