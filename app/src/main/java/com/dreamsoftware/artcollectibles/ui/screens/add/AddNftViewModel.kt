@@ -58,6 +58,14 @@ class AddNftViewModel @Inject constructor(
         }
     }
 
+    fun onRoyaltyChanged(newRoyalty: Float) {
+        updateState {
+            it.copy(
+                royalty = newRoyalty
+            )
+        }
+    }
+
     fun getFileProviderAuthority() = applicationAware.getFileProviderAuthority()
 
     fun onCreate() {
@@ -70,7 +78,7 @@ class AddNftViewModel @Inject constructor(
                         mediaType = mimeType,
                         name = name,
                         description = description,
-                        royalty = royalty
+                        royalty = royalty.toLong()
                     ),
                     onSuccess = ::onCreateSuccess,
                     onError = ::onCreateError
@@ -111,7 +119,7 @@ data class AddNftUiState(
     val mimeType: String = "",
     val name: String = "",
     val description: String? = null,
-    val royalty: Long = 0L,
+    val royalty: Float = 0f,
     val isCreateButtonEnabled: Boolean = false,
     val isTokenMinted: Boolean = false
 )

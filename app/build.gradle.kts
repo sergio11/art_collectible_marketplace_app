@@ -63,12 +63,12 @@ android {
             buildConfigField(type = "Long", name = "GAS_PRICE", value = "50000000000L")
             buildConfigField(type = "Long", name = "GAS_LIMIT", value = "500000L")
             buildConfigField(type = "String", name = "MUMBAI_FAUCET_URL", value = "\"https://mumbaifaucet.com/\"")
-            // ArtCollectible contract deployed to 0xc6Ab28F37040Db11b11884812CC0641B70aB8779
-            buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0xc6Ab28F37040Db11b11884812CC0641B70aB8779\"")
-            // ArtMarketplace contract deployed to 0x533B9cFf8bDBb174EB29F833B9E795706f0AB99c
-            buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0x533B9cFf8bDBb174EB29F833B9E795706f0AB99c\"")
-            // Faucet contract deployed to 0x5b5108957d8F9F8c5dcee0141d0E1c6C5068142B
-            buildConfigField(type = "String", name = "FAUCET_CONTRACT_ADDRESS", value = "\"0x5b5108957d8F9F8c5dcee0141d0E1c6C5068142B\"")
+            // ArtCollectible contract deployed to 0x45b27e3BE67482B4f8c80CFFE8875B72C59e8C39
+            buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0x45b27e3BE67482B4f8c80CFFE8875B72C59e8C39\"")
+            // ArtMarketplace contract deployed to 0x37dA8C1f84Bf74f2405dD88381e3D921F4AAB982
+            buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0x37dA8C1f84Bf74f2405dD88381e3D921F4AAB982\"")
+            // Faucet contract deployed to 0x1Bb0F4233C325E7218b6C5c3B9C8Da474A66B404
+            buildConfigField(type = "String", name = "FAUCET_CONTRACT_ADDRESS", value = "\"0x1Bb0F4233C325E7218b6C5c3B9C8Da474A66B404\"")
         }
     }
 

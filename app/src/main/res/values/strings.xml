@@ -80,6 +80,7 @@
     <string name="add_nft_input_name_placeholder">Art Collectible Name</string>
     <string name="add_nft_input_description_label">Description</string>
     <string name="add_nft_input_description_placeholder">Art Collectible Description</string>
+    <string name="add_nft_input_royalty_label">Royalty</string>
     <string name="add_nft_cancel_confirm_title_text">Are you sure to cancel NFT creation process?</string>
     <string name="add_nft_cancel_confirm_description_text">Information related to the NFT will be discarded</string>
     <string name="add_nft_cancel_confirm_accept_button_text">Accept</string>

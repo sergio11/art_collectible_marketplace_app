@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -39,11 +40,15 @@ import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.getCacheSubDir
 import com.dreamsoftware.artcollectibles.ui.extensions.getMimeType
 import com.dreamsoftware.artcollectibles.ui.extensions.getUriForFile
+import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+
+private val ROYALTY_RANGE = 0.0f..40.0f
+private const val ROYALTY_STEPS = 3
 
 @Composable
 fun AddNftScreen(
@@ -105,6 +110,7 @@ fun AddNftScreen(
             },
             onNameChanged = ::onNameChanged,
             onDescriptionChanged = ::onDescriptionChanged,
+            onRoyaltyChanged = ::onRoyaltyChanged,
             onCreateClicked = ::onCreate,
             onExitClicked = onExitClicked
         )
@@ -122,6 +128,7 @@ internal fun AddNftComponent(
     onImageCaptured: (File) -> Unit,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
+    onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit
 ) {
@@ -142,6 +149,7 @@ internal fun AddNftComponent(
                 state = state,
                 onNameChanged = onNameChanged,
                 onDescriptionChanged = onDescriptionChanged,
+                onRoyaltyChanged = onRoyaltyChanged,
                 onCreateClicked = onCreateClicked,
                 onExitClicked = onExitClicked
             )
@@ -157,6 +165,7 @@ private fun AddNftForm(
     state: AddNftUiState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
+    onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit
 ) {
@@ -241,6 +250,23 @@ private fun AddNftForm(
                             value = state.description,
                             isSingleLine = false,
                             onValueChanged = onDescriptionChanged
+                        )
+                        Text(
+                            text = "${stringResource(R.string.add_nft_input_royalty_label)} ${state.royalty.toLong()}%",
+                            fontFamily = montserratFontFamily,
+                            modifier = Modifier
+                                .padding(vertical = 10.dp)
+                                .width(300.dp),
+                            style = MaterialTheme.typography.headlineSmall,
+                            maxLines = 1,
+                            color = Purple500
+                        )
+                        Slider(
+                            modifier = defaultModifier,
+                            value = state.royalty,
+                            valueRange = ROYALTY_RANGE,
+                            steps = ROYALTY_STEPS,
+                            onValueChange = onRoyaltyChanged
                         )
                         CommonButton(
                             enabled = !state.isLoading && state.isCreateButtonEnabled,
