@@ -17,10 +17,14 @@ class AddNftViewModel @Inject constructor(
     private val createArtCollectibleUseCase: CreateArtCollectibleUseCase
 ) : SupportViewModel<AddNftUiState>() {
 
+    companion object {
+        const val MIN_NFT_NAME_LENGTH = 6
+        const val MIN_NFT_DESCRIPTION_LENGTH = 10
+    }
+
     override fun onGetDefaultState(): AddNftUiState = AddNftUiState()
 
     fun onImageSelected(imageUri: Uri, mimeType: String) {
-        Log.d("ART_COLL", "imageUri ${imageUri.toString()}, mimeType: $mimeType")
         updateState {
             it.copy(
                 imageUri = imageUri,
@@ -34,11 +38,24 @@ class AddNftViewModel @Inject constructor(
     }
 
     fun onNameChanged(name: String) {
-        updateState { it.copy(name = name) }
+        updateState {
+            it.copy(
+                name = name,
+                isCreateButtonEnabled = createButtonShouldBeEnabled(
+                    name = name,
+                    description = it.description.orEmpty()
+                )
+            )
+        }
     }
 
     fun onDescriptionChanged(description: String) {
-        updateState { it.copy(description = description) }
+        updateState {
+            it.copy(
+                description = description,
+                isCreateButtonEnabled = createButtonShouldBeEnabled(name = it.name, description)
+            )
+        }
     }
 
     fun getFileProviderAuthority() = applicationAware.getFileProviderAuthority()
@@ -67,7 +84,12 @@ class AddNftViewModel @Inject constructor(
     }
 
     private fun onCreateSuccess(artCollectible: ArtCollectible) {
-        updateState { it.copy(isLoading = false) }
+        updateState {
+            it.copy(
+                isLoading = false,
+                isTokenMinted = true
+            )
+        }
         Log.d("ART_COLL", "onCreateSuccess id: ${artCollectible.id}")
     }
 
@@ -77,6 +99,10 @@ class AddNftViewModel @Inject constructor(
         Log.d("ART_COLL", "onCreateError EX: ${ex.message}")
     }
 
+    private fun createButtonShouldBeEnabled(name: String, description: String) =
+        description.length > MIN_NFT_DESCRIPTION_LENGTH
+                && name.length > MIN_NFT_NAME_LENGTH
+
 }
 
 data class AddNftUiState(
@@ -85,5 +111,7 @@ data class AddNftUiState(
     val mimeType: String = "",
     val name: String = "",
     val description: String? = null,
-    val royalty: Long = 0L
+    val royalty: Long = 0L,
+    val isCreateButtonEnabled: Boolean = false,
+    val isTokenMinted: Boolean = false
 )

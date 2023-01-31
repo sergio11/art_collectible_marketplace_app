@@ -48,7 +48,8 @@ import java.util.concurrent.Executors
 @Composable
 fun AddNftScreen(
     navController: NavController,
-    viewModel: AddNftViewModel = hiltViewModel()
+    viewModel: AddNftViewModel = hiltViewModel(),
+    onExitClicked: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val state by produceState(
@@ -105,9 +106,7 @@ fun AddNftScreen(
             onNameChanged = ::onNameChanged,
             onDescriptionChanged = ::onDescriptionChanged,
             onCreateClicked = ::onCreate,
-            onCancelClicked = {
-                navController.popBackStack()
-            }
+            onExitClicked = onExitClicked
         )
     }
 }
@@ -124,7 +123,7 @@ internal fun AddNftComponent(
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onCreateClicked: () -> Unit,
-    onCancelClicked: () -> Unit
+    onExitClicked: () -> Unit
 ) {
     if (isCameraPermissionGranted) {
         if (state.imageUri == null) {
@@ -144,7 +143,7 @@ internal fun AddNftComponent(
                 onNameChanged = onNameChanged,
                 onDescriptionChanged = onDescriptionChanged,
                 onCreateClicked = onCreateClicked,
-                onCancelClicked = onCancelClicked
+                onExitClicked = onExitClicked
             )
         }
     } else {
@@ -159,7 +158,7 @@ private fun AddNftForm(
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onCreateClicked: () -> Unit,
-    onCancelClicked: () -> Unit
+    onExitClicked: () -> Unit
 ) {
     var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
     LoadingDialog(isShowingDialog = state.isLoading)
@@ -170,10 +169,19 @@ private fun AddNftForm(
         acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
         cancelRes = R.string.add_nft_cancel_cancel_button_text,
         onAcceptClicked = {
-            onCancelClicked()
+            onExitClicked()
             confirmCancelAddNftState = false
         },
         onCancelClicked = { confirmCancelAddNftState = false }
+    )
+    CommonDialog(
+        isVisible = state.isTokenMinted,
+        titleRes = R.string.add_nft_token_minted_confirm_title_text,
+        descriptionRes = R.string.add_nft_token_minted_confirm_description_text,
+        acceptRes = R.string.add_nft_token_minted_confirm_accept_button_text,
+        onAcceptClicked = {
+            onExitClicked()
+        }
     )
     Scaffold { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -235,7 +243,7 @@ private fun AddNftForm(
                             onValueChanged = onDescriptionChanged
                         )
                         CommonButton(
-                            enabled = !state.isLoading,
+                            enabled = !state.isLoading && state.isCreateButtonEnabled,
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
                                 .width(300.dp),

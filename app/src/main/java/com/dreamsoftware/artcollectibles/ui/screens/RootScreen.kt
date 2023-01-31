@@ -60,7 +60,9 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Add.route) {
-            AddNftScreen(navigationController)
+            AddNftScreen(navigationController) {
+                navigationController.popBackStack()
+            }
         }
         composable(DestinationItem.Search.route) {
             SearchScreen(navigationController)

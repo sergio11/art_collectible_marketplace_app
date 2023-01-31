@@ -44,7 +44,6 @@ fun CameraDisplayComponent(
     onImageCaptured: (File) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
-
     val lensFacing = CameraSelector.LENS_FACING_BACK
     val preview = Preview.Builder().build()
     val previewView = remember { PreviewView(context) }
