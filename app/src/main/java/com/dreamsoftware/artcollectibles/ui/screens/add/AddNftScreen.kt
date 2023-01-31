@@ -161,7 +161,20 @@ private fun AddNftForm(
     onCreateClicked: () -> Unit,
     onCancelClicked: () -> Unit
 ) {
+    var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
     LoadingDialog(isShowingDialog = state.isLoading)
+    CommonDialog(
+        isVisible = confirmCancelAddNftState,
+        titleRes = R.string.add_nft_cancel_confirm_title_text,
+        descriptionRes = R.string.add_nft_cancel_confirm_description_text,
+        acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
+        cancelRes = R.string.add_nft_cancel_cancel_button_text,
+        onAcceptClicked = {
+            onCancelClicked()
+            confirmCancelAddNftState = false
+        },
+        onCancelClicked = { confirmCancelAddNftState = false }
+    )
     Scaffold { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             ScreenBackgroundImage(imageRes = R.drawable.common_background)
@@ -202,7 +215,9 @@ private fun AddNftForm(
                             placeholder = painterResource(R.drawable.user_placeholder),
                             contentDescription = stringResource(R.string.image_content_description),
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(250.dp).clip(CircleShape)
+                            modifier = Modifier
+                                .size(250.dp)
+                                .clip(CircleShape)
                         )
                         CommonDefaultTextField(
                             modifier = defaultModifier,
@@ -237,7 +252,9 @@ private fun AddNftForm(
                                 .padding(bottom = 8.dp)
                                 .width(300.dp),
                             text = R.string.add_nft_cancel_button_text,
-                            onClick = onCancelClicked
+                            onClick = {
+                                confirmCancelAddNftState = true
+                            }
                         )
                     }
                 }
