@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -267,6 +266,10 @@ private fun AddNftForm(
                             valueRange = ROYALTY_RANGE,
                             steps = ROYALTY_STEPS,
                             onValueChange = onRoyaltyChanged
+                        )
+                        TagsInputComponent(
+                            modifier = defaultModifier,
+                            tagList = listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5")
                         )
                         CommonButton(
                             enabled = !state.isLoading && state.isCreateButtonEnabled,

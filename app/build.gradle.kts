@@ -147,6 +147,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material-icons-extended:1.3.1")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.28.0")
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
 
