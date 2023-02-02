@@ -2,8 +2,8 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.BurnTokenUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetTokenDetailUseCase
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,32 +13,52 @@ import javax.inject.Inject
 @HiltViewModel
 class TokenDetailViewModel @Inject constructor(
     private val getTokenDetailUseCase: GetTokenDetailUseCase,
-    private val burnTokenUseCase: BurnTokenUseCase
+    private val burnTokenUseCase: BurnTokenUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val putItemForSaleUseCase: PutItemForSaleUseCase,
+    private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
+    private val isTokenAddedForSaleUseCase: IsTokenAddedForSaleUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
 
     fun loadDetail(tokenId: BigInteger) {
-        viewModelScope.launch {
-            onLoading()
-            getTokenDetailUseCase.invoke(
-                params = GetTokenDetailUseCase.Params(tokenId),
-                onSuccess = ::onTokenDetailLoaded,
-                onError = ::onErrorOccurred
-            )
-        }
+        onLoading()
+        loadAllDataForToken(tokenId)
     }
 
     fun burnToken(tokenId: BigInteger) {
+        onLoading()
+        burnTokenUseCase.invoke(
+            scope = viewModelScope,
+            params = BurnTokenUseCase.Params(tokenId),
+            onSuccess = {
+                onTokenBurned()
+            },
+            onError = ::onErrorOccurred
+        )
+    }
+
+    private suspend fun loadTokenDetail(tokenId: BigInteger) =
+        getTokenDetailUseCase.invoke(
+            scope = viewModelScope,
+            params = GetTokenDetailUseCase.Params(tokenId)
+        )
+
+    private suspend fun loadAuthUserDetail() =
+        getUserProfileUseCase.invoke(
+            scope = viewModelScope
+        )
+
+    private fun loadAllDataForToken(tokenId: BigInteger) {
         viewModelScope.launch {
-            onLoading()
-            burnTokenUseCase.invoke(
-                params = BurnTokenUseCase.Params(tokenId),
-                onSuccess = {
-                    onTokenBurned()
-                },
-                onError = ::onErrorOccurred
-            )
+            try {
+                val artCollectible = loadTokenDetail(tokenId)
+                val authUser = loadAuthUserDetail()
+                onLoadDetailCompleted(artCollectible, authUser)
+            } catch (ex: Exception) {
+                onErrorOccurred(ex)
+            }
         }
     }
 
@@ -46,11 +66,12 @@ class TokenDetailViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
     }
 
-    private fun onTokenDetailLoaded(artCollectible: ArtCollectible) {
+    private fun onLoadDetailCompleted(artCollectible: ArtCollectible, userInfo: UserInfo) {
         updateState {
             it.copy(
                 artCollectible = artCollectible,
-                isLoading = false
+                isLoading = false,
+                isTokenOwner = artCollectible.author.uid == userInfo.uid
             )
         }
     }
@@ -73,5 +94,6 @@ class TokenDetailViewModel @Inject constructor(
 data class TokenDetailUiState(
     var artCollectible: ArtCollectible? = null,
     val isLoading: Boolean = false,
-    val isBurned: Boolean = false
+    val isBurned: Boolean = false,
+    val isTokenOwner: Boolean = false
 )

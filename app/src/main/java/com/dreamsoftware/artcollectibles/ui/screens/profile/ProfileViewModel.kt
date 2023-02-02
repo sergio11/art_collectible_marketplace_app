@@ -81,28 +81,28 @@ class ProfileViewModel @Inject constructor(
     fun saveUserInfo() {
         with(uiState.value) {
             userInfo?.let {
-                viewModelScope.launch {
-                    onLoading()
-                    updateUserInfoUseCase.invoke(
-                        params = UpdateUserInfoUseCase.Params(
-                            userInfo = it,
-                            isProfilePictureUpdated = isProfilePictureUpdated
-                        ),
-                        onSuccess = ::onProfileLoaded,
-                        onError = ::onErrorOccurred
-                    )
-                }
+                onLoading()
+                updateUserInfoUseCase.invoke(
+                    scope = viewModelScope,
+                    params = UpdateUserInfoUseCase.Params(
+                        userInfo = it,
+                        isProfilePictureUpdated = isProfilePictureUpdated
+                    ),
+                    onSuccess = ::onProfileLoaded,
+                    onError = ::onErrorOccurred
+                )
             }
         }
     }
 
     fun closeSession() {
-        viewModelScope.launch {
-            onLoading()
-            closeSessionUseCase.invoke(onSuccess = {
+        onLoading()
+        closeSessionUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = {
                 onSessionClosed()
-            }, onError = ::onErrorOccurred)
-        }
+            }, onError = ::onErrorOccurred
+        )
     }
 
     /**
@@ -110,16 +110,17 @@ class ProfileViewModel @Inject constructor(
      */
 
     private fun loadProfileData() {
-        viewModelScope.launch {
-            getUserProfileUseCase.invoke(
-                onSuccess = ::onProfileLoaded, onError = ::onErrorOccurred
-            )
-        }
+        getUserProfileUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onProfileLoaded,
+            onError = ::onErrorOccurred
+        )
     }
 
     private fun loadCurrentBalance() {
-        viewModelScope.launch {
-            getCurrentBalanceUseCase.invoke(onSuccess = { balance ->
+        getCurrentBalanceUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = { balance ->
                 updateState {
                     it.copy(accountBalance = balance)
                 }
@@ -128,7 +129,6 @@ class ProfileViewModel @Inject constructor(
                     it.copy(accountBalance = null)
                 }
             })
-        }
     }
 
     private fun onLoading() {

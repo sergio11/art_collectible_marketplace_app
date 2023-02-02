@@ -37,11 +37,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.CommonDialog
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpState
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -109,37 +107,36 @@ fun TokenDetailComponent(
     onBurnTokenClicked: (tokenId: BigInteger) -> Unit,
     onEditTokenClicked: (tokenId: BigInteger) -> Unit
 ) {
-    with(uiState) {
-        LoadingDialog(isShowingDialog = isLoading)
-        val headerHeightPx = with(density) { HEADER_HEIGHT.toPx() }
-        val toolbarHeightPx = with(density) { TOOLBAR_HEIGHT.toPx() }
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            TokenDetailHeader(
-                context = context,
-                scrollState = scrollState,
-                headerHeightPx = headerHeightPx,
-                artCollectible = artCollectible
-            )
-            TokenDetailBody(
-                scrollState = scrollState,
-                artCollectible = artCollectible,
-                onBurnTokenClicked = onBurnTokenClicked,
-                onEditTokenClicked = onEditTokenClicked
-            )
-            TokenDetailToolbar(
-                scrollState = scrollState,
-                headerHeightPx = headerHeightPx,
-                toolbarHeightPx = toolbarHeightPx
-            )
-            TokenDetailTitle(
-                scrollState = scrollState,
-                artCollectible = artCollectible,
-                headerHeightPx = headerHeightPx,
-                toolbarHeightPx = toolbarHeightPx
-            )
-        }
+    LoadingDialog(isShowingDialog = uiState.isLoading)
+    val headerHeightPx = with(density) { HEADER_HEIGHT.toPx() }
+    val toolbarHeightPx = with(density) { TOOLBAR_HEIGHT.toPx() }
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        TokenDetailHeader(
+            context = context,
+            uiState = uiState,
+            scrollState = scrollState,
+            headerHeightPx = headerHeightPx,
+        )
+        TokenDetailBody(
+            scrollState = scrollState,
+            uiState = uiState,
+            onBurnTokenClicked = onBurnTokenClicked,
+            onEditTokenClicked = onEditTokenClicked
+        )
+        TokenDetailToolbar(
+            scrollState = scrollState,
+            uiState = uiState,
+            headerHeightPx = headerHeightPx,
+            toolbarHeightPx = toolbarHeightPx
+        )
+        TokenDetailTitle(
+            scrollState = scrollState,
+            uiState = uiState,
+            headerHeightPx = headerHeightPx,
+            toolbarHeightPx = toolbarHeightPx
+        )
     }
 }
 
@@ -147,88 +144,93 @@ fun TokenDetailComponent(
 private fun TokenDetailHeader(
     context: Context,
     scrollState: ScrollState,
-    headerHeightPx: Float,
-    artCollectible: ArtCollectible?
+    uiState: TokenDetailUiState,
+    headerHeightPx: Float
 ) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(HEADER_HEIGHT)
-        .graphicsLayer {
-            translationY = -scrollState.value.toFloat() / 2f // Parallax effect
-            alpha = (-1f / headerHeightPx) * scrollState.value + 1
-        }
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(artCollectible?.imageUrl)
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(R.drawable.user_placeholder),
-            contentDescription = stringResource(R.string.image_content_description),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color(0xAA000000)),
-                        startY = 3 * headerHeightPx / 4 // Gradient applied to wrap the title only
+    with(uiState) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(HEADER_HEIGHT)
+            .graphicsLayer {
+                translationY = -scrollState.value.toFloat() / 2f // Parallax effect
+                alpha = (-1f / headerHeightPx) * scrollState.value + 1
+            }
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(artCollectible?.imageUrl)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.user_placeholder),
+                contentDescription = stringResource(R.string.image_content_description),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color(0xAA000000)),
+                            startY = 3 * headerHeightPx / 4 // Gradient applied to wrap the title only
+                        )
                     )
-                )
-        )
+            )
+        }
     }
 }
 
 @Composable
 private fun TokenDetailBody(
     scrollState: ScrollState,
-    artCollectible: ArtCollectible?,
+    uiState: TokenDetailUiState,
     onBurnTokenClicked: (tokenId: BigInteger) -> Unit,
     onEditTokenClicked: (tokenId: BigInteger) -> Unit
 ) {
-    artCollectible?.let {
-        var confirmBurnTokenState by rememberSaveable { mutableStateOf(false) }
-        CommonDialog(
-            isVisible = confirmBurnTokenState,
-            titleRes = R.string.token_detail_burn_token_confirm_title_text,
-            descriptionRes = R.string.token_detail_burn_token_confirm_description_text,
-            acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
-            cancelRes = R.string.token_detail_burn_token_confirm_cancel_button_text,
-            onAcceptClicked = {
-                onBurnTokenClicked(it.id)
-                confirmBurnTokenState = false
-            },
-            onCancelClicked = { confirmBurnTokenState = false }
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(scrollState)
-        ) {
-            Spacer(Modifier.height(HEADER_HEIGHT))
-            CommonButton(
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .width(300.dp),
-                text = R.string.token_detail_burn_token_button_text,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red,
-                    contentColor = Color.White
-                ),
-                onClick = {
-                    confirmBurnTokenState = true
-                }
+    with(uiState) {
+        artCollectible?.let {
+            var confirmBurnTokenState by rememberSaveable { mutableStateOf(false) }
+            CommonDialog(
+                isVisible = confirmBurnTokenState,
+                titleRes = R.string.token_detail_burn_token_confirm_title_text,
+                descriptionRes = R.string.token_detail_burn_token_confirm_description_text,
+                acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
+                cancelRes = R.string.token_detail_burn_token_confirm_cancel_button_text,
+                onAcceptClicked = {
+                    onBurnTokenClicked(it.id)
+                    confirmBurnTokenState = false
+                },
+                onCancelClicked = { confirmBurnTokenState = false }
             )
-            CommonButton(
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .width(300.dp),
-                text = R.string.token_detail_edit_token_button_text,
-                onClick = {
-                    onEditTokenClicked(it.id)
-                }
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.verticalScroll(scrollState)
+            ) {
+                Spacer(Modifier.height(HEADER_HEIGHT))
+                CommonButton(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .width(300.dp),
+                    text = R.string.token_detail_edit_token_button_text,
+                    onClick = {
+                        onEditTokenClicked(it.id)
+                    }
+                )
+                if(isTokenOwner)
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.token_detail_burn_token_button_text,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            confirmBurnTokenState = true
+                        }
+                    )
+            }
         }
     }
 }
@@ -237,6 +239,7 @@ private fun TokenDetailBody(
 @Composable
 private fun TokenDetailToolbar(
     scrollState: ScrollState,
+    uiState: TokenDetailUiState,
     headerHeightPx: Float,
     toolbarHeightPx: Float
 ) {
@@ -268,78 +271,80 @@ private fun TokenDetailToolbar(
 @Composable
 private fun TokenDetailTitle(
     scrollState: ScrollState,
-    artCollectible: ArtCollectible?,
+    uiState: TokenDetailUiState,
     headerHeightPx: Float,
     toolbarHeightPx: Float
 ) {
-    var titleHeightPx by remember { mutableStateOf(0f) }
-    var titleWidthPx by remember { mutableStateOf(0f) }
-    artCollectible?.let {
-        Text(
-            text = "#${it.id} - ${it.name}",
-            fontSize = 30.sp,
-            color = Color.White,
-            fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .graphicsLayer {
-                    val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
-                    val collapseFraction: Float =
-                        (scrollState.value / collapseRange).coerceIn(0f, 1f)
+    with(uiState) {
+        var titleHeightPx by remember { mutableStateOf(0f) }
+        var titleWidthPx by remember { mutableStateOf(0f) }
+        artCollectible?.let {
+            Text(
+                text = "#${it.id} - ${it.name}",
+                fontSize = 30.sp,
+                color = Color.White,
+                fontFamily = montserratFontFamily,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .graphicsLayer {
+                        val collapseRange: Float = (headerHeightPx - toolbarHeightPx)
+                        val collapseFraction: Float =
+                            (scrollState.value / collapseRange).coerceIn(0f, 1f)
 
-                    val scaleXY = lerp(
-                        TITLE_FONT_SCALE_START.dp,
-                        TITLE_FONT_SCALE_END.dp,
-                        collapseFraction
-                    )
+                        val scaleXY = lerp(
+                            TITLE_FONT_SCALE_START.dp,
+                            TITLE_FONT_SCALE_END.dp,
+                            collapseFraction
+                        )
 
-                    val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
+                        val titleExtraStartPadding = titleWidthPx.toDp() * (1 - scaleXY.value) / 2f
 
-                    val titleYFirstInterpolatedPoint = lerp(
-                        HEADER_HEIGHT - titleHeightPx.toDp() - PADDING_MEDIUM,
-                        HEADER_HEIGHT / 2,
-                        collapseFraction
-                    )
+                        val titleYFirstInterpolatedPoint = lerp(
+                            HEADER_HEIGHT - titleHeightPx.toDp() - PADDING_MEDIUM,
+                            HEADER_HEIGHT / 2,
+                            collapseFraction
+                        )
 
-                    val titleXFirstInterpolatedPoint = lerp(
-                        TITLE_PADDING_START,
-                        (TITLE_PADDING_END - titleExtraStartPadding) * 5 / 4,
-                        collapseFraction
-                    )
+                        val titleXFirstInterpolatedPoint = lerp(
+                            TITLE_PADDING_START,
+                            (TITLE_PADDING_END - titleExtraStartPadding) * 5 / 4,
+                            collapseFraction
+                        )
 
-                    val titleYSecondInterpolatedPoint = lerp(
-                        HEADER_HEIGHT / 2,
-                        TOOLBAR_HEIGHT / 2 - titleHeightPx.toDp() / 2,
-                        collapseFraction
-                    )
+                        val titleYSecondInterpolatedPoint = lerp(
+                            HEADER_HEIGHT / 2,
+                            TOOLBAR_HEIGHT / 2 - titleHeightPx.toDp() / 2,
+                            collapseFraction
+                        )
 
-                    val titleXSecondInterpolatedPoint = lerp(
-                        (TITLE_PADDING_END - titleExtraStartPadding) * 5 / 4,
-                        TITLE_PADDING_END - titleExtraStartPadding,
-                        collapseFraction
-                    )
+                        val titleXSecondInterpolatedPoint = lerp(
+                            (TITLE_PADDING_END - titleExtraStartPadding) * 5 / 4,
+                            TITLE_PADDING_END - titleExtraStartPadding,
+                            collapseFraction
+                        )
 
-                    val titleY = lerp(
-                        titleYFirstInterpolatedPoint,
-                        titleYSecondInterpolatedPoint,
-                        collapseFraction
-                    )
+                        val titleY = lerp(
+                            titleYFirstInterpolatedPoint,
+                            titleYSecondInterpolatedPoint,
+                            collapseFraction
+                        )
 
-                    val titleX = lerp(
-                        titleXFirstInterpolatedPoint,
-                        titleXSecondInterpolatedPoint,
-                        collapseFraction
-                    )
+                        val titleX = lerp(
+                            titleXFirstInterpolatedPoint,
+                            titleXSecondInterpolatedPoint,
+                            collapseFraction
+                        )
 
-                    translationY = titleY.toPx()
-                    translationX = titleX.toPx()
-                    scaleX = scaleXY.value
-                    scaleY = scaleXY.value
-                }
-                .onGloballyPositioned { lc ->
-                    titleHeightPx = lc.size.height.toFloat()
-                    titleWidthPx = lc.size.width.toFloat()
-                }
-        )
+                        translationY = titleY.toPx()
+                        translationX = titleX.toPx()
+                        scaleX = scaleXY.value
+                        scaleY = scaleXY.value
+                    }
+                    .onGloballyPositioned { lc ->
+                        titleHeightPx = lc.size.height.toFloat()
+                        titleWidthPx = lc.size.width.toFloat()
+                    }
+            )
+        }
     }
 }

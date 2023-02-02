@@ -41,26 +41,24 @@ class SignInViewModel @Inject constructor(
 
     fun signIn() {
         with(uiState.value) {
-            viewModelScope.launch {
-                onLoginInProgress()
-                signInUserCase.invoke(
-                    params = SignInUseCase.Params(email.orEmpty(), password.orEmpty()),
-                    onSuccess = ::onLoginSuccess,
-                    onError = ::onLoginError
-                )
-            }
-        }
-    }
-
-    fun signIn(accessToken: String, authType: ExternalProviderAuthTypeEnum) {
-        viewModelScope.launch {
             onLoginInProgress()
-            socialSignInUseCase.invoke(
-                params = SocialSignInUseCase.Params(accessToken, authType),
+            signInUserCase.invoke(
+                scope = viewModelScope,
+                params = SignInUseCase.Params(email.orEmpty(), password.orEmpty()),
                 onSuccess = ::onLoginSuccess,
                 onError = ::onLoginError
             )
         }
+    }
+
+    fun signIn(accessToken: String, authType: ExternalProviderAuthTypeEnum) {
+        onLoginInProgress()
+        socialSignInUseCase.invoke(
+            scope = viewModelScope,
+            params = SocialSignInUseCase.Params(accessToken, authType),
+            onSuccess = ::onLoginSuccess,
+            onError = ::onLoginError
+        )
     }
 
     override fun onGetDefaultState(): SignInUiState = SignInUiState()

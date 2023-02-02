@@ -70,20 +70,19 @@ class AddNftViewModel @Inject constructor(
 
     fun onCreate() {
         with(uiState.value) {
-            viewModelScope.launch {
-                onLoading()
-                createArtCollectibleUseCase.invoke(
-                    params = CreateArtCollectibleUseCase.Params(
-                        imagePath = imageUri.toString(),
-                        mediaType = mimeType,
-                        name = name,
-                        description = description,
-                        royalty = royalty.toLong()
-                    ),
-                    onSuccess = ::onCreateSuccess,
-                    onError = ::onCreateError
-                )
-            }
+            onLoading()
+            createArtCollectibleUseCase.invoke(
+                scope = viewModelScope,
+                params = CreateArtCollectibleUseCase.Params(
+                    imagePath = imageUri.toString(),
+                    mediaType = mimeType,
+                    name = name,
+                    description = description,
+                    royalty = royalty.toLong()
+                ),
+                onSuccess = ::onCreateSuccess,
+                onError = ::onCreateError
+            )
         }
     }
 

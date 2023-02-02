@@ -38,14 +38,13 @@ class SignUpViewModel @Inject constructor(
 
     fun signUp() {
         with(uiState.value) {
-            viewModelScope.launch {
-                onSignUpInProgress()
-                signUpUseCase.invoke(
-                    params = SignUpUseCase.Params(email.orEmpty(), password.orEmpty()),
-                    onSuccess = ::onSignUpSuccess,
-                    onError = ::onSignUpError
-                )
-            }
+            onSignUpInProgress()
+            signUpUseCase.invoke(
+                scope = viewModelScope,
+                params = SignUpUseCase.Params(email.orEmpty(), password.orEmpty()),
+                onSuccess = ::onSignUpSuccess,
+                onError = ::onSignUpError
+            )
         }
     }
 

@@ -58,23 +58,21 @@ class MyTokensViewModel @Inject constructor(
 
     private fun loadMyTokensCreated() {
         with(uiState.value) {
-            viewModelScope.launch {
-                getMyTokensCreatedUseCase.invoke(
-                    onSuccess = ::onLoadTokensCompleted,
-                    onError = ::onErrorOccurred
-                )
-            }
+            getMyTokensCreatedUseCase.invoke(
+                scope = viewModelScope,
+                onSuccess = ::onLoadTokensCompleted,
+                onError = ::onErrorOccurred
+            )
         }
     }
 
     private fun loadMyTokensOwned() {
         with(uiState.value) {
-            viewModelScope.launch {
-                getMyTokensOwnedUseCase.invoke(
-                    onSuccess = ::onLoadTokensCompleted,
-                    onError = ::onErrorOccurred
-                )
-            }
+            getMyTokensOwnedUseCase.invoke(
+                scope = viewModelScope,
+                onSuccess = ::onLoadTokensCompleted,
+                onError = ::onErrorOccurred
+            )
         }
     }
 

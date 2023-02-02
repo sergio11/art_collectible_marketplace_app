@@ -37,13 +37,12 @@ class SearchViewModel @Inject constructor(
     private fun searchUsers() {
         with(uiState.value) {
             onLoading()
-            viewModelScope.launch {
-                searchUsersUseCase.invoke(
-                    params = SearchUsersUseCase.Params(term = searchTerm),
-                    onSuccess = ::onSearchFinished,
-                    onError = ::onErrorOccurred
-                )
-            }
+            searchUsersUseCase.invoke(
+                scope = viewModelScope,
+                params = SearchUsersUseCase.Params(term = searchTerm),
+                onSuccess = ::onSearchFinished,
+                onError = ::onErrorOccurred
+            )
         }
     }
 

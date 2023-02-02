@@ -53,4 +53,11 @@ interface IArtMarketplaceBlockchainDataSource {
      */
     suspend fun buyItem(tokenId: BigInteger, price: BigInteger, credentials: Credentials)
 
+    /**
+     * Is token added for sale
+     * @param tokenId
+     * @param credentials
+     */
+    suspend fun isTokenAddedForSale(tokenId: BigInteger, credentials: Credentials): Boolean
+
 }

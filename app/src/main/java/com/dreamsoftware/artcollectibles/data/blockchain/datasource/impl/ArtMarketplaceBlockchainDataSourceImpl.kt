@@ -77,6 +77,12 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         }
     }
 
+    override suspend fun isTokenAddedForSale(tokenId: BigInteger, credentials: Credentials): Boolean {
+        withContext(Dispatchers.IO) {
+            TODO("")
+        }
+    }
+
     private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) = with(loadContract(credentials)) {
         val marketItems = when (type) {
             MarketItemType.AVAILABLE -> fetchAvailableMarketItems()

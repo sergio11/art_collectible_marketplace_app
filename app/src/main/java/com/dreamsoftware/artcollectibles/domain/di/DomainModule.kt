@@ -225,4 +225,34 @@ class DomainModule {
     fun provideBurnTokenUseCase(
         artCollectibleRepository: IArtCollectibleRepository
     ) = BurnTokenUseCase(artCollectibleRepository)
+
+    /**
+     * Provide Put item for sale use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun providePutItemForSaleUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = PutItemForSaleUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide With draw from sale use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideWithdrawFromSaleUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = WithdrawFromSaleUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide is token added for sale use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideIsTokenAddedForSaleUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = IsTokenAddedForSaleUseCase(artMarketplaceRepository)
 }

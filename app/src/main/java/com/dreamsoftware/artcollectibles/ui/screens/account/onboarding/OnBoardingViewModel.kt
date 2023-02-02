@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.VerifyUserAuthenticatedUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,23 +12,22 @@ class OnBoardingViewModel @Inject constructor(
 ) : SupportViewModel<OnBoardingUiState>() {
 
     fun verifyUserSession() {
-        viewModelScope.launch {
-            updateState { OnBoardingUiState.VerificationInProgress }
-            verifyUserAuthenticatedUseCase.invoke(
-                onSuccess = { isAuthenticated ->
-                    updateState {
-                        if (isAuthenticated) {
-                            OnBoardingUiState.UserAlreadyAuthenticated
-                        } else {
-                            OnBoardingUiState.NoAuthenticated
-                        }
+        updateState { OnBoardingUiState.VerificationInProgress }
+        verifyUserAuthenticatedUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = { isAuthenticated ->
+                updateState {
+                    if (isAuthenticated) {
+                        OnBoardingUiState.UserAlreadyAuthenticated
+                    } else {
+                        OnBoardingUiState.NoAuthenticated
                     }
-                },
-                onError = {
-                    updateState { OnBoardingUiState.NoAuthenticated }
                 }
-            )
-        }
+            },
+            onError = {
+                updateState { OnBoardingUiState.NoAuthenticated }
+            }
+        )
     }
 
     override fun onGetDefaultState(): OnBoardingUiState = OnBoardingUiState.NoAuthenticated

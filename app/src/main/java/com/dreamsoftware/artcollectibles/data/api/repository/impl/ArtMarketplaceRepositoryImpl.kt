@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSour
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 /**
  * Art Marketplace Repository Impl
@@ -52,6 +53,21 @@ internal class ArtMarketplaceRepositoryImpl(
         val credentials = walletRepository.loadCredentials()
         val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchMarketHistory(userCredentialsMapper.mapOutToIn(credentials))
         mapToArtCollectibleForSale(artCollectibleForSaleList)
+    }
+
+    override suspend fun putItemForSale(tokenId: BigInteger, price: BigInteger) = withContext(Dispatchers.IO) {
+        val credentials = walletRepository.loadCredentials()
+        artMarketplaceBlockchainDataSource.putItemForSale(tokenId, price, userCredentialsMapper.mapOutToIn(credentials))
+    }
+
+    override suspend fun withdrawFromSale(tokenId: BigInteger) = withContext(Dispatchers.IO) {
+        val credentials = walletRepository.loadCredentials()
+        artMarketplaceBlockchainDataSource.withdrawFromSale(tokenId, userCredentialsMapper.mapOutToIn(credentials))
+    }
+
+    override suspend fun isTokenAddedForSale(tokenId: BigInteger): Boolean = withContext(Dispatchers.IO) {
+        val credentials = walletRepository.loadCredentials()
+        artMarketplaceBlockchainDataSource.isTokenAddedForSale(tokenId, userCredentialsMapper.mapOutToIn(credentials))
     }
 
     private suspend fun mapToArtCollectibleForSale(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
