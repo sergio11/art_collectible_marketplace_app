@@ -40,19 +40,48 @@ class TokenDetailViewModel @Inject constructor(
     }
 
     fun withDrawFromSale(tokenId: BigInteger) {
-
+        onLoading()
+        withdrawFromSaleUseCase.invoke(
+            scope = viewModelScope,
+            params = WithdrawFromSaleUseCase.Params(tokenId),
+            onSuccess = {
+                onTokenWithdrawnFromSale()
+            },
+            onError = ::onErrorOccurred
+        )
     }
 
-    private suspend fun loadTokenDetail(tokenId: BigInteger) =
-        getTokenDetailUseCase.invoke(
+    fun putItemForSale(tokenId: BigInteger, price: BigInteger) {
+        onLoading()
+        putItemForSaleUseCase.invoke(
             scope = viewModelScope,
-            params = GetTokenDetailUseCase.Params(tokenId)
-        )
+            params = PutItemForSaleUseCase.Params(tokenId, price),
+            onSuccess = {
 
-    private suspend fun loadAuthUserDetail() =
-        getUserProfileUseCase.invoke(
-            scope = viewModelScope
+            },
+            onError = ::onErrorOccurred
         )
+    }
+
+    fun onConfirmBurnToken() {
+        updateState { it.copy(confirmBurnToken = true) }
+    }
+
+    fun onConfirmWithDrawFromSale() {
+        updateState { it.copy(confirmWithDrawFromSale = true) }
+    }
+
+    fun onConfirmPutForSale() {
+        updateState { it.copy(confirmPutForSale = true) }
+    }
+
+    private suspend fun loadTokenDetail(tokenId: BigInteger) = getTokenDetailUseCase.invoke(
+        scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
+    )
+
+    private suspend fun loadAuthUserDetail() = getUserProfileUseCase.invoke(
+        scope = viewModelScope
+    )
 
     private fun loadAllDataForToken(tokenId: BigInteger) {
         viewModelScope.launch {
@@ -85,13 +114,30 @@ class TokenDetailViewModel @Inject constructor(
             it.copy(
                 artCollectible = null,
                 isLoading = false,
-                isBurned = true
+                isBurned = true,
+                confirmBurnToken = false
+            )
+        }
+    }
+
+    private fun onTokenWithdrawnFromSale() {
+        updateState {
+            it.copy(
+                isTokenAddedForSale = false,
+                confirmWithDrawFromSale = false
             )
         }
     }
 
     private fun onErrorOccurred(ex: Exception) {
-        updateState { it.copy(isLoading = false) }
+        updateState {
+            it.copy(
+                isLoading = false,
+                confirmBurnToken = false,
+                confirmWithDrawFromSale = false,
+                confirmPutForSale = false
+            )
+        }
     }
 }
 
@@ -100,5 +146,8 @@ data class TokenDetailUiState(
     val isLoading: Boolean = false,
     val isBurned: Boolean = false,
     val isTokenOwner: Boolean = false,
-    val isTokenAddedForSale: Boolean = false
+    val isTokenAddedForSale: Boolean = false,
+    val confirmBurnToken: Boolean = false,
+    val confirmWithDrawFromSale: Boolean = false,
+    val confirmPutForSale: Boolean = false
 )

@@ -168,131 +168,132 @@ private fun AddNftForm(
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit
 ) {
-    var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
-    LoadingDialog(isShowingDialog = state.isLoading)
-    CommonDialog(
-        isVisible = confirmCancelAddNftState,
-        titleRes = R.string.add_nft_cancel_confirm_title_text,
-        descriptionRes = R.string.add_nft_cancel_confirm_description_text,
-        acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
-        cancelRes = R.string.add_nft_cancel_cancel_button_text,
-        onAcceptClicked = {
-            onExitClicked()
-            confirmCancelAddNftState = false
-        },
-        onCancelClicked = { confirmCancelAddNftState = false }
-    )
-    CommonDialog(
-        isVisible = state.isTokenMinted,
-        titleRes = R.string.add_nft_token_minted_confirm_title_text,
-        descriptionRes = R.string.add_nft_token_minted_confirm_description_text,
-        acceptRes = R.string.add_nft_token_minted_confirm_accept_button_text,
-        onAcceptClicked = {
-            onExitClicked()
-        }
-    )
-    Scaffold { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            ScreenBackgroundImage(imageRes = R.drawable.common_background)
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Text(
-                    text = stringResource(R.string.add_nft_main_title_text),
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .fillMaxWidth(),
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.headlineLarge
-                )
-                Card(
-                    modifier = Modifier.padding(20.dp),
-                    elevation = CardDefaults.cardElevation(4.dp),
-                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
-                    shape = RoundedCornerShape(27.dp),
-                    border = BorderStroke(3.dp, Color.White)
-                ) {
-                    Column(
+    with(state) {
+        var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
+        LoadingDialog(isShowingDialog = isLoading)
+        CommonDialog(
+            isVisible = confirmCancelAddNftState,
+            titleRes = R.string.add_nft_cancel_confirm_title_text,
+            descriptionRes = R.string.add_nft_cancel_confirm_description_text,
+            acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
+            cancelRes = R.string.add_nft_cancel_cancel_button_text,
+            onAcceptClicked = {
+                onExitClicked()
+                confirmCancelAddNftState = false
+            },
+            onCancelClicked = { confirmCancelAddNftState = false }
+        )
+        CommonDialog(
+            isVisible = isTokenMinted,
+            titleRes = R.string.add_nft_token_minted_confirm_title_text,
+            descriptionRes = R.string.add_nft_token_minted_confirm_description_text,
+            acceptRes = R.string.add_nft_token_minted_confirm_accept_button_text,
+            onAcceptClicked = {
+                onExitClicked()
+            }
+        )
+        Scaffold { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                ScreenBackgroundImage(imageRes = R.drawable.common_background)
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Text(
+                        text = stringResource(R.string.add_nft_main_title_text),
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
                         modifier = Modifier
                             .padding(vertical = 20.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .fillMaxWidth(),
+                        fontFamily = montserratFontFamily,
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                    Card(
+                        modifier = Modifier.padding(20.dp),
+                        elevation = CardDefaults.cardElevation(4.dp),
+                        colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
+                        shape = RoundedCornerShape(27.dp),
+                        border = BorderStroke(3.dp, Color.White)
                     ) {
-                        val defaultModifier = Modifier
-                            .padding(vertical = 20.dp)
-                            .width(300.dp)
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(state.imageUri)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(R.drawable.user_placeholder),
-                            contentDescription = stringResource(R.string.image_content_description),
-                            contentScale = ContentScale.Crop,
+                        Column(
                             modifier = Modifier
-                                .size(250.dp)
-                                .clip(CircleShape)
-                        )
-                        CommonDefaultTextField(
-                            modifier = defaultModifier,
-                            labelRes = R.string.add_nft_input_name_label,
-                            placeHolderRes = R.string.add_nft_input_name_placeholder,
-                            value = state.name,
-                            onValueChanged = onNameChanged
-                        )
-                        CommonDefaultTextField(
-                            modifier = defaultModifier.height(150.dp),
-                            labelRes = R.string.add_nft_input_description_label,
-                            placeHolderRes = R.string.add_nft_input_description_placeholder,
-                            value = state.description,
-                            isSingleLine = false,
-                            onValueChanged = onDescriptionChanged
-                        )
-                        Text(
-                            text = "${stringResource(R.string.add_nft_input_royalty_label)} ${state.royalty.toLong()}%",
-                            fontFamily = montserratFontFamily,
-                            modifier = Modifier
-                                .padding(vertical = 10.dp)
-                                .width(300.dp),
-                            style = MaterialTheme.typography.headlineSmall,
-                            maxLines = 1,
-                            color = Purple500
-                        )
-                        Slider(
-                            modifier = defaultModifier,
-                            value = state.royalty,
-                            valueRange = ROYALTY_RANGE,
-                            steps = ROYALTY_STEPS,
-                            onValueChange = onRoyaltyChanged
-                        )
-                        TagsInputComponent(
-                            modifier = defaultModifier,
-                            tagList = listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5")
-                        )
-                        CommonButton(
-                            enabled = !state.isLoading && state.isCreateButtonEnabled,
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .width(300.dp),
-                            text = R.string.add_nft_create_button_text,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Purple700,
-                                contentColor = Color.White
-                            ),
-                            onClick = onCreateClicked
-                        )
-                        CommonButton(
-                            enabled = !state.isLoading,
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .width(300.dp),
-                            text = R.string.add_nft_cancel_button_text,
-                            onClick = {
-                                confirmCancelAddNftState = true
-                            }
-                        )
+                                .padding(vertical = 20.dp)
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            val defaultModifier = Modifier
+                                .padding(vertical = 20.dp)
+                                .width(300.dp)
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageUri)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.user_placeholder),
+                                contentDescription = stringResource(R.string.image_content_description),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(250.dp)
+                                    .clip(CircleShape)
+                            )
+                            CommonDefaultTextField(
+                                modifier = defaultModifier,
+                                labelRes = R.string.add_nft_input_name_label,
+                                placeHolderRes = R.string.add_nft_input_name_placeholder,
+                                value = name,
+                                onValueChanged = onNameChanged
+                            )
+                            CommonDefaultTextField(
+                                modifier = defaultModifier.height(150.dp),
+                                labelRes = R.string.add_nft_input_description_label,
+                                placeHolderRes = R.string.add_nft_input_description_placeholder,
+                                value = description,
+                                isSingleLine = false,
+                                onValueChanged = onDescriptionChanged
+                            )
+                            Text(
+                                text = "${stringResource(R.string.add_nft_input_royalty_label)} ${royalty.toLong()}%",
+                                fontFamily = montserratFontFamily,
+                                modifier = Modifier
+                                    .padding(vertical = 10.dp)
+                                    .width(300.dp),
+                                style = MaterialTheme.typography.headlineSmall,
+                                color = Purple500
+                            )
+                            Slider(
+                                modifier = defaultModifier,
+                                value = royalty,
+                                valueRange = ROYALTY_RANGE,
+                                steps = ROYALTY_STEPS,
+                                onValueChange = onRoyaltyChanged
+                            )
+                            TagsInputComponent(
+                                modifier = defaultModifier,
+                                tagList = listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5")
+                            )
+                            CommonButton(
+                                enabled = !isLoading && isCreateButtonEnabled,
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp)
+                                    .width(300.dp),
+                                text = R.string.add_nft_create_button_text,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Purple700,
+                                    contentColor = Color.White
+                                ),
+                                onClick = onCreateClicked
+                            )
+                            CommonButton(
+                                enabled = !isLoading,
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp)
+                                    .width(300.dp),
+                                text = R.string.add_nft_cancel_button_text,
+                                onClick = {
+                                    confirmCancelAddNftState = true
+                                }
+                            )
+                        }
                     }
                 }
             }

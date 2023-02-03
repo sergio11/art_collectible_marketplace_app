@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
@@ -35,10 +34,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
-import com.dreamsoftware.artcollectibles.ui.components.CommonDialog
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -51,6 +47,7 @@ private val TITLE_PADDING_START = 16.dp
 private val TITLE_PADDING_END = 72.dp
 private const val TITLE_FONT_SCALE_START = 1f
 private const val TITLE_FONT_SCALE_END = 0.66f
+private const val PRICE_NUMBER_OF_DECIMALS = 5
 
 data class TokenDetailScreenArgs(
     val tokenId: BigInteger
@@ -93,7 +90,10 @@ fun TokenDetailScreen(
             density = density,
             onBurnTokenCalled = ::burnToken,
             onPutItemForSaleCalled = {},
-            onWithDrawFromSaleCalled = ::withDrawFromSale
+            onWithDrawFromSaleCalled = ::withDrawFromSale,
+            onConfirmBurnTokenCalled = ::onConfirmBurnToken,
+            onConfirmWithDrawFromSaleCalled = ::onConfirmWithDrawFromSale,
+            onConfirmPutForSaleCalled = ::onConfirmPutForSale
         )
     }
 }
@@ -106,7 +106,10 @@ fun TokenDetailComponent(
     density: Density,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
-    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit
+    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
+    onConfirmBurnTokenCalled: () -> Unit,
+    onConfirmWithDrawFromSaleCalled: () -> Unit,
+    onConfirmPutForSaleCalled: () -> Unit
 ) {
     LoadingDialog(isShowingDialog = uiState.isLoading)
     val headerHeightPx = with(density) { HEADER_HEIGHT.toPx() }
@@ -125,7 +128,10 @@ fun TokenDetailComponent(
             uiState = uiState,
             onBurnTokenCalled = onBurnTokenCalled,
             onWithDrawFromSaleCalled = onWithDrawFromSaleCalled,
-            onPutItemForSaleCalled = onPutItemForSaleCalled
+            onPutItemForSaleCalled = onPutItemForSaleCalled,
+            onConfirmBurnTokenCalled = onConfirmBurnTokenCalled,
+            onConfirmWithDrawFromSaleCalled = onConfirmWithDrawFromSaleCalled,
+            onConfirmPutForSaleCalled = onConfirmPutForSaleCalled
         )
         TokenDetailToolbar(
             scrollState = scrollState,
@@ -188,76 +194,17 @@ private fun TokenDetailBody(
     uiState: TokenDetailUiState,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
-    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit
+    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
+    onConfirmBurnTokenCalled: () -> Unit,
+    onConfirmWithDrawFromSaleCalled: () -> Unit,
+    onConfirmPutForSaleCalled: () -> Unit
 ) {
     with(uiState) {
         artCollectible?.let {
             //.......................................................................
-            var confirmBurnTokenState by rememberSaveable { mutableStateOf(false) }
-            var confirmWithDrawFromSaleState by rememberSaveable { mutableStateOf(false) }
-            var confirmPutForSaleState by rememberSaveable { mutableStateOf(false) }
-            // Confirm burn token dialog
-            CommonDialog(
-                isVisible = confirmBurnTokenState,
-                titleRes = R.string.token_detail_burn_token_confirm_title_text,
-                descriptionRes = R.string.token_detail_burn_token_confirm_description_text,
-                acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
-                cancelRes = R.string.token_detail_burn_token_confirm_cancel_button_text,
-                onAcceptClicked = {
-                    onBurnTokenCalled(it.id)
-                    confirmBurnTokenState = false
-                },
-                onCancelClicked = { confirmBurnTokenState = false }
-            )
-            // Confirm with draw from sale dialog
-            CommonDialog(
-                isVisible = confirmWithDrawFromSaleState,
-                titleRes = R.string.token_detail_with_draw_from_sale_dialog_title_text,
-                descriptionRes = R.string.token_detail_with_draw_from_sale_dialog_description_text,
-                acceptRes = R.string.token_detail_with_draw_from_sale_dialog_accept_button_text,
-                cancelRes = R.string.token_detail_with_draw_from_sale_dialog_cancel_button_text,
-                onAcceptClicked = {
-                    onWithDrawFromSaleCalled(it.id)
-                    confirmWithDrawFromSaleState = false
-                },
-                onCancelClicked = { confirmWithDrawFromSaleState = false }
-            )
-            // Confirm Put item for sale dialog
-            CommonDialog(
-                isVisible = confirmPutForSaleState,
-                titleRes = R.string.token_detail_put_item_for_sale_dialog_title_text,
-                descriptionRes = R.string.token_detail_put_item_for_sale_dialog_description_text,
-                acceptRes = R.string.token_detail_put_item_for_sale_dialog_accept_button_text,
-                cancelRes = R.string.token_detail_put_item_for_sale_dialog_cancel_button_text,
-                onAcceptClicked = {
-                    onPutItemForSaleCalled(it.id)
-                    confirmPutForSaleState = false
-                },
-                onCancelClicked = { confirmPutForSaleState = false }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.matic_icon),
-                        contentDescription = "Matic Icon",
-                        modifier = Modifier
-                            .width(40.dp)
-                            .height(40.dp)
-                    )
-                    CommonDefaultTextField(
-                        modifier = Modifier.padding(horizontal = 4.dp),
-                        labelRes = R.string.token_detail_put_item_for_sale_input_price_label,
-                        keyboardType = KeyboardType.Number,
-                        placeHolderRes = R.string.token_detail_put_item_for_sale_input_price_placeholder,
-                        onValueChanged = { }
-                    )
-                }
-            }
+            ConfirmBurnTokenDialog(uiState, onBurnTokenCalled)
+            ConfirmWithdrawFromSaleDialog(uiState, onWithDrawFromSaleCalled)
+            ConfirmPutItemForSaleDialog(uiState, onPutItemForSaleCalled)
             //.......................................................................
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -275,10 +222,10 @@ private fun TokenDetailBody(
                             R.string.token_detail_put_item_for_sale_button_text
                         },
                         onClick = {
-                            if(isTokenAddedForSale) {
-                                confirmWithDrawFromSaleState = true
+                            if (isTokenAddedForSale) {
+                                onConfirmWithDrawFromSaleCalled()
                             } else {
-                                confirmPutForSaleState = true
+                                onConfirmPutForSaleCalled()
                             }
                         }
                     )
@@ -291,9 +238,7 @@ private fun TokenDetailBody(
                             containerColor = Color.Red,
                             contentColor = Color.White
                         ),
-                        onClick = {
-                            confirmBurnTokenState = true
-                        }
+                        onClick = onConfirmBurnTokenCalled
                     )
                 }
             }
@@ -410,6 +355,92 @@ private fun TokenDetailTitle(
                         titleHeightPx = lc.size.height.toFloat()
                         titleWidthPx = lc.size.width.toFloat()
                     }
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun ConfirmWithdrawFromSaleDialog(
+    uiState: TokenDetailUiState,
+    onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit
+) {
+    with(uiState) {
+        // Confirm with draw from sale dialog
+        CommonDialog(
+            isVisible = confirmWithDrawFromSale,
+            titleRes = R.string.token_detail_with_draw_from_sale_dialog_title_text,
+            descriptionRes = R.string.token_detail_with_draw_from_sale_dialog_description_text,
+            acceptRes = R.string.token_detail_with_draw_from_sale_dialog_accept_button_text,
+            cancelRes = R.string.token_detail_with_draw_from_sale_dialog_cancel_button_text,
+            onAcceptClicked = {
+                artCollectible?.let {
+                    onWithDrawFromSaleCalled(it.id)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ConfirmBurnTokenDialog(
+    uiState: TokenDetailUiState,
+    onBurnTokenCalled: (tokenId: BigInteger) -> Unit
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = confirmBurnToken,
+            titleRes = R.string.token_detail_burn_token_confirm_title_text,
+            descriptionRes = R.string.token_detail_burn_token_confirm_description_text,
+            acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
+            cancelRes = R.string.token_detail_burn_token_confirm_cancel_button_text,
+            onAcceptClicked = {
+                artCollectible?.let {
+                    onBurnTokenCalled(it.id)
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ConfirmPutItemForSaleDialog(
+    uiState: TokenDetailUiState,
+    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit
+) {
+    with(uiState) {
+        var putItemForSalePriceState by rememberSaveable { mutableStateOf("") }
+        CommonDialog(
+            isVisible = confirmPutForSale,
+            titleRes = R.string.token_detail_put_item_for_sale_dialog_title_text,
+            descriptionRes = R.string.token_detail_put_item_for_sale_dialog_description_text,
+            acceptRes = R.string.token_detail_put_item_for_sale_dialog_accept_button_text,
+            cancelRes = R.string.token_detail_put_item_for_sale_dialog_cancel_button_text,
+            onAcceptClicked = {
+                artCollectible?.let {
+                    onPutItemForSaleCalled(it.id)
+                }
+            }
+        ) {
+            CommonDefaultDecimalField(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                labelRes = R.string.token_detail_put_item_for_sale_input_price_label,
+                placeHolderRes = R.string.token_detail_put_item_for_sale_input_price_placeholder,
+                value = putItemForSalePriceState,
+                numberOfDecimals = PRICE_NUMBER_OF_DECIMALS,
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.matic_icon),
+                        contentDescription = "Matic Icon",
+                        modifier = Modifier
+                            .width(20.dp)
+                            .height(20.dp)
+                    )
+                },
+                onValueChanged = {
+                    putItemForSalePriceState = it
+                }
             )
         }
     }
