@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,19 +9,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.Purple80
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
+import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.theme.Purple80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
@@ -33,6 +31,7 @@ fun CommonDialog(
     @StringRes acceptRes: Int? = null,
     onCancelClicked: () -> Unit = {},
     onAcceptClicked: () -> Unit = {},
+    customContent: @Composable ColumnScope.() -> Unit = {}
 ) {
     if(isVisible) {
         Dialog(onDismissRequest = onCancelClicked) {
@@ -43,7 +42,8 @@ fun CommonDialog(
                 cancelRes,
                 acceptRes,
                 onCancelClicked,
-                onAcceptClicked
+                onAcceptClicked,
+                customContent
             )
         }
     }
@@ -58,6 +58,7 @@ internal fun CommonDialogUI(
     @StringRes successRes: Int? = null,
     onCancelClicked: () -> Unit,
     onAcceptClicked: () -> Unit,
+    customContent: @Composable ColumnScope.() -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(10.dp),
@@ -98,6 +99,7 @@ internal fun CommonDialogUI(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
+            customContent()
             //.......................................................................
             Row(
                 Modifier

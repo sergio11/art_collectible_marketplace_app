@@ -73,7 +73,6 @@ class ProfileViewModel @Inject constructor(
     fun load() {
         onLoading()
         loadProfileData()
-        loadCurrentBalance()
     }
 
     fun getFileProviderAuthority() = applicationAware.getFileProviderAuthority()
@@ -88,7 +87,7 @@ class ProfileViewModel @Inject constructor(
                         userInfo = it,
                         isProfilePictureUpdated = isProfilePictureUpdated
                     ),
-                    onSuccess = ::onProfileLoaded,
+                    onSuccess = ::onProfileUpdated,
                     onError = ::onErrorOccurred
                 )
             }
@@ -110,32 +109,34 @@ class ProfileViewModel @Inject constructor(
      */
 
     private fun loadProfileData() {
-        getUserProfileUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = ::onProfileLoaded,
-            onError = ::onErrorOccurred
-        )
-    }
-
-    private fun loadCurrentBalance() {
-        getCurrentBalanceUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = { balance ->
-                updateState {
-                    it.copy(accountBalance = balance)
-                }
-            }, onError = {
-                updateState {
-                    it.copy(accountBalance = null)
-                }
-            })
+        viewModelScope.launch {
+            try {
+                val userProfile = getUserProfileUseCase.invoke(scope = viewModelScope)
+                val currentBalance = getCurrentBalanceUseCase.invoke(scope = viewModelScope)
+                onLoadProfileDataCompleted(userProfile, currentBalance)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+                onErrorOccurred(ex)
+            }
+        }
     }
 
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
 
-    private fun onProfileLoaded(userInfo: UserInfo) {
+    private fun onLoadProfileDataCompleted(userInfo: UserInfo, currentBalance: AccountBalance) {
+        updateState {
+            it.copy(
+                userInfo = userInfo,
+                isLoading = false,
+                isProfilePictureUpdated = false,
+                accountBalance = currentBalance
+            )
+        }
+    }
+
+    private fun onProfileUpdated(userInfo: UserInfo) {
         updateState {
             it.copy(
                 userInfo = userInfo,

@@ -98,4 +98,16 @@
     <string name="token_detail_burn_token_confirm_description_text">Burn token</string>
     <string name="token_detail_burn_token_confirm_accept_button_text">Accept</string>
     <string name="token_detail_burn_token_confirm_cancel_button_text">Cancel</string>
+    <string name="token_detail_put_item_for_sale_button_text">Put for sale</string>
+    <string name="token_detail_with_draw_from_sale_button_text">withdraw from sale</string>
+    <string name="token_detail_put_item_for_sale_dialog_title_text">You are going to put this collectible for sale</string>
+    <string name="token_detail_put_item_for_sale_dialog_description_text">This collectible will be available on the marketplace for sale, are you sure?</string>
+    <string name="token_detail_put_item_for_sale_dialog_accept_button_text">Accept</string>
+    <string name="token_detail_put_item_for_sale_dialog_cancel_button_text">Cancel</string>
+    <string name="token_detail_with_draw_from_sale_dialog_title_text">You are going to withdraw this collectible from sale</string>
+    <string name="token_detail_with_draw_from_sale_dialog_description_text">This collectible will no longer be available on the marketplace, are you sure?</string>
+    <string name="token_detail_with_draw_from_sale_dialog_accept_button_text">Accept</string>
+    <string name="token_detail_with_draw_from_sale_dialog_cancel_button_text">Cancel</string>
+    <string name="token_detail_put_item_for_sale_input_price_label">Price</string>
+    <string name="token_detail_put_item_for_sale_input_price_placeholder">Price</string>
 </resources>

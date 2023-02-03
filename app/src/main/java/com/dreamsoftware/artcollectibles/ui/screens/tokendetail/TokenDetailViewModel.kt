@@ -39,6 +39,10 @@ class TokenDetailViewModel @Inject constructor(
         )
     }
 
+    fun withDrawFromSale(tokenId: BigInteger) {
+
+    }
+
     private suspend fun loadTokenDetail(tokenId: BigInteger) =
         getTokenDetailUseCase.invoke(
             scope = viewModelScope,
@@ -95,5 +99,6 @@ data class TokenDetailUiState(
     var artCollectible: ArtCollectible? = null,
     val isLoading: Boolean = false,
     val isBurned: Boolean = false,
-    val isTokenOwner: Boolean = false
+    val isTokenOwner: Boolean = false,
+    val isTokenAddedForSale: Boolean = false
 )

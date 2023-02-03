@@ -2,6 +2,8 @@ package com.dreamsoftware.artcollectibles.data.core.network
 
 import android.util.Log
 import com.dreamsoftware.artcollectibles.data.core.network.exception.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 /**
@@ -21,29 +23,35 @@ internal abstract class SupportNetworkDataSource {
      * @param onExecuted
      */
     protected suspend fun <T> safeNetworkCall(onExecuted: suspend () -> T): T =
-        try {
-            onExecuted()
-        } catch (exception: IOException) {
-            exception.printStackTrace()
-            // map interrupted I/O to Network No Internet Exception
-            throw NetworkNoInternetException()
-        } catch (ex: NetworkException) {
-            throw ex
-        } catch (exception: Throwable) {
-            exception.printStackTrace()
-            val retrofitException = RetrofitException.asRetrofitException(exception)
-            if (retrofitException.kind === RetrofitException.Kind.NETWORK) {
-                throw NetworkErrorException(cause = exception)
-            } else {
-                try {
-                    throw onApiException(retrofitException)
-                } catch (e1: IOException) {
-                    e1.printStackTrace()
-                    throw NetworkErrorException(cause = e1)
+        withContext(Dispatchers.IO) {
+            try {
+                onExecuted()
+            } catch (exception: IOException) {
+                exception.printStackTrace()
+                // map interrupted I/O to Network No Internet Exception
+                throw NetworkNoInternetException()
+            } catch (ex: NetworkException) {
+                throw ex
+            } catch (exception: Throwable) {
+                exception.printStackTrace()
+                val retrofitException = RetrofitException.asRetrofitException(exception)
+                if (retrofitException.kind === RetrofitException.Kind.NETWORK) {
+                    throw NetworkErrorException(cause = exception)
+                } else {
+                    try {
+                        throw onApiException(retrofitException)
+                    } catch (e1: IOException) {
+                        e1.printStackTrace()
+                        throw NetworkErrorException(cause = e1)
+                    }
                 }
             }
         }
 
+    /**
+     * Map HTTP Error codes to exceptions to easy handler
+     * @param apiException
+     */
     /**
      * Map HTTP Error codes to exceptions to easy handler
      * @param apiException
