@@ -66,7 +66,9 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Search.route) {
-            SearchScreen(navigationController)
+            SearchScreen(navigationController) {
+                navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+            }
         }
         composable(DestinationItem.Profile.route) {
             ProfileScreen(navigationController) {

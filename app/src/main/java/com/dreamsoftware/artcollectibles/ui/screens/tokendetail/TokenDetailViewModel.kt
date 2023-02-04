@@ -14,7 +14,7 @@ import javax.inject.Inject
 class TokenDetailViewModel @Inject constructor(
     private val getTokenDetailUseCase: GetTokenDetailUseCase,
     private val burnTokenUseCase: BurnTokenUseCase,
-    private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val putItemForSaleUseCase: PutItemForSaleUseCase,
     private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
     private val isTokenAddedForSaleUseCase: IsTokenAddedForSaleUseCase
@@ -113,7 +113,7 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
     )
 
-    private suspend fun loadAuthUserDetail() = getUserProfileUseCase.invoke(
+    private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
         scope = viewModelScope
     )
 

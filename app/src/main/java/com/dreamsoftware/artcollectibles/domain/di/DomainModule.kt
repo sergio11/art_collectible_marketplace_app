@@ -141,17 +141,28 @@ class DomainModule {
     )
 
     /**
-     * Provide get user profile use case
+     * Provide get auth user profile use case
      * @param userRepository
      * @param preferenceRepository
      */
     @Provides
     @ViewModelScoped
-    fun provideGetUserProfileUseCase(
+    fun provideGetAuthUserProfileUseCase(
         userRepository: IUserRepository,
         preferenceRepository: IPreferenceRepository
     ) =
-        GetUserProfileUseCase(userRepository, preferenceRepository)
+        GetAuthUserProfileUseCase(userRepository, preferenceRepository)
+
+    /**
+     * Provide get user profile use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetUserProfileUseCase(
+        userRepository: IUserRepository
+    ) =
+        GetUserProfileUseCase(userRepository)
 
     /**
      * Provide Update User info use case

@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.search
 
 
 import android.content.Context
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -19,6 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.components.SearchView
@@ -29,7 +31,8 @@ import com.google.common.collect.Iterables
 @Composable
 fun SearchScreen(
     navController: NavController,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
+    onGoToArtistDetail: (artist: UserInfo) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -55,7 +58,8 @@ fun SearchScreen(
             lazyGridState = lazyGridState,
             navController = navController,
             onTermChanged = ::onTermChanged,
-            onResetSearch = ::onResetSearch
+            onResetSearch = ::onResetSearch,
+            onGoToArtistDetail = onGoToArtistDetail
         )
     }
 }
@@ -68,7 +72,8 @@ internal fun SearchComponent(
     lazyGridState: LazyGridState,
     navController: NavController,
     onTermChanged: (String) -> Unit,
-    onResetSearch: () -> Unit
+    onResetSearch: () -> Unit,
+    onGoToArtistDetail: (artist: UserInfo) -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
@@ -94,12 +99,16 @@ internal fun SearchComponent(
                 ) {
                     with(state) {
                         items(Iterables.size(userResult)) { index ->
+                            val artist = Iterables.get(userResult, index)
                             UserInfoArtistCard(
                                 modifier = Modifier
                                     .height(262.dp)
-                                    .width(150.dp),
+                                    .width(150.dp)
+                                    .clickable {
+                                        onGoToArtistDetail(artist)
+                                    },
                                 context = context,
-                                user = Iterables.get(userResult, index)
+                                user = artist
                             )
                         }
                     }

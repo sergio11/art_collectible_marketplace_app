@@ -6,7 +6,7 @@ import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.CloseSessionUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCurrentBalanceUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetUserProfileUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAuthUserProfileUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.UpdateUserInfoUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * Profile View Model
  * @param applicationAware
- * @param getUserProfileUseCase
+ * @param getAuthUserProfileUseCase
  * @param getCurrentBalanceUseCase
  * @param updateUserInfoUseCase
  * @param closeSessionUseCase
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val applicationAware: IApplicationAware,
-    private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
     private val closeSessionUseCase: CloseSessionUseCase
@@ -111,7 +111,7 @@ class ProfileViewModel @Inject constructor(
     private fun loadProfileData() {
         viewModelScope.launch {
             try {
-                val userProfile = getUserProfileUseCase.invoke(scope = viewModelScope)
+                val userProfile = getAuthUserProfileUseCase.invoke(scope = viewModelScope)
                 val currentBalance = getCurrentBalanceUseCase.invoke(scope = viewModelScope)
                 onLoadProfileDataCompleted(userProfile, currentBalance)
             } catch (ex: Exception) {
