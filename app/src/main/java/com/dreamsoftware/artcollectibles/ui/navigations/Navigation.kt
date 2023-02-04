@@ -8,6 +8,8 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
 import okhttp3.internal.toLongOrDefault
 import java.math.BigInteger
@@ -21,7 +23,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
     object Add : DestinationItem(route = "add")
     object Search : DestinationItem(route = "search")
     object Profile : DestinationItem(route = "profile")
-    object TokenDetail : DestinationItem(route = "token/detail/{id}", arguments = listOf(
+    object TokenDetail : DestinationItem(route = "tokens/detail/{id}", arguments = listOf(
         navArgument("id") {
             type = NavType.StringType
         }
@@ -38,6 +40,24 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                 TokenDetailScreenArgs(
                     tokenId = BigInteger.valueOf(it)
                 )
+            }
+        }
+    }
+    object ArtistDetail : DestinationItem(route = "artists/detail/{uid}", arguments = listOf(
+        navArgument("uid") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(userInfo: UserInfo): String =
+            route.replace(
+                oldValue = "{uid}",
+                newValue = userInfo.uid
+            )
+
+        fun parseArgs(args: Bundle): ArtistDetailScreenArgs? = with(args) {
+            getString("uid")?.let {
+                ArtistDetailScreenArgs(uid = it)
             }
         }
     }

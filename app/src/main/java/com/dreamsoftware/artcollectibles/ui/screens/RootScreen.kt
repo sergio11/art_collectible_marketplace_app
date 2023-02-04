@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.onboarding.OnBoardin
 import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
+import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
@@ -80,6 +81,13 @@ fun RootScreen(
                     TokenDetailScreen(navigationController, screenArgs) {
                         navigationController.popBackStack()
                     }
+                }
+            }
+        }
+        composable(DestinationItem.ArtistDetail.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.ArtistDetail.parseArgs(args)?.let { screenArgs ->
+                    ArtistDetailScreen(navigationController, screenArgs)
                 }
             }
         }
