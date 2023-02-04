@@ -6,9 +6,9 @@ import java.math.BigInteger
 
 class PutItemForSaleUseCase(
     private val artMarketplaceRepository: IArtMarketplaceRepository
-): BaseUseCaseWithParams<PutItemForSaleUseCase.Params, BigInteger>() {
+): BaseUseCaseWithParams<PutItemForSaleUseCase.Params, Unit>() {
 
-    override suspend fun onExecuted(params: Params): BigInteger = with(params) {
+    override suspend fun onExecuted(params: Params): Unit = with(params) {
         artMarketplaceRepository.putItemForSale(tokenId, price)
     }
 

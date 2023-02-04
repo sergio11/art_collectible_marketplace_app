@@ -28,10 +28,17 @@ class TokenDetailViewModel @Inject constructor(
     }
 
     fun burnToken(tokenId: BigInteger) {
-        onLoading()
         burnTokenUseCase.invoke(
             scope = viewModelScope,
             params = BurnTokenUseCase.Params(tokenId),
+            onBeforeStart = {
+                updateState {
+                    it.copy(
+                        isLoading = true,
+                        isConfirmBurnTokenDialogVisible = false
+                    )
+                }
+            },
             onSuccess = {
                 onTokenBurned()
             },
@@ -40,10 +47,17 @@ class TokenDetailViewModel @Inject constructor(
     }
 
     fun withDrawFromSale(tokenId: BigInteger) {
-        onLoading()
         withdrawFromSaleUseCase.invoke(
             scope = viewModelScope,
             params = WithdrawFromSaleUseCase.Params(tokenId),
+            onBeforeStart = {
+                updateState {
+                    it.copy(
+                        isLoading = true,
+                        isConfirmWithDrawFromSaleDialogVisible = false
+                    )
+                }
+            },
             onSuccess = {
                 onTokenWithdrawnFromSale()
             },
@@ -53,11 +67,18 @@ class TokenDetailViewModel @Inject constructor(
 
     fun putItemForSale(tokenId: BigInteger) {
         with(uiState.value) {
-            tokenPrice?.toFloatOrNull()?.let {
-                onLoading()
+            tokenPrice?.toFloatOrNull()?.let { price ->
                 putItemForSaleUseCase.invoke(
                     scope = viewModelScope,
-                    params = PutItemForSaleUseCase.Params(tokenId, it),
+                    params = PutItemForSaleUseCase.Params(tokenId, price),
+                    onBeforeStart = {
+                        updateState {
+                            it.copy(
+                                isLoading = true,
+                                isConfirmPutForSaleDialogVisible = false
+                            )
+                        }
+                    },
                     onSuccess = {
                         onTokenPutOnSale()
                     },
@@ -136,6 +157,7 @@ class TokenDetailViewModel @Inject constructor(
     private fun onTokenPutOnSale() {
         updateState {
             it.copy(
+                isLoading = false,
                 isTokenAddedForSale = true,
                 isConfirmPutForSaleDialogVisible = false,
                 isPutTokenForSaleConfirmButtonEnabled = false,
@@ -147,6 +169,7 @@ class TokenDetailViewModel @Inject constructor(
     private fun onTokenWithdrawnFromSale() {
         updateState {
             it.copy(
+                isLoading = false,
                 isTokenAddedForSale = false,
                 isConfirmWithDrawFromSaleDialogVisible = false
             )

@@ -53,19 +53,12 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         tokenId: BigInteger,
         price: Float,
         credentials: Credentials
-    ): BigInteger =
+    ): Unit =
         withContext(Dispatchers.IO) {
             with(loadContract(credentials)) {
                 val defaultCostOfPuttingForSale = Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER).toBigInteger()
                 val putItemForSalePrice = Convert.toWei(price.toString(), Convert.Unit.ETHER).toBigInteger()
                 putItemForSale(tokenId, putItemForSalePrice, defaultCostOfPuttingForSale).send()
-                artCollectibleAddedForSaleEventFlowable(
-                    DefaultBlockParameterName.LATEST,
-                    DefaultBlockParameterName.LATEST
-                )
-                    .firstOrError()
-                    .map(ArtCollectibleAddedForSaleEventResponse::id)
-                    .blockingGet()
             }
         }
 

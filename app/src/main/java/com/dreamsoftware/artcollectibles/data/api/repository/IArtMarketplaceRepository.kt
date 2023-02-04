@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import org.web3j.crypto.Credentials
 import java.math.BigInteger
 
 interface IArtMarketplaceRepository {
@@ -31,7 +30,7 @@ interface IArtMarketplaceRepository {
      * @param tokenId
      * @param price
      */
-    suspend fun putItemForSale(tokenId: BigInteger, price: Float): BigInteger
+    suspend fun putItemForSale(tokenId: BigInteger, price: Float)
 
     /**
      * Withdraw from sale

@@ -36,7 +36,7 @@ interface IArtMarketplaceBlockchainDataSource {
      * @param price
      * @param credentials
      */
-    suspend fun putItemForSale(tokenId: BigInteger, price: Float, credentials: Credentials): BigInteger
+    suspend fun putItemForSale(tokenId: BigInteger, price: Float, credentials: Credentials)
 
     /**
      * Cancel a listing of an item with a `tokenId`

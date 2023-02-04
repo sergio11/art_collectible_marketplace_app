@@ -21,10 +21,14 @@ abstract class BaseUseCaseWithParams<ParamsType, ReturnType> {
     operator fun invoke(
         scope: CoroutineScope,
         params: ParamsType,
+        onBeforeStart: () -> Unit = {},
         onSuccess: (result: ReturnType) -> Unit,
         onError: (error: Exception) -> Unit
     ) {
-        val backgroundJob = scope.async { onExecuted(params) }
+        val backgroundJob = scope.async {
+            onBeforeStart()
+            onExecuted(params)
+        }
         scope.launch {
             try {
                 onSuccess(backgroundJob.await())
