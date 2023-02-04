@@ -31,6 +31,7 @@ fun CommonDialog(
     @StringRes acceptRes: Int? = null,
     onCancelClicked: () -> Unit = {},
     onAcceptClicked: () -> Unit = {},
+    isAcceptEnabled: Boolean = true,
     customContent: @Composable ColumnScope.() -> Unit = {}
 ) {
     if(isVisible) {
@@ -43,6 +44,7 @@ fun CommonDialog(
                 acceptRes,
                 onCancelClicked,
                 onAcceptClicked,
+                isAcceptEnabled,
                 customContent
             )
         }
@@ -58,6 +60,7 @@ internal fun CommonDialogUI(
     @StringRes successRes: Int? = null,
     onCancelClicked: () -> Unit,
     onAcceptClicked: () -> Unit,
+    isAcceptEnabled: Boolean = true,
     customContent: @Composable ColumnScope.() -> Unit = {}
 ) {
     Card(
@@ -120,7 +123,7 @@ internal fun CommonDialogUI(
                     }
                 }
                 successRes?.let {
-                    TextButton(onClick = onAcceptClicked) {
+                    TextButton(enabled = isAcceptEnabled, onClick = onAcceptClicked) {
                         Text(
                             text = stringResource(id = it),
                             fontWeight = FontWeight.ExtraBold,

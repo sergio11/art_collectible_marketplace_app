@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleAddedForSaleEventResponse
@@ -14,6 +15,8 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.tx.FastRawTransactionManager
+import org.web3j.utils.Convert
+import java.math.BigDecimal
 import java.math.BigInteger
 
 internal class ArtMarketplaceBlockchainDataSourceImpl(
@@ -21,6 +24,10 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j,
 ) : IArtMarketplaceBlockchainDataSource {
+
+    private companion object {
+        private val DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH = BigDecimal.valueOf(0.010)
+    }
 
     private enum class MarketItemType { AVAILABLE, SELLING, OWNED, HISTORY }
 
@@ -46,12 +53,16 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     override suspend fun putItemForSale(
         tokenId: BigInteger,
-        price: BigInteger,
+        price: Float,
         credentials: Credentials
     ): BigInteger =
         withContext(Dispatchers.IO) {
             with(loadContract(credentials)) {
-                putItemForSale(tokenId, price, DEFAULT_COST_OF_PUTTING_FOR_SALE().send())
+                val defaultCostOfPuttingForSale = Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER).toBigInteger()
+                val putItemForSalePrice = Convert.toWei(price.toString(), Convert.Unit.ETHER).toBigInteger()
+                Log.d("ART_COLL", "putItemForSale -> $putItemForSalePrice")
+                Log.d("ART_COLL", "defaultCostOfPuttingForSale -> $defaultCostOfPuttingForSale")
+                putItemForSale(tokenId, putItemForSalePrice, defaultCostOfPuttingForSale).send()
                 artCollectibleAddedForSaleEventFlowable(
                     EthFilter(
                         DefaultBlockParameterName.LATEST,

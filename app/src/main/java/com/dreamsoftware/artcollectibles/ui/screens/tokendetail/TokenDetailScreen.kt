@@ -9,7 +9,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -89,11 +88,12 @@ fun TokenDetailScreen(
             scrollState = scrollState,
             density = density,
             onBurnTokenCalled = ::burnToken,
-            onPutItemForSaleCalled = {},
+            onPutItemForSaleCalled = ::putItemForSale,
             onWithDrawFromSaleCalled = ::withDrawFromSale,
-            onConfirmBurnTokenCalled = ::onConfirmBurnToken,
-            onConfirmWithDrawFromSaleCalled = ::onConfirmWithDrawFromSale,
-            onConfirmPutForSaleCalled = ::onConfirmPutForSale
+            onItemPriceChanged = ::onTokenPriceChanged,
+            onConfirmBurnTokenDialogVisibilityChanged = ::onConfirmBurnTokenDialogVisibilityChanged,
+            onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
+            onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged
         )
     }
 }
@@ -107,9 +107,10 @@ fun TokenDetailComponent(
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
-    onConfirmBurnTokenCalled: () -> Unit,
-    onConfirmWithDrawFromSaleCalled: () -> Unit,
-    onConfirmPutForSaleCalled: () -> Unit
+    onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onItemPriceChanged: (price: String) -> Unit
 ) {
     LoadingDialog(isShowingDialog = uiState.isLoading)
     val headerHeightPx = with(density) { HEADER_HEIGHT.toPx() }
@@ -129,9 +130,10 @@ fun TokenDetailComponent(
             onBurnTokenCalled = onBurnTokenCalled,
             onWithDrawFromSaleCalled = onWithDrawFromSaleCalled,
             onPutItemForSaleCalled = onPutItemForSaleCalled,
-            onConfirmBurnTokenCalled = onConfirmBurnTokenCalled,
-            onConfirmWithDrawFromSaleCalled = onConfirmWithDrawFromSaleCalled,
-            onConfirmPutForSaleCalled = onConfirmPutForSaleCalled
+            onItemPriceChanged = onItemPriceChanged,
+            onConfirmBurnTokenDialogVisibilityChanged = onConfirmBurnTokenDialogVisibilityChanged,
+            onConfirmWithDrawFromSaleDialogVisibilityChanged = onConfirmWithDrawFromSaleDialogVisibilityChanged,
+            onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged
         )
         TokenDetailToolbar(
             scrollState = scrollState,
@@ -195,16 +197,23 @@ private fun TokenDetailBody(
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
-    onConfirmBurnTokenCalled: () -> Unit,
-    onConfirmWithDrawFromSaleCalled: () -> Unit,
-    onConfirmPutForSaleCalled: () -> Unit
+    onItemPriceChanged: (price: String) -> Unit,
+    onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let {
             //.......................................................................
-            ConfirmBurnTokenDialog(uiState, onBurnTokenCalled)
-            ConfirmWithdrawFromSaleDialog(uiState, onWithDrawFromSaleCalled)
-            ConfirmPutItemForSaleDialog(uiState, onPutItemForSaleCalled)
+            ConfirmBurnTokenDialog(uiState, onBurnTokenCalled) {
+                onConfirmBurnTokenDialogVisibilityChanged(false)
+            }
+            ConfirmWithdrawFromSaleDialog(uiState, onWithDrawFromSaleCalled) {
+                onConfirmWithDrawFromSaleDialogVisibilityChanged(false)
+            }
+            ConfirmPutItemForSaleDialog(uiState, onPutItemForSaleCalled, onItemPriceChanged) {
+                onConfirmPutForSaleDialogVisibilityChanged(false)
+            }
             //.......................................................................
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -223,9 +232,9 @@ private fun TokenDetailBody(
                         },
                         onClick = {
                             if (isTokenAddedForSale) {
-                                onConfirmWithDrawFromSaleCalled()
+                                onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
                             } else {
-                                onConfirmPutForSaleCalled()
+                                onConfirmPutForSaleDialogVisibilityChanged(true)
                             }
                         }
                     )
@@ -238,7 +247,9 @@ private fun TokenDetailBody(
                             containerColor = Color.Red,
                             contentColor = Color.White
                         ),
-                        onClick = onConfirmBurnTokenCalled
+                        onClick = {
+                            onConfirmBurnTokenDialogVisibilityChanged(true)
+                        }
                     )
                 }
             }
@@ -364,12 +375,12 @@ private fun TokenDetailTitle(
 @Composable
 private fun ConfirmWithdrawFromSaleDialog(
     uiState: TokenDetailUiState,
-    onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit
+    onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
+    onDialogCancelled: () -> Unit
 ) {
     with(uiState) {
-        // Confirm with draw from sale dialog
         CommonDialog(
-            isVisible = confirmWithDrawFromSale,
+            isVisible = isConfirmWithDrawFromSaleDialogVisible,
             titleRes = R.string.token_detail_with_draw_from_sale_dialog_title_text,
             descriptionRes = R.string.token_detail_with_draw_from_sale_dialog_description_text,
             acceptRes = R.string.token_detail_with_draw_from_sale_dialog_accept_button_text,
@@ -378,7 +389,8 @@ private fun ConfirmWithdrawFromSaleDialog(
                 artCollectible?.let {
                     onWithDrawFromSaleCalled(it.id)
                 }
-            }
+            },
+            onCancelClicked = onDialogCancelled
         )
     }
 }
@@ -386,11 +398,12 @@ private fun ConfirmWithdrawFromSaleDialog(
 @Composable
 private fun ConfirmBurnTokenDialog(
     uiState: TokenDetailUiState,
-    onBurnTokenCalled: (tokenId: BigInteger) -> Unit
+    onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
+    onDialogCancelled: () -> Unit
 ) {
     with(uiState) {
         CommonDialog(
-            isVisible = confirmBurnToken,
+            isVisible = isConfirmBurnTokenDialogVisible,
             titleRes = R.string.token_detail_burn_token_confirm_title_text,
             descriptionRes = R.string.token_detail_burn_token_confirm_description_text,
             acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
@@ -399,7 +412,8 @@ private fun ConfirmBurnTokenDialog(
                 artCollectible?.let {
                     onBurnTokenCalled(it.id)
                 }
-            }
+            },
+            onCancelClicked = onDialogCancelled
         )
     }
 }
@@ -407,12 +421,13 @@ private fun ConfirmBurnTokenDialog(
 @Composable
 private fun ConfirmPutItemForSaleDialog(
     uiState: TokenDetailUiState,
-    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit
+    onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
+    onItemPriceChanged: (price: String) -> Unit,
+    onDialogCancelled: () -> Unit
 ) {
     with(uiState) {
-        var putItemForSalePriceState by rememberSaveable { mutableStateOf("") }
         CommonDialog(
-            isVisible = confirmPutForSale,
+            isVisible = isConfirmPutForSaleDialogVisible,
             titleRes = R.string.token_detail_put_item_for_sale_dialog_title_text,
             descriptionRes = R.string.token_detail_put_item_for_sale_dialog_description_text,
             acceptRes = R.string.token_detail_put_item_for_sale_dialog_accept_button_text,
@@ -421,13 +436,15 @@ private fun ConfirmPutItemForSaleDialog(
                 artCollectible?.let {
                     onPutItemForSaleCalled(it.id)
                 }
-            }
+            },
+            isAcceptEnabled = isPutTokenForSaleConfirmButtonEnabled,
+            onCancelClicked = onDialogCancelled
         ) {
             CommonDefaultDecimalField(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 labelRes = R.string.token_detail_put_item_for_sale_input_price_label,
                 placeHolderRes = R.string.token_detail_put_item_for_sale_input_price_placeholder,
-                value = putItemForSalePriceState,
+                value = tokenPrice,
                 numberOfDecimals = PRICE_NUMBER_OF_DECIMALS,
                 leadingIcon = {
                     Image(
@@ -439,7 +456,7 @@ private fun ConfirmPutItemForSaleDialog(
                     )
                 },
                 onValueChanged = {
-                    putItemForSalePriceState = it
+                    onItemPriceChanged(it)
                 }
             )
         }

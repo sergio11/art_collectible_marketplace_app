@@ -31,7 +31,7 @@ interface IArtMarketplaceRepository {
      * @param tokenId
      * @param price
      */
-    suspend fun putItemForSale(tokenId: BigInteger, price: BigInteger): BigInteger
+    suspend fun putItemForSale(tokenId: BigInteger, price: Float): BigInteger
 
     /**
      * Withdraw from sale

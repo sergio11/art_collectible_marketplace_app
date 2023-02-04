@@ -55,7 +55,7 @@ internal class ArtMarketplaceRepositoryImpl(
         mapToArtCollectibleForSale(artCollectibleForSaleList)
     }
 
-    override suspend fun putItemForSale(tokenId: BigInteger, price: BigInteger) = withContext(Dispatchers.IO) {
+    override suspend fun putItemForSale(tokenId: BigInteger, price: Float) = withContext(Dispatchers.IO) {
         val credentials = walletRepository.loadCredentials()
         artMarketplaceBlockchainDataSource.putItemForSale(tokenId, price, userCredentialsMapper.mapOutToIn(credentials))
     }

@@ -56,6 +56,14 @@ fun CommonDefaultDecimalField(
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
         singleLine = true,
         maxLines = 1,
-        onValueChange = onValueChanged
+        onValueChange = {
+            onValueChanged(
+                if (it.startsWith("0")) {
+                    ""
+                } else {
+                    it
+                }
+            )
+        }
     )
 }

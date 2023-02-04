@@ -14,6 +14,6 @@ class PutItemForSaleUseCase(
 
     data class Params(
         val tokenId: BigInteger,
-        val price: BigInteger
+        val price: Float
     )
 }

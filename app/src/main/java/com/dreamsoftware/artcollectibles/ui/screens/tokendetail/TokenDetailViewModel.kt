@@ -51,28 +51,41 @@ class TokenDetailViewModel @Inject constructor(
         )
     }
 
-    fun putItemForSale(tokenId: BigInteger, price: BigInteger) {
-        onLoading()
-        putItemForSaleUseCase.invoke(
-            scope = viewModelScope,
-            params = PutItemForSaleUseCase.Params(tokenId, price),
-            onSuccess = {
-
-            },
-            onError = ::onErrorOccurred
-        )
+    fun putItemForSale(tokenId: BigInteger) {
+        with(uiState.value) {
+            tokenPrice?.toFloatOrNull()?.let {
+                onLoading()
+                putItemForSaleUseCase.invoke(
+                    scope = viewModelScope,
+                    params = PutItemForSaleUseCase.Params(tokenId, it),
+                    onSuccess = {
+                        onTokenPutOnSale()
+                    },
+                    onError = ::onErrorOccurred
+                )
+            }
+        }
     }
 
-    fun onConfirmBurnToken() {
-        updateState { it.copy(confirmBurnToken = true) }
+    fun onTokenPriceChanged(newPrice: String) {
+        updateState {
+            it.copy(
+                tokenPrice = newPrice,
+                isPutTokenForSaleConfirmButtonEnabled = newPrice.isNotBlank()
+            )
+        }
     }
 
-    fun onConfirmWithDrawFromSale() {
-        updateState { it.copy(confirmWithDrawFromSale = true) }
+    fun onConfirmBurnTokenDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isConfirmBurnTokenDialogVisible = isVisible) }
     }
 
-    fun onConfirmPutForSale() {
-        updateState { it.copy(confirmPutForSale = true) }
+    fun onConfirmWithDrawFromSaleDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isConfirmWithDrawFromSaleDialogVisible = isVisible) }
+    }
+
+    fun onConfirmPutForSaleDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isConfirmPutForSaleDialogVisible = isVisible) }
     }
 
     private suspend fun loadTokenDetail(tokenId: BigInteger) = getTokenDetailUseCase.invoke(
@@ -115,7 +128,18 @@ class TokenDetailViewModel @Inject constructor(
                 artCollectible = null,
                 isLoading = false,
                 isBurned = true,
-                confirmBurnToken = false
+                isConfirmBurnTokenDialogVisible = false
+            )
+        }
+    }
+
+    private fun onTokenPutOnSale() {
+        updateState {
+            it.copy(
+                isTokenAddedForSale = true,
+                isConfirmPutForSaleDialogVisible = false,
+                isPutTokenForSaleConfirmButtonEnabled = false,
+                tokenPrice = null
             )
         }
     }
@@ -124,7 +148,7 @@ class TokenDetailViewModel @Inject constructor(
         updateState {
             it.copy(
                 isTokenAddedForSale = false,
-                confirmWithDrawFromSale = false
+                isConfirmWithDrawFromSaleDialogVisible = false
             )
         }
     }
@@ -133,9 +157,11 @@ class TokenDetailViewModel @Inject constructor(
         updateState {
             it.copy(
                 isLoading = false,
-                confirmBurnToken = false,
-                confirmWithDrawFromSale = false,
-                confirmPutForSale = false
+                isConfirmBurnTokenDialogVisible = false,
+                isConfirmWithDrawFromSaleDialogVisible = false,
+                isConfirmPutForSaleDialogVisible = false,
+                isPutTokenForSaleConfirmButtonEnabled = false,
+                tokenPrice = null
             )
         }
     }
@@ -147,7 +173,9 @@ data class TokenDetailUiState(
     val isBurned: Boolean = false,
     val isTokenOwner: Boolean = false,
     val isTokenAddedForSale: Boolean = false,
-    val confirmBurnToken: Boolean = false,
-    val confirmWithDrawFromSale: Boolean = false,
-    val confirmPutForSale: Boolean = false
+    val tokenPrice: String? = null,
+    val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
+    val isConfirmBurnTokenDialogVisible: Boolean = false,
+    val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,
+    val isConfirmPutForSaleDialogVisible: Boolean = false
 )
