@@ -17,6 +17,8 @@
 <resources>
     <string name="app_name">ArtCollectiblesMarketplace</string>
     <string name="image_content_description">Image can not be loaded</string>
+    <string name="loading_dialog_title_text">Operation in progress</string>
+    <string name="loading_dialog_description_text">Please wait, it could take a while…</string>
     <!-- Onboarding -->
     <string name="onboarding_main_title_text">Welcome to Art Collectible Marketplace</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
