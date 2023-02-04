@@ -1,19 +1,17 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleAddedForSaleEventResponse
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
-import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.core.methods.request.EthFilter
 import org.web3j.tx.FastRawTransactionManager
 import org.web3j.utils.Convert
 import java.math.BigDecimal
@@ -60,15 +58,10 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
             with(loadContract(credentials)) {
                 val defaultCostOfPuttingForSale = Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER).toBigInteger()
                 val putItemForSalePrice = Convert.toWei(price.toString(), Convert.Unit.ETHER).toBigInteger()
-                Log.d("ART_COLL", "putItemForSale -> $putItemForSalePrice")
-                Log.d("ART_COLL", "defaultCostOfPuttingForSale -> $defaultCostOfPuttingForSale")
                 putItemForSale(tokenId, putItemForSalePrice, defaultCostOfPuttingForSale).send()
                 artCollectibleAddedForSaleEventFlowable(
-                    EthFilter(
-                        DefaultBlockParameterName.LATEST,
-                        DefaultBlockParameterName.LATEST,
-                        blockchainConfig.artMarketplaceContractAddress
-                    )
+                    DefaultBlockParameterName.LATEST,
+                    DefaultBlockParameterName.LATEST
                 )
                     .firstOrError()
                     .map(ArtCollectibleAddedForSaleEventResponse::id)
@@ -107,7 +100,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     private fun loadContract(credentials: Credentials): ArtMarketplaceContract = with(blockchainConfig) {
         val txManager = FastRawTransactionManager(web3j, credentials, chainId)
         ArtMarketplaceContract.load(
-            artCollectibleContractAddress,
+            artMarketplaceContractAddress,
             web3j,
             txManager,
             gasProvider
