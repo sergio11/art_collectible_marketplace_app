@@ -109,20 +109,24 @@ class TokenDetailViewModel @Inject constructor(
         updateState { it.copy(isConfirmPutForSaleDialogVisible = isVisible) }
     }
 
-    private suspend fun loadTokenDetail(tokenId: BigInteger) = getTokenDetailUseCase.invoke(
-        scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
-    )
-
-    private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
-        scope = viewModelScope
-    )
+    /**
+     * Private Methods
+     */
 
     private fun loadAllDataForToken(tokenId: BigInteger) {
         viewModelScope.launch {
             try {
                 val artCollectible = loadTokenDetail(tokenId)
                 val authUser = loadAuthUserDetail()
-                onLoadDetailCompleted(artCollectible, authUser)
+                val isTokenAddedForSale = isTokenAddedForSale(tokenId)
+                updateState {
+                    it.copy(
+                        artCollectible = artCollectible,
+                        isLoading = false,
+                        isTokenOwner = artCollectible.author.uid == authUser.uid,
+                        isTokenAddedForSale = isTokenAddedForSale
+                    )
+                }
             } catch (ex: Exception) {
                 onErrorOccurred(ex)
             }
@@ -131,16 +135,6 @@ class TokenDetailViewModel @Inject constructor(
 
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
-    }
-
-    private fun onLoadDetailCompleted(artCollectible: ArtCollectible, userInfo: UserInfo) {
-        updateState {
-            it.copy(
-                artCollectible = artCollectible,
-                isLoading = false,
-                isTokenOwner = artCollectible.author.uid == userInfo.uid
-            )
-        }
     }
 
     private fun onTokenBurned() {
@@ -188,6 +182,18 @@ class TokenDetailViewModel @Inject constructor(
             )
         }
     }
+
+    private suspend fun loadTokenDetail(tokenId: BigInteger) = getTokenDetailUseCase.invoke(
+        scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
+    )
+
+    private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
+        scope = viewModelScope
+    )
+
+    private suspend fun isTokenAddedForSale(tokenId: BigInteger) = isTokenAddedForSaleUseCase.invoke(
+        scope = viewModelScope, params = IsTokenAddedForSaleUseCase.Params(tokenId)
+    )
 }
 
 data class TokenDetailUiState(

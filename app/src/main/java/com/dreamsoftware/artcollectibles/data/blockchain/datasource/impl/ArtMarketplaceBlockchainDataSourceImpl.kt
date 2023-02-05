@@ -2,16 +2,15 @@ package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract
-import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleAddedForSaleEventResponse
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.tx.FastRawTransactionManager
 import org.web3j.utils.Convert
 import java.math.BigDecimal
@@ -56,8 +55,11 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     ): Unit =
         withContext(Dispatchers.IO) {
             with(loadContract(credentials)) {
-                val defaultCostOfPuttingForSale = Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER).toBigInteger()
-                val putItemForSalePrice = Convert.toWei(price.toString(), Convert.Unit.ETHER).toBigInteger()
+                val defaultCostOfPuttingForSale =
+                    Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER)
+                        .toBigInteger()
+                val putItemForSalePrice =
+                    Convert.toWei(price.toString(), Convert.Unit.ETHER).toBigInteger()
                 putItemForSale(tokenId, putItemForSalePrice, defaultCostOfPuttingForSale).send()
             }
         }
@@ -74,29 +76,44 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         }
     }
 
-    override suspend fun isTokenAddedForSale(tokenId: BigInteger, credentials: Credentials): Boolean {
+    override suspend fun isTokenAddedForSale(
+        tokenId: BigInteger,
+        credentials: Credentials
+    ): Boolean =
         withContext(Dispatchers.IO) {
-            TODO("")
+            loadContract(credentials).isTokenAddedForSale(tokenId).send()
         }
-    }
 
-    private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) = with(loadContract(credentials)) {
-        val marketItems = when (type) {
-            MarketItemType.AVAILABLE -> fetchAvailableMarketItems()
-            MarketItemType.SELLING -> fetchSellingMarketItems()
-            MarketItemType.OWNED -> fetchOwnedMarketItems()
-            MarketItemType.HISTORY -> fetchMarketHistory()
-        }.send().filterIsInstance<ArtCollectibleForSale>()
-        artMarketplaceMapper.mapInListToOutList(marketItems)
-    }
+    override suspend fun fetchMarketplaceStatistics(credentials: Credentials): MarketplaceStatisticsDTO =
+        withContext(Dispatchers.IO) {
+            with(loadContract(credentials)) {
+                MarketplaceStatisticsDTO(
+                    countSoldMarketItems = countSoldMarketItems().send(),
+                    countAvailableMarketItems = countAvailableMarketItems().send(),
+                    countCanceledMarketItems = countCanceledMarketItems().send()
+                )
+            }
+        }
 
-    private fun loadContract(credentials: Credentials): ArtMarketplaceContract = with(blockchainConfig) {
-        val txManager = FastRawTransactionManager(web3j, credentials, chainId)
-        ArtMarketplaceContract.load(
-            artMarketplaceContractAddress,
-            web3j,
-            txManager,
-            gasProvider
-        )
-    }
+    private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) =
+        with(loadContract(credentials)) {
+            val marketItems = when (type) {
+                MarketItemType.AVAILABLE -> fetchAvailableMarketItems()
+                MarketItemType.SELLING -> fetchSellingMarketItems()
+                MarketItemType.OWNED -> fetchOwnedMarketItems()
+                MarketItemType.HISTORY -> fetchMarketHistory()
+            }.send().filterIsInstance<ArtCollectibleForSale>()
+            artMarketplaceMapper.mapInListToOutList(marketItems)
+        }
+
+    private fun loadContract(credentials: Credentials): ArtMarketplaceContract =
+        with(blockchainConfig) {
+            val txManager = FastRawTransactionManager(web3j, credentials, chainId)
+            ArtMarketplaceContract.load(
+                artMarketplaceContractAddress,
+                web3j,
+                txManager,
+                gasProvider
+            )
+        }
 }

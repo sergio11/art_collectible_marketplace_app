@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
 import org.web3j.crypto.Credentials
 import java.math.BigInteger
 
@@ -59,5 +60,11 @@ interface IArtMarketplaceBlockchainDataSource {
      * @param credentials
      */
     suspend fun isTokenAddedForSale(tokenId: BigInteger, credentials: Credentials): Boolean
+
+    /**
+     * Fetch Marketplace statistics
+     * @param credentials
+     */
+    suspend fun fetchMarketplaceStatistics(credentials: Credentials): MarketplaceStatisticsDTO
 
 }
