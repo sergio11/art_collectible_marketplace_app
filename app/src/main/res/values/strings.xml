@@ -112,4 +112,8 @@
     <string name="token_detail_with_draw_from_sale_dialog_cancel_button_text">Cancel</string>
     <string name="token_detail_put_item_for_sale_input_price_label">Art Collectible Price</string>
     <string name="token_detail_put_item_for_sale_input_price_placeholder">Enter the price of the collectible in MATIC</string>
+    <!-- Home Marketplace -->
+    <string name="home_market_statistics_available_items_title">Available Items</string>
+    <string name="home_market_statistics_sold_items_title">Sold Items</string>
+    <string name="home_market_statistics_cancelled_items_title">Cancelled Items</string>
 </resources>

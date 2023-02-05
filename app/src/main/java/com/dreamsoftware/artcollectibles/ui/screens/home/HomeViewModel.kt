@@ -29,13 +29,13 @@ class HomeViewModel @Inject constructor(
             try {
                 val marketStatistics = fetchMarketplaceStatistics()
                 val sellingItems = fetchSellingMarketItems()
-                //val marketHistory = fetchMarketHistory()
+                val marketHistory = fetchMarketHistory()
                 updateState {
                     it.copy(
                         isLoading = false,
                         marketplaceStatistics = marketStatistics,
-                        sellingMarketItems = sellingItems
-                        //marketHistory = marketHistory
+                        sellingMarketItems = sellingItems,
+                        marketHistory = marketHistory
                     )
                 }
             } catch (ex: Exception) {
