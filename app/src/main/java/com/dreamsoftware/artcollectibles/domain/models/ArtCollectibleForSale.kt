@@ -6,7 +6,7 @@ data class ArtCollectibleForSale(
     val marketItemId: BigInteger,
     val token: ArtCollectible,
     val seller: UserInfo,
-    val owner: UserInfo,
+    val owner: UserInfo? = null,
     val price: BigInteger,
     val sold: Boolean,
     val canceled: Boolean

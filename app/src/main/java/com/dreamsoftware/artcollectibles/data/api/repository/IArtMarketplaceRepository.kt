@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import java.math.BigInteger
 
 interface IArtMarketplaceRepository {
@@ -43,4 +44,9 @@ interface IArtMarketplaceRepository {
      * @param tokenId
      */
     suspend fun isTokenAddedForSale(tokenId: BigInteger): Boolean
+
+    /**
+     * Fetch Marketplace statistics
+     */
+    suspend fun fetchMarketplaceStatistics(): MarketplaceStatistics
 }

@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import com.dreamsoftware.artcollectibles.data.api.mapper.MarketplaceStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtMarketplaceRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
@@ -9,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketpl
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
@@ -21,6 +23,7 @@ import java.math.BigInteger
  * @param userInfoMapper
  * @param walletRepository
  * @param userCredentialsMapper
+ * @param marketplaceStatisticsMapper
  */
 internal class ArtMarketplaceRepositoryImpl(
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
@@ -28,7 +31,8 @@ internal class ArtMarketplaceRepositoryImpl(
     private val userDataSource: IUsersDataSource,
     private val userInfoMapper: UserInfoMapper,
     private val walletRepository: IWalletRepository,
-    private val userCredentialsMapper: UserCredentialsMapper
+    private val userCredentialsMapper: UserCredentialsMapper,
+    private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper
 ): IArtMarketplaceRepository {
 
     override suspend fun fetchAvailableMarketItems(): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
@@ -70,10 +74,16 @@ internal class ArtMarketplaceRepositoryImpl(
         artMarketplaceBlockchainDataSource.isTokenAddedForSale(tokenId, userCredentialsMapper.mapOutToIn(credentials))
     }
 
+    override suspend fun fetchMarketplaceStatistics(): MarketplaceStatistics = withContext(Dispatchers.IO) {
+        val credentials = walletRepository.loadCredentials()
+        val marketplaceStatisticsDTO = artMarketplaceBlockchainDataSource.fetchMarketplaceStatistics(userCredentialsMapper.mapOutToIn(credentials))
+        marketplaceStatisticsMapper.mapInToOut(marketplaceStatisticsDTO)
+    }
+
     private suspend fun mapToArtCollectibleForSale(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
         items.map {
             val token = artCollectibleRepository.getTokenById(it.tokenId)
-            val owner = userInfoMapper.mapInToOut(userDataSource.getByAddress(it.owner))
+            val owner = kotlin.runCatching { userInfoMapper.mapInToOut(userDataSource.getByAddress(it.owner)) }.getOrNull()
             val seller = userInfoMapper.mapInToOut(userDataSource.getByAddress(it.seller))
             ArtCollectibleForSale(
                 marketItemId = it.marketItemId,

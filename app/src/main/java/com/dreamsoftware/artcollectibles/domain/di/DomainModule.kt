@@ -266,4 +266,24 @@ class DomainModule {
     fun provideIsTokenAddedForSaleUseCase(
         artMarketplaceRepository: IArtMarketplaceRepository
     ) = IsTokenAddedForSaleUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide Fetch Marketplace statistics use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchMarketplaceStatisticsUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = FetchMarketplaceStatisticsUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide Fetch Market History use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchMarketHistoryUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = FetchMarketHistoryUseCase(artMarketplaceRepository)
 }

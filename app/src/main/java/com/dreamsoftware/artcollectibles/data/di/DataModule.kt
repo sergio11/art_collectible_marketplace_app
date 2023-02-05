@@ -73,6 +73,13 @@ class DataModule {
     fun provideSecretMapper(): PBEDataMapper = PBEDataMapper()
 
     /**
+     * Provide Marketplace Statistics Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideMarketplaceStatisticsMapper(): MarketplaceStatisticsMapper = MarketplaceStatisticsMapper()
+
+    /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
      * @param ipfsDataSource
@@ -102,7 +109,11 @@ class DataModule {
      * Provide Art Marketplace Repository
      * @param artMarketplaceBlockchainDataSource
      * @param artCollectibleRepository
+     * @param userDataSource
+     * @param userInfoMapper
+     * @param walletRepository
      * @param userCredentialsMapper
+     * @param marketplaceStatisticsMapper
      */
     @Provides
     @Singleton
@@ -112,7 +123,8 @@ class DataModule {
         userDataSource: IUsersDataSource,
         userInfoMapper: UserInfoMapper,
         walletRepository: IWalletRepository,
-        userCredentialsMapper: UserCredentialsMapper
+        userCredentialsMapper: UserCredentialsMapper,
+        marketplaceStatisticsMapper: MarketplaceStatisticsMapper
     ): IArtMarketplaceRepository =
         ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource,
@@ -120,7 +132,8 @@ class DataModule {
             userDataSource,
             userInfoMapper,
             walletRepository,
-            userCredentialsMapper
+            userCredentialsMapper,
+            marketplaceStatisticsMapper
         )
 
     /**
