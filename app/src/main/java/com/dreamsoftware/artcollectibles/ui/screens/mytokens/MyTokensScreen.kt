@@ -22,6 +22,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCard
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
@@ -57,7 +58,8 @@ fun MyTokensScreen(
             state = uiState,
             lazyListState = lazyListState,
             onNewTabSelected = ::onNewTabSelected,
-            onTokenClicked = onGoToTokenDetail
+            onTokenClicked = onGoToTokenDetail,
+            onRetryCalled = { loadTokens() }
         )
     }
 }
@@ -70,7 +72,8 @@ internal fun MyTokensComponent(
     state: MyTokensUiState,
     lazyListState: LazyListState,
     onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit,
-    onTokenClicked: (token: ArtCollectible) -> Unit
+    onTokenClicked: (token: ArtCollectible) -> Unit,
+    onRetryCalled: () -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
@@ -82,7 +85,7 @@ internal fun MyTokensComponent(
             ScreenBackgroundImage(imageRes = R.drawable.common_background)
             Column {
                 MyTokensTabsRow(state, onNewTabSelected)
-                MyTokensLazyList(context, state, lazyListState, onTokenClicked)
+                MyTokensLazyList(context, state, lazyListState, onTokenClicked, onRetryCalled)
             }
         }
     }
@@ -95,7 +98,7 @@ private fun MyTokensTabsRow(
 ) {
     with(state) {
         if (tabs.isNotEmpty()) {
-            TabRow(selectedTabIndex = tabs.indexOfFirst { it.isSelected }) {
+            TabRow(selectedTabIndex = tabSelectedIndex) {
                 tabs.forEach { tab ->
                     Tab(
                         selected = tab.isSelected,
@@ -120,7 +123,8 @@ private fun MyTokensLazyList(
     context: Context,
     state: MyTokensUiState,
     lazyListState: LazyListState,
-    onTokenClicked: (token: ArtCollectible) -> Unit
+    onTokenClicked: (token: ArtCollectible) -> Unit,
+    onRetryCalled: () -> Unit
 ) {
     with(state) {
         if(!isLoading) {
@@ -140,6 +144,17 @@ private fun MyTokensLazyList(
                     )
                 }
             }
+            ErrorStateNotificationComponent(
+                isVisible = tokens.isEmpty(),
+                imageRes = R.drawable.not_data_found,
+                titleRes = if(tabSelectedType == MyTokensTabsTypeEnum.TOKENS_OWNED) {
+                    R.string.my_tokens_tab_tokens_owned_not_found_error
+                } else {
+                    R.string.my_tokens_tab_tokens_created_not_found_error
+                },
+                isRetryButtonVisible = true,
+                onRetryCalled = onRetryCalled
+            )
         }
     }
 }

@@ -19,6 +19,7 @@
     <string name="image_content_description">Image can not be loaded</string>
     <string name="loading_dialog_title_text">Operation in progress</string>
     <string name="loading_dialog_description_text">Please wait, it could take a while…</string>
+    <string name="retry_button_text">Retry</string>
     <!-- Onboarding -->
     <string name="onboarding_main_title_text">Welcome to Art Collectible Marketplace</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
@@ -93,6 +94,8 @@
     <!-- My Tokens -->
     <string name="my_tokens_tab_tokens_owned_text">Tokens Owned</string>
     <string name="my_tokens_tab_tokens_created_text">Tokens Created</string>
+    <string name="my_tokens_tab_tokens_owned_not_found_error">You don\'t have any art collectibles</string>
+    <string name="my_tokens_tab_tokens_created_not_found_error">You have not created any art collectibles</string>
     <!-- Token Detail -->
     <string name="token_detail_burn_token_button_text">Burn token</string>
     <string name="token_detail_edit_token_button_text">Edit token</string>

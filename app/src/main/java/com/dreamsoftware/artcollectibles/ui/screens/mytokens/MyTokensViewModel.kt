@@ -10,7 +10,6 @@ import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabUi
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,23 +56,19 @@ class MyTokensViewModel @Inject constructor(
     }
 
     private fun loadMyTokensCreated() {
-        with(uiState.value) {
-            getMyTokensCreatedUseCase.invoke(
-                scope = viewModelScope,
-                onSuccess = ::onLoadTokensCompleted,
-                onError = ::onErrorOccurred
-            )
-        }
+        getMyTokensCreatedUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onLoadTokensCompleted,
+            onError = ::onErrorOccurred
+        )
     }
 
     private fun loadMyTokensOwned() {
-        with(uiState.value) {
-            getMyTokensOwnedUseCase.invoke(
-                scope = viewModelScope,
-                onSuccess = ::onLoadTokensCompleted,
-                onError = ::onErrorOccurred
-            )
-        }
+        getMyTokensOwnedUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onLoadTokensCompleted,
+            onError = ::onErrorOccurred
+        )
     }
 
     private fun onLoading() {
@@ -92,7 +87,10 @@ class MyTokensViewModel @Inject constructor(
     private fun onErrorOccurred(ex: Exception) {
         ex.printStackTrace()
         Log.d("ART_COLL", "onErrorOccurred ${ex.message} CALLED!")
-        updateState { it.copy(isLoading = false) }
+        updateState { it.copy(
+            tokens = emptyList(),
+            isLoading = false
+        ) }
     }
 
     private fun getSelectedTabType(): MyTokensTabsTypeEnum? =
@@ -103,4 +101,10 @@ data class MyTokensUiState(
     val tabs: List<MyTokensTabUi> = emptyList(),
     val isLoading: Boolean = false,
     val tokens: List<ArtCollectible> = emptyList()
-)
+) {
+    val tabSelectedIndex: Int
+        get() = tabs.indexOfFirst { it.isSelected }
+
+    val tabSelectedType: MyTokensTabsTypeEnum
+        get() = tabs.find { it.isSelected }?.type ?: MyTokensTabsTypeEnum.TOKENS_OWNED
+}
