@@ -24,7 +24,7 @@ import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCard
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
-import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.BottomBar
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -75,17 +75,36 @@ internal fun MyTokensComponent(
     onTokenClicked: (token: ArtCollectible) -> Unit,
     onRetryCalled: () -> Unit
 ) {
-    LoadingDialog(isShowingDialog = state.isLoading)
-    Scaffold(
-        bottomBar = {
-            BottomBar(navController)
-        }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            ScreenBackgroundImage(imageRes = R.drawable.common_background)
-            Column {
-                MyTokensTabsRow(state, onNewTabSelected)
-                MyTokensLazyList(context, state, lazyListState, onTokenClicked, onRetryCalled)
+    with(state) {
+        LoadingDialog(isShowingDialog = isLoading)
+        Scaffold(
+            bottomBar = {
+                BottomBar(navController)
+            }
+        ) { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                ScreenBackgroundImage(imageRes = R.drawable.common_background)
+                Column {
+                    MyTokensTabsRow(state, onNewTabSelected)
+                    MyTokensLazyList(context, state, lazyListState, onTokenClicked)
+                    ErrorStateNotificationComponent(
+                        isVisible = tokens.isEmpty() || !errorMessage.isNullOrBlank(),
+                        imageRes = if (tokens.isEmpty()) {
+                            R.drawable.not_data_found
+                        } else {
+                            R.drawable.error_occurred
+                        },
+                        title = errorMessage ?: stringResource(
+                            id = if (tabSelectedType == MyTokensTabsTypeEnum.TOKENS_OWNED) {
+                                R.string.my_tokens_tab_tokens_owned_not_found_error
+                            } else {
+                                R.string.my_tokens_tab_tokens_created_not_found_error
+                            }
+                        ),
+                        isRetryButtonVisible = true,
+                        onRetryCalled = onRetryCalled
+                    )
+                }
             }
         }
     }
@@ -123,11 +142,10 @@ private fun MyTokensLazyList(
     context: Context,
     state: MyTokensUiState,
     lazyListState: LazyListState,
-    onTokenClicked: (token: ArtCollectible) -> Unit,
-    onRetryCalled: () -> Unit
+    onTokenClicked: (token: ArtCollectible) -> Unit
 ) {
     with(state) {
-        if(!isLoading) {
+        if (!isLoading) {
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                 state = lazyListState,
@@ -144,17 +162,6 @@ private fun MyTokensLazyList(
                     )
                 }
             }
-            ErrorStateNotificationComponent(
-                isVisible = tokens.isEmpty(),
-                imageRes = R.drawable.not_data_found,
-                titleRes = if(tabSelectedType == MyTokensTabsTypeEnum.TOKENS_OWNED) {
-                    R.string.my_tokens_tab_tokens_owned_not_found_error
-                } else {
-                    R.string.my_tokens_tab_tokens_created_not_found_error
-                },
-                isRetryButtonVisible = true,
-                onRetryCalled = onRetryCalled
-            )
         }
     }
 }

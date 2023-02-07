@@ -41,7 +41,7 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
-import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.BottomBar
 import com.dreamsoftware.artcollectibles.ui.theme.*
 
 @Composable

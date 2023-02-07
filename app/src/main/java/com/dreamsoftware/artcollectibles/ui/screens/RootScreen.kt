@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dreamsoftware.artcollectibles.ui.navigations.DestinationItem
+import com.dreamsoftware.artcollectibles.ui.navigation.DestinationItem
 import com.dreamsoftware.artcollectibles.ui.screens.account.onboarding.OnBoardingScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen

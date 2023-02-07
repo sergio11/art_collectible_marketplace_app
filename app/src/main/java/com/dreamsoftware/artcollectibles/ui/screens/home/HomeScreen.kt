@@ -32,7 +32,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.BottomBar
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
 

@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.navigations
+package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.dreamsoftware.artcollectibles.ui.navigation.NavigationItem
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable

@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.data.api.repository
 
-import com.dreamsoftware.artcollectibles.data.api.exception.WalletDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.GenerateWalletException
+import com.dreamsoftware.artcollectibles.data.api.exception.GetCurrentBalanceException
+import com.dreamsoftware.artcollectibles.data.api.exception.LoadWalletCredentialsException
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
 
@@ -9,19 +11,19 @@ interface IWalletRepository {
     /**
      * Load Credentials
      */
-    @Throws(WalletDataException::class)
+    @Throws(LoadWalletCredentialsException::class)
     suspend fun loadCredentials(): UserWalletCredentials
 
     /**
      * Generate Credentials
      * @param userUid
      */
-    @Throws(WalletDataException::class)
+    @Throws(GenerateWalletException::class)
     suspend fun generate(userUid: String): UserWalletCredentials
 
     /**
      * Get Current Balance
      */
-    @Throws(WalletDataException::class)
+    @Throws(GetCurrentBalanceException::class)
     suspend fun getCurrentBalance(): AccountBalance
 }

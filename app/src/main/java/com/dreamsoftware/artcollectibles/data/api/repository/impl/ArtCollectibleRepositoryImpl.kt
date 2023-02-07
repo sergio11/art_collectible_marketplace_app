@@ -1,7 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import android.util.Log
-import com.dreamsoftware.artcollectibles.data.api.exception.ArtCollectibleDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
@@ -25,7 +25,7 @@ internal class ArtCollectibleRepositoryImpl(
     private val userCredentialsMapper: UserCredentialsMapper
 ) : IArtCollectibleRepository {
 
-    @Throws(ArtCollectibleDataException::class)
+    @Throws(CreateArtCollectibleException::class)
     override suspend fun create(token: CreateArtCollectible): ArtCollectible = withContext(Dispatchers.Default) {
         try {
             val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
@@ -52,11 +52,11 @@ internal class ArtCollectibleRepositoryImpl(
         } catch (ex: Exception) {
             ex.printStackTrace()
             Log.d("ART_COLL", "create - ${ex.message} ERROR!")
-            throw ArtCollectibleDataException("An error occurred when trying to create a new token", ex)
+            throw CreateArtCollectibleException("An error occurred when trying to create a new token", ex)
         }
     }
 
-    @Throws(ArtCollectibleDataException::class)
+    @Throws(DeleteArtCollectibleException::class)
     override suspend fun delete(tokenId: BigInteger) {
         try {
             val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
@@ -67,42 +67,62 @@ internal class ArtCollectibleRepositoryImpl(
             // Delete token
             artCollectibleDataSource.burnToken(tokenId, credentials)
         } catch (ex: Exception) {
-            throw ArtCollectibleDataException("An error occurred when trying to delete a new token", ex)
+            throw DeleteArtCollectibleException("An error occurred when trying to delete a new token", ex)
         }
     }
 
+    @Throws(GetTokensOwnedException::class)
     override suspend fun getTokensOwned(): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
-            val credentials = walletRepository.loadCredentials()
-            val tokenFiles = ipfsDataSource.fetchByOwnerAddress(credentials.address)
-            val tokens = artCollectibleDataSource.getTokensOwned(userCredentialsMapper.mapOutToIn(credentials))
-            tokenFiles.mapNotNull { tokenMetadata ->
-                tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
-                    val tokenOwner = userDataSource.getByAddress(tokenMetadata.ownerAddress)
-                    artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenOwner))
+            try {
+                val credentials = walletRepository.loadCredentials()
+                val tokenFiles = ipfsDataSource.fetchByOwnerAddress(credentials.address)
+                val tokens = artCollectibleDataSource.getTokensOwned(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                )
+                tokenFiles.mapNotNull { tokenMetadata ->
+                    tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
+                        val tokenOwner = userDataSource.getByAddress(tokenMetadata.ownerAddress)
+                        artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenOwner))
+                    }
                 }
+            } catch (ex: Exception) {
+                throw GetTokensOwnedException("An error occurred when trying to get tokens owned", ex)
             }
         }
 
+    @Throws(GetTokensCreatedException::class)
     override suspend fun getTokensCreated(): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
-            val credentials = walletRepository.loadCredentials()
-            val tokenFiles = ipfsDataSource.fetchByCreatorAddress(credentials.address)
-            val tokens = artCollectibleDataSource.getTokensCreated(userCredentialsMapper.mapOutToIn(credentials))
-            tokenFiles.mapNotNull { tokenMetadata ->
-                tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
-                    val tokenAuthor = userDataSource.getByAddress(token.creator)
-                    artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenAuthor))
+            try {
+                val credentials = walletRepository.loadCredentials()
+                val tokenFiles = ipfsDataSource.fetchByCreatorAddress(credentials.address)
+                val tokens = artCollectibleDataSource.getTokensCreated(userCredentialsMapper.mapOutToIn(credentials))
+                tokenFiles.mapNotNull { tokenMetadata ->
+                    tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
+                        val tokenAuthor = userDataSource.getByAddress(token.creator)
+                        artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenAuthor))
+                    }
                 }
+            } catch (ex: Exception) {
+                throw GetTokensCreatedException("An error occurred when trying to get tokens created", ex)
             }
         }
 
+    @Throws(GetTokenByIdException::class)
     override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible =
         withContext(Dispatchers.Default) {
-            val credentials = walletRepository.loadCredentials()
-            val token = artCollectibleDataSource.getTokenById(tokenId, userCredentialsMapper.mapOutToIn(credentials))
-            val tokenMetadata = ipfsDataSource.fetchByCid(token.metadataCID)
-            val tokenAuthor = userDataSource.getByAddress(tokenMetadata.ownerAddress)
-            artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenAuthor))
+            try {
+                val credentials = walletRepository.loadCredentials()
+                val token = artCollectibleDataSource.getTokenById(
+                    tokenId,
+                    userCredentialsMapper.mapOutToIn(credentials)
+                )
+                val tokenMetadata = ipfsDataSource.fetchByCid(token.metadataCID)
+                val tokenAuthor = userDataSource.getByAddress(tokenMetadata.ownerAddress)
+                artCollectibleMapper.mapInToOut(Triple(tokenMetadata, token, tokenAuthor))
+            } catch (ex: Exception) {
+                throw GetTokenByIdException("An error occurred when trying to get token by id", ex)
+            }
         }
 }

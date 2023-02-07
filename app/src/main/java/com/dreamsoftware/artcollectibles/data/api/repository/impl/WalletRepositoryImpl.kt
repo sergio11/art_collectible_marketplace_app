@@ -1,7 +1,9 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import android.util.Log
-import com.dreamsoftware.artcollectibles.data.api.exception.WalletDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.GenerateWalletException
+import com.dreamsoftware.artcollectibles.data.api.exception.GetCurrentBalanceException
+import com.dreamsoftware.artcollectibles.data.api.exception.LoadWalletCredentialsException
 import com.dreamsoftware.artcollectibles.data.api.mapper.AccountBalanceMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
@@ -50,19 +52,19 @@ internal class WalletRepositoryImpl(
     /**
      * Load credentials
      */
-    @Throws(WalletDataException::class)
+    @Throws(LoadWalletCredentialsException::class)
     override suspend fun loadCredentials(): UserWalletCredentials = try {
         val userUid = preferencesDataSource.getAuthUserUid()
         val credentials = loadCredentials(userUid)
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
-        throw WalletDataException("An error occurred when trying to load wallet credentials", ex)
+        throw LoadWalletCredentialsException("An error occurred when trying to load wallet credentials", ex)
     }
 
     /**
      * Generate a new wallet
      */
-    @Throws(WalletDataException::class)
+    @Throws(GenerateWalletException::class)
     override suspend fun generate(userUid: String): UserWalletCredentials = try {
         // Generate Wallet Secret
         val walletSecret = passwordUtils.generatePassword(length = WALLET_SECRET_LENGTH)
@@ -74,13 +76,13 @@ internal class WalletRepositoryImpl(
         userCredentialsMapper.mapInToOut(credentials)
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw WalletDataException("An error occurred when generating a new wallet", ex)
+        throw GenerateWalletException("An error occurred when generating a new wallet", ex)
     }
 
     /**
      * Get current balance for current authenticated user
      */
-    @Throws(WalletDataException::class)
+    @Throws(GetCurrentBalanceException::class)
     override suspend fun getCurrentBalance(): AccountBalance = try {
         val userUid = preferencesDataSource.getAuthUserUid()
         val credentials = loadCredentials(userUid)
@@ -88,7 +90,7 @@ internal class WalletRepositoryImpl(
         accountBalanceMapper.mapInToOut(balance)
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw WalletDataException("An error occurred when trying to get current balance", ex)
+        throw GetCurrentBalanceException("An error occurred when trying to get current balance", ex)
     }
 
     /**

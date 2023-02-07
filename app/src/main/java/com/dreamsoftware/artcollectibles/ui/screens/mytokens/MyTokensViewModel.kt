@@ -15,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MyTokensViewModel @Inject constructor(
     private val getMyTokensCreatedUseCase: GetMyTokensCreatedUseCase,
-    private val getMyTokensOwnedUseCase: GetMyTokensOwnedUseCase
+    private val getMyTokensOwnedUseCase: GetMyTokensOwnedUseCase,
+    private val myTokensScreenErrorMapper: MyTokensScreenErrorMapper
 ) : SupportViewModel<MyTokensUiState>() {
 
     override fun onGetDefaultState(): MyTokensUiState =
@@ -47,7 +48,7 @@ class MyTokensViewModel @Inject constructor(
     fun loadTokens() {
         onLoading()
         getSelectedTabType()?.let {
-            if(it == MyTokensTabsTypeEnum.TOKENS_OWNED) {
+            if (it == MyTokensTabsTypeEnum.TOKENS_OWNED) {
                 loadMyTokensOwned()
             } else {
                 loadMyTokensCreated()
@@ -72,7 +73,12 @@ class MyTokensViewModel @Inject constructor(
     }
 
     private fun onLoading() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+        }
     }
 
     private fun onLoadTokensCompleted(tokenList: Iterable<ArtCollectible>) {
@@ -87,10 +93,13 @@ class MyTokensViewModel @Inject constructor(
     private fun onErrorOccurred(ex: Exception) {
         ex.printStackTrace()
         Log.d("ART_COLL", "onErrorOccurred ${ex.message} CALLED!")
-        updateState { it.copy(
-            tokens = emptyList(),
-            isLoading = false
-        ) }
+        updateState {
+            it.copy(
+                tokens = emptyList(),
+                isLoading = false,
+                errorMessage = myTokensScreenErrorMapper.mapToMessage(ex)
+            )
+        }
     }
 
     private fun getSelectedTabType(): MyTokensTabsTypeEnum? =
@@ -100,7 +109,8 @@ class MyTokensViewModel @Inject constructor(
 data class MyTokensUiState(
     val tabs: List<MyTokensTabUi> = emptyList(),
     val isLoading: Boolean = false,
-    val tokens: List<ArtCollectible> = emptyList()
+    val tokens: List<ArtCollectible> = emptyList(),
+    val errorMessage: String? = null
 ) {
     val tabSelectedIndex: Int
         get() = tabs.indexOfFirst { it.isSelected }

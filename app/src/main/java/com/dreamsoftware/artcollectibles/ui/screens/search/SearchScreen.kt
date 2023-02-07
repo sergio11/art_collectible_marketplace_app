@@ -25,7 +25,7 @@ import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.components.SearchView
 import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
-import com.dreamsoftware.artcollectibles.ui.navigations.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.BottomBar
 import com.google.common.collect.Iterables
 
 @Composable

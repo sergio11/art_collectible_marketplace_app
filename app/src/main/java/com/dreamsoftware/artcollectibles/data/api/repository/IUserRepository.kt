@@ -1,34 +1,34 @@
 package com.dreamsoftware.artcollectibles.data.api.repository
 
-import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.domain.models.*
 
 interface IUserRepository {
 
-    @Throws(UserDataException::class)
+    @Throws(CheckAuthenticatedException::class)
     suspend fun isAuthenticated(): Boolean
 
-    @Throws(UserDataException::class)
+    @Throws(SignInException::class)
     suspend fun signIn(authRequest: AuthRequest): AuthUser
 
-    @Throws(UserDataException::class)
+    @Throws(SignInException::class)
     suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser
 
-    @Throws(UserDataException::class)
+    @Throws(SignUpException::class)
     suspend fun signUp(email: String, password: String): AuthUser
 
-    @Throws(UserDataException::class)
+    @Throws(GetDetailException::class)
     suspend fun get(uid: String): UserInfo
 
-    @Throws(UserDataException::class)
+    @Throws(SaveUserException::class)
     suspend fun save(userInfo: UserInfo)
 
-    @Throws(UserDataException::class)
+    @Throws(UpdateProfilePictureException::class)
     suspend fun updateProfilePicture(uid: String, fileUri: String): String
 
-    @Throws(UserDataException::class)
+    @Throws(CloseSessionException::class)
     suspend fun closeSession()
 
-    @Throws(UserDataException::class)
+    @Throws(SearchUserException::class)
     suspend fun search(term: String? = null): Iterable<UserInfo>
 }

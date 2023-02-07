@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import com.dreamsoftware.artcollectibles.data.api.exception.SecretDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.GenerateSecretException
+import com.dreamsoftware.artcollectibles.data.api.exception.GetSecretException
 import com.dreamsoftware.artcollectibles.data.api.mapper.PBEDataMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.ISecretRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ISecretDataSource
@@ -25,7 +26,7 @@ internal class SecretRepositoryImpl(
         const val SECRET_SALT_LENGTH = 20
     }
 
-    @Throws(SecretDataException::class)
+    @Throws(GenerateSecretException::class)
     override suspend fun generate(userUid: String): PBEData = try {
         val secret = passwordUtils.generatePassword(length = SECRET_LENGTH)
         val secretSalt = passwordUtils.generatePassword(length = SECRET_SALT_LENGTH)
@@ -33,14 +34,14 @@ internal class SecretRepositoryImpl(
         PBEDataMapper.mapInToOut(secretDataSource.getByUserUid(userUid))
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw SecretDataException("An error occurred when trying to save secret information", ex)
+        throw GenerateSecretException("An error occurred when trying to save secret information", ex)
     }
 
-    @Throws(SecretDataException::class)
+    @Throws(GetSecretException::class)
     override suspend fun get(userUid: String): PBEData = try {
         val secret = secretDataSource.getByUserUid(userUid)
         PBEDataMapper.mapInToOut(secret)
     } catch (ex: Exception) {
-        throw SecretDataException("An error occurred when trying to get secret information", ex)
+        throw GetSecretException("An error occurred when trying to get secret information", ex)
     }
 }

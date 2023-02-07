@@ -1,6 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import com.dreamsoftware.artcollectibles.data.api.exception.UserDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
@@ -34,25 +34,25 @@ internal class UserRepositoryImpl(
         const val PROFILE_PHOTO_FILE_NAME_TEMPLATE = "{uid}_profile_picture"
     }
 
-    @Throws(UserDataException::class)
+    @Throws(CheckAuthenticatedException::class)
     override suspend fun isAuthenticated(): Boolean = try {
         authDataSource.isAuthenticated()
     } catch (ex: Exception) {
-        throw UserDataException(
+        throw CheckAuthenticatedException(
             "An error occurred when trying to check if user is already authenticated",
             ex
         )
     }
 
-    @Throws(UserDataException::class)
+    @Throws(SignInException::class)
     override suspend fun signIn(authRequest: AuthRequest): AuthUser = try {
         val authUser = authDataSource.signIn(authRequest.email, authRequest.password)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
-        throw UserDataException("An error occurred when trying to sign in user", ex)
+        throw SignInException("An error occurred when trying to sign in user", ex)
     }
 
-    @Throws(UserDataException::class)
+    @Throws(SignInException::class)
     override suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser = try {
         val authUser = authDataSource.signInWithExternalProvider(
             authRequest.accessToken,
@@ -60,36 +60,36 @@ internal class UserRepositoryImpl(
         )
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
-        throw UserDataException("An error occurred when trying to sign in user", ex)
+        throw SignInException("An error occurred when trying to sign in user", ex)
     }
 
-    @Throws(UserDataException::class)
+    @Throws(SignUpException::class)
     override suspend fun signUp(email: String, password: String): AuthUser = try {
         val authUser = authDataSource.signUp(email, password)
         authUserMapper.mapInToOut(authUser)
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw UserDataException("An error occurred when trying to sign up user", ex)
+        throw SignUpException("An error occurred when trying to sign up user", ex)
     }
 
-    @Throws(UserDataException::class)
+    @Throws(GetDetailException::class)
     override suspend fun get(uid: String): UserInfo = try {
         val userInfo = userDataSource.getById(uid)
         userInfoMapper.mapInToOut(userInfo)
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw UserDataException("An error occurred when trying to get the user information", ex)
+        throw GetDetailException("An error occurred when trying to get the user information", ex)
     }
 
-    @Throws(UserDataException::class)
+    @Throws(SaveUserException::class)
     override suspend fun save(userInfo: UserInfo) = try {
         userDataSource.save(saveUserInfoMapper.mapInToOut(userInfo))
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw UserDataException("An error occurred when trying to create the user", ex)
+        throw SaveUserException("An error occurred when trying to create the user", ex)
     }
 
-    @Throws(UserDataException::class)
+    @Throws(UpdateProfilePictureException::class)
     override suspend fun updateProfilePicture(uid: String, fileUri: String): String = try {
         val userInfo = userDataSource.getById(uid)
         val fileName = PROFILE_PHOTO_FILE_NAME_TEMPLATE.replace("{uid}", userInfo.uid)
@@ -110,24 +110,24 @@ internal class UserRepositoryImpl(
         }
     } catch (ex: Exception) {
         ex.printStackTrace()
-        throw UserDataException("An error occurred when trying to save file", ex)
+        throw UpdateProfilePictureException("An error occurred when trying to save file", ex)
     }
 
-    @Throws(UserDataException::class)
+    @Throws(CloseSessionException::class)
     override suspend fun closeSession() {
         try {
             authDataSource.closeSession()
         } catch (ex: Exception) {
-            throw UserDataException("An error occurred when trying to close user session", ex)
+            throw CloseSessionException("An error occurred when trying to close user session", ex)
         }
     }
 
-    @Throws(UserDataException::class)
+    @Throws(SearchUserException::class)
     override suspend fun search(term: String?): Iterable<UserInfo> = try {
         userInfoMapper.mapInListToOutList(term?.let {
             userDataSource.findUsersByName(it)
         } ?: userDataSource.getAll())
     } catch (ex: Exception) {
-        throw UserDataException("An error occurred when trying to find users", ex)
+        throw SearchUserException("An error occurred when trying to find users", ex)
     }
 }

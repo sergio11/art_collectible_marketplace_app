@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.navigations
+package com.dreamsoftware.artcollectibles.ui.navigation
 
 import android.os.Bundle
 import androidx.compose.material.icons.Icons
@@ -11,7 +11,6 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
-import okhttp3.internal.toLongOrDefault
 import java.math.BigInteger
 
 sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument> = emptyList()) {

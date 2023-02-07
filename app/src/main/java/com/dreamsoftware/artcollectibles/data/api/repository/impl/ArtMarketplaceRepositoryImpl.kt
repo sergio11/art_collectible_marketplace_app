@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.MarketplaceStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtMarketplaceRepository
@@ -35,49 +36,100 @@ internal class ArtMarketplaceRepositoryImpl(
     private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper
 ): IArtMarketplaceRepository {
 
+    @Throws(FetchAvailableMarketItemsException::class)
     override suspend fun fetchAvailableMarketItems(): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchAvailableMarketItems(userCredentialsMapper.mapOutToIn(credentials))
-        mapToArtCollectibleForSale(artCollectibleForSaleList)
+        try {
+            val credentials = walletRepository.loadCredentials()
+            val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchAvailableMarketItems(userCredentialsMapper.mapOutToIn(credentials))
+            mapToArtCollectibleForSale(artCollectibleForSaleList)
+        } catch (ex: Exception) {
+            throw FetchAvailableMarketItemsException("An error occurred when fetching available market items", ex)
+        }
     }
 
+    @Throws(FetchSellingMarketItemsException::class)
     override suspend fun fetchSellingMarketItems(): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchSellingMarketItems(userCredentialsMapper.mapOutToIn(credentials))
-        mapToArtCollectibleForSale(artCollectibleForSaleList)
+        try {
+            val credentials = walletRepository.loadCredentials()
+            val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchSellingMarketItems(userCredentialsMapper.mapOutToIn(credentials))
+            mapToArtCollectibleForSale(artCollectibleForSaleList)
+        } catch (ex: Exception) {
+            throw FetchSellingMarketItemsException("An error occurred when fetching selling market items", ex)
+        }
     }
 
+    @Throws(FetchOwnedMarketItemsException::class)
     override suspend fun fetchOwnedMarketItems(): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchOwnedMarketItems(userCredentialsMapper.mapOutToIn(credentials))
-        mapToArtCollectibleForSale(artCollectibleForSaleList)
+        try {
+            val credentials = walletRepository.loadCredentials()
+            val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchOwnedMarketItems(userCredentialsMapper.mapOutToIn(credentials))
+            mapToArtCollectibleForSale(artCollectibleForSaleList)
+        } catch (ex: Exception) {
+            throw FetchOwnedMarketItemsException("An error occurred when fetching owned market items", ex)
+        }
     }
 
+    @Throws(FetchMarketHistoryException::class)
     override suspend fun fetchMarketHistory(): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchMarketHistory(userCredentialsMapper.mapOutToIn(credentials))
-        mapToArtCollectibleForSale(artCollectibleForSaleList)
+        try {
+            val credentials = walletRepository.loadCredentials()
+            val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchMarketHistory(
+                userCredentialsMapper.mapOutToIn(credentials)
+            )
+            mapToArtCollectibleForSale(artCollectibleForSaleList)
+        } catch (ex: Exception) {
+            throw FetchMarketHistoryException("An error occurred when fetching market history", ex)
+        }
     }
 
+    @Throws(PutItemForSaleException::class)
     override suspend fun putItemForSale(tokenId: BigInteger, price: Float) = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        artMarketplaceBlockchainDataSource.putItemForSale(tokenId, price, userCredentialsMapper.mapOutToIn(credentials))
+        try {
+            val credentials = walletRepository.loadCredentials()
+            artMarketplaceBlockchainDataSource.putItemForSale(tokenId, price, userCredentialsMapper.mapOutToIn(credentials))
+        } catch (ex: Exception) {
+            throw PutItemForSaleException("An error occurred when trying to put item for sale", ex)
+        }
     }
 
+    @Throws(WithdrawFromSaleException::class)
     override suspend fun withdrawFromSale(tokenId: BigInteger) = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        artMarketplaceBlockchainDataSource.withdrawFromSale(tokenId, userCredentialsMapper.mapOutToIn(credentials))
+        try {
+            val credentials = walletRepository.loadCredentials()
+            artMarketplaceBlockchainDataSource.withdrawFromSale(
+                tokenId,
+                userCredentialsMapper.mapOutToIn(credentials)
+            )
+        } catch (ex: Exception) {
+            throw WithdrawFromSaleException("An error occurred when trying to withdraw item from sale", ex)
+        }
     }
 
+    @Throws(CheckTokenAddedForSaleException::class)
     override suspend fun isTokenAddedForSale(tokenId: BigInteger): Boolean = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        artMarketplaceBlockchainDataSource.isTokenAddedForSale(tokenId, userCredentialsMapper.mapOutToIn(credentials))
+        try {
+            val credentials = walletRepository.loadCredentials()
+            artMarketplaceBlockchainDataSource.isTokenAddedForSale(
+                tokenId,
+                userCredentialsMapper.mapOutToIn(credentials)
+            )
+        } catch (ex: Exception) {
+            throw CheckTokenAddedForSaleException("An error occurred when checking if token has been added for sale", ex)
+        }
     }
 
+    @Throws(FetchMarketplaceStatisticsException::class)
     override suspend fun fetchMarketplaceStatistics(): MarketplaceStatistics = withContext(Dispatchers.IO) {
-        val credentials = walletRepository.loadCredentials()
-        val marketplaceStatisticsDTO = artMarketplaceBlockchainDataSource.fetchMarketplaceStatistics(userCredentialsMapper.mapOutToIn(credentials))
-        marketplaceStatisticsMapper.mapInToOut(marketplaceStatisticsDTO)
+        try {
+            val credentials = walletRepository.loadCredentials()
+            val marketplaceStatisticsDTO =
+                artMarketplaceBlockchainDataSource.fetchMarketplaceStatistics(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                )
+            marketplaceStatisticsMapper.mapInToOut(marketplaceStatisticsDTO)
+        } catch (ex: Exception) {
+            throw FetchMarketplaceStatisticsException("An error occurred when fetching marketplace statistics", ex)
+        }
     }
 
     private suspend fun mapToArtCollectibleForSale(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =

@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ButtonDefaults
@@ -12,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -24,7 +22,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 fun ErrorStateNotificationComponent(
     isVisible: Boolean,
     @DrawableRes imageRes: Int,
-    @StringRes titleRes: Int,
+    title: String,
     isRetryButtonVisible: Boolean = false,
     onRetryCalled: () -> Unit = {}
 ) {
@@ -42,7 +40,7 @@ fun ErrorStateNotificationComponent(
                 contentDescription = "Content Description"
             )
             Text(
-                text = stringResource(id = titleRes),
+                text = title,
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontFamily = montserratFontFamily,
