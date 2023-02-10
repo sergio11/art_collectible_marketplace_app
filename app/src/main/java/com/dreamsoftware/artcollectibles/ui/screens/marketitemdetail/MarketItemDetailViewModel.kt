@@ -2,50 +2,89 @@ package com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail
 
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.BuyItemUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchItemForSaleUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAuthUserProfileUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketItemDetailViewModel @Inject constructor(
-    private val fetchItemForSaleUseCase: FetchItemForSaleUseCase
+    private val fetchItemForSaleUseCase: FetchItemForSaleUseCase,
+    private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
+    private val buyItemUseCase: BuyItemUseCase
 ) : SupportViewModel<MarketUiState>() {
 
     override fun onGetDefaultState(): MarketUiState = MarketUiState()
 
     fun loadDetail(tokenId: BigInteger) {
         onLoading()
-        fetchItemForSaleUseCase.invoke(
-            scope = viewModelScope,
-            params = FetchItemForSaleUseCase.Params(tokenId),
-            onSuccess = ::onFetchItemForSaleSuccess,
+        loadAllDataForToken(tokenId)
+    }
+
+    fun buyItem(tokenId: BigInteger, price: BigInteger) {
+        onLoading()
+        buyItemUseCase.invoke(scope = viewModelScope,
+            params = BuyItemUseCase.Params(tokenId, price),
+            onSuccess = { onBuyItemSuccess() },
             onError = ::onErrorOccurred
         )
+    }
+
+    /**
+     * Private Methods
+     */
+    private fun loadAllDataForToken(tokenId: BigInteger) {
+        viewModelScope.launch {
+            runCatching {
+                val marketItem = fetchItemForSale(tokenId)
+                val authUser = loadAuthUserDetail()
+                updateState {
+                    it.copy(
+                        isLoading = false,
+                        artCollectibleForSale = marketItem,
+                        isTokenSeller = marketItem.seller.uid == authUser.uid,
+                    )
+                }
+            }.onFailure(::onErrorOccurred)
+        }
     }
 
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
 
-    private fun onFetchItemForSaleSuccess(artCollectibleForSale: ArtCollectibleForSale) {
-        updateState {
-            it.copy(
-                isLoading = false,
-                artCollectibleForSale = artCollectibleForSale
-            )
-        }
-    }
-
-    private fun onErrorOccurred(ex: Exception) {
+    private fun onErrorOccurred(ex: Throwable) {
         updateState {
             it.copy(isLoading = false)
         }
     }
+
+    private fun onBuyItemSuccess() {
+        updateState {
+            it.copy(
+                isLoading = false,
+                itemBought = true
+            )
+        }
+    }
+
+    private suspend fun fetchItemForSale(tokenId: BigInteger) = fetchItemForSaleUseCase.invoke(
+        scope = viewModelScope,
+        params = FetchItemForSaleUseCase.Params(tokenId)
+    )
+
+    private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
+        scope = viewModelScope
+    )
 }
 
 data class MarketUiState(
     val isLoading: Boolean = false,
+    val isTokenSeller: Boolean = false,
+    val itemBought: Boolean = false,
     val artCollectibleForSale: ArtCollectibleForSale? = null
 )

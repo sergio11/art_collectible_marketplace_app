@@ -296,4 +296,14 @@ class DomainModule {
     fun provideFetchItemForSaleUseCase(
         artMarketplaceRepository: IArtMarketplaceRepository
     ) = FetchItemForSaleUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide Buy Item use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideBuyItemUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = BuyItemUseCase(artMarketplaceRepository)
 }

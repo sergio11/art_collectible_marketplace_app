@@ -122,4 +122,6 @@
     <string name="home_market_statistics_available_items_title">Available Items</string>
     <string name="home_market_statistics_sold_items_title">Sold Items</string>
     <string name="home_market_statistics_cancelled_items_title">Cancelled Items</string>
+    <!-- Market Item Detail -->
+    <string name="market_item_detail_buy_item_button_text">Buy Item</string>
 </resources>

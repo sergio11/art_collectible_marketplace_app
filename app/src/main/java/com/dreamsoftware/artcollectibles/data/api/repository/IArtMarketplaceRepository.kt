@@ -65,4 +65,12 @@ interface IArtMarketplaceRepository {
      */
     @Throws(FetchMarketplaceStatisticsException::class)
     suspend fun fetchMarketplaceStatistics(): MarketplaceStatistics
+
+    /**
+     * Buy item
+     * @param tokenId
+     * @param price
+     */
+    @Throws(BuyItemException::class)
+    suspend fun buyItem(tokenId: BigInteger, price: BigInteger)
 }
