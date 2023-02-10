@@ -12,6 +12,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
+import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
@@ -53,7 +54,9 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Home.route) {
-            HomeScreen(navigationController)
+            HomeScreen(navigationController) {
+                navigationController.navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+            }
         }
         composable(DestinationItem.MyTokens.route) {
             MyTokensScreen(navigationController) {
@@ -90,6 +93,13 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.ArtistDetail.parseArgs(args)?.let { screenArgs ->
                     ArtistDetailScreen(navigationController, screenArgs)
+                }
+            }
+        }
+        composable(DestinationItem.MarketItemDetail.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.MarketItemDetail.parseArgs(args)?.let { screenArgs ->
+                    MarketItemDetailScreen(navigationController, screenArgs)
                 }
             }
         }

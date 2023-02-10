@@ -8,8 +8,10 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
 import java.math.BigInteger
 
@@ -60,9 +62,27 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
     }
+    object MarketItemDetail : DestinationItem(route = "market/detail/{id}", arguments = listOf(
+        navArgument("id") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(artCollectibleForSale: ArtCollectibleForSale): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = "${artCollectibleForSale.token.id}"
+            )
+
+        fun parseArgs(args: Bundle): MarketItemDetailScreenArgs? = with(args) {
+            getString("id")?.toLongOrNull()?.let {
+                MarketItemDetailScreenArgs(tokenId = BigInteger.valueOf(it))
+            }
+        }
+    }
 }
 
-
+// MarketItemDetailScreen
 sealed class NavigationItem(
     var destination: DestinationItem,
     var icon: ImageVector,

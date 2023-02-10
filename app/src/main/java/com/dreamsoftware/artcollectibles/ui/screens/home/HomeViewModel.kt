@@ -28,12 +28,14 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val marketStatistics = fetchMarketplaceStatistics()
+                val availableMarketItems = fetchAvailableMarketItems()
                 val sellingItems = fetchSellingMarketItems()
                 val marketHistory = fetchMarketHistory()
                 updateState {
                     it.copy(
                         isLoading = false,
                         marketplaceStatistics = marketStatistics,
+                        availableMarketItems = availableMarketItems,
                         sellingMarketItems = sellingItems,
                         marketHistory = marketHistory
                     )

@@ -41,7 +41,7 @@ internal class ArtMarketplaceRepositoryImpl(
         try {
             val credentials = walletRepository.loadCredentials()
             val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchAvailableMarketItems(userCredentialsMapper.mapOutToIn(credentials))
-            mapToArtCollectibleForSale(artCollectibleForSaleList)
+            mapToArtCollectibleForSaleList(artCollectibleForSaleList)
         } catch (ex: Exception) {
             throw FetchAvailableMarketItemsException("An error occurred when fetching available market items", ex)
         }
@@ -52,7 +52,7 @@ internal class ArtMarketplaceRepositoryImpl(
         try {
             val credentials = walletRepository.loadCredentials()
             val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchSellingMarketItems(userCredentialsMapper.mapOutToIn(credentials))
-            mapToArtCollectibleForSale(artCollectibleForSaleList)
+            mapToArtCollectibleForSaleList(artCollectibleForSaleList)
         } catch (ex: Exception) {
             throw FetchSellingMarketItemsException("An error occurred when fetching selling market items", ex)
         }
@@ -63,7 +63,7 @@ internal class ArtMarketplaceRepositoryImpl(
         try {
             val credentials = walletRepository.loadCredentials()
             val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchOwnedMarketItems(userCredentialsMapper.mapOutToIn(credentials))
-            mapToArtCollectibleForSale(artCollectibleForSaleList)
+            mapToArtCollectibleForSaleList(artCollectibleForSaleList)
         } catch (ex: Exception) {
             throw FetchOwnedMarketItemsException("An error occurred when fetching owned market items", ex)
         }
@@ -76,7 +76,7 @@ internal class ArtMarketplaceRepositoryImpl(
             val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchMarketHistory(
                 userCredentialsMapper.mapOutToIn(credentials)
             )
-            mapToArtCollectibleForSale(artCollectibleForSaleList)
+            mapToArtCollectibleForSaleList(artCollectibleForSaleList)
         } catch (ex: Exception) {
             throw FetchMarketHistoryException("An error occurred when fetching market history", ex)
         }
@@ -89,6 +89,17 @@ internal class ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource.putItemForSale(tokenId, price, userCredentialsMapper.mapOutToIn(credentials))
         } catch (ex: Exception) {
             throw PutItemForSaleException("An error occurred when trying to put item for sale", ex)
+        }
+    }
+
+    @Throws(FetchItemForSaleException::class)
+    override suspend fun fetchItemForSale(tokenId: BigInteger): ArtCollectibleForSale = withContext(Dispatchers.IO) {
+        try {
+            val credentials = walletRepository.loadCredentials()
+            val artCollectible = artMarketplaceBlockchainDataSource.fetchItemForSale(tokenId, userCredentialsMapper.mapOutToIn(credentials))
+            mapToArtCollectibleForSale(artCollectible)
+        } catch (ex: Exception) {
+            throw FetchItemForSaleException("An error occurred when trying to fetch item for sale", ex)
         }
     }
 
@@ -132,19 +143,21 @@ internal class ArtMarketplaceRepositoryImpl(
         }
     }
 
-    private suspend fun mapToArtCollectibleForSale(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
-        items.map {
-            val token = artCollectibleRepository.getTokenById(it.tokenId)
-            val owner = kotlin.runCatching { userInfoMapper.mapInToOut(userDataSource.getByAddress(it.owner)) }.getOrNull()
-            val seller = userInfoMapper.mapInToOut(userDataSource.getByAddress(it.seller))
-            ArtCollectibleForSale(
-                marketItemId = it.marketItemId,
-                token = token,
-                seller = seller,
-                owner = owner,
-                price = it.price,
-                sold = it.sold,
-                canceled = it.canceled
-            )
-        }
+    private suspend fun mapToArtCollectibleForSaleList(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
+        items.map { mapToArtCollectibleForSale(it) }
+
+    private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO): ArtCollectibleForSale = with(item) {
+        val token = artCollectibleRepository.getTokenById(tokenId)
+        val owner = kotlin.runCatching { userInfoMapper.mapInToOut(userDataSource.getByAddress(owner)) }.getOrNull()
+        val seller = userInfoMapper.mapInToOut(userDataSource.getByAddress(seller))
+        ArtCollectibleForSale(
+            marketItemId = marketItemId,
+            token = token,
+            seller = seller,
+            owner = owner,
+            price = price,
+            sold = sold,
+            canceled = canceled
+        )
+    }
 }

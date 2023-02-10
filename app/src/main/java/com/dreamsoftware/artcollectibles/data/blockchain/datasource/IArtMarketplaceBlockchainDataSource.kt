@@ -55,6 +55,13 @@ interface IArtMarketplaceBlockchainDataSource {
     suspend fun buyItem(tokenId: BigInteger, price: BigInteger, credentials: Credentials)
 
     /**
+     * Fetch item for sale
+     * @param tokenId
+     * @param credentials
+     */
+    suspend fun fetchItemForSale(tokenId: BigInteger, credentials: Credentials): ArtCollectibleForSaleDTO
+
+    /**
      * Is token added for sale
      * @param tokenId
      * @param credentials

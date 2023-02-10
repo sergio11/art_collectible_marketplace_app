@@ -52,6 +52,8 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final String FUNC_FETCHAVAILABLEMARKETITEMS = "fetchAvailableMarketItems";
 
+    public static final String FUNC_FETCHCREATEDMARKETITEMS = "fetchCreatedMarketItems";
+
     public static final String FUNC_FETCHITEMFORSALE = "fetchItemForSale";
 
     public static final String FUNC_FETCHMARKETHISTORY = "fetchMarketHistory";
@@ -228,6 +230,21 @@ public class ArtMarketplaceContract extends Contract {
 
     public RemoteFunctionCall<List> fetchAvailableMarketItems() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHAVAILABLEMARKETITEMS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleForSale>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> fetchCreatedMarketItems() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHCREATEDMARKETITEMS, 
                 Arrays.<Type>asList(), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleForSale>>() {}));
         return new RemoteFunctionCall<List>(function,

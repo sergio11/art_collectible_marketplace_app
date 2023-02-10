@@ -31,15 +31,16 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -61,7 +62,8 @@ fun HomeScreen(
         HomeComponent(
             navController = navController,
             context = context,
-            uiState = uiState
+            uiState = uiState,
+            onGoToMarketItemDetail = onGoToMarketItemDetail
         )
     }
 }
@@ -71,7 +73,8 @@ fun HomeScreen(
 private fun HomeComponent(
     navController: NavController,
     context: Context,
-    uiState: HomeUiState
+    uiState: HomeUiState,
+    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -105,8 +108,9 @@ private fun HomeComponent(
                 marketplaceStatistics?.let {
                     MarketStatisticsRow(it)
                 }
-                MarketplaceRow(context, "Your items for sale", sellingMarketItems)
-                MarketplaceRow(context, "Last Market History", marketHistory)
+                MarketplaceRow(context, "Available Items", availableMarketItems, onGoToMarketItemDetail)
+                MarketplaceRow(context, "Your items for sale", sellingMarketItems, onGoToMarketItemDetail)
+                MarketplaceRow(context, "Last Market History", marketHistory, onGoToMarketItemDetail)
             }
         }
     }
@@ -194,7 +198,8 @@ private fun MarketStatisticsCard(
 private fun MarketplaceRow(
     context: Context,
     title: String,
-    items: Iterable<ArtCollectibleForSale>
+    items: Iterable<ArtCollectibleForSale>,
+    onMarketItemSelected: (item: ArtCollectibleForSale) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -210,21 +215,26 @@ private fun MarketplaceRow(
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleMedium
         )
-        ArtCollectibleForSaleList(context, items)
+        ArtCollectibleForSaleList(context, items, onMarketItemSelected)
     }
 }
 
 @Composable
 private fun ArtCollectibleForSaleList(
     context: Context,
-    items: Iterable<ArtCollectibleForSale>
+    items: Iterable<ArtCollectibleForSale>,
+    onItemSelected: (item: ArtCollectibleForSale) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.padding(vertical = 30.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(Iterables.size(items)) { idx ->
-            ArtCollectibleForSaleCard(context, Iterables.get(items, idx))
+            with(Iterables.get(items, idx)) {
+                ArtCollectibleForSaleCard(context, this) {
+                    onItemSelected(this)
+                }
+            }
         }
     }
 }

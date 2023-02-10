@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,7 +35,8 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 @Composable
 fun ArtCollectibleForSaleCard(
     context: Context,
-    artCollectibleForSale: ArtCollectibleForSale
+    artCollectibleForSale: ArtCollectibleForSale,
+    onClicked: () -> Unit
 ) {
     with(artCollectibleForSale) {
         var isLiked by remember { mutableStateOf(false) }
@@ -50,6 +52,7 @@ fun ArtCollectibleForSaleCard(
                 )
                 .clip(RoundedCornerShape(30.dp))
                 .background(Color.White.copy(0.2f))
+                .clickable { onClicked() }
         ) {
             ArtCollectibleForSaleImage(context, token)
             Column(

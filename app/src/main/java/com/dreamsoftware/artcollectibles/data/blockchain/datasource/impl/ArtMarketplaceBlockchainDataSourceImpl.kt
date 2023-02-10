@@ -76,6 +76,14 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         }
     }
 
+    override suspend fun fetchItemForSale(
+        tokenId: BigInteger,
+        credentials: Credentials
+    ): ArtCollectibleForSaleDTO = withContext(Dispatchers.IO) {
+        val itemForSale = loadContract(credentials).fetchItemForSale(tokenId).send()
+        artMarketplaceMapper.mapInToOut(itemForSale)
+    }
+
     override suspend fun isTokenAddedForSale(
         tokenId: BigInteger,
         credentials: Credentials

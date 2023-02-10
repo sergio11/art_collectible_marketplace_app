@@ -105,7 +105,7 @@ fun TokenDetailComponent(
             density = density,
             isLoading = isLoading,
             imageUrl = artCollectible?.imageUrl,
-            title = artCollectible?.let { "#${it.id} - ${it.name}" }) {
+            title = artCollectible?.displayName) {
             TokenDetailBody(
                 scrollState = scrollState,
                 uiState = uiState,
