@@ -2,7 +2,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -22,6 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.UserMiniInfoComponent
 import java.math.BigInteger
 
 data class MarketItemDetailScreenArgs(
@@ -84,7 +84,8 @@ fun MarketItemDetailComponent(
             imageUrl = artCollectibleForSale?.token?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
         ) {
-            if(!isTokenSeller) {
+            UserMiniInfoComponent(artCollectibleForSale?.seller)
+            if(!isLoading && !isTokenSeller) {
                 CommonButton(
                     modifier = Modifier
                         .padding(bottom = 8.dp)

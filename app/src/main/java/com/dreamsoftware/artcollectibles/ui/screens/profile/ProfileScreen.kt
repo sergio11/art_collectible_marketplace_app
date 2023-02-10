@@ -10,7 +10,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.ButtonDefaults.elevatedShape
@@ -18,9 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -32,16 +29,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
-import com.dreamsoftware.artcollectibles.ui.components.BottomBar
 import com.dreamsoftware.artcollectibles.ui.theme.*
 
 @Composable
@@ -136,8 +129,10 @@ internal fun ProfileComponent(
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        AccountProfilePicture(userInfo = state.userInfo) {
-                            isProfilePicturePicker = true
+                        UserAccountProfilePicture(size = 150.dp, userInfo = state.userInfo) {
+                            if (state.userInfo?.externalProviderAuthType == null) {
+                                isProfilePicturePicker = true
+                            }
                         }
                         state.accountBalance?.let {
                             CurrentAccountBalance(accountBalance = it) {
@@ -212,49 +207,6 @@ internal fun ProfileComponent(
                 isVisible = isProfilePicturePicker,
                 onImageSelected = onPictureChanged
             ) { isProfilePicturePicker = false }
-        }
-    }
-}
-
-@Composable
-internal fun AccountProfilePicture(userInfo: UserInfo? = null, onChangePictureClicked: () -> Unit) {
-    Box {
-        val profilePictureModifier = Modifier
-            .size(150.dp)
-            .clip(CircleShape)
-            .clickable {
-                if (userInfo?.externalProviderAuthType == null) {
-                    onChangePictureClicked()
-                }
-            }
-        userInfo?.photoUrl?.let {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(it)
-                    .crossfade(true)
-                    .build(),
-                placeholder = painterResource(R.drawable.user_placeholder),
-                contentDescription = stringResource(R.string.image_content_description),
-                contentScale = ContentScale.Crop,
-                modifier = profilePictureModifier
-            )
-        } ?: run {
-            Image(
-                painter = painterResource(R.drawable.user_placeholder),
-                contentDescription = "User Placeholder",
-                contentScale = ContentScale.Crop,
-                modifier = profilePictureModifier
-            )
-        }
-        userInfo?.externalProviderAuthType?.let {
-            ExternalProviderAuthTypeIndicator(
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp)
-                    .zIndex(2f)
-                    .align(Alignment.BottomEnd),
-                externalProviderAuthTypeEnum = it
-            )
         }
     }
 }

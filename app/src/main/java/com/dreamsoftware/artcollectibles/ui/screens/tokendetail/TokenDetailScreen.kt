@@ -107,7 +107,6 @@ fun TokenDetailComponent(
             imageUrl = artCollectible?.imageUrl,
             title = artCollectible?.displayName) {
             TokenDetailBody(
-                scrollState = scrollState,
                 uiState = uiState,
                 onBurnTokenCalled = onBurnTokenCalled,
                 onWithDrawFromSaleCalled = onWithDrawFromSaleCalled,
@@ -124,7 +123,6 @@ fun TokenDetailComponent(
 
 @Composable
 private fun TokenDetailBody(
-    scrollState: ScrollState,
     uiState: TokenDetailUiState,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -147,43 +145,37 @@ private fun TokenDetailBody(
                 onConfirmPutForSaleDialogVisibilityChanged(false)
             }
             //.......................................................................
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.verticalScroll(scrollState)
-            ) {
-                Spacer(Modifier.height(HEADER_HEIGHT))
-                if (isTokenOwner) {
-                    CommonButton(
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .width(300.dp),
-                        text = if (isTokenAddedForSale) {
-                            R.string.token_detail_with_draw_from_sale_button_text
+            if (isTokenOwner) {
+                CommonButton(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .width(300.dp),
+                    text = if (isTokenAddedForSale) {
+                        R.string.token_detail_with_draw_from_sale_button_text
+                    } else {
+                        R.string.token_detail_put_item_for_sale_button_text
+                    },
+                    onClick = {
+                        if (isTokenAddedForSale) {
+                            onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
                         } else {
-                            R.string.token_detail_put_item_for_sale_button_text
-                        },
-                        onClick = {
-                            if (isTokenAddedForSale) {
-                                onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
-                            } else {
-                                onConfirmPutForSaleDialogVisibilityChanged(true)
-                            }
+                            onConfirmPutForSaleDialogVisibilityChanged(true)
                         }
-                    )
-                    CommonButton(
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .width(300.dp),
-                        text = R.string.token_detail_burn_token_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White
-                        ),
-                        onClick = {
-                            onConfirmBurnTokenDialogVisibilityChanged(true)
-                        }
-                    )
-                }
+                    }
+                )
+                CommonButton(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .width(300.dp),
+                    text = R.string.token_detail_burn_token_button_text,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    onClick = {
+                        onConfirmBurnTokenDialogVisibilityChanged(true)
+                    }
+                )
             }
         }
     }

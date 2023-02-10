@@ -8,11 +8,13 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -50,7 +52,7 @@ fun CommonDetailScreen(
     isLoading: Boolean = false,
     imageUrl: String? = null,
     title: String? = null,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     LoadingDialog(isShowingDialog = isLoading)
     val headerHeightPx = with(density) { HEADER_HEIGHT.toPx() }
@@ -66,7 +68,13 @@ fun CommonDetailScreen(
             imageUrl = imageUrl
         )
         //....................
-        content()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.verticalScroll(scrollState)
+        ) {
+            Spacer(Modifier.height(HEADER_HEIGHT))
+            content()
+        }
         //....................
         CommonDetailToolbar(
             scrollState = scrollState,
