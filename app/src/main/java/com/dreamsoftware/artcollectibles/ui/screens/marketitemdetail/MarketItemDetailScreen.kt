@@ -101,11 +101,13 @@ fun MarketItemDetailComponent(
         ) {
             Box {
                 UserMiniInfoComponent(
-                    modifier = Modifier.align(Alignment.CenterStart).clickable {
-                        artCollectibleForSale?.seller?.let {
-                            onOpenArtistDetailCalled(it)
-                        }
-                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            artCollectibleForSale?.seller?.let {
+                                onOpenArtistDetailCalled(it)
+                            }
+                        },
                     artCollectibleForSale?.seller
                 )
                 MarketItemPriceRow(
@@ -113,7 +115,9 @@ fun MarketItemDetailComponent(
                     artCollectibleForSale?.price)
             }
             TokenDetail(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 artCollectibleForSale?.token
             )
             if (!isLoading) {
@@ -188,17 +192,24 @@ private fun TokenDetail(modifier: Modifier, artCollectible: ArtCollectible?) {
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-        TokenRoyaltyComponent(
-            modifier = Modifier.padding(8.dp),
-            artCollectible?.royalty
-        )
+        Row {
+            TokenCreatorInfoComponent(
+                modifier = Modifier.padding(8.dp),
+                artCollectible?.author
+            )
+            TokenRoyaltyComponent(
+                modifier = Modifier.padding(8.dp),
+                artCollectible?.royalty
+            )
+        }
+
         Text(
             text = artCollectible?.description ?: stringResource(id = R.string.no_text_value),
             fontFamily = montserratFontFamily,
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
