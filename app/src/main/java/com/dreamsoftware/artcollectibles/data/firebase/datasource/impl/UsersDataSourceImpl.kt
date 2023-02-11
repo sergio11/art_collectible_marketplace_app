@@ -9,7 +9,6 @@ import com.dreamsoftware.artcollectibles.data.firebase.mapper.SaveUserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers

@@ -71,6 +71,7 @@ fun ProfileScreen(
             navController = navController,
             state = state,
             onNameChanged = ::onNameChanged,
+            onProfessionalTitleChanged = ::onProfessionalTitleChanged,
             onInfoChanged = ::onInfoChanged,
             onPictureChanged = ::onPictureChanged,
             onBirthdateChanged = ::onBirthdateChanged,
@@ -88,6 +89,7 @@ internal fun ProfileComponent(
     navController: NavController,
     state: ProfileUiState,
     onNameChanged: (String) -> Unit,
+    onProfessionalTitleChanged: (String) -> Unit,
     onInfoChanged: (String) -> Unit,
     onBirthdateChanged: (String) -> Unit,
     onPictureChanged: (Uri) -> Unit,
@@ -149,6 +151,12 @@ internal fun ProfileComponent(
                             placeHolderRes = R.string.profile_input_name_placeholder,
                             value = state.userInfo?.name,
                             onValueChanged = onNameChanged
+                        )
+                        CommonDefaultTextField(
+                            labelRes = R.string.profile_input_professional_title_label,
+                            placeHolderRes = R.string.profile_input_professional_title_placeholder,
+                            value = state.userInfo?.professionalTitle,
+                            onValueChanged = onProfessionalTitleChanged
                         )
                         CommonDefaultTextField(
                             isReadOnly = true,

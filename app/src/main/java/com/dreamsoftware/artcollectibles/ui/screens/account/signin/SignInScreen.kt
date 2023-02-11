@@ -28,6 +28,7 @@ import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -105,12 +106,19 @@ internal fun SignInComponent(
         Text(
             stringResource(R.string.onboarding_subtitle_text),
             color = Purple500,
+            modifier = Modifier.padding(bottom = 10.dp),
             fontWeight = FontWeight.Bold,
             fontFamily = montserratFontFamily,
             fontSize = 20.sp,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.padding(bottom = 50.dp))
+        Text(
+            stringResource(R.string.signin_secondary_title_text),
+            modifier = Modifier.padding(bottom = 10.dp),
+            color = Purple700,
+            fontFamily = montserratFontFamily,
+            textAlign = TextAlign.Center
+        )
         CommonDefaultTextField(
             labelRes = R.string.signin_input_email_label,
             placeHolderRes = R.string.signin_input_email_placeholder,

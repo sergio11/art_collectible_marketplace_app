@@ -85,20 +85,20 @@ internal fun OnBoardingComponent(
     ) {
         Text(
             stringResource(R.string.onboarding_subtitle_text),
+            modifier = Modifier.padding(bottom = 10.dp),
             color = Purple500,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             fontFamily = montserratFontFamily,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.padding(bottom = 10.dp))
         Text(
             stringResource(R.string.onboarding_description_text),
+            modifier = Modifier.padding(bottom = 20.dp),
             color = Purple700,
             fontFamily = montserratFontFamily,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.padding(bottom = 20.dp))
         CommonButton(
             modifier = Modifier.padding(bottom = 4.dp),
             text = R.string.onboarding_login_button_text,

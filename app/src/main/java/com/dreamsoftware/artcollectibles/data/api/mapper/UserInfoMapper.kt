@@ -11,7 +11,8 @@ class UserInfoMapper: IMapper<UserDTO, UserInfo> {
         UserInfo(
             uid = uid,
             name = name,
-            info = info.orEmpty(),
+            professionalTitle = professionalTitle,
+            info = info,
             contact = contact.orEmpty(),
             walletAddress = walletAddress,
             photoUrl = photoUrl,
@@ -29,6 +30,7 @@ class UserInfoMapper: IMapper<UserDTO, UserInfo> {
         UserDTO(
             uid = uid,
             name = name,
+            professionalTitle = professionalTitle,
             info = info,
             contact = contact,
             walletAddress = walletAddress,

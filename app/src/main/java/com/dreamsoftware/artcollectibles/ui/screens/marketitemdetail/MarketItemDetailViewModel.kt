@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.BuyItemUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchItemForSaleUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAuthUserProfileUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.WithdrawFromSaleUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,7 +16,8 @@ import javax.inject.Inject
 class MarketItemDetailViewModel @Inject constructor(
     private val fetchItemForSaleUseCase: FetchItemForSaleUseCase,
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
-    private val buyItemUseCase: BuyItemUseCase
+    private val buyItemUseCase: BuyItemUseCase,
+    private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase
 ) : SupportViewModel<MarketUiState>() {
 
     override fun onGetDefaultState(): MarketUiState = MarketUiState()
@@ -34,6 +36,24 @@ class MarketItemDetailViewModel @Inject constructor(
         )
     }
 
+    fun withDrawFromSale(tokenId: BigInteger) {
+        withdrawFromSaleUseCase.invoke(
+            scope = viewModelScope,
+            params = WithdrawFromSaleUseCase.Params(tokenId),
+            onBeforeStart = {
+                updateState {
+                    it.copy(
+                        isLoading = true
+                    )
+                }
+            },
+            onSuccess = {
+                onTokenWithdrawnFromSale()
+            },
+            onError = ::onErrorOccurred
+        )
+    }
+
     /**
      * Private Methods
      */
@@ -47,6 +67,7 @@ class MarketItemDetailViewModel @Inject constructor(
                         isLoading = false,
                         artCollectibleForSale = marketItem,
                         isTokenSeller = marketItem.seller.uid == authUser.uid,
+                        isTokenAuthor = marketItem.token.author.uid == authUser.uid
                     )
                 }
             }.onFailure(::onErrorOccurred)
@@ -72,6 +93,15 @@ class MarketItemDetailViewModel @Inject constructor(
         }
     }
 
+    private fun onTokenWithdrawnFromSale() {
+        updateState {
+            it.copy(
+                isLoading = false,
+                itemWithdrawnFromSale = true
+            )
+        }
+    }
+
     private suspend fun fetchItemForSale(tokenId: BigInteger) = fetchItemForSaleUseCase.invoke(
         scope = viewModelScope,
         params = FetchItemForSaleUseCase.Params(tokenId)
@@ -86,5 +116,7 @@ data class MarketUiState(
     val isLoading: Boolean = false,
     val isTokenSeller: Boolean = false,
     val itemBought: Boolean = false,
+    val itemWithdrawnFromSale: Boolean = false,
+    val isTokenAuthor: Boolean = false,
     val artCollectibleForSale: ArtCollectibleForSale? = null
 )

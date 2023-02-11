@@ -70,6 +70,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onProfessionalTitleChanged(newProfessionalTitle: String) {
+        if (isProfileLoaded()) {
+            updateState {
+                it.copy(userInfo = it.userInfo?.copy(professionalTitle = newProfessionalTitle))
+            }
+        }
+    }
+
     fun load() {
         onLoading()
         loadProfileData()

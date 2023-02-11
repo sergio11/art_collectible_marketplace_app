@@ -8,6 +8,7 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
     private companion object {
         const val UID_KEY = "uid"
         const val NAME_KEY = "name"
+        const val PROFESSIONAL_TITLE_KEY = "professionalTitle"
         const val WALLET_ADDRESS_KEY = "walletAddress"
         const val INFO_KEY = "info"
         const val CONTACT_KEY = "contact"
@@ -23,6 +24,7 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
             WALLET_ADDRESS_KEY to walletAddress,
             EXTERNAL_PROVIDER_AUTH to externalAuthProvider
         ).apply {
+            professionalTitle?.let { put(PROFESSIONAL_TITLE_KEY, it) }
             contact?.let { put(CONTACT_KEY, it) }
             photoUrl?.let { put(PHOTO_KEY, it) }
             info?.let { put(INFO_KEY, it) }

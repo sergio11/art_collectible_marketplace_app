@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -36,7 +38,7 @@ data class MarketItemDetailScreenArgs(
 fun MarketItemDetailScreen(
     args: MarketItemDetailScreenArgs,
     viewModel: MarketItemDetailViewModel = hiltViewModel(),
-    onItemBought: () -> Unit
+    onExitCalled: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -47,11 +49,7 @@ fun MarketItemDetailScreen(
     ) {
         lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
             viewModel.uiState.collect {
-                if (it.itemBought) {
-                    onItemBought()
-                } else {
-                    value = it
-                }
+                value = it
             }
         }
     }
@@ -66,7 +64,9 @@ fun MarketItemDetailScreen(
             uiState = uiState,
             scrollState = scrollState,
             density = density,
-            onBuyItemClicked = ::buyItem
+            onBuyItemCalled = ::buyItem,
+            onWithdrawFromSaleCalled = ::withDrawFromSale,
+            onExitCalled = onExitCalled
         )
     }
 }
@@ -77,9 +77,15 @@ fun MarketItemDetailComponent(
     uiState: MarketUiState,
     scrollState: ScrollState,
     density: Density,
-    onBuyItemClicked: (tokenId: BigInteger, price: BigInteger) -> Unit
+    onBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
+    onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
+    onExitCalled: () -> Unit
 ) {
     with(uiState) {
+        // =======================
+        TokenWithdrawnFromSaleDialog(uiState, onExitCalled)
+        TokenBoughtDialog(uiState, onExitCalled)
+        // ========================
         CommonDetailScreen(
             context = context,
             scrollState = scrollState,
@@ -101,18 +107,37 @@ fun MarketItemDetailComponent(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 artCollectibleForSale?.token
             )
-            if (!isLoading && !isTokenSeller) {
-                CommonButton(
-                    modifier = Modifier
-                        .padding(top = 20.dp, bottom = 8.dp)
-                        .width(300.dp),
-                    text = R.string.market_item_detail_buy_item_button_text,
-                    onClick = {
-                        artCollectibleForSale?.let {
-                            onBuyItemClicked(it.token.id, it.price)
+            if (!isLoading) {
+                if(!isTokenSeller) {
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(top = 20.dp, bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.market_item_detail_buy_item_button_text,
+                        onClick = {
+                            artCollectibleForSale?.let {
+                                onBuyItemCalled(it.token.id, it.price)
+                            }
                         }
-                    }
-                )
+                    )
+                }
+                if(isTokenAuthor) {
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(top = 20.dp, bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.market_item_detail_withdraw_from_sale_button_text,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            artCollectibleForSale?.let {
+                                onWithdrawFromSaleCalled(it.token.id)
+                            }
+                        }
+                    )
+                }
             }
         }
     }
@@ -165,6 +190,38 @@ private fun TokenDetail(modifier: Modifier, artCollectible: ArtCollectible?) {
                 .padding(8.dp)
                 .fillMaxWidth(),
             style = MaterialTheme.typography.titleMedium
+        )
+    }
+}
+
+@Composable
+private fun TokenWithdrawnFromSaleDialog(
+    uiState: MarketUiState,
+    onConfirmCalled: () -> Unit,
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = itemWithdrawnFromSale,
+            titleRes = R.string.market_item_detail_token_withdrawn_from_sale_title_text,
+            descriptionRes = R.string.market_item_detail_token_withdrawn_from_sale_description_text,
+            acceptRes = R.string.market_item_detail_token_withdrawn_from_sale_accept_button_text,
+            onAcceptClicked = onConfirmCalled
+        )
+    }
+}
+
+@Composable
+private fun TokenBoughtDialog(
+    uiState: MarketUiState,
+    onConfirmCalled: () -> Unit,
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = itemBought,
+            titleRes = R.string.market_item_detail_token_bought_title_text,
+            descriptionRes = R.string.market_item_detail_token_bought_description_text,
+            acceptRes = R.string.market_item_detail_token_bought_accept_button_text,
+            onAcceptClicked = onConfirmCalled
         )
     }
 }

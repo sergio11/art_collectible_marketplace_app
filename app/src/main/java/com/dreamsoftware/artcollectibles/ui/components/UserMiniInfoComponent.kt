@@ -33,14 +33,16 @@ fun UserMiniInfoComponent(modifier: Modifier, userInfo: UserInfo?) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = "Digital Artist",
-                fontFamily = montserratFontFamily,
-                modifier = Modifier.fillMaxWidth(),
-                style = MaterialTheme.typography.labelMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            userInfo?.professionalTitle?.let {
+                Text(
+                    text = it,
+                    fontFamily = montserratFontFamily,
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

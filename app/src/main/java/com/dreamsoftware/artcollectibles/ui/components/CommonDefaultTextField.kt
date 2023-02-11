@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
-val CommonDefaultTextFieldModifier = Modifier.padding(vertical = 20.dp).width(300.dp)
+val CommonDefaultTextFieldModifier = Modifier.padding(vertical = 15.dp).width(300.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
