@@ -1,23 +1,20 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,10 +22,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultDecimalField
-import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
-import com.dreamsoftware.artcollectibles.ui.components.CommonDialog
+import com.dreamsoftware.artcollectibles.ui.components.*
 import java.math.BigInteger
 
 private val HEADER_HEIGHT = 250.dp
@@ -257,13 +251,7 @@ private fun ConfirmPutItemForSaleDialog(
                 value = tokenPrice,
                 numberOfDecimals = PRICE_NUMBER_OF_DECIMALS,
                 leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.matic_icon),
-                        contentDescription = "Matic Icon",
-                        modifier = Modifier
-                            .width(20.dp)
-                            .height(20.dp)
-                    )
+                    MaticIconComponent(size = 20.dp)
                 },
                 onValueChanged = {
                     onItemPriceChanged(it)

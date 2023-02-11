@@ -86,23 +86,10 @@ private fun ArtCollectibleDetail(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Row(
-                modifier = Modifier.padding(top = 5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.crown),
-                    contentDescription = "Royalty Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.width(30.dp).height(30.dp)
-                )
-                Text(
-                    modifier = Modifier.padding(start = 5.dp),
-                    text = "$royalty%",
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+            TokenRoyaltyComponent(
+                modifier = Modifier.padding(top = 8.dp),
+                royalty
+            )
             Text(
                 text = description,
                 maxLines = 3,

@@ -13,17 +13,31 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
-fun UserMiniInfoComponent(userInfo: UserInfo?) {
+fun UserMiniInfoComponent(modifier: Modifier, userInfo: UserInfo?) {
     Row(
-        modifier = Modifier.padding(8.dp).fillMaxSize()
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxSize()
+            .then(modifier)
     ) {
         UserAccountProfilePicture(size = 50.dp, userInfo = userInfo)
-        Column(Modifier.padding(8.dp)) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.SpaceAround
+        ) {
             Text(
                 text = userInfo?.name ?: stringResource(id = R.string.no_text_value),
                 fontFamily = montserratFontFamily,
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.labelLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "Digital Artist",
+                fontFamily = montserratFontFamily,
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
