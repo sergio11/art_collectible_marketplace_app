@@ -9,5 +9,9 @@ data class UserInfo(
     val photoUrl: String? = null,
     val walletAddress: String,
     val birthdate: String? = null,
-    val externalProviderAuthType: ExternalProviderAuthTypeEnum? = null
+    val externalProviderAuthType: ExternalProviderAuthTypeEnum? = null,
+    val tokensSoldCount: Long = 0,
+    val tokensBoughtCount: Long = 0,
+    val tokensOwnedCount: Long = 0,
+    val tokensCreatedCount: Long = 0
 )

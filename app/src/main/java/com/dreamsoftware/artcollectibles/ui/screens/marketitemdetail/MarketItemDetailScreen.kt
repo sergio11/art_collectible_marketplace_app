@@ -99,7 +99,7 @@ fun MarketItemDetailComponent(
             imageUrl = artCollectibleForSale?.token?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
         ) {
-            Box {
+            Box(modifier = Modifier.fillMaxWidth()) {
                 UserMiniInfoComponent(
                     modifier = Modifier
                         .align(Alignment.CenterStart)

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -17,8 +18,8 @@ fun UserMiniInfoComponent(modifier: Modifier, userInfo: UserInfo?) {
     Row(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxSize()
-            .then(modifier)
+            .then(modifier),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         UserAccountProfilePicture(size = 50.dp, userInfo = userInfo)
         Column(
@@ -28,7 +29,6 @@ fun UserMiniInfoComponent(modifier: Modifier, userInfo: UserInfo?) {
             Text(
                 text = userInfo?.name ?: stringResource(id = R.string.no_text_value),
                 fontFamily = montserratFontFamily,
-                modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -37,12 +37,12 @@ fun UserMiniInfoComponent(modifier: Modifier, userInfo: UserInfo?) {
                 Text(
                     text = it,
                     fontFamily = montserratFontFamily,
-                    modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
+            UserStatisticsComponent(itemSize = 15.dp, userInfo = userInfo)
         }
     }
 }
