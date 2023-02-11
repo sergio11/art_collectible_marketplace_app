@@ -99,7 +99,9 @@ fun RootScreen(
         composable(DestinationItem.MarketItemDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.MarketItemDetail.parseArgs(args)?.let { screenArgs ->
-                    MarketItemDetailScreen(screenArgs) {
+                    MarketItemDetailScreen(screenArgs, onOpenArtistDetailCalled = {
+                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    }) {
                         navigationController.popBackStack()
                     }
                 }

@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.math.BigInteger
@@ -38,6 +40,7 @@ data class MarketItemDetailScreenArgs(
 fun MarketItemDetailScreen(
     args: MarketItemDetailScreenArgs,
     viewModel: MarketItemDetailViewModel = hiltViewModel(),
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onExitCalled: () -> Unit
 ) {
     val context = LocalContext.current
@@ -66,6 +69,7 @@ fun MarketItemDetailScreen(
             density = density,
             onBuyItemCalled = ::buyItem,
             onWithdrawFromSaleCalled = ::withDrawFromSale,
+            onOpenArtistDetailCalled = onOpenArtistDetailCalled,
             onExitCalled = onExitCalled
         )
     }
@@ -79,6 +83,7 @@ fun MarketItemDetailComponent(
     density: Density,
     onBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onExitCalled: () -> Unit
 ) {
     with(uiState) {
@@ -96,7 +101,11 @@ fun MarketItemDetailComponent(
         ) {
             Box {
                 UserMiniInfoComponent(
-                    modifier = Modifier.align(Alignment.CenterStart),
+                    modifier = Modifier.align(Alignment.CenterStart).clickable {
+                        artCollectibleForSale?.seller?.let {
+                            onOpenArtistDetailCalled(it)
+                        }
+                    },
                     artCollectibleForSale?.seller
                 )
                 MarketItemPriceRow(
