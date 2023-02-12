@@ -2,10 +2,18 @@ package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMintedEvent
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectible
+import kotlinx.coroutines.flow.Flow
 import java.math.BigInteger
 
 interface IArtCollectibleRepository {
+
+    /**
+     * Observe Art Collectible Minted events
+     */
+    @Throws(ObserveArtCollectibleMintedEventsException::class)
+    suspend fun observeArtCollectibleMintedEvents(): Flow<ArtCollectibleMintedEvent>
 
     /**
      * Allow us to save an art collectible token

@@ -110,12 +110,13 @@ android {
 
 
 dependencies {
+    implementation("androidx.lifecycle:lifecycle-service:2.4.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2")
     // Palette API
     implementation("androidx.palette:palette-ktx:1.0.0")
     // Jetpack Camera X
@@ -126,6 +127,7 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
     // Hilt and instrumented tests.
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)

@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthReque
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
+import com.dreamsoftware.artcollectibles.utils.AppEventBus
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 
 /**
@@ -20,13 +21,15 @@ import com.dreamsoftware.artcollectibles.utils.IApplicationAware
  * @param secretRepository
  * @param preferenceRepository
  * @param applicationAware
+ * @param appEventBus
  */
 class SocialSignInUseCase(
     private val userRepository: IUserRepository,
     private val walletRepository: IWalletRepository,
     private val secretRepository: ISecretRepository,
     private val preferenceRepository: IPreferenceRepository,
-    private val applicationAware: IApplicationAware
+    private val applicationAware: IApplicationAware,
+    private val appEventBus: AppEventBus
 ) : BaseUseCaseWithParams<SocialSignInUseCase.Params, UserInfo>() {
 
     override suspend fun onExecuted(params: Params): UserInfo = with(params) {
@@ -34,7 +37,7 @@ class SocialSignInUseCase(
         configureUserSecretKey(uid = authUser.uid)
         preferenceRepository.saveAuthUserUid(uid = authUser.uid)
         try {
-            userRepository.get(uid = authUser.uid)
+            finishSignIn(authUser.uid)
         } catch (ex: UserDataException) {
             if (ex.cause is UserNotFoundException) {
                 createUser(authUser, params.externalProviderAuthTypeEnum)
@@ -66,7 +69,7 @@ class SocialSignInUseCase(
                 externalProviderAuthType = externalProviderAuth
             )
         )
-        userRepository.get(uid)
+        finishSignIn(uid)
     }
 
     private suspend fun configureUserSecretKey(uid: String) {
@@ -74,6 +77,11 @@ class SocialSignInUseCase(
             .getOrElse { secretRepository.generate(uid) }
         applicationAware.setUserSecret(secret)
     }
+
+    private suspend fun finishSignIn(uid: String): UserInfo =
+        userRepository.get(uid).also {
+            appEventBus.invokeEvent(AppEventBus.AppEvent.SIGN_IN)
+        }
 
     data class Params(
         val accessToken: String,

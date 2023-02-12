@@ -10,8 +10,9 @@ import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMa
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMintedEventMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleMintedEventDTO
-import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
@@ -33,13 +34,13 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
     private val web3j: Web3j
 ) : SupportBlockchainDataSource(blockchainConfig, web3j), IArtCollectibleBlockchainDataSource {
 
-    override suspend fun observeArtCollectibleMintedEvents(credentials: Credentials): Flowable<ArtCollectibleMintedEventDTO> =
+    override suspend fun observeArtCollectibleMintedEvents(credentials: Credentials): Flow<ArtCollectibleMintedEventDTO> =
         withContext(Dispatchers.IO) {
             with(loadContract(credentials)) {
                 artCollectibleMintedEventFlowable(
                     DefaultBlockParameterName.LATEST,
                     DefaultBlockParameterName.LATEST
-                ).map(artCollectibleMintedEventMapper::mapInToOut)
+                ).map(artCollectibleMintedEventMapper::mapInToOut).asFlow()
             }
         }
 

@@ -11,8 +11,11 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSour
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.models.CreateTokenMetadataDTO
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMintedEvent
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectible
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
@@ -24,6 +27,25 @@ internal class ArtCollectibleRepositoryImpl(
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper
 ) : IArtCollectibleRepository {
+
+    @Throws(ObserveArtCollectibleMintedEventsException::class)
+    override suspend fun observeArtCollectibleMintedEvents(): Flow<ArtCollectibleMintedEvent> =
+        withContext(Dispatchers.Default) {
+            try {
+                val credentials =
+                    userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
+                artCollectibleDataSource.observeArtCollectibleMintedEvents(credentials)
+                    .map { getTokenById(it.tokenId) }
+                    .map { ArtCollectibleMintedEvent(it) }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+                Log.d("ART_COLL", "observeArtCollectibleMintedEvents - ${ex.message} ERROR!")
+                throw ObserveArtCollectibleMintedEventsException(
+                    "An error occurred when trying to observe minted events",
+                    ex
+                )
+            }
+        }
 
     @Throws(CreateArtCollectibleException::class)
     override suspend fun create(token: CreateArtCollectible): ArtCollectible = withContext(Dispatchers.Default) {

@@ -2,7 +2,7 @@ package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleMintedEventDTO
-import io.reactivex.Flowable
+import kotlinx.coroutines.flow.Flow
 import org.web3j.crypto.Credentials
 import java.math.BigInteger
 
@@ -11,7 +11,7 @@ interface IArtCollectibleBlockchainDataSource {
     /**
      * Observe Art Collectible Minted events
      */
-    suspend fun observeArtCollectibleMintedEvents(credentials: Credentials): Flowable<ArtCollectibleMintedEventDTO>
+    suspend fun observeArtCollectibleMintedEvents(credentials: Credentials): Flow<ArtCollectibleMintedEventDTO>
 
     /**
      * Allow us to mint a new token

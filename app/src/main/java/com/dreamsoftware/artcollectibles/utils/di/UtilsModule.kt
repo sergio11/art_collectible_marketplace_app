@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.dreamsoftware.artcollectibles.services.di.qualifier.NotificationBackgroundServiceIntent
 import com.dreamsoftware.artcollectibles.utils.CryptoUtils
+import com.dreamsoftware.artcollectibles.utils.AppEventBus
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 import com.dreamsoftware.artcollectibles.utils.notification.manager.INotificationManager
@@ -61,4 +62,11 @@ class UtilsModule {
         @NotificationBackgroundServiceIntent notificationBackgroundServiceIntent: Intent
     ): INotificationManager =
         NotificationManagerImpl(notificationBackgroundServiceIntent)
+
+    /**
+     * Provide Global event bus
+     */
+    @Singleton
+    @Provides
+    fun provideEventBus(): AppEventBus = AppEventBus()
 }

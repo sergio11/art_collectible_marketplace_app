@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.services
 
 import android.app.Notification
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
@@ -11,17 +10,38 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.os.IBinder
 import android.util.Log
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMintedEvent
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetEventsUseCase
 import com.dreamsoftware.artcollectibles.services.core.SupportServiceBinder
+import com.dreamsoftware.artcollectibles.utils.AppEventBus
 import com.dreamsoftware.artcollectibles.utils.notification.ui.IUINotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class NotificationBackgroundService : Service(), INotificationService {
+class NotificationBackgroundService : LifecycleService(), INotificationService {
 
     @Inject
     lateinit var notificationHelper: IUINotificationHelper
+
+    @Inject
+    lateinit var getEventsUseCase: GetEventsUseCase
+
+    @Inject
+    lateinit var appEventBus: AppEventBus
+
+    private var isEventsSubscriptionActive = false
+    private lateinit var eventsCollectorJob: Job
+    private lateinit var appsEventsCollectorJob: Job
+
 
     /**
      * Used to check whether the bound activity has really gone away and not unbound as part of an
@@ -49,16 +69,21 @@ class NotificationBackgroundService : Service(), INotificationService {
         Log.d(SERVICE_TAG, "NotificationBackgroundService - onCreate")
         // Create Service Handler
         mServiceHandler = createServiceHandler()
+        subscribeToAppEvents()
     }
 
     /**
      * On Start Command
      */
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         Log.d(SERVICE_TAG, "NotificationBackgroundService - onStartCommand")
-        val startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION, false)
-        if (startedFromNotification) {
-            stopSelf()
+        intent?.let {
+            val startedFromNotification = it.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION, false)
+            if (startedFromNotification) {
+                stopSelf()
+            }
         }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY
@@ -68,6 +93,7 @@ class NotificationBackgroundService : Service(), INotificationService {
      * On Bind
      */
     override fun onBind(intent: Intent): IBinder {
+        super.onBind(intent)
         Log.d(SERVICE_TAG, "NotificationBackgroundService - onBind")
         stopForegroundService()
         mChangingConfiguration = false
@@ -91,7 +117,7 @@ class NotificationBackgroundService : Service(), INotificationService {
      */
     override fun onUnbind(intent: Intent): Boolean {
         Log.d(SERVICE_TAG, "NotificationBackgroundService - onUnbind")
-        if (!mChangingConfiguration) {
+        if (!mChangingConfiguration && isEventsSubscriptionActive) {
             val notification = getNotification()
             Log.d(SERVICE_TAG, "NotificationBackgroundService - startForeground")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -107,8 +133,12 @@ class NotificationBackgroundService : Service(), INotificationService {
      * On Destroy
      */
     override fun onDestroy() {
+        super.onDestroy()
         Log.d(SERVICE_TAG, "NotificationBackgroundService - onDestroy")
         mServiceHandler.removeCallbacksAndMessages(null)
+        if(isEventsSubscriptionActive) {
+            unSubscribeFromEvents()
+        }
     }
 
     /**
@@ -136,6 +166,39 @@ class NotificationBackgroundService : Service(), INotificationService {
         } else {
             stopForeground(true)
         }
+    }
+
+    private fun subscribeToAppEvents() {
+        appsEventsCollectorJob = lifecycleScope.launch {
+            appEventBus.events.collectLatest {
+                Log.d(SERVICE_TAG, "appEventBus.events $it CALLED!")
+                if(it == AppEventBus.AppEvent.SIGN_IN) {
+                    subscribeToEvents()
+                } else if(it == AppEventBus.AppEvent.SIGN_OUT) {
+                    unSubscribeFromEvents()
+                }
+            }
+        }
+    }
+
+    private fun subscribeToEvents() {
+        lifecycleScope.launch {
+            getEventsUseCase.launch()
+        }
+        eventsCollectorJob = lifecycleScope.launch {
+            getEventsUseCase.resultFlow.flowOn(Dispatchers.IO).collectLatest {
+                Log.d(SERVICE_TAG, "resultFlow.collectLatest CALLED!")
+                if(it is ArtCollectibleMintedEvent) {
+                    Log.d(SERVICE_TAG, "event -> ArtCollectibleMintedEvent CALLED!")
+                }
+            }
+        }
+        isEventsSubscriptionActive = true
+    }
+
+    private fun unSubscribeFromEvents() {
+        isEventsSubscriptionActive = false
+        eventsCollectorJob.cancel()
     }
 
     /**

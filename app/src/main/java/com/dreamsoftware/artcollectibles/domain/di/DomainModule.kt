@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.domain.di
 
 import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
+import com.dreamsoftware.artcollectibles.utils.AppEventBus
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
 import dagger.Provides
@@ -59,6 +60,7 @@ class DomainModule {
      * @param secretRepository
      * @param preferenceRepository
      * @param applicationAware
+     * @param appEventBus
      */
     @Provides
     @ViewModelScoped
@@ -66,12 +68,14 @@ class DomainModule {
         userRepository: IUserRepository,
         secretRepository: ISecretRepository,
         preferenceRepository: IPreferenceRepository,
-        applicationAware: IApplicationAware
+        applicationAware: IApplicationAware,
+        appEventBus: AppEventBus
     ) = SignInUseCase(
         userRepository,
         secretRepository,
         preferenceRepository,
-        applicationAware
+        applicationAware,
+        appEventBus
     )
 
     /**
@@ -81,6 +85,7 @@ class DomainModule {
      * @param secretRepository
      * @param preferenceRepository
      * @param applicationAware
+     * @param appEventBus
      */
     @Provides
     @ViewModelScoped
@@ -89,13 +94,15 @@ class DomainModule {
         walletRepository: IWalletRepository,
         secretRepository: ISecretRepository,
         preferenceRepository: IPreferenceRepository,
-        applicationAware: IApplicationAware
+        applicationAware: IApplicationAware,
+        appEventBus: AppEventBus
     ) = SocialSignInUseCase(
         userRepository,
         walletRepository,
         secretRepository,
         preferenceRepository,
-        applicationAware
+        applicationAware,
+        appEventBus
     )
 
     /**
@@ -133,11 +140,13 @@ class DomainModule {
     fun provideCloseSessionUseCase(
         userRepository: IUserRepository,
         preferenceRepository: IPreferenceRepository,
-        applicationAware: IApplicationAware
+        applicationAware: IApplicationAware,
+        appEventBus: AppEventBus
     ) = CloseSessionUseCase(
         userRepository,
         preferenceRepository,
-        applicationAware
+        applicationAware,
+        appEventBus
     )
 
     /**
@@ -306,4 +315,5 @@ class DomainModule {
     fun provideBuyItemUseCase(
         artMarketplaceRepository: IArtMarketplaceRepository
     ) = BuyItemUseCase(artMarketplaceRepository)
+
 }

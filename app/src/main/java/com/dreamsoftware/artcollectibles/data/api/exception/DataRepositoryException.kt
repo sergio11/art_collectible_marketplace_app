@@ -20,6 +20,7 @@ class GenerateWalletException(message: String? = null, cause: Throwable? = null)
 class GetCurrentBalanceException(message: String? = null, cause: Throwable? = null): WalletDataException(message, cause)
 // ArtCollectible Repository Exception
 abstract class ArtCollectibleDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+class ObserveArtCollectibleMintedEventsException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 class CreateArtCollectibleException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 class DeleteArtCollectibleException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 class GetTokensOwnedException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
