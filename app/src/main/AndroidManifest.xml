@@ -21,6 +21,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera.any"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -73,6 +75,12 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".services.NotificationBackgroundService"
+            android:foregroundServiceType="dataSync"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

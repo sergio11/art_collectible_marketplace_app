@@ -8,6 +8,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.*
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyOkHttpClient
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyRetrofit
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMintedEventMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
@@ -99,6 +100,13 @@ class BlockchainModule {
     fun provideArtMarketplaceMapper(): ArtMarketplaceMapper = ArtMarketplaceMapper()
 
     /**
+     * Provide art Collectible Minted event mapper
+     */
+    @Provides
+    @Singleton
+    fun provideArtCollectibleMintedEventMapper(): ArtCollectibleMintedEventMapper = ArtCollectibleMintedEventMapper()
+
+    /**
      * Provider Wallet Data Source
      */
     @Provides
@@ -116,11 +124,13 @@ class BlockchainModule {
     @Singleton
     fun provideArtCollectibleDataSource(
         artCollectibleMapper: ArtCollectibleMapper,
+        artCollectibleMintedEventMapper: ArtCollectibleMintedEventMapper,
         blockchainConfig: BlockchainConfig,
         web3j: Web3j
     ): IArtCollectibleBlockchainDataSource =
         ArtCollectibleBlockchainDataSourceImpl(
             artCollectibleMapper,
+            artCollectibleMintedEventMapper,
             blockchainConfig,
             web3j
         )

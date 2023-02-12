@@ -7,7 +7,10 @@ import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtCollectibl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.core.SupportBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMintedEventMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleMintedEventDTO
+import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
@@ -19,14 +22,26 @@ import java.math.BigInteger
 /**
  * Art Collectible Blockchain Data Source Impl
  * @param artCollectibleMapper
+ * @param artCollectibleMintedEventMapper
  * @param blockchainConfig
  * @param web3j
  */
 internal class ArtCollectibleBlockchainDataSourceImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
+    private val artCollectibleMintedEventMapper: ArtCollectibleMintedEventMapper,
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j
 ) : SupportBlockchainDataSource(blockchainConfig, web3j), IArtCollectibleBlockchainDataSource {
+
+    override suspend fun observeArtCollectibleMintedEvents(credentials: Credentials): Flowable<ArtCollectibleMintedEventDTO> =
+        withContext(Dispatchers.IO) {
+            with(loadContract(credentials)) {
+                artCollectibleMintedEventFlowable(
+                    DefaultBlockParameterName.LATEST,
+                    DefaultBlockParameterName.LATEST
+                ).map(artCollectibleMintedEventMapper::mapInToOut)
+            }
+        }
 
     override suspend fun mintToken(
         metadataCid: String,
