@@ -171,4 +171,14 @@ class FirebaseModule {
         secretMapper: SecretMapper
     ): ISecretDataSource =
         SecretDataSourceImpl(firebaseStore, secretMapper)
+
+    /**
+     * Provide Favorites Data Source
+     * @param firebaseStore
+     */
+    @Provides
+    @Singleton
+    fun provideFavoritesDataSource(
+        firebaseStore: FirebaseFirestore
+    ): IFavoritesDataSource = FavoritesDataSourceImpl(firebaseStore)
 }

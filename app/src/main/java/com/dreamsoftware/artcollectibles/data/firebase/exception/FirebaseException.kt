@@ -24,3 +24,8 @@ class RemoveFileException(message: String? = null, cause: Throwable? = null): Fi
 // Secret Data Source
 class SecretNotFoundException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class SaveSecretException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+// Favorites Data Source
+class GetFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class AddToFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class RemoveFromFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
