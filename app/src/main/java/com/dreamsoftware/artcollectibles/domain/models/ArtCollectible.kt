@@ -8,7 +8,8 @@ class ArtCollectible(
     val imageUrl: String,
     val description: String,
     val royalty: BigInteger,
-    val author: UserInfo
+    val author: UserInfo,
+    val favoritesCount: Long
 ) {
     val displayName: String
         get() = "#$id - $name"

@@ -8,20 +8,27 @@ import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 
 class ArtCollectibleMapper(
     private val userInfoMapper: UserInfoMapper
-): IOneSideMapper<Triple<TokenMetadataDTO, ArtCollectibleBlockchainDTO, UserDTO>, ArtCollectible> {
+): IOneSideMapper<ArtCollectibleMapper.InputData, ArtCollectible> {
 
-    override fun mapInToOut(input: Triple<TokenMetadataDTO, ArtCollectibleBlockchainDTO, UserDTO>): ArtCollectible =
-        with(input) {
-            ArtCollectible(
-                id = second.tokenId,
-                name = first.name,
-                imageUrl = first.imageUrl,
-                description = first.description.orEmpty(),
-                royalty = second.royalty,
-                author = userInfoMapper.mapInToOut(third)
-            )
-        }
+    override fun mapInToOut(input: InputData): ArtCollectible = with(input) {
+        ArtCollectible(
+            id = blockchain.tokenId,
+            name = metadata.name,
+            imageUrl = metadata.imageUrl,
+            description = metadata.description.orEmpty(),
+            royalty = blockchain.royalty,
+            author = userInfoMapper.mapInToOut(userInfo),
+            favoritesCount = favoritesCount
+        )
+    }
 
-    override fun mapInListToOutList(input: Iterable<Triple<TokenMetadataDTO, ArtCollectibleBlockchainDTO, UserDTO>>): Iterable<ArtCollectible> =
+    override fun mapInListToOutList(input: Iterable<InputData>): Iterable<ArtCollectible> =
         input.map(::mapInToOut)
+
+    data class InputData(
+        val metadata: TokenMetadataDTO,
+        val blockchain: ArtCollectibleBlockchainDTO,
+        val userInfo: UserDTO,
+        val favoritesCount: Long
+    )
 }

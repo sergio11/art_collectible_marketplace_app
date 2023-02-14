@@ -316,4 +316,24 @@ class DomainModule {
         artMarketplaceRepository: IArtMarketplaceRepository
     ) = BuyItemUseCase(artMarketplaceRepository)
 
+    /**
+     * Provide Add Token to favorites Use case
+     * @param favoritesRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideAddTokenToFavoritesUseCase(
+        favoritesRepository: IFavoritesRepository
+    ) = AddTokenToFavoritesUseCase(favoritesRepository)
+
+    /**
+     * Provide remove token from favorites use case
+     * @param favoritesRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideRemoveTokenFromFavoritesUseCase(
+        favoritesRepository: IFavoritesRepository
+    ) = RemoveTokenFromFavoritesUseCase(favoritesRepository)
+
 }
