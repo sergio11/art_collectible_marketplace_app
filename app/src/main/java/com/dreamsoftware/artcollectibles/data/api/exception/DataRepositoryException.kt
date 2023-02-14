@@ -42,5 +42,9 @@ class BuyItemException(message: String? = null, cause: Throwable? = null): ArtMa
 abstract class SecretDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class GenerateSecretException(message: String? = null, cause: Throwable? = null): SecretDataException(message, cause)
 class GetSecretException(message: String? = null, cause: Throwable? = null): SecretDataException(message, cause)
+// Favorites Repository Exception
+abstract class FavoritesDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+class AddToFavoritesDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
+class RemoveFromFavoritesDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 
 class PreferenceDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)

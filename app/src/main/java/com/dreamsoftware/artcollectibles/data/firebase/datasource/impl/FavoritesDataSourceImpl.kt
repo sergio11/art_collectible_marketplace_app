@@ -39,6 +39,20 @@ internal class FavoritesDataSourceImpl(
     }
 
     @Throws(GetFavoritesException::class)
+    override suspend fun getList(userId: String): List<String> = withContext(Dispatchers.IO) {
+        try {
+            firebaseStore.collection(COLLECTION_NAME)
+                .document(userId)
+                .get()
+                .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
+        } catch (ex: FirebaseException) {
+            throw ex
+        } catch (ex: Exception) {
+            throw GetFavoritesException("An error occurred when trying to get favorites", ex)
+        }
+    }
+
+    @Throws(GetFavoritesException::class)
     override suspend fun count(id: String): Long = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)

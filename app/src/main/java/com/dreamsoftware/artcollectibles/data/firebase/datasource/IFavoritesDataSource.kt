@@ -10,6 +10,9 @@ interface IFavoritesDataSource {
     suspend fun hasAdded(tokenId: String, userId: String): Boolean
 
     @Throws(GetFavoritesException::class)
+    suspend fun getList(userId: String): List<String>
+
+    @Throws(GetFavoritesException::class)
     suspend fun count(id: String): Long
 
     @Throws(AddToFavoritesException::class)

@@ -226,4 +226,14 @@ class DataModule {
         preferenceDataSource: IPreferencesDataSource
     ): IPreferenceRepository =
         PreferenceRepositoryImpl(preferenceDataSource)
+
+    /**
+     * Provide Favorites Repository
+     * @param favoritesDataSource
+     */
+    @Provides
+    @Singleton
+    fun provideFavoritesRepository(
+        favoritesDataSource: IFavoritesDataSource
+    ): IFavoritesRepository = FavoritesRepositoryImpl(favoritesDataSource)
 }
