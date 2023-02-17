@@ -83,7 +83,9 @@ fun RootScreen(
         composable(DestinationItem.TokenDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.TokenDetail.parseArgs(args)?.let { screenArgs ->
-                    TokenDetailScreen(navigationController, screenArgs) {
+                    TokenDetailScreen(navigationController, screenArgs, onOpenArtistDetailCalled = {
+                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    }) {
                         navigationController.popBackStack()
                     }
                 }

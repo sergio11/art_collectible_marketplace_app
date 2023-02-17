@@ -17,8 +17,10 @@ class ArtCollectibleMapper(
             imageUrl = metadata.imageUrl,
             description = metadata.description.orEmpty(),
             royalty = blockchain.royalty,
-            author = userInfoMapper.mapInToOut(userInfo),
-            favoritesCount = favoritesCount
+            author = userInfoMapper.mapInToOut(author),
+            owner = userInfoMapper.mapInToOut(owner),
+            favoritesCount = favoritesCount,
+            hasAddedToFav = hasAddedToFav
         )
     }
 
@@ -28,7 +30,9 @@ class ArtCollectibleMapper(
     data class InputData(
         val metadata: TokenMetadataDTO,
         val blockchain: ArtCollectibleBlockchainDTO,
-        val userInfo: UserDTO,
-        val favoritesCount: Long
+        val author: UserDTO,
+        val owner: UserDTO,
+        val favoritesCount: Long = 0L,
+        val hasAddedToFav: Boolean = false
     )
 }

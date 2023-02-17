@@ -9,12 +9,12 @@ class AddTokenToFavoritesUseCase(
 
     override suspend fun onExecuted(params: Params) {
         with(params) {
-            favoritesRepository.add(tokenId, userId)
+            favoritesRepository.add(tokenId, userAddress)
         }
     }
 
     data class Params(
         val tokenId: String,
-        val userId: String
+        val userAddress: String
     )
 }

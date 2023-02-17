@@ -6,8 +6,8 @@ import com.dreamsoftware.artcollectibles.data.api.exception.RemoveFromFavoritesD
 interface IFavoritesRepository {
 
     @Throws(AddToFavoritesDataException::class)
-    suspend fun add(tokenId: String, userId: String)
+    suspend fun add(tokenId: String, userAddress: String)
 
     @Throws(RemoveFromFavoritesDataException::class)
-    suspend fun remove(tokenId: String, userId: String)
+    suspend fun remove(tokenId: String, userAddress: String)
 }

@@ -9,12 +9,12 @@ class RemoveTokenFromFavoritesUseCase(
 
     override suspend fun onExecuted(params: Params) {
         with(params) {
-            favoritesRepository.remove(tokenId, userId)
+            favoritesRepository.remove(tokenId, userAddress)
         }
     }
 
     data class Params(
         val tokenId: String,
-        val userId: String
+        val userAddress: String
     )
 }

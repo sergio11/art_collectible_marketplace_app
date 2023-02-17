@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import java.math.BigInteger
 
@@ -38,6 +39,7 @@ fun TokenDetailScreen(
     navController: NavController,
     args: TokenDetailScreenArgs,
     viewModel: TokenDetailViewModel = hiltViewModel(),
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onTokenBurned: () -> Unit
 ) {
     val context = LocalContext.current
@@ -68,6 +70,7 @@ fun TokenDetailScreen(
             uiState = uiState,
             scrollState = scrollState,
             density = density,
+            onOpenArtistDetailCalled = onOpenArtistDetailCalled,
             onBurnTokenCalled = ::burnToken,
             onPutItemForSaleCalled = ::putItemForSale,
             onWithDrawFromSaleCalled = ::withDrawFromSale,
@@ -87,6 +90,7 @@ fun TokenDetailComponent(
     uiState: TokenDetailUiState,
     scrollState: ScrollState,
     density: Density,
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -108,6 +112,7 @@ fun TokenDetailComponent(
         ) {
             TokenDetailBody(
                 uiState = uiState,
+                onOpenArtistDetailCalled = onOpenArtistDetailCalled,
                 onBurnTokenCalled = onBurnTokenCalled,
                 onWithDrawFromSaleCalled = onWithDrawFromSaleCalled,
                 onPutItemForSaleCalled = onPutItemForSaleCalled,
@@ -126,6 +131,7 @@ fun TokenDetailComponent(
 @Composable
 private fun TokenDetailBody(
     uiState: TokenDetailUiState,
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -154,7 +160,7 @@ private fun TokenDetailBody(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .clickable {
-
+                            onOpenArtistDetailCalled(artCollectible.author)
                         },
                     artCollectible.author
                 )

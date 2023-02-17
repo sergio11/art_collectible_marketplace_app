@@ -22,6 +22,7 @@
     <string name="retry_button_text">Retry</string>
     <string name="generic_error_exception">An error occurred, please try again.</string>
     <string name="no_text_value">----</string>
+    <string name="no_text_value_small">--</string>
     <!-- Onboarding -->
     <string name="onboarding_main_title_text">Welcome to Art Collectible Marketplace</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>

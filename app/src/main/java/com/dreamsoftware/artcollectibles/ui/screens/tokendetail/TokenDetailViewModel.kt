@@ -107,7 +107,7 @@ class TokenDetailViewModel @Inject constructor(
                 scope = viewModelScope,
                 params = AddTokenToFavoritesUseCase.Params(
                     tokenId = tokenId.toString(),
-                    userId = it.uid
+                    userAddress = it.walletAddress
                 ),
                 onSuccess = {
                     onTokenAddedToFavorites()
@@ -123,7 +123,7 @@ class TokenDetailViewModel @Inject constructor(
                 scope = viewModelScope,
                 params = RemoveTokenFromFavoritesUseCase.Params(
                     tokenId = tokenId.toString(),
-                    userId = it.uid
+                    userAddress = it.walletAddress
                 ),
                 onSuccess = {
                     onTokenRemovedFromFavorites()
@@ -162,7 +162,8 @@ class TokenDetailViewModel @Inject constructor(
                         artCollectible = artCollectible,
                         isLoading = false,
                         isTokenOwner = artCollectible.author.uid == authUser.uid,
-                        isTokenAddedForSale = isTokenAddedForSale
+                        isTokenAddedForSale = isTokenAddedForSale,
+                        tokenAddedToFavorites = artCollectible.hasAddedToFav
                     )
                 }
             } catch (ex: Exception) {

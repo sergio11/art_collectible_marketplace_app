@@ -7,17 +7,17 @@ import com.dreamsoftware.artcollectibles.data.firebase.exception.RemoveFromFavor
 interface IFavoritesDataSource {
 
     @Throws(GetFavoritesException::class)
-    suspend fun hasAdded(tokenId: String, userId: String): Boolean
+    suspend fun hasAdded(tokenId: String, userAddress: String): Boolean
 
     @Throws(GetFavoritesException::class)
-    suspend fun getList(userId: String): List<String>
+    suspend fun getList(userAddress: String): List<String>
 
     @Throws(GetFavoritesException::class)
     suspend fun count(id: String): Long
 
     @Throws(AddToFavoritesException::class)
-    suspend fun add(tokenId: String, userId: String)
+    suspend fun add(tokenId: String, userAddress: String)
 
     @Throws(RemoveFromFavoritesException::class)
-    suspend fun remove(tokenId: String, userId: String)
+    suspend fun remove(tokenId: String, userAddress: String)
 }

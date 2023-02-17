@@ -9,7 +9,9 @@ class ArtCollectible(
     val description: String,
     val royalty: BigInteger,
     val author: UserInfo,
-    val favoritesCount: Long
+    val owner: UserInfo,
+    val favoritesCount: Long,
+    val hasAddedToFav: Boolean
 ) {
     val displayName: String
         get() = "#$id - $name"

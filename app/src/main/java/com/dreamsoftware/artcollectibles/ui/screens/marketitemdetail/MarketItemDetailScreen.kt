@@ -99,10 +99,15 @@ fun MarketItemDetailComponent(
             imageUrl = artCollectibleForSale?.token?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 UserMiniInfoComponent(
                     modifier = Modifier
-                        .align(Alignment.CenterStart)
                         .clickable {
                             artCollectibleForSale?.seller?.let {
                                 onOpenArtistDetailCalled(it)
@@ -110,9 +115,8 @@ fun MarketItemDetailComponent(
                         },
                     artCollectibleForSale?.seller
                 )
-                MarketItemPriceRow(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    artCollectibleForSale?.price)
+                FavoriteCountComponent(artCollectible = artCollectibleForSale?.token)
+                MarketItemPriceRow(price = artCollectibleForSale?.price)
             }
             TokenDetail(
                 modifier = Modifier
@@ -121,7 +125,7 @@ fun MarketItemDetailComponent(
                 artCollectibleForSale?.token
             )
             if (!isLoading) {
-                if(!isTokenSeller) {
+                if (!isTokenSeller) {
                     CommonButton(
                         modifier = Modifier
                             .padding(top = 20.dp, bottom = 8.dp)
@@ -134,7 +138,7 @@ fun MarketItemDetailComponent(
                         }
                     )
                 }
-                if(isTokenAuthor) {
+                if (isTokenAuthor) {
                     CommonButton(
                         modifier = Modifier
                             .padding(top = 20.dp, bottom = 8.dp)
@@ -157,7 +161,7 @@ fun MarketItemDetailComponent(
 }
 
 @Composable
-private fun MarketItemPriceRow(modifier: Modifier, price: BigInteger?) {
+private fun MarketItemPriceRow(modifier: Modifier = Modifier, price: BigInteger?) {
     Row(
         modifier = Modifier
             .padding(8.dp)

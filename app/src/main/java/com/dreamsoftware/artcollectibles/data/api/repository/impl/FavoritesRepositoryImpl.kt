@@ -16,10 +16,10 @@ internal class FavoritesRepositoryImpl(
 ): IFavoritesRepository {
 
     @Throws(AddToFavoritesDataException::class)
-    override suspend fun add(tokenId: String, userId: String) {
+    override suspend fun add(tokenId: String, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
-                favoritesDataSource.add(tokenId, userId)
+                favoritesDataSource.add(tokenId, userAddress)
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw AddToFavoritesDataException("An error occurred when trying to add to favorites", ex)
@@ -28,10 +28,10 @@ internal class FavoritesRepositoryImpl(
     }
 
     @Throws(RemoveFromFavoritesDataException::class)
-    override suspend fun remove(tokenId: String, userId: String) {
+    override suspend fun remove(tokenId: String, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
-                favoritesDataSource.remove(tokenId, userId)
+                favoritesDataSource.remove(tokenId, userAddress)
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw RemoveFromFavoritesDataException("An error occurred when trying to remove from favorites", ex)
