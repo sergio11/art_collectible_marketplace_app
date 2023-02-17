@@ -2,14 +2,15 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -71,6 +72,8 @@ fun TokenDetailScreen(
             onPutItemForSaleCalled = ::putItemForSale,
             onWithDrawFromSaleCalled = ::withDrawFromSale,
             onItemPriceChanged = ::onTokenPriceChanged,
+            onTokenAddedToFavorites = ::addTokenToFavorites,
+            onTokenRemovedFromFavorites = ::removeTokenFromFavorites,
             onConfirmBurnTokenDialogVisibilityChanged = ::onConfirmBurnTokenDialogVisibilityChanged,
             onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
             onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged
@@ -87,6 +90,8 @@ fun TokenDetailComponent(
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
+    onTokenAddedToFavorites: (tokenId: BigInteger) -> Unit,
+    onTokenRemovedFromFavorites: (tokenId: BigInteger) -> Unit,
     onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
@@ -99,13 +104,16 @@ fun TokenDetailComponent(
             density = density,
             isLoading = isLoading,
             imageUrl = artCollectible?.imageUrl,
-            title = artCollectible?.displayName) {
+            title = artCollectible?.displayName
+        ) {
             TokenDetailBody(
                 uiState = uiState,
                 onBurnTokenCalled = onBurnTokenCalled,
                 onWithDrawFromSaleCalled = onWithDrawFromSaleCalled,
                 onPutItemForSaleCalled = onPutItemForSaleCalled,
                 onItemPriceChanged = onItemPriceChanged,
+                onTokenAddedToFavorites = onTokenAddedToFavorites,
+                onTokenRemovedFromFavorites = onTokenRemovedFromFavorites,
                 onConfirmBurnTokenDialogVisibilityChanged = onConfirmBurnTokenDialogVisibilityChanged,
                 onConfirmWithDrawFromSaleDialogVisibilityChanged = onConfirmWithDrawFromSaleDialogVisibilityChanged,
                 onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged
@@ -122,12 +130,14 @@ private fun TokenDetailBody(
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
     onItemPriceChanged: (price: String) -> Unit,
+    onTokenAddedToFavorites: (tokenId: BigInteger) -> Unit,
+    onTokenRemovedFromFavorites: (tokenId: BigInteger) -> Unit,
     onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit
 ) {
     with(uiState) {
-        artCollectible?.let {
+        artCollectible?.let { artCollectible ->
             //.......................................................................
             ConfirmBurnTokenDialog(uiState, onBurnTokenCalled) {
                 onConfirmBurnTokenDialogVisibilityChanged(false)
@@ -139,6 +149,29 @@ private fun TokenDetailBody(
                 onConfirmPutForSaleDialogVisibilityChanged(false)
             }
             //.......................................................................
+            Box(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+                UserMiniInfoComponent(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .clickable {
+
+                        },
+                    artCollectible.author
+                )
+                FavoriteButton(
+                    modifier = Modifier
+                        .size(54.dp)
+                        .align(Alignment.CenterEnd),
+                    isChecked = tokenAddedToFavorites,
+                    onCheckedChange = {
+                        if(tokenAddedToFavorites) {
+                            onTokenRemovedFromFavorites(artCollectible.id)
+                        } else {
+                            onTokenAddedToFavorites(artCollectible.id)
+                        }
+                    }
+                )
+            }
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier

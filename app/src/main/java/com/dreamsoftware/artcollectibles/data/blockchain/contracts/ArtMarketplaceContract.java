@@ -50,11 +50,19 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final String FUNC_COUNTSOLDMARKETITEMS = "countSoldMarketItems";
 
+    public static final String FUNC_COUNTTOKENBOUGHTBYADDRESS = "countTokenBoughtByAddress";
+
+    public static final String FUNC_COUNTTOKENSOLDBYADDRESS = "countTokenSoldByAddress";
+
+    public static final String FUNC_COUNTTOKENWITHDRAWNBYADDRESS = "countTokenWithdrawnByAddress";
+
     public static final String FUNC_FETCHAVAILABLEMARKETITEMS = "fetchAvailableMarketItems";
 
     public static final String FUNC_FETCHCREATEDMARKETITEMS = "fetchCreatedMarketItems";
 
     public static final String FUNC_FETCHITEMFORSALE = "fetchItemForSale";
+
+    public static final String FUNC_FETCHLASTMARKETHISTORYITEMS = "fetchLastMarketHistoryItems";
 
     public static final String FUNC_FETCHMARKETHISTORY = "fetchMarketHistory";
 
@@ -228,6 +236,27 @@ public class ArtMarketplaceContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
+    public RemoteFunctionCall<BigInteger> countTokenBoughtByAddress() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENBOUGHTBYADDRESS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<BigInteger> countTokenSoldByAddress() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENSOLDBYADDRESS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<BigInteger> countTokenWithdrawnByAddress() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENWITHDRAWNBYADDRESS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
     public RemoteFunctionCall<List> fetchAvailableMarketItems() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHAVAILABLEMARKETITEMS, 
                 Arrays.<Type>asList(), 
@@ -263,6 +292,21 @@ public class ArtMarketplaceContract extends Contract {
                 Arrays.<Type>asList(new Uint256(tokenId)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<ArtCollectibleForSale>() {}));
         return executeRemoteCallSingleValueReturn(function, ArtCollectibleForSale.class);
+    }
+
+    public RemoteFunctionCall<List> fetchLastMarketHistoryItems(BigInteger count) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHLASTMARKETHISTORYITEMS, 
+                Arrays.<Type>asList(new Uint256(count)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleForSale>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
     }
 
     public RemoteFunctionCall<List> fetchMarketHistory() {

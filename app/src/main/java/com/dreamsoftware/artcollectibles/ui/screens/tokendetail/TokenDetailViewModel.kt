@@ -17,10 +17,14 @@ class TokenDetailViewModel @Inject constructor(
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val putItemForSaleUseCase: PutItemForSaleUseCase,
     private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
-    private val isTokenAddedForSaleUseCase: IsTokenAddedForSaleUseCase
+    private val isTokenAddedForSaleUseCase: IsTokenAddedForSaleUseCase,
+    private val addTokenTokenToFavoritesUseCase: AddTokenToFavoritesUseCase,
+    private val removeTokenFromFavoritesUseCase: RemoveTokenFromFavoritesUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
+
+    private var authUserInfo: UserInfo? = null
 
     fun loadDetail(tokenId: BigInteger) {
         onLoading()
@@ -97,6 +101,38 @@ class TokenDetailViewModel @Inject constructor(
         }
     }
 
+    fun addTokenToFavorites(tokenId: BigInteger) {
+        authUserInfo?.let {
+            addTokenTokenToFavoritesUseCase.invoke(
+                scope = viewModelScope,
+                params = AddTokenToFavoritesUseCase.Params(
+                    tokenId = tokenId.toString(),
+                    userId = it.uid
+                ),
+                onSuccess = {
+                    onTokenAddedToFavorites()
+                },
+                onError = ::onErrorOccurred
+            )
+        }
+    }
+
+    fun removeTokenFromFavorites(tokenId: BigInteger) {
+        authUserInfo?.let {
+            removeTokenFromFavoritesUseCase.invoke(
+                scope = viewModelScope,
+                params = RemoveTokenFromFavoritesUseCase.Params(
+                    tokenId = tokenId.toString(),
+                    userId = it.uid
+                ),
+                onSuccess = {
+                    onTokenRemovedFromFavorites()
+                },
+                onError = ::onErrorOccurred
+            )
+        }
+    }
+
     fun onConfirmBurnTokenDialogVisibilityChanged(isVisible: Boolean) {
         updateState { it.copy(isConfirmBurnTokenDialogVisible = isVisible) }
     }
@@ -117,8 +153,10 @@ class TokenDetailViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val artCollectible = loadTokenDetail(tokenId)
-                val authUser = loadAuthUserDetail()
                 val isTokenAddedForSale = isTokenAddedForSale(tokenId)
+                val authUser = loadAuthUserDetail().also {
+                    authUserInfo = it
+                }
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
@@ -170,6 +208,22 @@ class TokenDetailViewModel @Inject constructor(
         }
     }
 
+    private fun onTokenAddedToFavorites() {
+        updateState {
+            it.copy(
+                tokenAddedToFavorites = true
+            )
+        }
+    }
+
+    private fun onTokenRemovedFromFavorites() {
+        updateState {
+            it.copy(
+                tokenAddedToFavorites = false
+            )
+        }
+    }
+
     private fun onErrorOccurred(ex: Exception) {
         updateState {
             it.copy(
@@ -191,9 +245,10 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope
     )
 
-    private suspend fun isTokenAddedForSale(tokenId: BigInteger) = isTokenAddedForSaleUseCase.invoke(
-        scope = viewModelScope, params = IsTokenAddedForSaleUseCase.Params(tokenId)
-    )
+    private suspend fun isTokenAddedForSale(tokenId: BigInteger) =
+        isTokenAddedForSaleUseCase.invoke(
+            scope = viewModelScope, params = IsTokenAddedForSaleUseCase.Params(tokenId)
+        )
 }
 
 data class TokenDetailUiState(
@@ -203,6 +258,7 @@ data class TokenDetailUiState(
     val isTokenOwner: Boolean = false,
     val isTokenAddedForSale: Boolean = false,
     val tokenPrice: String? = null,
+    val tokenAddedToFavorites: Boolean = false,
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,
     val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,

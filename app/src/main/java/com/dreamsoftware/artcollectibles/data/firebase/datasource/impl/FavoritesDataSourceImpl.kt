@@ -7,6 +7,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.exception.GetFavoritesExc
 import com.dreamsoftware.artcollectibles.data.firebase.exception.RemoveFromFavoritesException
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -72,10 +73,11 @@ internal class FavoritesDataSourceImpl(
     override suspend fun add(tokenId: String, userId: String) {
         try {
             firebaseStore.collection(COLLECTION_NAME).apply {
-                document(tokenId).update(IDS_FIELD_NAME, FieldValue.arrayUnion(userId)).await()
-                document(tokenId + KEY_COUNT_SUFFIX).update(COUNT_FIELD_NAME, FieldValue.increment(1)).await()
-                document(userId).update(IDS_FIELD_NAME, FieldValue.arrayUnion(tokenId)).await()
-                document(userId + KEY_COUNT_SUFFIX).update(COUNT_FIELD_NAME, FieldValue.increment(1)).await()
+                document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userId)), SetOptions.merge()).await()
+                document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userId)), SetOptions.merge()).await()
+                document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                document(userId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
+                document(userId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
             }
         } catch (ex: FirebaseException) {
             throw ex
@@ -88,10 +90,10 @@ internal class FavoritesDataSourceImpl(
     override suspend fun remove(tokenId: String, userId: String) {
         try {
             firebaseStore.collection(COLLECTION_NAME).apply {
-                document(tokenId).update(IDS_FIELD_NAME, FieldValue.arrayRemove(userId)).await()
-                document(tokenId + KEY_COUNT_SUFFIX).update(COUNT_FIELD_NAME, FieldValue.increment(-1)).await()
-                document(userId).update(IDS_FIELD_NAME, FieldValue.arrayRemove(tokenId)).await()
-                document(userId + KEY_COUNT_SUFFIX).update(COUNT_FIELD_NAME, FieldValue.increment(-1)).await()
+                document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userId)), SetOptions.merge()).await()
+                document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                document(userId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
+                document(userId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
             }
         } catch (ex: FirebaseException) {
             throw ex

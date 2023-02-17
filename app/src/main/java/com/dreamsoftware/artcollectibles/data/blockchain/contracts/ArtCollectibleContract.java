@@ -49,6 +49,10 @@ public class ArtCollectibleContract extends Contract {
 
     public static final String FUNC_BURN = "burn";
 
+    public static final String FUNC_COUNTTOKENSCREATORBYADDRESS = "countTokensCreatorByAddress";
+
+    public static final String FUNC_COUNTTOKENSOWNEDBYADDRESS = "countTokensOwnedByAddress";
+
     public static final String FUNC_GETAPPROVED = "getApproved";
 
     public static final String FUNC_GETTOKENBYID = "getTokenById";
@@ -100,6 +104,8 @@ public class ArtCollectibleContract extends Contract {
     public static final String FUNC_TRANSFERFROM = "transferFrom";
 
     public static final String FUNC_TRANSFEROWNERSHIP = "transferOwnership";
+
+    public static final String FUNC_TRANSFERTO = "transferTo";
 
     public static final String FUNC_UNPAUSE = "unpause";
 
@@ -410,6 +416,20 @@ public class ArtCollectibleContract extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
+    public RemoteFunctionCall<BigInteger> countTokensCreatorByAddress() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENSCREATORBYADDRESS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteFunctionCall<BigInteger> countTokensOwnedByAddress() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENSOWNEDBYADDRESS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
     public RemoteFunctionCall<String> getApproved(BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETAPPROVED, 
                 Arrays.<Type>asList(new Uint256(tokenId)),
@@ -647,6 +667,16 @@ public class ArtCollectibleContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_TRANSFEROWNERSHIP, 
                 Arrays.<Type>asList(new Address(160, newOwner)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> transferTo(String from, String to, BigInteger tokenId) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_TRANSFERTO, 
+                Arrays.<Type>asList(new Address(160, from),
+                new Address(160, to),
+                new Uint256(tokenId)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }

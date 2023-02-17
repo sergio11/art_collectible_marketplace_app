@@ -61,14 +61,14 @@ android {
             buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https://polygon-mumbai.g.alchemy.com/v2/${gradleLocalProperties(rootDir).getProperty("alchemyAccountPrivateKey")}/\"")
             buildConfigField(type = "Long", name = "CHAIN_ID", value = "80001L")
             buildConfigField(type = "Long", name = "GAS_PRICE", value = "50000000000L")
-            buildConfigField(type = "Long", name = "GAS_LIMIT", value = "500000L")
+            buildConfigField(type = "Long", name = "GAS_LIMIT", value = "5000000L")
             buildConfigField(type = "String", name = "MUMBAI_FAUCET_URL", value = "\"https://mumbaifaucet.com/\"")
-            // ArtCollectible contract deployed to 0xf0AC029CFa1DAf61C2B4ddb8d0292481a754dAac
-            buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0xe61B10a60A85252B81A4a9E378c48585E1077f9F\"")
-            // ArtMarketplace contract deployed to 0x6737c43486779fB3c96839AeA92c75CC62adaC7d
-            buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0xd4bC2d72a3f04ad194130ADcC35E9592a2a1761B\"")
-            // Faucet contract deployed to 0x62c162A7967b338A064310D65E454DE4122483de
-            buildConfigField(type = "String", name = "FAUCET_CONTRACT_ADDRESS", value = "\"0x24935Eb7f72Db66B5f82D1F4526842A9aaD59b28\"")
+            // ArtCollectible contract deployed to 0x581eE4AeAb167632eEE4455edb07712a135FBC64
+            buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0x581eE4AeAb167632eEE4455edb07712a135FBC64\"")
+            // ArtMarketplace contract deployed to 0x6dEdc939d253414a375d5AEf90F0679A08163018
+            buildConfigField(type = "String", name = "ART_MARKETPLACE_CONTRACT_ADDRESS", value = "\"0x6dEdc939d253414a375d5AEf90F0679A08163018\"")
+            // Faucet contract deployed to 0x84346b263883A025BA3f10F51fb3084fA49d7382
+            buildConfigField(type = "String", name = "FAUCET_CONTRACT_ADDRESS", value = "\"0x84346b263883A025BA3f10F51fb3084fA49d7382\"")
         }
     }
 

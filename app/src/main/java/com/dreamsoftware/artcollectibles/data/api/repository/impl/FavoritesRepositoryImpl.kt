@@ -21,6 +21,7 @@ internal class FavoritesRepositoryImpl(
             try {
                 favoritesDataSource.add(tokenId, userId)
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw AddToFavoritesDataException("An error occurred when trying to add to favorites", ex)
             }
         }
@@ -32,6 +33,7 @@ internal class FavoritesRepositoryImpl(
             try {
                 favoritesDataSource.remove(tokenId, userId)
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw RemoveFromFavoritesDataException("An error occurred when trying to remove from favorites", ex)
             }
         }
