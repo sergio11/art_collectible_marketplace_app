@@ -24,7 +24,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 fun FavoriteCountComponent(
     modifier: Modifier = Modifier,
     artCollectible: ArtCollectible?,
-    defaultColor: Color = whiteTranslucent
+    defaultColor: Color = Color.Black
 ) {
     Row(
         modifier = modifier,

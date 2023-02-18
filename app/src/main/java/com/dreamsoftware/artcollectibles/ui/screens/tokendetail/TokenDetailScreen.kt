@@ -162,7 +162,7 @@ private fun TokenDetailBody(
                         .clickable {
                             onOpenArtistDetailCalled(artCollectible.author)
                         },
-                    artCollectible.author
+                    userInfo = artCollectible.author
                 )
                 FavoriteButton(
                     modifier = Modifier

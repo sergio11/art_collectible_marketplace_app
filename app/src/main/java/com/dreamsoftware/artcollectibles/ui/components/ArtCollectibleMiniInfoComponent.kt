@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.extensions.format
-import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 private const val DEFAULT_LIMIT_DESC_MAX_LINES = 3
@@ -57,8 +56,7 @@ fun ArtCollectibleMiniInfoComponent(
             )
             FavoriteCountComponent(
                 modifier = Modifier.padding(8.dp),
-                artCollectible = artCollectible,
-                defaultColor = Purple500
+                artCollectible = artCollectible
             )
         }
         Text(

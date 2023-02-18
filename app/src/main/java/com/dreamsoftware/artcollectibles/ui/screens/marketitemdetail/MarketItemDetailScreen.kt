@@ -111,7 +111,7 @@ fun MarketItemDetailComponent(
                                 onOpenArtistDetailCalled(it)
                             }
                         },
-                    artCollectibleForSale?.seller
+                    userInfo = artCollectibleForSale?.seller
                 )
                 MarketItemPriceRow(
                     modifier = Modifier

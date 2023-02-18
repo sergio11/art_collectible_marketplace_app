@@ -67,7 +67,12 @@ fun UserInfoArtistCard(
                 infoCardPalette = it
             }
             // User Profile Detail
-            UserProfileDetail(context, user, infoCardPalette)
+            UserMiniInfoComponent(
+                userInfo = user,
+                showPicture = false,
+                palette = infoCardPalette
+            )
+            //UserProfileDetail(context, user, infoCardPalette)
         }
     }
 }

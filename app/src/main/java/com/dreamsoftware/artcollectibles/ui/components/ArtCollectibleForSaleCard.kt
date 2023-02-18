@@ -98,7 +98,7 @@ fun ArtCollectibleForSaleCard(
                     )
                 }
                 Spacer(Modifier.weight(1f))
-                FavoriteCountComponent(artCollectible = token)
+                FavoriteCountComponent(artCollectible = token, defaultColor = whiteTranslucent)
             }
         }
     }
