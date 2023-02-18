@@ -21,7 +21,8 @@ class ArtCollectibleMapper(
             owner = userInfoMapper.mapInToOut(owner),
             favoritesCount = favoritesCount,
             hasAddedToFav = hasAddedToFav,
-            tags = metadata.tags
+            tags = metadata.tags,
+            createdAt = metadata.createdAt
         )
     }
 

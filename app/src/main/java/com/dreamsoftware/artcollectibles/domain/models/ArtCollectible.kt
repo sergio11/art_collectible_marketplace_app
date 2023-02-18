@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.domain.models
 
 import java.math.BigInteger
+import java.util.*
 
 class ArtCollectible(
     val id: BigInteger,
@@ -12,7 +13,8 @@ class ArtCollectible(
     val owner: UserInfo,
     val favoritesCount: Long,
     val hasAddedToFav: Boolean,
-    val tags: List<String>
+    val tags: List<String>,
+    val createdAt: Date
 ) {
     val displayName: String
         get() = "#$id - $name"

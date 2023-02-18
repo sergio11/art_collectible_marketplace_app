@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -34,6 +35,16 @@ fun ArtCollectibleMiniInfoComponent(
             style = MaterialTheme.typography.titleLarge,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = artCollectible?.createdAt?.format()?.let { 
+                stringResource(id = R.string.token_detail_created_at_label, it)
+            } ?: stringResource(id = R.string.no_text_value),
+            fontFamily = montserratFontFamily,
+            modifier = Modifier
+                .padding(horizontal = 8.dp, vertical = 2.dp)
+                .fillMaxWidth(),
+            style = MaterialTheme.typography.titleSmall
         )
         Row {
             TokenCreatorInfoComponent(

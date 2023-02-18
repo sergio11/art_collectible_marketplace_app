@@ -77,4 +77,7 @@ fun Context.getMimeType(uri: Uri): String? =
         MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(uri.path?.let { File(it) }).toString())
     }
 
+fun Date.format(): String =
+    SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(this)
+
 
