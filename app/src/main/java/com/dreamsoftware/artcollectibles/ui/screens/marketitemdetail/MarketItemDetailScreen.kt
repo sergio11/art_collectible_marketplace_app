@@ -26,7 +26,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -99,15 +98,14 @@ fun MarketItemDetailComponent(
             imageUrl = artCollectibleForSale?.token?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
         ) {
-            Row(
+            Box(
                 modifier = Modifier
                     .padding(8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
             ) {
                 UserMiniInfoComponent(
                     modifier = Modifier
+                        .align(Alignment.CenterStart)
                         .clickable {
                             artCollectibleForSale?.seller?.let {
                                 onOpenArtistDetailCalled(it)
@@ -115,10 +113,13 @@ fun MarketItemDetailComponent(
                         },
                     artCollectibleForSale?.seller
                 )
-                FavoriteCountComponent(artCollectible = artCollectibleForSale?.token)
-                MarketItemPriceRow(price = artCollectibleForSale?.price)
+                MarketItemPriceRow(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd),
+                    price = artCollectibleForSale?.price
+                )
             }
-            TokenDetail(
+            ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
@@ -167,53 +168,19 @@ private fun MarketItemPriceRow(modifier: Modifier = Modifier, price: BigInteger?
             .padding(8.dp)
             .width(100.dp)
             .then(modifier),
-        horizontalArrangement = Arrangement.SpaceAround
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        MaticIconComponent(size = 20.dp)
+        MaticIconComponent(size = 35.dp)
         Text(
             text = price?.toString() ?: stringResource(id = R.string.no_text_value),
             fontFamily = montserratFontFamily,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
-        )
-    }
-}
-
-@Composable
-private fun TokenDetail(modifier: Modifier, artCollectible: ArtCollectible?) {
-    Column(modifier = modifier) {
-        Text(
-            text = artCollectible?.name ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Row {
-            TokenCreatorInfoComponent(
-                modifier = Modifier.padding(8.dp),
-                artCollectible?.author
-            )
-            TokenRoyaltyComponent(
-                modifier = Modifier.padding(8.dp),
-                artCollectible?.royalty
-            )
-        }
-
-        Text(
-            text = artCollectible?.description ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyLarge
         )
     }
 }

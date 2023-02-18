@@ -178,6 +178,12 @@ private fun TokenDetailBody(
                     }
                 )
             }
+            ArtCollectibleMiniInfoComponent(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                artCollectible
+            )
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier

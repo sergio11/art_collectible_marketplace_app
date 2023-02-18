@@ -18,11 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
 @Composable
 fun FavoriteCountComponent(
     modifier: Modifier = Modifier,
-    artCollectible: ArtCollectible?
+    artCollectible: ArtCollectible?,
+    defaultColor: Color = whiteTranslucent
 ) {
     Row(
         modifier = modifier,
@@ -33,7 +35,7 @@ fun FavoriteCountComponent(
             tint = if (artCollectible?.hasAddedToFav == true) {
                 Color.Red
             } else {
-                Color(235, 235, 245).copy(0.6f)
+                defaultColor
             },
             imageVector = if (artCollectible?.hasAddedToFav == true) {
                 Icons.Filled.Favorite
@@ -45,7 +47,7 @@ fun FavoriteCountComponent(
         Text(
             artCollectible?.favoritesCount?.toString()
                 ?: stringResource(id = R.string.no_text_value_small),
-            color = Color(235, 235, 245).copy(0.6f),
+            color = defaultColor,
             fontWeight = FontWeight.Normal,
             fontSize = 13.sp,
             textAlign = TextAlign.Right
