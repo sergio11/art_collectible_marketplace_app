@@ -245,4 +245,14 @@ class DataModule {
     fun provideFavoritesRepository(
         favoritesDataSource: IFavoritesDataSource
     ): IFavoritesRepository = FavoritesRepositoryImpl(favoritesDataSource)
+
+    /**
+     * Provide Visitors Repository
+     * @param visitorsDataSource
+     */
+    @Provides
+    @Singleton
+    fun provideVisitorsRepository(
+        visitorsDataSource: IVisitorsDataSource
+    ): IVisitorsRepository = VisitorsRepositoryImpl(visitorsDataSource)
 }

@@ -179,6 +179,7 @@ internal class ArtCollectibleRepositoryImpl(
                 blockchain = token,
                 author = tokenAuthor,
                 owner = tokenOwner,
+                visitorsCount = visitorsCount,
                 favoritesCount = favoritesCount,
                 hasAddedToFav = hasAddedToFav
             )

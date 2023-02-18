@@ -336,4 +336,14 @@ class DomainModule {
         favoritesRepository: IFavoritesRepository
     ) = RemoveTokenFromFavoritesUseCase(favoritesRepository)
 
+    /**
+     * Provide Register Visitor Use case
+     * @param visitorsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideRegisterVisitorUseCase(
+        visitorsRepository: IVisitorsRepository
+    ) = RegisterVisitorUseCase(visitorsRepository)
+
 }

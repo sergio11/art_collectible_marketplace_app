@@ -19,7 +19,8 @@ class TokenDetailViewModel @Inject constructor(
     private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
     private val isTokenAddedForSaleUseCase: IsTokenAddedForSaleUseCase,
     private val addTokenTokenToFavoritesUseCase: AddTokenToFavoritesUseCase,
-    private val removeTokenFromFavoritesUseCase: RemoveTokenFromFavoritesUseCase
+    private val removeTokenFromFavoritesUseCase: RemoveTokenFromFavoritesUseCase,
+    private val registerVisitorUseCase: RegisterVisitorUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
@@ -157,14 +158,19 @@ class TokenDetailViewModel @Inject constructor(
                 val authUser = loadAuthUserDetail().also {
                     authUserInfo = it
                 }
+                val isTokenOwner = artCollectible.owner.uid == authUser.uid
+                val isTokenCreator = artCollectible.author.uid == authUser.uid
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
                         isLoading = false,
-                        isTokenOwner = artCollectible.author.uid == authUser.uid,
+                        isTokenOwner = isTokenOwner,
                         isTokenAddedForSale = isTokenAddedForSale,
                         tokenAddedToFavorites = artCollectible.hasAddedToFav
                     )
+                }
+                if(!isTokenOwner && !isTokenCreator) {
+                    registerVisitor(tokenId, authUser.walletAddress)
                 }
             } catch (ex: Exception) {
                 onErrorOccurred(ex)
@@ -250,6 +256,22 @@ class TokenDetailViewModel @Inject constructor(
         isTokenAddedForSaleUseCase.invoke(
             scope = viewModelScope, params = IsTokenAddedForSaleUseCase.Params(tokenId)
         )
+
+    private fun registerVisitor(tokenId: BigInteger, userAddress: String) {
+        registerVisitorUseCase.invoke(
+            scope = viewModelScope,
+            params = RegisterVisitorUseCase.Params(
+                tokenId = tokenId.toString(),
+                userAddress = userAddress
+            ),
+            onSuccess = {
+                // ignore success
+            },
+            onError = {
+                // ignore error
+            }
+        )
+    }
 }
 
 data class TokenDetailUiState(
