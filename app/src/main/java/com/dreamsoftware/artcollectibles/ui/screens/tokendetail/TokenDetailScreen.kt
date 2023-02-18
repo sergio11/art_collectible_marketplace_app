@@ -178,17 +178,22 @@ private fun TokenDetailBody(
                     }
                 )
             }
+            TagsRow(
+                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                tagList = artCollectible.tags,
+                isReadOnly = true
+            )
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                artCollectible
+                artCollectible = artCollectible
             )
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(300.dp),
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
                     text = if (isTokenAddedForSale) {
                         R.string.token_detail_with_draw_from_sale_button_text
                     } else {
@@ -204,8 +209,8 @@ private fun TokenDetailBody(
                 )
                 CommonButton(
                     modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(300.dp),
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
                     text = R.string.token_detail_burn_token_button_text,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red,

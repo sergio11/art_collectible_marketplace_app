@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -25,6 +27,8 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
 
 @Composable
@@ -55,16 +59,22 @@ fun ArtCollectibleForSaleCard(
             ) {
                 Text(
                     token.name,
+                    fontFamily = montserratFontFamily,
                     color = Color.White,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp,
                     textAlign = TextAlign.Left
                 )
                 Text(
                     token.description,
-                    color = Color(235, 235, 245).copy(0.6f),
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Left
+                    color = whiteTranslucent,
+                    fontFamily = montserratFontFamily,
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.bodySmall,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2
                 )
             }
             Row(
@@ -77,7 +87,7 @@ fun ArtCollectibleForSaleCard(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.matic_icon),
-                        contentDescription = "Ethereum Icon",
+                        contentDescription = "Matic Icon",
                         modifier = Modifier.size(13.dp)
                     )
                     Text(
@@ -109,7 +119,7 @@ private fun ArtCollectibleForSaleImage(
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .height(155.dp)
-            .width(155.dp)
+            .fillMaxWidth()
             .padding(10.dp)
             .border(
                 1.dp,

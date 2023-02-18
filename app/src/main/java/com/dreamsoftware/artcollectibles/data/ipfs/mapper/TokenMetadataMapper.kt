@@ -13,6 +13,7 @@ class TokenMetadataMapper(
         const val TOKEN_DESCRIPTION_KEY = "description"
         const val TOKEN_OWNER_ADDRESS = "owner_address"
         const val TOKEN_AUTHOR_ADDRESS = "author_address"
+        const val TOKEN_TAGS = "token_tags"
     }
 
     override fun mapInToOut(input: FilePinnedDTO): TokenMetadataDTO = with(input) {
@@ -24,6 +25,7 @@ class TokenMetadataMapper(
             imageUrl = pinataConfig.pinataGatewayBaseUrl.plus(ipfsPinHash),
             authorAddress = metadata.keyValues[TOKEN_AUTHOR_ADDRESS].orEmpty(),
             ownerAddress = metadata.keyValues[TOKEN_OWNER_ADDRESS].orEmpty(),
+            tags = metadata.keyValues[TOKEN_TAGS]?.split(",") ?: emptyList<String>()
         )
     }
 

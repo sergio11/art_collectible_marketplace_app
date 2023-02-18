@@ -111,7 +111,8 @@ fun AddNftScreen(
             onDescriptionChanged = ::onDescriptionChanged,
             onRoyaltyChanged = ::onRoyaltyChanged,
             onCreateClicked = ::onCreate,
-            onExitClicked = onExitClicked
+            onExitClicked = onExitClicked,
+            onAddNewTag = ::onAddNewTag
         )
     }
 }
@@ -129,7 +130,8 @@ internal fun AddNftComponent(
     onDescriptionChanged: (String) -> Unit,
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
-    onExitClicked: () -> Unit
+    onExitClicked: () -> Unit,
+    onAddNewTag: (tag: String) -> Unit
 ) {
     if (isCameraPermissionGranted) {
         if (state.imageUri == null) {
@@ -150,7 +152,8 @@ internal fun AddNftComponent(
                 onDescriptionChanged = onDescriptionChanged,
                 onRoyaltyChanged = onRoyaltyChanged,
                 onCreateClicked = onCreateClicked,
-                onExitClicked = onExitClicked
+                onExitClicked = onExitClicked,
+                onAddNewTag = onAddNewTag
             )
         }
     } else {
@@ -166,7 +169,8 @@ private fun AddNftForm(
     onDescriptionChanged: (String) -> Unit,
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
-    onExitClicked: () -> Unit
+    onExitClicked: () -> Unit,
+    onAddNewTag: (tag: String) -> Unit
 ) {
     with(state) {
         var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
@@ -269,7 +273,8 @@ private fun AddNftForm(
                             )
                             TagsInputComponent(
                                 modifier = defaultModifier,
-                                tagList = listOf("Tag 1", "Tag 2", "Tag 3", "Tag 4", "Tag 5")
+                                tagList = tags,
+                                onAddNewTag = onAddNewTag
                             )
                             CommonButton(
                                 enabled = !isLoading && isCreateButtonEnabled,

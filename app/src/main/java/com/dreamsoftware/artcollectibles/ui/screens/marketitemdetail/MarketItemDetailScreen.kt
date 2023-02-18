@@ -119,11 +119,16 @@ fun MarketItemDetailComponent(
                     price = artCollectibleForSale?.price
                 )
             }
+            TagsRow(
+                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                tagList = artCollectibleForSale?.token?.tags,
+                isReadOnly = true
+            )
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                artCollectibleForSale?.token
+                artCollectible = artCollectibleForSale?.token
             )
             if (!isLoading) {
                 if (!isTokenSeller) {

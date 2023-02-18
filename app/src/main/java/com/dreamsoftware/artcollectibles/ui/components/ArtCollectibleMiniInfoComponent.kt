@@ -16,9 +16,12 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
+private const val DEFAULT_LIMIT_DESC_MAX_LINES = 3
+
 @Composable
 fun ArtCollectibleMiniInfoComponent(
     modifier: Modifier = Modifier,
+    showPreviewDescription: Boolean = false,
     artCollectible: ArtCollectible?
 ) {
     Column(modifier = modifier) {
@@ -53,7 +56,13 @@ fun ArtCollectibleMiniInfoComponent(
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = if(showPreviewDescription) {
+                DEFAULT_LIMIT_DESC_MAX_LINES
+            } else {
+                Int.MAX_VALUE
+            }
         )
     }
 }

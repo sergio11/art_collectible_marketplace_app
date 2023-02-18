@@ -154,7 +154,6 @@ private fun MyTokensLazyList(
                 items(tokens.size) { index ->
                     ArtCollectibleCard(
                         modifier = Modifier
-                            .height(300.dp)
                             .fillMaxWidth()
                             .clickable { onTokenClicked(tokens[index]) },
                         context = context,

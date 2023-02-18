@@ -43,6 +43,7 @@ fun ArtCollectibleCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
+                showPreviewDescription = true,
                 artCollectible
             )
         }

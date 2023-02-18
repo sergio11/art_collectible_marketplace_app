@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -32,9 +34,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.*
-import com.dreamsoftware.artcollectibles.ui.theme.Purple500
-import com.dreamsoftware.artcollectibles.ui.theme.Purple700
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.*
 
 private val HEADER_HEIGHT = 250.dp
 private val TOOLBAR_HEIGHT = 56.dp
@@ -77,9 +77,11 @@ fun CommonDetailScreen(
         }
         //....................
         CommonDetailToolbar(
+            context = context,
             scrollState = scrollState,
             headerHeightPx = headerHeightPx,
-            toolbarHeightPx = toolbarHeightPx
+            toolbarHeightPx = toolbarHeightPx,
+            imageUrl = imageUrl
         )
         //....................
         CommonDetailTitle(
@@ -133,8 +135,10 @@ private fun CommonDetailHeader(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CommonDetailToolbar(
+    context: Context,
     scrollState: ScrollState,
     headerHeightPx: Float,
+    imageUrl: String?,
     toolbarHeightPx: Float
 ) {
     val toolbarBottom = headerHeightPx - toolbarHeightPx
@@ -151,9 +155,21 @@ private fun CommonDetailToolbar(
         TopAppBar(
             modifier = Modifier.background(
                 brush = Brush.horizontalGradient(
-                    listOf(Purple700, Purple500)
+                    listOf(Purple80, Purple40)
                 )
             ),
+            navigationIcon = {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(R.drawable.user_placeholder),
+                    contentDescription = stringResource(R.string.image_content_description),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(55.dp).clip(CircleShape)
+                )
+            },
             title = {},
             colors = TopAppBarDefaults.smallTopAppBarColors(
                 containerColor = Color.Transparent

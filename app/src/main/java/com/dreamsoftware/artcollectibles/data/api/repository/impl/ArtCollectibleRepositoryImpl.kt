@@ -64,7 +64,8 @@ internal class ArtCollectibleRepositoryImpl(
                             description = description,
                             fileUri = fileUri,
                             mediaType = mediaType,
-                            authorAddress = credentials.address
+                            authorAddress = credentials.address,
+                            tags = tags
                         )
                     )
                     // Mint new token

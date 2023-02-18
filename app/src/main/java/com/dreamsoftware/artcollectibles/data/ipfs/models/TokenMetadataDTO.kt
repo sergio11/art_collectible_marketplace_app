@@ -9,5 +9,6 @@ data class TokenMetadataDTO(
     val createdAt: Date,
     val imageUrl: String,
     val authorAddress: String,
-    val ownerAddress: String
+    val ownerAddress: String,
+    val tags: List<String>
 )

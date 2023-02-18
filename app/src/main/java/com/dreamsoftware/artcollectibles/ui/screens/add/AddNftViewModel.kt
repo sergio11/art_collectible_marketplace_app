@@ -66,6 +66,17 @@ class AddNftViewModel @Inject constructor(
         }
     }
 
+    fun onAddNewTag(newTag: String) {
+        updateState {
+            it.copy(
+                tags = buildList {
+                    addAll(it.tags)
+                    add(newTag)
+                }
+            )
+        }
+    }
+
     fun getFileProviderAuthority() = applicationAware.getFileProviderAuthority()
 
     fun onCreate() {
@@ -78,7 +89,8 @@ class AddNftViewModel @Inject constructor(
                     mediaType = mimeType,
                     name = name,
                     description = description,
-                    royalty = royalty.toLong()
+                    royalty = royalty.toLong(),
+                    tags = tags
                 ),
                 onSuccess = ::onCreateSuccess,
                 onError = ::onCreateError
@@ -118,6 +130,7 @@ data class AddNftUiState(
     val mimeType: String = "",
     val name: String = "",
     val description: String? = null,
+    val tags: List<String> = emptyList(),
     val royalty: Float = 0f,
     val isCreateButtonEnabled: Boolean = false,
     val isTokenMinted: Boolean = false
