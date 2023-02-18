@@ -29,3 +29,7 @@ class SaveSecretException(message: String? = null, cause: Throwable? = null): Fi
 class GetFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class AddToFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class RemoveFromFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+// Visitors Data Source
+class AddVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

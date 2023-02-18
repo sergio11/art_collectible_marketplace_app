@@ -22,7 +22,8 @@ class ArtCollectibleMapper(
             favoritesCount = favoritesCount,
             hasAddedToFav = hasAddedToFav,
             tags = metadata.tags,
-            createdAt = metadata.createdAt
+            createdAt = metadata.createdAt,
+            visitorsCount = visitorsCount
         )
     }
 
@@ -34,6 +35,7 @@ class ArtCollectibleMapper(
         val blockchain: ArtCollectibleBlockchainDTO,
         val author: UserDTO,
         val owner: UserDTO,
+        val visitorsCount: Long = 0L,
         val favoritesCount: Long = 0L,
         val hasAddedToFav: Boolean = false
     )

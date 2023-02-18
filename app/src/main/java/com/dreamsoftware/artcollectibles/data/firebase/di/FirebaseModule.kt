@@ -181,4 +181,14 @@ class FirebaseModule {
     fun provideFavoritesDataSource(
         firebaseStore: FirebaseFirestore
     ): IFavoritesDataSource = FavoritesDataSourceImpl(firebaseStore)
+
+    /**
+     * Provide Visitors Data Source
+     * @param firebaseStore
+     */
+    @Provides
+    @Singleton
+    fun provideVisitorsDataSource(
+        firebaseStore: FirebaseFirestore
+    ): IVisitorsDataSource = VisitorsDataSourceImpl(firebaseStore)
 }

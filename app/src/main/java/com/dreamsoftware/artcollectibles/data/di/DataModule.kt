@@ -88,6 +88,7 @@ class DataModule {
      * @param walletRepository
      * @param userCredentialsMapper
      * @param favoritesDataSource
+     * @param visitorsDataSource
      */
     @Provides
     @Singleton
@@ -98,7 +99,8 @@ class DataModule {
         artCollectibleMapper: ArtCollectibleMapper,
         walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper,
-        favoritesDataSource: IFavoritesDataSource
+        favoritesDataSource: IFavoritesDataSource,
+        visitorsDataSource: IVisitorsDataSource
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
@@ -107,7 +109,8 @@ class DataModule {
             artCollectibleMapper,
             walletRepository,
             userCredentialsMapper,
-            favoritesDataSource
+            favoritesDataSource,
+            visitorsDataSource
         )
 
 

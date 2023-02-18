@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollecti
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.models.CreateTokenMetadataDTO
 import com.dreamsoftware.artcollectibles.data.ipfs.models.TokenMetadataDTO
@@ -31,7 +32,8 @@ internal class ArtCollectibleRepositoryImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
-    private val favoritesDataSource: IFavoritesDataSource
+    private val favoritesDataSource: IFavoritesDataSource,
+    private val visitorsDataSource: IVisitorsDataSource
 ) : IArtCollectibleRepository {
 
     @Throws(ObserveArtCollectibleMintedEventsException::class)
@@ -165,10 +167,12 @@ internal class ArtCollectibleRepositoryImpl(
         }
 
     private suspend fun mapToArtCollectible(credentials: UserWalletCredentials, tokenMetadata: TokenMetadataDTO, token: ArtCollectibleBlockchainDTO): ArtCollectible {
+        val tokenId = token.tokenId.toString()
         val tokenAuthor = userDataSource.getByAddress(tokenMetadata.authorAddress)
         val tokenOwner = userDataSource.getByAddress(token.creator)
-        val favoritesCount = favoritesDataSource.count(token.tokenId.toString())
-        val hasAddedToFav = favoritesDataSource.hasAdded(token.tokenId.toString(), credentials.address)
+        val visitorsCount = visitorsDataSource.count(tokenId)
+        val favoritesCount = favoritesDataSource.count(tokenId)
+        val hasAddedToFav = favoritesDataSource.hasAdded(tokenId, credentials.address)
         return artCollectibleMapper.mapInToOut(
             ArtCollectibleMapper.InputData(
                 metadata = tokenMetadata,

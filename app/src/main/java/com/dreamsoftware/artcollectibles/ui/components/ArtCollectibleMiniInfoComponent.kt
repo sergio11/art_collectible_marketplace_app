@@ -58,6 +58,10 @@ fun ArtCollectibleMiniInfoComponent(
                 modifier = Modifier.padding(8.dp),
                 artCollectible = artCollectible
             )
+            VisitorsCountComponent(
+                modifier = Modifier.padding(8.dp),
+                artCollectible = artCollectible
+            )
         }
         Text(
             text = artCollectible?.description ?: stringResource(id = R.string.no_text_value),
