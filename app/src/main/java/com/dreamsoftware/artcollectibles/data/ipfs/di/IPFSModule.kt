@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.ipfs.di
 
+import android.content.Context
 import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
 import com.dreamsoftware.artcollectibles.data.ipfs.config.PinataConfig
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
@@ -16,7 +17,9 @@ import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -26,6 +29,10 @@ import javax.inject.Singleton
 @Module(includes = [NetworkModule::class])
 @InstallIn(SingletonComponent::class)
 class IPFSModule {
+
+    private companion object {
+        const val CACHE_SIZE_BYTES: Long = 1024 * 1024 * 2
+    }
 
     /**
      * Provide Pinata Config
@@ -77,7 +84,9 @@ class IPFSModule {
     fun providePinataOkHttpClient(
         pinataAuthInterceptor: PinataAuthInterceptor,
         httpClientBuilder: OkHttpClient.Builder,
+        @ApplicationContext context: Context
     ): OkHttpClient = httpClientBuilder.apply {
+        cache(Cache(context.cacheDir, CACHE_SIZE_BYTES))
         addInterceptor(pinataAuthInterceptor)
         addInterceptor(HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BASIC)
