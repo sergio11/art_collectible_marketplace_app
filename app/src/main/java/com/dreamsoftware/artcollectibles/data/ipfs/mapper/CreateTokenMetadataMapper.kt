@@ -8,8 +8,6 @@ class CreateTokenMetadataMapper: IOneSideMapper<CreateTokenMetadataDTO, FileMeta
 
     internal companion object {
         const val TOKEN_DESCRIPTION_KEY = "description"
-        const val TOKEN_OWNER_ADDRESS = "owner_address"
-        const val TOKEN_AUTHOR_ADDRESS = "author_address"
         const val TOKEN_TAGS = "token_tags"
     }
 
@@ -18,8 +16,6 @@ class CreateTokenMetadataMapper: IOneSideMapper<CreateTokenMetadataDTO, FileMeta
             name = name,
             keyValues = hashMapOf(
                 TOKEN_DESCRIPTION_KEY to description.orEmpty(),
-                TOKEN_OWNER_ADDRESS to authorAddress,
-                TOKEN_AUTHOR_ADDRESS to authorAddress,
                 TOKEN_TAGS to tags.joinToString(separator = ",")
             )
         )

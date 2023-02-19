@@ -61,7 +61,7 @@ private fun ArtCollectibleImage(
         .fillMaxWidth()
     AsyncImage(
         model = ImageRequest.Builder(context)
-            .data(artCollectible.imageUrl)
+            .data(artCollectible.metadata.imageUrl)
             .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.user_placeholder),

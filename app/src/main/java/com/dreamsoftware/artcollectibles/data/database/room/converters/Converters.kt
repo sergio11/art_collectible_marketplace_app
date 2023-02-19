@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.local.room.converters
+package com.dreamsoftware.artcollectibles.data.database.room.converters
 
 import androidx.room.TypeConverter
 import java.util.*

@@ -107,7 +107,7 @@ fun TokenDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
-            imageUrl = artCollectible?.imageUrl,
+            imageUrl = artCollectible?.metadata?.imageUrl,
             title = artCollectible?.displayName
         ) {
             TokenDetailBody(
@@ -180,7 +180,7 @@ private fun TokenDetailBody(
             }
             TagsRow(
                 modifier = Modifier.padding(8.dp).fillMaxWidth(),
-                tagList = artCollectible.tags,
+                tagList = artCollectible.metadata.tags,
                 isReadOnly = true
             )
             ArtCollectibleMiniInfoComponent(

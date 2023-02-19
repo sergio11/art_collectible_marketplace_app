@@ -9,10 +9,8 @@ class TokenMetadataMapper(
     private val pinataConfig: PinataConfig
 ): IOneSideMapper<FilePinnedDTO, TokenMetadataDTO> {
 
-    internal companion object {
+    private companion object {
         const val TOKEN_DESCRIPTION_KEY = "description"
-        const val TOKEN_OWNER_ADDRESS = "owner_address"
-        const val TOKEN_AUTHOR_ADDRESS = "author_address"
         const val TOKEN_TAGS = "token_tags"
     }
 
@@ -23,8 +21,6 @@ class TokenMetadataMapper(
             description = metadata.keyValues[TOKEN_DESCRIPTION_KEY].orEmpty(),
             createdAt = datePinned,
             imageUrl = pinataConfig.pinataGatewayBaseUrl.plus(ipfsPinHash),
-            authorAddress = metadata.keyValues[TOKEN_AUTHOR_ADDRESS].orEmpty(),
-            ownerAddress = metadata.keyValues[TOKEN_OWNER_ADDRESS].orEmpty(),
             tags = metadata.keyValues[TOKEN_TAGS]?.split(",") ?: emptyList<String>()
         )
     }

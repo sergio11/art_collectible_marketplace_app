@@ -58,7 +58,7 @@ fun ArtCollectibleForSaleCard(
                     .padding(bottom = 10.dp)
             ) {
                 Text(
-                    token.name,
+                    token.metadata.name,
                     fontFamily = montserratFontFamily,
                     color = Color.White,
                     style = MaterialTheme.typography.titleSmall,
@@ -68,7 +68,7 @@ fun ArtCollectibleForSaleCard(
                     textAlign = TextAlign.Left
                 )
                 Text(
-                    token.description,
+                    token.metadata.description,
                     color = whiteTranslucent,
                     fontFamily = montserratFontFamily,
                     textAlign = TextAlign.Left,
@@ -111,7 +111,7 @@ private fun ArtCollectibleForSaleImage(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(context)
-            .data(artCollectible.imageUrl)
+            .data(artCollectible.metadata.imageUrl)
             .crossfade(true)
             .build(),
         placeholder = painterResource(R.drawable.user_placeholder),

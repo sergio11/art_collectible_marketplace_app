@@ -95,7 +95,7 @@ fun MarketItemDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
-            imageUrl = artCollectibleForSale?.token?.imageUrl,
+            imageUrl = artCollectibleForSale?.token?.metadata?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
         ) {
             Box(
@@ -121,7 +121,7 @@ fun MarketItemDetailComponent(
             }
             TagsRow(
                 modifier = Modifier.padding(8.dp).fillMaxWidth(),
-                tagList = artCollectibleForSale?.token?.tags,
+                tagList = artCollectibleForSale?.token?.metadata?.tags,
                 isReadOnly = true
             )
             ArtCollectibleMiniInfoComponent(

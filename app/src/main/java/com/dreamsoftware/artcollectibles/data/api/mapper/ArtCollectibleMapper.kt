@@ -2,8 +2,8 @@ package com.dreamsoftware.artcollectibles.data.api.mapper
 
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.models.TokenMetadataDTO
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMetadata
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 
 class ArtCollectibleMapper(
@@ -13,16 +13,12 @@ class ArtCollectibleMapper(
     override fun mapInToOut(input: InputData): ArtCollectible = with(input) {
         ArtCollectible(
             id = blockchain.tokenId,
-            name = metadata.name,
-            imageUrl = metadata.imageUrl,
-            description = metadata.description.orEmpty(),
             royalty = blockchain.royalty,
+            metadata = metadata,
             author = userInfoMapper.mapInToOut(author),
             owner = userInfoMapper.mapInToOut(owner),
             favoritesCount = favoritesCount,
             hasAddedToFav = hasAddedToFav,
-            tags = metadata.tags,
-            createdAt = metadata.createdAt,
             visitorsCount = visitorsCount
         )
     }
@@ -31,7 +27,7 @@ class ArtCollectibleMapper(
         input.map(::mapInToOut)
 
     data class InputData(
-        val metadata: TokenMetadataDTO,
+        val metadata: ArtCollectibleMetadata,
         val blockchain: ArtCollectibleBlockchainDTO,
         val author: UserDTO,
         val owner: UserDTO,

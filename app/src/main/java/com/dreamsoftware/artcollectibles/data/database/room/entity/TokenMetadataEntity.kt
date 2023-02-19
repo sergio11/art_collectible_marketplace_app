@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.local.room.entity
+package com.dreamsoftware.artcollectibles.data.database.room.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

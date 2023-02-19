@@ -1,11 +1,11 @@
-package com.dreamsoftware.artcollectibles.data.local.room.database
+package com.dreamsoftware.artcollectibles.data.database.room.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.dreamsoftware.artcollectibles.data.local.room.converters.Converters
-import com.dreamsoftware.artcollectibles.data.local.room.dao.metadata.TokenMetadataDAO
-import com.dreamsoftware.artcollectibles.data.local.room.entity.TokenMetadataEntity
+import com.dreamsoftware.artcollectibles.data.database.room.converters.Converters
+import com.dreamsoftware.artcollectibles.data.database.room.dao.metadata.TokenMetadataDAO
+import com.dreamsoftware.artcollectibles.data.database.room.entity.TokenMetadataEntity
 
 @Database(entities = [TokenMetadataEntity::class], version = 1)
 @TypeConverters(Converters::class)

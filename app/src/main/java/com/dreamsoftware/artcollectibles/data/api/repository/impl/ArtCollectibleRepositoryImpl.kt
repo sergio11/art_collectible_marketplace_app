@@ -2,22 +2,17 @@ package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.*
-import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
-import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
+import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.ITokenMetadataRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
-import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
-import com.dreamsoftware.artcollectibles.data.ipfs.models.CreateTokenMetadataDTO
-import com.dreamsoftware.artcollectibles.data.ipfs.models.TokenMetadataDTO
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMintedEvent
-import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectible
-import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
+import com.dreamsoftware.artcollectibles.domain.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -27,13 +22,13 @@ import java.math.BigInteger
 
 internal class ArtCollectibleRepositoryImpl(
     private val artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
-    private val ipfsDataSource: IpfsDataSource,
     private val userDataSource: IUsersDataSource,
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
     private val favoritesDataSource: IFavoritesDataSource,
-    private val visitorsDataSource: IVisitorsDataSource
+    private val visitorsDataSource: IVisitorsDataSource,
+    private val tokenMetadataRepository: ITokenMetadataRepository
 ) : IArtCollectibleRepository {
 
     @Throws(ObserveArtCollectibleMintedEventsException::class)
@@ -59,17 +54,8 @@ internal class ArtCollectibleRepositoryImpl(
             try {
                 val credentials = walletRepository.loadCredentials()
                 with(token) {
-                    // Save token metadata into IPFS
-                    val tokenMetadata = ipfsDataSource.create(
-                        CreateTokenMetadataDTO(
-                            name = name,
-                            description = description,
-                            fileUri = fileUri,
-                            mediaType = mediaType,
-                            authorAddress = credentials.address,
-                            tags = tags
-                        )
-                    )
+                    // Save token metadata
+                    val tokenMetadata = tokenMetadataRepository.create(token.metadata)
                     // Mint new token
                     val tokenId =
                         artCollectibleDataSource.mintToken(tokenMetadata.cid, royalty,
@@ -92,8 +78,8 @@ internal class ArtCollectibleRepositoryImpl(
             val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
             // Get detail about the token
             val token = artCollectibleDataSource.getTokenById(tokenId, credentials)
-            // Delete token metadata from IPFS
-            ipfsDataSource.delete(token.metadataCID)
+            // Delete token metadata
+            tokenMetadataRepository.delete(token.metadataCID)
             // Delete token
             artCollectibleDataSource.burnToken(tokenId, credentials)
         } catch (ex: Exception) {
@@ -108,7 +94,7 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val fetchTokenFilesDeferred = async { ipfsDataSource.fetchByOwnerAddress(credentials.address) }
+                val fetchTokenFilesDeferred = async { tokenMetadataRepository.fetchByOwnerAddress(credentials.address) }
                 val getTokensOwnedDeferred = async {
                     artCollectibleDataSource.getTokensOwned(
                         userCredentialsMapper.mapOutToIn(credentials)
@@ -133,7 +119,7 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val fetchTokenFilesDeferred = async { ipfsDataSource.fetchByCreatorAddress(credentials.address) }
+                val fetchTokenFilesDeferred = async { tokenMetadataRepository.fetchByCreatorAddress(credentials.address) }
                 val getTokensCreatedDeferred = async { artCollectibleDataSource.getTokensCreated(
                     userCredentialsMapper.mapOutToIn(credentials)
                 ) }
@@ -159,16 +145,16 @@ internal class ArtCollectibleRepositoryImpl(
                 val token = artCollectibleDataSource.getTokenById(
                     tokenId, userCredentialsMapper.mapOutToIn(credentials)
                 )
-                val tokenMetadata = ipfsDataSource.fetchByCid(token.metadataCID)
+                val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
                 mapToArtCollectible(credentials, tokenMetadata, token)
             } catch (ex: Exception) {
                 throw GetTokenByIdException("An error occurred when trying to get token by id", ex)
             }
         }
 
-    private suspend fun mapToArtCollectible(credentials: UserWalletCredentials, tokenMetadata: TokenMetadataDTO, token: ArtCollectibleBlockchainDTO): ArtCollectible {
+    private suspend fun mapToArtCollectible(credentials: UserWalletCredentials, tokenMetadata: ArtCollectibleMetadata, token: ArtCollectibleBlockchainDTO): ArtCollectible {
         val tokenId = token.tokenId.toString()
-        val tokenAuthor = userDataSource.getByAddress(tokenMetadata.authorAddress)
+        val tokenAuthor = userDataSource.getByAddress(token.creator)
         val tokenOwner = userDataSource.getByAddress(token.creator)
         val visitorsCount = visitorsDataSource.count(tokenId)
         val favoritesCount = favoritesDataSource.count(tokenId)

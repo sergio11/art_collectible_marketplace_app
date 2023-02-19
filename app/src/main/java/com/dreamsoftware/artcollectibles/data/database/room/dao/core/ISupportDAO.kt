@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.local.room.dao.core
+package com.dreamsoftware.artcollectibles.data.database.room.dao.core
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy

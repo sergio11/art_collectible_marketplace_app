@@ -26,7 +26,7 @@ fun ArtCollectibleMiniInfoComponent(
 ) {
     Column(modifier = modifier) {
         Text(
-            text = artCollectible?.name ?: stringResource(id = R.string.no_text_value),
+            text = artCollectible?.metadata?.name ?: stringResource(id = R.string.no_text_value),
             fontFamily = montserratFontFamily,
             modifier = Modifier
                 .padding(8.dp)
@@ -36,7 +36,7 @@ fun ArtCollectibleMiniInfoComponent(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = artCollectible?.createdAt?.format()?.let { 
+            text = artCollectible?.metadata?.createdAt?.format()?.let {
                 stringResource(id = R.string.token_detail_created_at_label, it)
             } ?: stringResource(id = R.string.no_text_value),
             fontFamily = montserratFontFamily,
@@ -64,7 +64,7 @@ fun ArtCollectibleMiniInfoComponent(
             )
         }
         Text(
-            text = artCollectible?.description ?: stringResource(id = R.string.no_text_value),
+            text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
             fontFamily = montserratFontFamily,
             modifier = Modifier
                 .padding(8.dp)

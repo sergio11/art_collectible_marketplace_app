@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.data.api.repository.impl.*
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
+import com.dreamsoftware.artcollectibles.data.database.datasource.metadata.ITokenMetadataDatabaseDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
@@ -80,37 +81,51 @@ class DataModule {
     fun provideMarketplaceStatisticsMapper(): MarketplaceStatisticsMapper = MarketplaceStatisticsMapper()
 
     /**
+     * Provide Create Art Collectible metadata mapper
+     */
+    @Provides
+    @Singleton
+    fun provideCreateArtCollectibleMetadataMapper(): CreateArtCollectibleMetadataMapper = CreateArtCollectibleMetadataMapper()
+
+    /**
+     * Provide Token Metadata Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideTokenMetadataMapper(): TokenMetadataMapper = TokenMetadataMapper()
+
+    /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
-     * @param ipfsDataSource
      * @param userDataSource
      * @param artCollectibleMapper
      * @param walletRepository
      * @param userCredentialsMapper
      * @param favoritesDataSource
      * @param visitorsDataSource
+     * @param tokenMetadataRepository
      */
     @Provides
     @Singleton
     fun provideArtCollectiblesRepository(
         artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
-        ipfsDataSource: IpfsDataSource,
         userDataSource: IUsersDataSource,
         artCollectibleMapper: ArtCollectibleMapper,
         walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper,
         favoritesDataSource: IFavoritesDataSource,
-        visitorsDataSource: IVisitorsDataSource
+        visitorsDataSource: IVisitorsDataSource,
+        tokenMetadataRepository: ITokenMetadataRepository
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
-            ipfsDataSource,
             userDataSource,
             artCollectibleMapper,
             walletRepository,
             userCredentialsMapper,
             favoritesDataSource,
-            visitorsDataSource
+            visitorsDataSource,
+            tokenMetadataRepository
         )
 
 
@@ -235,6 +250,27 @@ class DataModule {
         preferenceDataSource: IPreferencesDataSource
     ): IPreferenceRepository =
         PreferenceRepositoryImpl(preferenceDataSource)
+
+    /**
+     * Provide Token Metadata repository
+     * @param ipfsDataSource
+     * @param tokenMetadataDatabaseDataSource
+     * @param createArtCollectibleMetadataMapper
+     * @param tokenMetadataMapper
+     */
+    @Provides
+    @Singleton
+    fun provideTokenMetadataRepository(
+        ipfsDataSource: IpfsDataSource,
+        tokenMetadataDatabaseDataSource: ITokenMetadataDatabaseDataSource,
+        createArtCollectibleMetadataMapper: CreateArtCollectibleMetadataMapper,
+        tokenMetadataMapper: TokenMetadataMapper
+    ): ITokenMetadataRepository = TokenMetadataRepositoryImpl(
+        ipfsDataSource,
+        tokenMetadataDatabaseDataSource,
+        createArtCollectibleMetadataMapper,
+        tokenMetadataMapper
+    )
 
     /**
      * Provide Favorites Repository
