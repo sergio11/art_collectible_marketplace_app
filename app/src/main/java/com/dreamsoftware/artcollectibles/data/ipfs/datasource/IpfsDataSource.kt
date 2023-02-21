@@ -35,10 +35,4 @@ interface IpfsDataSource {
      * @param creatorAddress
      */
     suspend fun fetchByCreatorAddress(creatorAddress: String): Iterable<TokenMetadataDTO>
-
-    /**
-     * Fetch By Owner Address
-     * @param ownerAddress
-     */
-    suspend fun fetchByOwnerAddress(ownerAddress: String): Iterable<TokenMetadataDTO>
 }

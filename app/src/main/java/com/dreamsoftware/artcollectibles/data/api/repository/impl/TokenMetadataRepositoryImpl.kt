@@ -1,5 +1,9 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import com.dreamsoftware.artcollectibles.data.api.exception.CreateTokenMetadataDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.DeleteTokenMetadataDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.FetchByAuthorAddressDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.FetchByCidDataException
 import com.dreamsoftware.artcollectibles.data.api.mapper.CreateArtCollectibleMetadataMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataToEntityMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataEntityMapper
@@ -32,6 +36,7 @@ internal class TokenMetadataRepositoryImpl(
     private val tokenMetadataEntityMapper: TokenMetadataEntityMapper
 ) : ITokenMetadataRepository {
 
+    @Throws(CreateTokenMetadataDataException::class)
     override suspend fun create(tokenMetadata: CreateArtCollectibleMetadata): ArtCollectibleMetadata =
         withContext(Dispatchers.Default) {
             try {
@@ -46,10 +51,11 @@ internal class TokenMetadataRepositoryImpl(
                         tokenMetadataMapper.mapInToOut(it)
                     }
             } catch (ex: Exception) {
-                throw ex
+                throw CreateTokenMetadataDataException("An error occurred when trying to save token metadata", ex)
             }
         }
 
+    @Throws(DeleteTokenMetadataDataException::class)
     override suspend fun delete(tokenCID: String) {
         withContext(Dispatchers.Default) {
             try {
@@ -58,11 +64,12 @@ internal class TokenMetadataRepositoryImpl(
                     tokenMetadataDatabaseDataSource.delete(tokenCID)
                 }
             } catch (ex: Exception) {
-                throw ex
+                throw DeleteTokenMetadataDataException("An error occurred when deleting token metadata", ex)
             }
         }
     }
 
+    @Throws(FetchByAuthorAddressDataException::class)
     override suspend fun fetchByAuthorAddress(address: String): Iterable<ArtCollectibleMetadata> =
         withContext(Dispatchers.Default) {
             try {
@@ -72,18 +79,23 @@ internal class TokenMetadataRepositoryImpl(
                     )
                 )
             } catch (ex: Exception) {
-                ipfsDataSource.fetchByCreatorAddress(address).also {
-                    tokenMetadataDatabaseDataSource.save(
-                        tokenMetadataToEntityMapper.mapInListToOutList(
-                            it
+                try {
+                    ipfsDataSource.fetchByCreatorAddress(address).also {
+                        tokenMetadataDatabaseDataSource.save(
+                            tokenMetadataToEntityMapper.mapInListToOutList(
+                                it
+                            )
                         )
-                    )
-                }.let {
-                    tokenMetadataMapper.mapInListToOutList(it)
+                    }.let {
+                        tokenMetadataMapper.mapInListToOutList(it)
+                    }
+                } catch (ex: Exception) {
+                    throw FetchByAuthorAddressDataException("An error occurred when trying to fetch token metadata", ex)
                 }
             }
         }
 
+    @Throws(FetchByCidDataException::class)
     override suspend fun fetchByCid(cid: String): ArtCollectibleMetadata =
         withContext(Dispatchers.Default) {
             try {
@@ -91,14 +103,19 @@ internal class TokenMetadataRepositoryImpl(
                     tokenMetadataDatabaseDataSource.findOneByCid(cid)
                 )
             } catch (ex: Exception) {
-                ipfsDataSource.fetchByCid(cid).also {
-                    tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInToOut(it))
-                }.let {
-                    tokenMetadataMapper.mapInToOut(it)
+                try {
+                    ipfsDataSource.fetchByCid(cid).also {
+                        tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInToOut(it))
+                    }.let {
+                        tokenMetadataMapper.mapInToOut(it)
+                    }
+                } catch (ex: Exception) {
+                    throw FetchByCidDataException("An error occurred when trying to fetch token metadata", ex)
                 }
             }
         }
 
+    @Throws(FetchByCidDataException::class)
     override suspend fun fetchByCid(cidList: Iterable<String>): Iterable<ArtCollectibleMetadata> =
         withContext(Dispatchers.Default) {
             try {
@@ -106,14 +123,18 @@ internal class TokenMetadataRepositoryImpl(
                     tokenMetadataDatabaseDataSource.findByCidList(cidList)
                 )
             } catch (ex: Exception) {
-                cidList.map { async { ipfsDataSource.fetchByCid(it) } }
-                    .awaitAll()
-                    .also {
-                        tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInListToOutList(it))
-                    }
-                    .let {
-                        tokenMetadataMapper.mapInListToOutList(it)
-                    }
+                try {
+                    cidList.map { async { ipfsDataSource.fetchByCid(it) } }
+                        .awaitAll()
+                        .also {
+                            tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInListToOutList(it))
+                        }
+                        .let {
+                            tokenMetadataMapper.mapInListToOutList(it)
+                        }
+                } catch (ex: Exception) {
+                    throw FetchByCidDataException("An error occurred when trying to fetch token metadata", ex)
+                }
             }
         }
 }

@@ -61,12 +61,4 @@ internal class PinataDataSourceImpl(
                     .rows
             )
         }
-
-    override suspend fun fetchByOwnerAddress(ownerAddress: String): Iterable<TokenMetadataDTO> =
-        safeNetworkCall {
-            tokenMetadataMapper.mapInListToOutList(
-                pinataQueryFilesService.getPinnedFileByOwnerAddress(ownerAddress)
-                    .rows
-            )
-        }
 }

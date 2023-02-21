@@ -24,11 +24,4 @@ interface IPinataQueryFilesService {
      */
     @GET("data/pinList?status=pinned")
     suspend fun getPinnedFileByCreatorAddress(@Query("keyvalues[author_address]") creatorAddress: String): PinnedFilesResponseDTO
-
-    /**
-     * Get Pinned File By Owner Address
-     * @param ownerAddress
-     */
-    @GET("data/pinList?status=pinned")
-    suspend fun getPinnedFileByOwnerAddress(@Query("keyvalues[owner_address]") ownerAddress: String): PinnedFilesResponseDTO
 }
