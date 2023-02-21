@@ -219,12 +219,14 @@ class DomainModule {
     /**
      * Provide Create Art Collectible Use case
      * @param artCollectibleRepository
+     * @param walletRepository
      */
     @Provides
     @ViewModelScoped
     fun provideCreateArtCollectibleUseCase(
-        artCollectibleRepository: IArtCollectibleRepository
-    ) = CreateArtCollectibleUseCase(artCollectibleRepository)
+        artCollectibleRepository: IArtCollectibleRepository,
+        walletRepository: IWalletRepository
+    ) = CreateArtCollectibleUseCase(artCollectibleRepository, walletRepository)
 
     /**
      * Provide Get token detail use case

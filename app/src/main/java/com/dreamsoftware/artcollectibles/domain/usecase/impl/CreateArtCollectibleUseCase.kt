@@ -1,16 +1,19 @@
 package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectibleMetadata
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
 
 class CreateArtCollectibleUseCase(
-    private val artCollectibleRepository: IArtCollectibleRepository
+    private val artCollectibleRepository: IArtCollectibleRepository,
+    private val walletRepository: IWalletRepository
 ): BaseUseCaseWithParams<CreateArtCollectibleUseCase.Params, ArtCollectible>() {
 
     override suspend fun onExecuted(params: Params): ArtCollectible = with(params) {
+        val credentials = walletRepository.loadCredentials()
         artCollectibleRepository.create(CreateArtCollectible(
             royalty = royalty,
             metadata = CreateArtCollectibleMetadata(
@@ -18,7 +21,8 @@ class CreateArtCollectibleUseCase(
                 description = description,
                 fileUri = imagePath,
                 mediaType = "image/$mediaType",
-                tags = tags
+                tags = tags,
+                authorAddress = credentials.address
             )
         ))
     }

@@ -11,5 +11,6 @@ class CreateArtCollectibleMetadata(
     val description: String? = null,
     val fileUri: String,
     val mediaType: String,
-    val tags: List<String>
+    val tags: List<String>,
+    val authorAddress: String
 )

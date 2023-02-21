@@ -13,7 +13,8 @@ class TokenMetadataMapper: IOneSideMapper<TokenMetadataDTO, ArtCollectibleMetada
             description = description.orEmpty(),
             createdAt = createdAt,
             imageUrl = imageUrl,
-            tags = tags
+            tags = tags,
+            authorAddress = authorAddress
         )
     }
 

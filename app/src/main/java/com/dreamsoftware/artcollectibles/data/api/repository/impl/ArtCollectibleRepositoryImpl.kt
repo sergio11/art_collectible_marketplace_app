@@ -94,14 +94,10 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val fetchTokenFilesDeferred = async { tokenMetadataRepository.fetchByOwnerAddress(credentials.address) }
-                val getTokensOwnedDeferred = async {
-                    artCollectibleDataSource.getTokensOwned(
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                }
-                val tokenFiles = fetchTokenFilesDeferred.await()
-                val tokens = getTokensOwnedDeferred.await()
+                val tokens = artCollectibleDataSource.getTokensOwned(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                )
+                val tokenFiles = tokenMetadataRepository.fetchByCid(tokens.map { it.metadataCID })
                 tokenFiles.mapNotNull { tokenMetadata ->
                     tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
                         mapToArtCollectible(credentials, tokenMetadata, token)
@@ -119,7 +115,7 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val fetchTokenFilesDeferred = async { tokenMetadataRepository.fetchByCreatorAddress(credentials.address) }
+                val fetchTokenFilesDeferred = async { tokenMetadataRepository.fetchByAuthorAddress(credentials.address) }
                 val getTokensCreatedDeferred = async { artCollectibleDataSource.getTokensCreated(
                     userCredentialsMapper.mapOutToIn(credentials)
                 ) }
@@ -152,23 +148,24 @@ internal class ArtCollectibleRepositoryImpl(
             }
         }
 
-    private suspend fun mapToArtCollectible(credentials: UserWalletCredentials, tokenMetadata: ArtCollectibleMetadata, token: ArtCollectibleBlockchainDTO): ArtCollectible {
-        val tokenId = token.tokenId.toString()
-        val tokenAuthor = userDataSource.getByAddress(token.creator)
-        val tokenOwner = userDataSource.getByAddress(token.creator)
-        val visitorsCount = visitorsDataSource.count(tokenId)
-        val favoritesCount = favoritesDataSource.count(tokenId)
-        val hasAddedToFav = favoritesDataSource.hasAdded(tokenId, credentials.address)
-        return artCollectibleMapper.mapInToOut(
-            ArtCollectibleMapper.InputData(
-                metadata = tokenMetadata,
-                blockchain = token,
-                author = tokenAuthor,
-                owner = tokenOwner,
-                visitorsCount = visitorsCount,
-                favoritesCount = favoritesCount,
-                hasAddedToFav = hasAddedToFav
+    private suspend fun mapToArtCollectible(credentials: UserWalletCredentials, tokenMetadata: ArtCollectibleMetadata, token: ArtCollectibleBlockchainDTO): ArtCollectible =
+        withContext(Dispatchers.IO) {
+            val tokenId = token.tokenId.toString()
+            val tokenAuthorDeferred = async { userDataSource.getByAddress(token.creator) }
+            val tokenOwnerDeferred = async { userDataSource.getByAddress(token.creator) }
+            val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
+            val favoritesCountDeferred = async { favoritesDataSource.count(tokenId) }
+            val hasAddedToFavDeferred = async { favoritesDataSource.hasAdded(tokenId, credentials.address) }
+            artCollectibleMapper.mapInToOut(
+                ArtCollectibleMapper.InputData(
+                    metadata = tokenMetadata,
+                    blockchain = token,
+                    author = tokenAuthorDeferred.await(),
+                    owner = tokenOwnerDeferred.await(),
+                    visitorsCount = visitorsCountDeferred.await(),
+                    favoritesCount = favoritesCountDeferred.await(),
+                    hasAddedToFav = hasAddedToFavDeferred.await()
+                )
             )
-        )
-    }
+        }
 }

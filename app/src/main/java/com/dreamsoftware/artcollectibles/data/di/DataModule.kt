@@ -94,6 +94,15 @@ class DataModule {
     @Singleton
     fun provideTokenMetadataMapper(): TokenMetadataMapper = TokenMetadataMapper()
 
+
+    @Provides
+    @Singleton
+    fun provideTokenMetadata2Mapper(): TokenMetadataToEntityMapper = TokenMetadataToEntityMapper()
+
+    @Provides
+    @Singleton
+    fun provideTokenMetadataEntityMapper(): TokenMetadataEntityMapper = TokenMetadataEntityMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -257,6 +266,8 @@ class DataModule {
      * @param tokenMetadataDatabaseDataSource
      * @param createArtCollectibleMetadataMapper
      * @param tokenMetadataMapper
+     * @param tokenMetadataToEntityMapper
+     * @param tokenMetadataEntityMapper
      */
     @Provides
     @Singleton
@@ -264,12 +275,16 @@ class DataModule {
         ipfsDataSource: IpfsDataSource,
         tokenMetadataDatabaseDataSource: ITokenMetadataDatabaseDataSource,
         createArtCollectibleMetadataMapper: CreateArtCollectibleMetadataMapper,
-        tokenMetadataMapper: TokenMetadataMapper
+        tokenMetadataMapper: TokenMetadataMapper,
+        tokenMetadataToEntityMapper: TokenMetadataToEntityMapper,
+        tokenMetadataEntityMapper: TokenMetadataEntityMapper
     ): ITokenMetadataRepository = TokenMetadataRepositoryImpl(
         ipfsDataSource,
         tokenMetadataDatabaseDataSource,
         createArtCollectibleMetadataMapper,
-        tokenMetadataMapper
+        tokenMetadataMapper,
+        tokenMetadataToEntityMapper,
+        tokenMetadataEntityMapper
     )
 
     /**

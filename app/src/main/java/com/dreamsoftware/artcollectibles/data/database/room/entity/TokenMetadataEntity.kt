@@ -18,10 +18,8 @@ data class TokenMetadataEntity(
     val createdAt: Date,
     @ColumnInfo(name = "image_url")
     val imageUrl: String,
-    @ColumnInfo(name = "author_address")
-    val authorAddress: String,
-    @ColumnInfo(name = "owner_address")
-    val ownerAddress: String,
     @ColumnInfo(name = "tags")
-    val tags: List<String>
+    val tags: List<String>,
+    @ColumnInfo(name = "author_address")
+    val authorAddress: String
 )

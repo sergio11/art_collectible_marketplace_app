@@ -23,5 +23,6 @@ data class ArtCollectibleMetadata(
     val imageUrl: String,
     val description: String,
     val tags: List<String>,
-    val createdAt: Date
+    val createdAt: Date,
+    val authorAddress: String
 )

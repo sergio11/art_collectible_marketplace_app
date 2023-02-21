@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a3cb5e9c72b0831ef57d52136d6e9f47",
+    "identityHash": "d1daee20e3f38fc313ce62bc5d1d7f55",
     "entities": [
       {
         "tableName": "token_metadata",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cid` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `created_at` INTEGER NOT NULL, `image_url` TEXT NOT NULL, `author_address` TEXT NOT NULL, `owner_address` TEXT NOT NULL, `tags` TEXT NOT NULL, PRIMARY KEY(`cid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cid` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `created_at` INTEGER NOT NULL, `image_url` TEXT NOT NULL, `tags` TEXT NOT NULL, `author_address` TEXT NOT NULL, PRIMARY KEY(`cid`))",
         "fields": [
           {
             "fieldPath": "cid",
@@ -39,20 +39,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "authorAddress",
-            "columnName": "author_address",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "ownerAddress",
-            "columnName": "owner_address",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "tags",
             "columnName": "tags",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorAddress",
+            "columnName": "author_address",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -70,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a3cb5e9c72b0831ef57d52136d6e9f47')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd1daee20e3f38fc313ce62bc5d1d7f55')"
     ]
   }
 }
