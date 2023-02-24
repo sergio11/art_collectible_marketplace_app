@@ -26,6 +26,7 @@ class DeleteArtCollectibleException(message: String? = null, cause: Throwable? =
 class GetTokensOwnedException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 class GetTokensCreatedException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 class GetTokenByIdException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
+class GetTokensException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 // ArtMarketplace Repository Exception
 abstract class ArtMarketplaceDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class FetchAvailableMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)

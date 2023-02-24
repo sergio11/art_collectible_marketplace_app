@@ -7,9 +7,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.*
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyOkHttpClient
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyRetrofit
-import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
-import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMintedEventMapper
-import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.*
 import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.Module
@@ -107,6 +105,18 @@ class BlockchainModule {
     fun provideArtCollectibleMintedEventMapper(): ArtCollectibleMintedEventMapper = ArtCollectibleMintedEventMapper()
 
     /**
+     * Provide Token Statistics
+     */
+    @Provides
+    @Singleton
+    fun provideTokenStatisticsMapper(): TokenStatisticsMapper = TokenStatisticsMapper()
+
+
+    @Provides
+    @Singleton
+    fun provideMarketStatisticsMapper(): MarketStatisticsMapper = MarketStatisticsMapper()
+
+    /**
      * Provider Wallet Data Source
      */
     @Provides
@@ -125,12 +135,14 @@ class BlockchainModule {
     fun provideArtCollectibleDataSource(
         artCollectibleMapper: ArtCollectibleMapper,
         artCollectibleMintedEventMapper: ArtCollectibleMintedEventMapper,
+        tokenStatisticsMapper: TokenStatisticsMapper,
         blockchainConfig: BlockchainConfig,
         web3j: Web3j
     ): IArtCollectibleBlockchainDataSource =
         ArtCollectibleBlockchainDataSourceImpl(
             artCollectibleMapper,
             artCollectibleMintedEventMapper,
+            tokenStatisticsMapper,
             blockchainConfig,
             web3j
         )
@@ -142,11 +154,13 @@ class BlockchainModule {
     @Singleton
     fun provideArtMarketplaceDataSource(
         artMarketplaceMapper: ArtMarketplaceMapper,
+        marketStatisticsMapper: MarketStatisticsMapper,
         blockchainConfig: BlockchainConfig,
         web3j: Web3j
     ): IArtMarketplaceBlockchainDataSource =
         ArtMarketplaceBlockchainDataSourceImpl(
             artMarketplaceMapper,
+            marketStatisticsMapper,
             blockchainConfig,
             web3j
         )

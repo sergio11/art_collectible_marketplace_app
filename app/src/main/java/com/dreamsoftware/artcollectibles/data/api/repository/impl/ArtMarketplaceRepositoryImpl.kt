@@ -13,6 +13,8 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSour
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
@@ -211,24 +213,61 @@ internal class ArtMarketplaceRepositoryImpl(
         }
     }
 
-    private suspend fun mapToArtCollectibleForSaleList(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
-        items.map { mapToArtCollectibleForSale(it) }
-
     private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO): ArtCollectibleForSale =
-        with(item) {
-            val token = artCollectibleRepository.getTokenById(tokenId)
-            val owner =
-                kotlin.runCatching { userInfoMapper.mapInToOut(userDataSource.getByAddress(owner)) }
-                    .getOrNull()
-            val seller = userInfoMapper.mapInToOut(userDataSource.getByAddress(seller))
-            ArtCollectibleForSale(
-                marketItemId = marketItemId,
-                token = token,
-                seller = seller,
-                owner = owner,
-                price = price,
-                sold = sold,
-                canceled = canceled
-            )
+        withContext(Dispatchers.Default) {
+            with(item) {
+                val tokenDeferred = async {
+                    artCollectibleRepository.getTokenById(tokenId)
+                }
+                val ownerDeferred = async { runCatching {
+                    userInfoMapper.mapInToOut(
+                        userDataSource.getByAddress(owner)
+                    )
+                }.getOrNull() }
+
+                val sellerDeferred =
+                    async { userInfoMapper.mapInToOut(userDataSource.getByAddress(seller)) }
+
+                ArtCollectibleForSale(
+                    marketItemId = marketItemId,
+                    token = tokenDeferred.await(),
+                    seller = sellerDeferred.await(),
+                    owner = ownerDeferred.await(),
+                    price = price,
+                    sold = sold,
+                    canceled = canceled
+                )
+            }
+        }
+
+
+    private suspend fun mapToArtCollectibleForSaleList(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
+        withContext(Dispatchers.Default) {
+            val tokensData =
+                artCollectibleRepository.getTokens(items.map(ArtCollectibleForSaleDTO::tokenId))
+            items.asSequence().map { itemForSale ->
+                async {
+                    with(itemForSale) {
+                        tokensData.find { it.id == tokenId }?.let { token ->
+                            val owner = runCatching {
+                                userInfoMapper.mapInToOut(
+                                    userDataSource.getByAddress(owner)
+                                )
+                            }.getOrNull()
+                            val seller =
+                                userInfoMapper.mapInToOut(userDataSource.getByAddress(seller))
+                            ArtCollectibleForSale(
+                                marketItemId = marketItemId,
+                                token = token,
+                                seller = seller,
+                                owner = owner,
+                                price = price,
+                                sold = sold,
+                                canceled = canceled
+                            )
+                        }
+                    }
+                }
+            }.toList().awaitAll().filterNotNull()
         }
 }

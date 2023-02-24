@@ -42,7 +42,11 @@ import org.web3j.tx.gas.ContractGasProvider;
 public class ArtMarketplaceContract extends Contract {
     public static final String BINARY = "Bin file was not provided";
 
+    public static final String FUNC_DEFAULT_COST_OF_PUTTING_FOR_SALE = "DEFAULT_COST_OF_PUTTING_FOR_SALE";
+
     public static final String FUNC_BUYITEM = "buyItem";
+
+    public static final String FUNC_COSTOFPUTTINGFORSALE = "costOfPuttingForSale";
 
     public static final String FUNC_COUNTAVAILABLEMARKETITEMS = "countAvailableMarketItems";
 
@@ -66,13 +70,29 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final String FUNC_FETCHMARKETHISTORY = "fetchMarketHistory";
 
+    public static final String FUNC_FETCHMARKETSTATISTICS = "fetchMarketStatistics";
+
     public static final String FUNC_FETCHOWNEDMARKETITEMS = "fetchOwnedMarketItems";
 
     public static final String FUNC_FETCHSELLINGMARKETITEMS = "fetchSellingMarketItems";
 
+    public static final String FUNC_FETCHWALLETSTATISTICS = "fetchWalletStatistics";
+
+    public static final String FUNC_GETARTCOLLECTIBLEADDRESS = "getArtCollectibleAddress";
+
     public static final String FUNC_ISTOKENADDEDFORSALE = "isTokenAddedForSale";
 
+    public static final String FUNC_OWNER = "owner";
+
     public static final String FUNC_PUTITEMFORSALE = "putItemForSale";
+
+    public static final String FUNC_RENOUNCEOWNERSHIP = "renounceOwnership";
+
+    public static final String FUNC_SETARTCOLLECTIBLEADDRESS = "setArtCollectibleAddress";
+
+    public static final String FUNC_SETCOSTOFPUTTINGFORSALE = "setCostOfPuttingForSale";
+
+    public static final String FUNC_TRANSFEROWNERSHIP = "transferOwnership";
 
     public static final String FUNC_WITHDRAWFROMSALE = "withdrawFromSale";
 
@@ -86,6 +106,10 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final Event ARTCOLLECTIBLEWITHDRAWNFROMSALE_EVENT = new Event("ArtCollectibleWithdrawnFromSale", 
             Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+    ;
+
+    public static final Event OWNERSHIPTRANSFERRED_EVENT = new Event("OwnershipTransferred", 
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {}, new TypeReference<Address>(true) {}));
     ;
 
     @Deprecated
@@ -207,12 +231,59 @@ public class ArtMarketplaceContract extends Contract {
         return artCollectibleWithdrawnFromSaleEventFlowable(filter);
     }
 
+    public static List<OwnershipTransferredEventResponse> getOwnershipTransferredEvents(TransactionReceipt transactionReceipt) {
+        List<EventValuesWithLog> valueList = staticExtractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, transactionReceipt);
+        ArrayList<OwnershipTransferredEventResponse> responses = new ArrayList<OwnershipTransferredEventResponse>(valueList.size());
+        for (EventValuesWithLog eventValues : valueList) {
+            OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+            typedResponse.log = eventValues.getLog();
+            typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+            typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+            responses.add(typedResponse);
+        }
+        return responses;
+    }
+
+    public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(EthFilter filter) {
+        return web3j.ethLogFlowable(filter).map(new Function<Log, OwnershipTransferredEventResponse>() {
+            @Override
+            public OwnershipTransferredEventResponse apply(Log log) {
+                EventValuesWithLog eventValues = extractEventParametersWithLog(OWNERSHIPTRANSFERRED_EVENT, log);
+                OwnershipTransferredEventResponse typedResponse = new OwnershipTransferredEventResponse();
+                typedResponse.log = log;
+                typedResponse.previousOwner = (String) eventValues.getIndexedValues().get(0).getValue();
+                typedResponse.newOwner = (String) eventValues.getIndexedValues().get(1).getValue();
+                return typedResponse;
+            }
+        });
+    }
+
+    public Flowable<OwnershipTransferredEventResponse> ownershipTransferredEventFlowable(DefaultBlockParameter startBlock, DefaultBlockParameter endBlock) {
+        EthFilter filter = new EthFilter(startBlock, endBlock, getContractAddress());
+        filter.addSingleTopic(EventEncoder.encode(OWNERSHIPTRANSFERRED_EVENT));
+        return ownershipTransferredEventFlowable(filter);
+    }
+
+    public RemoteFunctionCall<BigInteger> DEFAULT_COST_OF_PUTTING_FOR_SALE() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_DEFAULT_COST_OF_PUTTING_FOR_SALE, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
     public RemoteFunctionCall<TransactionReceipt> buyItem(BigInteger tokenId, BigInteger weiValue) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
                 FUNC_BUYITEM, 
                 Arrays.<Type>asList(new Uint256(tokenId)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
+    }
+
+    public RemoteFunctionCall<BigInteger> costOfPuttingForSale() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COSTOFPUTTINGFORSALE, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<BigInteger> countAvailableMarketItems() {
@@ -236,23 +307,23 @@ public class ArtMarketplaceContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteFunctionCall<BigInteger> countTokenBoughtByAddress() {
+    public RemoteFunctionCall<BigInteger> countTokenBoughtByAddress(String ownerAddress) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENBOUGHTBYADDRESS, 
-                Arrays.<Type>asList(), 
+                Arrays.<Type>asList(new Address(160, ownerAddress)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteFunctionCall<BigInteger> countTokenSoldByAddress() {
+    public RemoteFunctionCall<BigInteger> countTokenSoldByAddress(String ownerAddress) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENSOLDBYADDRESS, 
-                Arrays.<Type>asList(), 
+                Arrays.<Type>asList(new Address(160, ownerAddress)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
-    public RemoteFunctionCall<BigInteger> countTokenWithdrawnByAddress() {
+    public RemoteFunctionCall<BigInteger> countTokenWithdrawnByAddress(String ownerAddress) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_COUNTTOKENWITHDRAWNBYADDRESS, 
-                Arrays.<Type>asList(), 
+                Arrays.<Type>asList(new Address(160, ownerAddress)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -324,6 +395,13 @@ public class ArtMarketplaceContract extends Contract {
                 });
     }
 
+    public RemoteFunctionCall<MarketStatistics> fetchMarketStatistics() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHMARKETSTATISTICS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<MarketStatistics>() {}));
+        return executeRemoteCallSingleValueReturn(function, MarketStatistics.class);
+    }
+
     public RemoteFunctionCall<List> fetchOwnedMarketItems() {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHOWNEDMARKETITEMS, 
                 Arrays.<Type>asList(), 
@@ -354,11 +432,32 @@ public class ArtMarketplaceContract extends Contract {
                 });
     }
 
+    public RemoteFunctionCall<WalletStatistics> fetchWalletStatistics(String ownerAddress) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHWALLETSTATISTICS, 
+                Arrays.<Type>asList(new Address(160, ownerAddress)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<WalletStatistics>() {}));
+        return executeRemoteCallSingleValueReturn(function, WalletStatistics.class);
+    }
+
+    public RemoteFunctionCall<String> getArtCollectibleAddress() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETARTCOLLECTIBLEADDRESS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
+    }
+
     public RemoteFunctionCall<Boolean> isTokenAddedForSale(BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISTOKENADDEDFORSALE, 
                 Arrays.<Type>asList(new Uint256(tokenId)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
+    }
+
+    public RemoteFunctionCall<String> owner() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_OWNER, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Address>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteFunctionCall<TransactionReceipt> putItemForSale(BigInteger tokenId, BigInteger price, BigInteger weiValue) {
@@ -368,6 +467,38 @@ public class ArtMarketplaceContract extends Contract {
                 new Uint256(price)),
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function, weiValue);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> renounceOwnership() {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_RENOUNCEOWNERSHIP, 
+                Arrays.<Type>asList(), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> setArtCollectibleAddress(String artCollectibleAddress, BigInteger weiValue) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_SETARTCOLLECTIBLEADDRESS, 
+                Arrays.<Type>asList(new Address(160, artCollectibleAddress)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function, weiValue);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> setCostOfPuttingForSale(BigInteger _costOfPuttingForSale) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_SETCOSTOFPUTTINGFORSALE, 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint8(_costOfPuttingForSale)), 
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
+    }
+
+    public RemoteFunctionCall<TransactionReceipt> transferOwnership(String newOwner) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(
+                FUNC_TRANSFEROWNERSHIP, 
+                Arrays.<Type>asList(new Address(160, newOwner)),
+                Collections.<TypeReference<?>>emptyList());
+        return executeRemoteCallTransaction(function);
     }
 
     public RemoteFunctionCall<TransactionReceipt> withdrawFromSale(BigInteger tokenId) {
@@ -445,6 +576,54 @@ public class ArtMarketplaceContract extends Contract {
         }
     }
 
+    public static class MarketStatistics extends StaticStruct {
+        public BigInteger countAvailable;
+
+        public BigInteger countSold;
+
+        public BigInteger countCanceled;
+
+        public MarketStatistics(BigInteger countAvailable, BigInteger countSold, BigInteger countCanceled) {
+            super(new Uint256(countAvailable),
+                    new Uint256(countSold),
+                    new Uint256(countCanceled));
+            this.countAvailable = countAvailable;
+            this.countSold = countSold;
+            this.countCanceled = countCanceled;
+        }
+
+        public MarketStatistics(Uint256 countAvailable, Uint256 countSold, Uint256 countCanceled) {
+            super(countAvailable, countSold, countCanceled);
+            this.countAvailable = countAvailable.getValue();
+            this.countSold = countSold.getValue();
+            this.countCanceled = countCanceled.getValue();
+        }
+    }
+
+    public static class WalletStatistics extends StaticStruct {
+        public BigInteger countTokenSold;
+
+        public BigInteger countTokenBought;
+
+        public BigInteger countTokenWithdrawn;
+
+        public WalletStatistics(BigInteger countTokenSold, BigInteger countTokenBought, BigInteger countTokenWithdrawn) {
+            super(new Uint256(countTokenSold),
+                    new Uint256(countTokenBought),
+                    new Uint256(countTokenWithdrawn));
+            this.countTokenSold = countTokenSold;
+            this.countTokenBought = countTokenBought;
+            this.countTokenWithdrawn = countTokenWithdrawn;
+        }
+
+        public WalletStatistics(Uint256 countTokenSold, Uint256 countTokenBought, Uint256 countTokenWithdrawn) {
+            super(countTokenSold, countTokenBought, countTokenWithdrawn);
+            this.countTokenSold = countTokenSold.getValue();
+            this.countTokenBought = countTokenBought.getValue();
+            this.countTokenWithdrawn = countTokenWithdrawn.getValue();
+        }
+    }
+
     public static class ArtCollectibleAddedForSaleEventResponse extends BaseEventResponse {
         public BigInteger id;
 
@@ -463,5 +642,11 @@ public class ArtMarketplaceContract extends Contract {
 
     public static class ArtCollectibleWithdrawnFromSaleEventResponse extends BaseEventResponse {
         public BigInteger tokenId;
+    }
+
+    public static class OwnershipTransferredEventResponse extends BaseEventResponse {
+        public String previousOwner;
+
+        public String newOwner;
     }
 }

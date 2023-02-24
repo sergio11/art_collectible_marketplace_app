@@ -8,8 +8,10 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollecti
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.core.SupportBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtCollectibleMintedEventMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.TokenStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleMintedEventDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.TokenStatisticsDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
@@ -24,12 +26,14 @@ import java.math.BigInteger
  * Art Collectible Blockchain Data Source Impl
  * @param artCollectibleMapper
  * @param artCollectibleMintedEventMapper
+ * @param tokenStatisticsMapper
  * @param blockchainConfig
  * @param web3j
  */
 internal class ArtCollectibleBlockchainDataSourceImpl(
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val artCollectibleMintedEventMapper: ArtCollectibleMintedEventMapper,
+    private val tokenStatisticsMapper: TokenStatisticsMapper,
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j
 ) : SupportBlockchainDataSource(blockchainConfig, web3j), IArtCollectibleBlockchainDataSource {
@@ -118,6 +122,21 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
                 loadContract(credentials, readOnlyMode = true).getTokenById(tokenId).send()
             artCollectibleMapper.mapInToOut(collectible)
         }
+
+    override suspend fun getTokens(
+        tokenList: Iterable<BigInteger>,
+        credentials: Credentials
+    ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
+        val collectibleList =
+            loadContract(credentials, readOnlyMode = true).getTokens(tokenList.toList()).send() as List<ArtCollectible>
+        artCollectibleMapper.mapInListToOutList(collectibleList)
+    }
+
+    override suspend fun fetchTokensStatisticsByAddress(credentials: Credentials): TokenStatisticsDTO = withContext(Dispatchers.IO) {
+        val tokensStatistics = loadContract(credentials, readOnlyMode = true)
+            .fetchTokensStatisticsByAddress(credentials.address).send()
+        tokenStatisticsMapper.mapInToOut(tokensStatistics)
+    }
 
 
     private fun loadContract(

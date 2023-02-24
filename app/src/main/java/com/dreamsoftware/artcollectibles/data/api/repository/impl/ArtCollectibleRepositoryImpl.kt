@@ -15,6 +15,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataS
 import com.dreamsoftware.artcollectibles.domain.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -58,10 +59,15 @@ internal class ArtCollectibleRepositoryImpl(
                     val tokenMetadata = tokenMetadataRepository.create(token.metadata)
                     // Mint new token
                     val tokenId =
-                        artCollectibleDataSource.mintToken(tokenMetadata.cid, royalty,
-                            userCredentialsMapper.mapOutToIn(credentials))
+                        artCollectibleDataSource.mintToken(
+                            tokenMetadata.cid, royalty,
+                            userCredentialsMapper.mapOutToIn(credentials)
+                        )
                     // Get detail about the token already minted
-                    val tokenMinted = artCollectibleDataSource.getTokenById(tokenId, userCredentialsMapper.mapOutToIn(credentials))
+                    val tokenMinted = artCollectibleDataSource.getTokenById(
+                        tokenId,
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
                     mapToArtCollectible(credentials, tokenMetadata, tokenMinted)
                 }
             } catch (ex: Exception) {
@@ -115,10 +121,13 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val fetchTokenFilesDeferred = async { tokenMetadataRepository.fetchByAuthorAddress(credentials.address) }
-                val getTokensCreatedDeferred = async { artCollectibleDataSource.getTokensCreated(
-                    userCredentialsMapper.mapOutToIn(credentials)
-                ) }
+                val fetchTokenFilesDeferred =
+                    async { tokenMetadataRepository.fetchByAuthorAddress(credentials.address) }
+                val getTokensCreatedDeferred = async {
+                    artCollectibleDataSource.getTokensCreated(
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
+                }
                 val tokenFiles = fetchTokenFilesDeferred.await()
                 val tokens = getTokensCreatedDeferred.await()
                 tokenFiles.mapNotNull { tokenMetadata ->
@@ -148,14 +157,40 @@ internal class ArtCollectibleRepositoryImpl(
             }
         }
 
-    private suspend fun mapToArtCollectible(credentials: UserWalletCredentials, tokenMetadata: ArtCollectibleMetadata, token: ArtCollectibleBlockchainDTO): ArtCollectible =
+    @Throws(GetTokensException::class)
+    override suspend fun getTokens(tokenList: Iterable<BigInteger>): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                artCollectibleDataSource.getTokens(
+                    tokenList,
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ).asSequence()
+                    .map { token ->
+                        async {
+                            val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
+                            mapToArtCollectible(credentials, tokenMetadata, token)
+                        }
+                    }
+                    .toList().awaitAll()
+            } catch (ex: Exception) {
+                throw GetTokensException("An error occurred when trying to get tokens", ex)
+            }
+        }
+
+    private suspend fun mapToArtCollectible(
+        credentials: UserWalletCredentials,
+        tokenMetadata: ArtCollectibleMetadata,
+        token: ArtCollectibleBlockchainDTO
+    ): ArtCollectible =
         withContext(Dispatchers.IO) {
             val tokenId = token.tokenId.toString()
             val tokenAuthorDeferred = async { userDataSource.getByAddress(token.creator) }
             val tokenOwnerDeferred = async { userDataSource.getByAddress(token.creator) }
             val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
             val favoritesCountDeferred = async { favoritesDataSource.count(tokenId) }
-            val hasAddedToFavDeferred = async { favoritesDataSource.hasAdded(tokenId, credentials.address) }
+            val hasAddedToFavDeferred =
+                async { favoritesDataSource.hasAdded(tokenId, credentials.address) }
             artCollectibleMapper.mapInToOut(
                 ArtCollectibleMapper.InputData(
                     metadata = tokenMetadata,

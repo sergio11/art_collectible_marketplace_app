@@ -45,4 +45,10 @@ interface IArtCollectibleRepository {
      */
     @Throws(GetTokenByIdException::class)
     suspend fun getTokenById(tokenId: BigInteger): ArtCollectible
+
+    /**
+     * Retrieve token list
+     */
+    @Throws(GetTokensException::class)
+    suspend fun getTokens(tokenList: Iterable<BigInteger>): Iterable<ArtCollectible>
 }

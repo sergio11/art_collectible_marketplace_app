@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplac
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.MarketStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ import java.math.BigInteger
 
 internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val artMarketplaceMapper: ArtMarketplaceMapper,
+    private val marketStatisticsMapper: MarketStatisticsMapper,
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j,
 ) : IArtMarketplaceBlockchainDataSource {
@@ -94,13 +96,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     override suspend fun fetchMarketplaceStatistics(credentials: Credentials): MarketplaceStatisticsDTO =
         withContext(Dispatchers.IO) {
-            with(loadContract(credentials)) {
-                MarketplaceStatisticsDTO(
-                    countSoldMarketItems = countSoldMarketItems().send(),
-                    countAvailableMarketItems = countAvailableMarketItems().send(),
-                    countCanceledMarketItems = countCanceledMarketItems().send()
-                )
-            }
+            marketStatisticsMapper.mapInToOut(loadContract(credentials).fetchMarketStatistics().send())
         }
 
     private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) =
