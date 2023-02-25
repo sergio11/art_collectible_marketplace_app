@@ -191,4 +191,14 @@ class FirebaseModule {
     fun provideVisitorsDataSource(
         firebaseStore: FirebaseFirestore
     ): IVisitorsDataSource = VisitorsDataSourceImpl(firebaseStore)
+
+    /**
+     * Provide Followers Data Source
+     * @param firebaseStore
+     */
+    @Provides
+    @Singleton
+    fun provideFollowersDataSource(
+        firebaseStore: FirebaseFirestore
+    ): IFollowersDataSource = FollowersDataSourceImpl(firebaseStore)
 }

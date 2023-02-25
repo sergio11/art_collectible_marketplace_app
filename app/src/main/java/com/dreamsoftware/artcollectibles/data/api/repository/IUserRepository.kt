@@ -20,6 +20,9 @@ interface IUserRepository {
     @Throws(GetDetailException::class)
     suspend fun get(uid: String): UserInfo
 
+    @Throws(GetDetailException::class)
+    suspend fun getByAddress(userAddress: String): UserInfo
+
     @Throws(SaveUserException::class)
     suspend fun save(userInfo: UserInfo)
 

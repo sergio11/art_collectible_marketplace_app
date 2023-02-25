@@ -3,45 +3,37 @@ package com.dreamsoftware.artcollectibles.data.api.mapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.utils.IMapper
+import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 
-class UserInfoMapper: IMapper<UserDTO, UserInfo> {
+class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
 
-    override fun mapInToOut(input: UserDTO): UserInfo = with(input) {
-        UserInfo(
-            uid = uid,
-            name = name,
-            professionalTitle = professionalTitle,
-            info = info,
-            contact = contact.orEmpty(),
-            walletAddress = walletAddress,
-            photoUrl = photoUrl,
-            birthdate = birthdate,
-            externalProviderAuthType = externalProviderAuth?.let {
-                enumValueOf<ExternalProviderAuthTypeEnum>(it)
-            },
-            location = location
-        )
+    override fun mapInToOut(input: InputData): UserInfo = with(input) {
+        with(user) {
+            UserInfo(
+                uid = uid,
+                name = name,
+                professionalTitle = professionalTitle,
+                info = info,
+                contact = contact.orEmpty(),
+                walletAddress = walletAddress,
+                photoUrl = photoUrl,
+                birthdate = birthdate,
+                externalProviderAuthType = externalProviderAuth?.let {
+                    enumValueOf<ExternalProviderAuthTypeEnum>(it)
+                },
+                location = location,
+                followers = followers,
+                following = following
+            )
+        }
     }
 
-    override fun mapInListToOutList(input: Iterable<UserDTO>): Iterable<UserInfo> =
+    override fun mapInListToOutList(input: Iterable<InputData>): Iterable<UserInfo> =
         input.map(::mapInToOut)
 
-    override fun mapOutToIn(input: UserInfo): UserDTO = with(input) {
-        UserDTO(
-            uid = uid,
-            name = name,
-            professionalTitle = professionalTitle,
-            info = info,
-            contact = contact,
-            walletAddress = walletAddress,
-            photoUrl = photoUrl,
-            birthdate = birthdate,
-            externalProviderAuth = externalProviderAuthType?.name,
-            location = location
-        )
-    }
-
-    override fun mapOutListToInList(input: Iterable<UserInfo>): Iterable<UserDTO> =
-        input.map(::mapOutToIn)
+    data class InputData(
+        val user: UserDTO,
+        val followers: Long,
+        val following: Long
+    )
 }

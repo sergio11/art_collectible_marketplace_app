@@ -6,11 +6,11 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.ITokenMetadataRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
@@ -25,7 +25,7 @@ import java.math.BigInteger
 
 internal class ArtCollectibleRepositoryImpl(
     private val artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
-    private val userDataSource: IUsersDataSource,
+    private val userRepository: IUserRepository,
     private val artCollectibleMapper: ArtCollectibleMapper,
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
@@ -212,8 +212,8 @@ internal class ArtCollectibleRepositoryImpl(
     ): ArtCollectible =
         withContext(Dispatchers.IO) {
             val tokenId = token.tokenId.toString()
-            val tokenAuthorDeferred = async { userDataSource.getByAddress(token.creator) }
-            val tokenOwnerDeferred = async { userDataSource.getByAddress(token.creator) }
+            val tokenAuthorDeferred = async { userRepository.getByAddress(token.creator) }
+            val tokenOwnerDeferred = async { userRepository.getByAddress(token.creator) }
             val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
             val favoritesCountDeferred = async { favoritesDataSource.count(tokenId) }
             val hasAddedToFavDeferred =

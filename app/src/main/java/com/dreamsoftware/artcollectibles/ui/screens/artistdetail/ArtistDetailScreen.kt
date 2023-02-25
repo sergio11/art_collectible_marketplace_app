@@ -19,6 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -102,6 +104,35 @@ fun ArtistDetailComponent(
             Row(
                 modifier = defaultModifier,
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = userInfo?.followers?.let {
+                        stringResource(id = R.string.profile_followers_count_text, it)
+                    } ?: stringResource(id = R.string.no_text_value),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = montserratFontFamily,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    modifier = Modifier.padding(start = 6.dp),
+                    text = userInfo?.following?.let {
+                        stringResource(id = R.string.profile_following_count_text, it)
+                    } ?: stringResource(id = R.string.no_text_value),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = montserratFontFamily,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
+            UserStatisticsComponent(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp, vertical = 8.dp),
+                itemSize = 30.dp,
+                userInfo = userInfo
+            )
+            Row(
+                modifier = defaultModifier,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 userInfo?.location?.let {
@@ -110,6 +141,16 @@ fun ArtistDetailComponent(
                         text = it
                     )
                 }
+            }
+            Row(
+                modifier = defaultModifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextWithImage(
+                    imageRes = R.drawable.user_mail_icon,
+                    text = userInfo?.contact ?: stringResource(id = R.string.no_text_value)
+                )
                 userInfo?.birthdate?.let {
                     TextWithImage(
                         imageRes = R.drawable.user_birthdate_icon,
@@ -117,11 +158,6 @@ fun ArtistDetailComponent(
                     )
                 }
             }
-            TextWithImage(
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                imageRes = R.drawable.user_mail_icon,
-                text = userInfo?.contact ?: stringResource(id = R.string.no_text_value)
-            )
             Text(
                 modifier = defaultModifier,
                 text = userInfo?.info?.let {
@@ -131,11 +167,6 @@ fun ArtistDetailComponent(
                 } ?: stringResource(id = R.string.no_text_value),
                 fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.bodyLarge
-            )
-            UserStatisticsComponent(
-                modifier = defaultModifier,
-                itemSize = 40.dp,
-                userInfo = userInfo
             )
         }
     }

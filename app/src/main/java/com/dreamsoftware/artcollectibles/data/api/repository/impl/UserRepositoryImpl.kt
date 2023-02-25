@@ -6,16 +6,21 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFollowersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.domain.models.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 /**
  * User Repository Impl
  * @param authDataSource
  * @param userDataSource
  * @param storageDataSource
+ * @param followerDataSource
  * @param userInfoMapper
  * @param saveUserInfoMapper
  * @param authUserMapper
@@ -24,6 +29,7 @@ internal class UserRepositoryImpl(
     private val authDataSource: IAuthDataSource,
     private val userDataSource: IUsersDataSource,
     private val storageDataSource: IStorageDataSource,
+    private val followerDataSource: IFollowersDataSource,
     private val userInfoMapper: UserInfoMapper,
     private val saveUserInfoMapper: SaveUserInfoMapper,
     private val authUserMapper: AuthUserMapper
@@ -73,12 +79,41 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(GetDetailException::class)
-    override suspend fun get(uid: String): UserInfo = try {
-        val userInfo = userDataSource.getById(uid)
-        userInfoMapper.mapInToOut(userInfo)
-    } catch (ex: Exception) {
-        ex.printStackTrace()
-        throw GetDetailException("An error occurred when trying to get the user information", ex)
+    override suspend fun get(uid: String): UserInfo = withContext(Dispatchers.Default) {
+        try {
+            val userInfoDeferred = async { userDataSource.getById(uid) }
+            val countFollowersDeferred = async { followerDataSource.countFollowers(uid) }
+            val countFollowingDeferred = async { followerDataSource.countFollowing(uid) }
+            userInfoMapper.mapInToOut(
+                UserInfoMapper.InputData(
+                    user = userInfoDeferred.await(),
+                    followers = countFollowersDeferred.await(),
+                    following = countFollowingDeferred.await()
+                )
+            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            throw GetDetailException("An error occurred when trying to get the user information", ex)
+        }
+    }
+
+    @Throws(GetDetailException::class)
+    override suspend fun getByAddress(userAddress: String): UserInfo = withContext(Dispatchers.Default) {
+        try {
+            val userInfo = userDataSource.getByAddress(userAddress)
+            val countFollowersDeferred = async { followerDataSource.countFollowers(userInfo.uid) }
+            val countFollowingDeferred = async { followerDataSource.countFollowing(userInfo.uid) }
+            userInfoMapper.mapInToOut(
+                UserInfoMapper.InputData(
+                    user = userInfo,
+                    followers = countFollowersDeferred.await(),
+                    following = countFollowingDeferred.await()
+                )
+            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            throw GetDetailException("An error occurred when trying to get the user information", ex)
+        }
     }
 
     @Throws(SaveUserException::class)
@@ -123,11 +158,22 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(SearchUserException::class)
-    override suspend fun search(term: String?): Iterable<UserInfo> = try {
-        userInfoMapper.mapInListToOutList(term?.let {
-            userDataSource.findUsersByName(it)
-        } ?: userDataSource.getAll())
-    } catch (ex: Exception) {
-        throw SearchUserException("An error occurred when trying to find users", ex)
+    override suspend fun search(term: String?): Iterable<UserInfo> = withContext(Dispatchers.IO) {
+        try {
+            val users = term?.let {
+                userDataSource.findUsersByName(it)
+            } ?: userDataSource.getAll()
+            users.map {
+                val countFollowersDeferred = async { followerDataSource.countFollowers(it.uid) }
+                val countFollowingDeferred = async { followerDataSource.countFollowing(it.uid) }
+                userInfoMapper.mapInToOut(UserInfoMapper.InputData(
+                    user = it,
+                    followers = countFollowersDeferred.await(),
+                    following = countFollowingDeferred.await()
+                ))
+            }
+        } catch (ex: Exception) {
+            throw SearchUserException("An error occurred when trying to find users", ex)
+        }
     }
 }

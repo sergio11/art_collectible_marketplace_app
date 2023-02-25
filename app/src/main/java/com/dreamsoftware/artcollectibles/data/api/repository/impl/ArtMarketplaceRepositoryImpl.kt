@@ -6,10 +6,9 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepo
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtMarketplaceRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
+import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +20,8 @@ import java.math.BigInteger
 /**
  * Art Marketplace Repository Impl
  * @param artMarketplaceBlockchainDataSource
+ * @param userRepository
  * @param artCollectibleRepository
- * @param userDataSource
- * @param userInfoMapper
  * @param walletRepository
  * @param userCredentialsMapper
  * @param marketplaceStatisticsMapper
@@ -31,8 +29,7 @@ import java.math.BigInteger
 internal class ArtMarketplaceRepositoryImpl(
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
     private val artCollectibleRepository: IArtCollectibleRepository,
-    private val userDataSource: IUsersDataSource,
-    private val userInfoMapper: UserInfoMapper,
+    private val userRepository: IUserRepository,
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
     private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper
@@ -220,14 +217,9 @@ internal class ArtMarketplaceRepositoryImpl(
                     artCollectibleRepository.getTokenById(tokenId)
                 }
                 val ownerDeferred = async { runCatching {
-                    userInfoMapper.mapInToOut(
-                        userDataSource.getByAddress(owner)
-                    )
+                    userRepository.getByAddress(owner)
                 }.getOrNull() }
-
-                val sellerDeferred =
-                    async { userInfoMapper.mapInToOut(userDataSource.getByAddress(seller)) }
-
+                val sellerDeferred = async { userRepository.getByAddress(seller) }
                 ArtCollectibleForSale(
                     marketItemId = marketItemId,
                     token = tokenDeferred.await(),
@@ -250,12 +242,9 @@ internal class ArtMarketplaceRepositoryImpl(
                     with(itemForSale) {
                         tokensData.find { it.id == tokenId }?.let { token ->
                             val owner = runCatching {
-                                userInfoMapper.mapInToOut(
-                                    userDataSource.getByAddress(owner)
-                                )
+                                userRepository.getByAddress(owner)
                             }.getOrNull()
-                            val seller =
-                                userInfoMapper.mapInToOut(userDataSource.getByAddress(seller))
+                            val seller = userRepository.getByAddress(seller)
                             ArtCollectibleForSale(
                                 marketItemId = marketItemId,
                                 token = token,

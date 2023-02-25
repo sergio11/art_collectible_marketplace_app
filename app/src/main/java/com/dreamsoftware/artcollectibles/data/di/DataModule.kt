@@ -60,8 +60,8 @@ class DataModule {
      */
     @Provides
     @Singleton
-    fun provideArtCollectibleMapper(userInfoMapper: UserInfoMapper): ArtCollectibleMapper =
-        ArtCollectibleMapper(userInfoMapper)
+    fun provideArtCollectibleMapper(): ArtCollectibleMapper =
+        ArtCollectibleMapper()
 
     /**
      * Provide User Credentials Mapper
@@ -114,7 +114,7 @@ class DataModule {
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
-     * @param userDataSource
+     * @param userRepository
      * @param artCollectibleMapper
      * @param walletRepository
      * @param userCredentialsMapper
@@ -126,7 +126,7 @@ class DataModule {
     @Singleton
     fun provideArtCollectiblesRepository(
         artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
-        userDataSource: IUsersDataSource,
+        userRepository: IUserRepository,
         artCollectibleMapper: ArtCollectibleMapper,
         walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper,
@@ -137,7 +137,7 @@ class DataModule {
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
-            userDataSource,
+            userRepository,
             artCollectibleMapper,
             walletRepository,
             userCredentialsMapper,
@@ -152,8 +152,7 @@ class DataModule {
      * Provide Art Marketplace Repository
      * @param artMarketplaceBlockchainDataSource
      * @param artCollectibleRepository
-     * @param userDataSource
-     * @param userInfoMapper
+     * @param userRepository
      * @param walletRepository
      * @param userCredentialsMapper
      * @param marketplaceStatisticsMapper
@@ -163,8 +162,7 @@ class DataModule {
     fun provideArtMarketplaceRepository(
         artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
         artCollectibleRepository: IArtCollectibleRepository,
-        userDataSource: IUsersDataSource,
-        userInfoMapper: UserInfoMapper,
+        userRepository: IUserRepository,
         walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper,
         marketplaceStatisticsMapper: MarketplaceStatisticsMapper
@@ -172,8 +170,7 @@ class DataModule {
         ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource,
             artCollectibleRepository,
-            userDataSource,
-            userInfoMapper,
+            userRepository,
             walletRepository,
             userCredentialsMapper,
             marketplaceStatisticsMapper
@@ -183,7 +180,11 @@ class DataModule {
      * Provide User Repository
      * @param authDataSource
      * @param userDataSource
+     * @param storageDataSource
+     * @param followerDataSource
      * @param userInfoMapper
+     * @param saveUserInfoMapper
+     * @param authUserMapper
      */
     @Provides
     @Singleton
@@ -191,6 +192,7 @@ class DataModule {
         authDataSource: IAuthDataSource,
         userDataSource: IUsersDataSource,
         storageDataSource: IStorageDataSource,
+        followerDataSource: IFollowersDataSource,
         userInfoMapper: UserInfoMapper,
         saveUserInfoMapper: SaveUserInfoMapper,
         authUserMapper: AuthUserMapper
@@ -199,6 +201,7 @@ class DataModule {
             authDataSource,
             userDataSource,
             storageDataSource,
+            followerDataSource,
             userInfoMapper,
             saveUserInfoMapper,
             authUserMapper
@@ -214,6 +217,7 @@ class DataModule {
      * @param passwordUtils
      * @param walletDataSource
      * @param faucetBlockchainDataSource
+     * @param walletMetadataMemoryCache
      */
     @Provides
     @Singleton

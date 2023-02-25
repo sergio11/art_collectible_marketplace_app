@@ -33,3 +33,12 @@ class RemoveFromFavoritesException(message: String? = null, cause: Throwable? = 
 // Visitors Data Source
 class AddVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+// Followers Data Source
+class AddFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class RemoveFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetFollowersException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetFollowingException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class CountFollowersException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class CountFollowingException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class CheckFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

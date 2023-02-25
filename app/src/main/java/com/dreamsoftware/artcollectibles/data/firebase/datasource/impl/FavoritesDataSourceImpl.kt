@@ -71,33 +71,37 @@ internal class FavoritesDataSourceImpl(
 
     @Throws(AddToFavoritesException::class)
     override suspend fun add(tokenId: String, userAddress: String) {
-        try {
-            firebaseStore.collection(COLLECTION_NAME).apply {
-                document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
-                document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
-                document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
-                document(userAddress + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME).apply {
+                    document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
+                    document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
+                    document(userAddress + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                }
+            } catch (ex: FirebaseException) {
+                throw ex
+            } catch (ex: Exception) {
+                throw AddToFavoritesException("An error occurred when trying to save favorite", ex)
             }
-        } catch (ex: FirebaseException) {
-            throw ex
-        } catch (ex: Exception) {
-            throw AddToFavoritesException("An error occurred when trying to save favorite", ex)
         }
     }
 
     @Throws(RemoveFromFavoritesException::class)
     override suspend fun remove(tokenId: String, userAddress: String) {
-        try {
-            firebaseStore.collection(COLLECTION_NAME).apply {
-                document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userAddress)), SetOptions.merge()).await()
-                document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
-                document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
-                document(userAddress + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME).apply {
+                    document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userAddress)), SetOptions.merge()).await()
+                    document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
+                    document(userAddress + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                }
+            } catch (ex: FirebaseException) {
+                throw ex
+            } catch (ex: Exception) {
+                throw RemoveFromFavoritesException("An error occurred when trying to remove from favorites", ex)
             }
-        } catch (ex: FirebaseException) {
-            throw ex
-        } catch (ex: Exception) {
-            throw RemoveFromFavoritesException("An error occurred when trying to remove from favorites", ex)
         }
     }
 }

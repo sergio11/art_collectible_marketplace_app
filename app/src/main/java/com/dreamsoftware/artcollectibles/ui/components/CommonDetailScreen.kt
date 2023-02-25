@@ -69,7 +69,7 @@ fun CommonDetailScreen(
         )
         //....................
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.Start,
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Spacer(Modifier.height(HEADER_HEIGHT))

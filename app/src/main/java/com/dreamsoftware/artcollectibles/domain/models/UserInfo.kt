@@ -14,5 +14,7 @@ data class UserInfo(
     val tokensSoldCount: Long = 0,
     val tokensBoughtCount: Long = 0,
     val tokensOwnedCount: Long = 0,
-    val tokensCreatedCount: Long = 0
+    val tokensCreatedCount: Long = 0,
+    val followers: Long = 0,
+    val following: Long = 0
 )
