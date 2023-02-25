@@ -14,7 +14,8 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
         const val CONTACT_KEY = "contact"
         const val PHOTO_KEY = "photo"
         const val BIRTHDATE_KEY = "birthdate"
-        const val EXTERNAL_PROVIDER_AUTH = "externalProviderAuth"
+        const val EXTERNAL_PROVIDER_AUTH_KEY = "externalProviderAuth"
+        const val LOCATION_KEY = "location"
     }
 
     override fun mapInToOut(input: SaveUserDTO): Map<String, Any?> = with(input) {
@@ -22,13 +23,14 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
             UID_KEY to uid,
             NAME_KEY to name,
             WALLET_ADDRESS_KEY to walletAddress,
-            EXTERNAL_PROVIDER_AUTH to externalAuthProvider
+            EXTERNAL_PROVIDER_AUTH_KEY to externalAuthProvider
         ).apply {
             professionalTitle?.let { put(PROFESSIONAL_TITLE_KEY, it) }
             contact?.let { put(CONTACT_KEY, it) }
             photoUrl?.let { put(PHOTO_KEY, it) }
             info?.let { put(INFO_KEY, it) }
             birthdate?.let { put(BIRTHDATE_KEY, it) }
+            location?.let { put(LOCATION_KEY, it) }
         }
     }
 

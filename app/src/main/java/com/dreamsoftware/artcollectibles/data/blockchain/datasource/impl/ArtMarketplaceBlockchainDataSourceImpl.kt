@@ -6,8 +6,10 @@ import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplac
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.MarketStatisticsMapper
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.WalletStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletStatisticsDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
@@ -20,6 +22,7 @@ import java.math.BigInteger
 internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val artMarketplaceMapper: ArtMarketplaceMapper,
     private val marketStatisticsMapper: MarketStatisticsMapper,
+    private val walletStatisticsMapper: WalletStatisticsMapper,
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j,
 ) : IArtMarketplaceBlockchainDataSource {
@@ -97,6 +100,11 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     override suspend fun fetchMarketplaceStatistics(credentials: Credentials): MarketplaceStatisticsDTO =
         withContext(Dispatchers.IO) {
             marketStatisticsMapper.mapInToOut(loadContract(credentials).fetchMarketStatistics().send())
+        }
+
+    override suspend fun fetchWalletStatistics(credentials: Credentials, ownerAddress: String): WalletStatisticsDTO =
+        withContext(Dispatchers.IO) {
+            walletStatisticsMapper.mapInToOut(loadContract(credentials).fetchWalletStatistics(ownerAddress).send())
         }
 
     private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) =

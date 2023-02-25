@@ -155,12 +155,14 @@ class BlockchainModule {
     fun provideArtMarketplaceDataSource(
         artMarketplaceMapper: ArtMarketplaceMapper,
         marketStatisticsMapper: MarketStatisticsMapper,
+        walletStatisticsMapper: WalletStatisticsMapper,
         blockchainConfig: BlockchainConfig,
         web3j: Web3j
     ): IArtMarketplaceBlockchainDataSource =
         ArtMarketplaceBlockchainDataSourceImpl(
             artMarketplaceMapper,
             marketStatisticsMapper,
+            walletStatisticsMapper,
             blockchainConfig,
             web3j
         )

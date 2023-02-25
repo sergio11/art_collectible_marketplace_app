@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletStatisticsDTO
 import org.web3j.crypto.Credentials
 import java.math.BigInteger
 
@@ -73,5 +74,12 @@ interface IArtMarketplaceBlockchainDataSource {
      * @param credentials
      */
     suspend fun fetchMarketplaceStatistics(credentials: Credentials): MarketplaceStatisticsDTO
+
+    /**
+     * Fetch Wallet Statistics
+     * @param credentials
+     * @param ownerAddress
+     */
+    suspend fun fetchWalletStatistics(credentials: Credentials, ownerAddress: String): WalletStatisticsDTO
 
 }

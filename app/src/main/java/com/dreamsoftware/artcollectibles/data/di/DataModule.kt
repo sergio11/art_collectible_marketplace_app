@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.*
 import com.dreamsoftware.artcollectibles.data.api.repository.impl.*
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
 import com.dreamsoftware.artcollectibles.data.blockchain.di.BlockchainModule
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.WalletStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.database.datasource.metadata.ITokenMetadataDatabaseDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
@@ -105,6 +106,10 @@ class DataModule {
     @Provides
     @Singleton
     fun provideTokenMetadataEntityMapper(): TokenMetadataEntityMapper = TokenMetadataEntityMapper()
+
+    @Provides
+    @Singleton
+    fun provideWalletStatisticsMapper(): WalletStatisticsMapper = WalletStatisticsMapper()
 
     /**
      * Provide Art Collectibles Repository

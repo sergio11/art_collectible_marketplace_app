@@ -62,6 +62,8 @@
     <string name="profile_input_name_placeholder">Your name</string>
     <string name="profile_input_professional_title_label">Professional Title</string>
     <string name="profile_input_professional_title_placeholder">Your professional title</string>
+    <string name="profile_input_location_label">Location</string>
+    <string name="profile_input_location_placeholder">Your location</string>
     <string name="profile_input_wallet_address_label">Wallet Address</string>
     <string name="profile_input_wallet_address_placeholder">Your Wallet Address</string>
     <string name="profile_input_birthdate_label">Birthdate</string>

@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,21 +49,29 @@ fun ArtCollectibleMiniInfoComponent(
             style = MaterialTheme.typography.titleSmall
         )
         Row {
-            TokenCreatorInfoComponent(
+            TextWithImage(
                 modifier = Modifier.padding(8.dp),
-                artCollectible?.author
+                imageRes = R.drawable.token_creator_icon,
+                text = artCollectible?.author?.name ?: stringResource(id = R.string.no_text_value)
             )
-            TokenRoyaltyComponent(
+            TextWithImage(
                 modifier = Modifier.padding(8.dp),
-                artCollectible?.royalty
+                imageRes = R.drawable.crown,
+                text = artCollectible?.royalty?.let { "$it%" } ?: stringResource(id = R.string.no_text_value)
             )
             FavoriteCountComponent(
                 modifier = Modifier.padding(8.dp),
                 artCollectible = artCollectible
             )
-            VisitorsCountComponent(
+            TextWithIcon(
                 modifier = Modifier.padding(8.dp),
-                artCollectible = artCollectible
+                icon = if ((artCollectible?.visitorsCount ?: 0) > 0) {
+                    Icons.Filled.Visibility
+                } else {
+                    Icons.Filled.VisibilityOff
+                },
+                text = artCollectible?.visitorsCount?.toString()
+                    ?: stringResource(id = R.string.no_text_value_small)
             )
         }
         Text(

@@ -78,6 +78,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onLocationChanged(newLocation: String) {
+        if (isProfileLoaded()) {
+            updateState {
+                it.copy(userInfo = it.userInfo?.copy(location = newLocation))
+            }
+        }
+    }
+
     fun load() {
         onLoading()
         loadProfileData()

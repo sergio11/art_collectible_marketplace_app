@@ -19,7 +19,8 @@ class UserInfoMapper: IMapper<UserDTO, UserInfo> {
             birthdate = birthdate,
             externalProviderAuthType = externalProviderAuth?.let {
                 enumValueOf<ExternalProviderAuthTypeEnum>(it)
-            }
+            },
+            location = location
         )
     }
 
@@ -36,7 +37,8 @@ class UserInfoMapper: IMapper<UserDTO, UserInfo> {
             walletAddress = walletAddress,
             photoUrl = photoUrl,
             birthdate = birthdate,
-            externalProviderAuth = externalProviderAuthType?.name
+            externalProviderAuth = externalProviderAuthType?.name,
+            location = location
         )
     }
 

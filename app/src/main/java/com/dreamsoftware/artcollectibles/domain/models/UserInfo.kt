@@ -10,6 +10,7 @@ data class UserInfo(
     val walletAddress: String,
     val birthdate: String? = null,
     val externalProviderAuthType: ExternalProviderAuthTypeEnum? = null,
+    val location: String? = null,
     val tokensSoldCount: Long = 0,
     val tokensBoughtCount: Long = 0,
     val tokensOwnedCount: Long = 0,

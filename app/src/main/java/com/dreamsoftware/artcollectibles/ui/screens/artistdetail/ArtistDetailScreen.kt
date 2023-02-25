@@ -2,6 +2,8 @@ package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -25,6 +28,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.TextWithImage
 import com.dreamsoftware.artcollectibles.ui.components.UserStatisticsComponent
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -82,7 +86,7 @@ fun ArtistDetailComponent(
             imageUrl = userInfo?.photoUrl,
             title = userInfo?.name?.ifBlank {
                 stringResource(id = R.string.search_user_info_name_empty)
-            } ?:  stringResource(id = R.string.search_user_info_name_empty)
+            } ?: stringResource(id = R.string.search_user_info_name_empty)
         ) {
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -95,26 +99,43 @@ fun ArtistDetailComponent(
                     style = MaterialTheme.typography.titleLarge
                 )
             }
+            Row(
+                modifier = defaultModifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                userInfo?.location?.let {
+                    TextWithImage(
+                        imageRes = R.drawable.user_location_icon,
+                        text = it
+                    )
+                }
+                userInfo?.birthdate?.let {
+                    TextWithImage(
+                        imageRes = R.drawable.user_birthdate_icon,
+                        text = it
+                    )
+                }
+            }
+            TextWithImage(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                imageRes = R.drawable.user_mail_icon,
+                text = userInfo?.contact ?: stringResource(id = R.string.no_text_value)
+            )
             Text(
                 modifier = defaultModifier,
-                text = userInfo?.contact ?: stringResource(id = R.string.no_text_value),
-                fontFamily = montserratFontFamily,
-                style = MaterialTheme.typography.titleSmall
-            )
-            UserStatisticsComponent(
-                modifier = defaultModifier,
-                itemSize = 40.dp,
-                userInfo = userInfo
-            )
-            Text(
-                modifier = defaultModifier,
-                text =  userInfo?.info?.let {
+                text = userInfo?.info?.let {
                     it.ifBlank {
                         stringResource(id = R.string.search_user_info_description_empty)
                     }
                 } ?: stringResource(id = R.string.no_text_value),
                 fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.bodyLarge
+            )
+            UserStatisticsComponent(
+                modifier = defaultModifier,
+                itemSize = 40.dp,
+                userInfo = userInfo
             )
         }
     }
