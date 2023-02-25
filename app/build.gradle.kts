@@ -120,14 +120,15 @@ dependencies {
     // Palette API
     implementation("androidx.palette:palette-ktx:1.0.0")
     // Jetpack Camera X
-    implementation("androidx.camera:camera-camera2:1.2.0")
-    implementation("androidx.camera:camera-extensions:1.2.0")
-    implementation("androidx.camera:camera-lifecycle:1.2.0")
-    implementation("androidx.camera:camera-view:1.2.0")
+    implementation("androidx.camera:camera-camera2:1.2.1")
+    implementation("androidx.camera:camera-extensions:1.2.1")
+    implementation("androidx.camera:camera-lifecycle:1.2.1")
+    implementation("androidx.camera:camera-view:1.2.1")
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-
+    // In-memory Cache
+    implementation("io.github.reactivecircus.cache4k:cache4k:0.9.0")
     // Hilt and instrumented tests.
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)
@@ -164,7 +165,7 @@ dependencies {
     // Cloud Storage library
     implementation("com.google.firebase:firebase-storage-ktx")
     // Google Play services library
-    implementation("com.google.android.gms:play-services-auth:20.4.0")
+    implementation("com.google.android.gms:play-services-auth:20.4.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")

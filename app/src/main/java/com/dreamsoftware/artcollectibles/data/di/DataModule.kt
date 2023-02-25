@@ -10,8 +10,10 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 import dagger.Module
 import dagger.Provides
@@ -124,7 +126,8 @@ class DataModule {
         userCredentialsMapper: UserCredentialsMapper,
         favoritesDataSource: IFavoritesDataSource,
         visitorsDataSource: IVisitorsDataSource,
-        tokenMetadataRepository: ITokenMetadataRepository
+        tokenMetadataRepository: ITokenMetadataRepository,
+        artCollectibleMemoryCacheDataSource: IMemoryCacheDataSource<Any, Iterable<ArtCollectible>>
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
@@ -134,7 +137,8 @@ class DataModule {
             userCredentialsMapper,
             favoritesDataSource,
             visitorsDataSource,
-            tokenMetadataRepository
+            tokenMetadataRepository,
+            artCollectibleMemoryCacheDataSource
         )
 
 
