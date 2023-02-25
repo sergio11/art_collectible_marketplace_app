@@ -1,0 +1,6 @@
+package com.dreamsoftware.artcollectibles.data.memory.datasource
+
+import com.dreamsoftware.artcollectibles.data.firebase.model.WalletMetadataDTO
+import com.dreamsoftware.artcollectibles.data.memory.datasource.core.IMemoryCacheDataSource
+
+interface IWalletMetadataMemoryDataSource: IMemoryCacheDataSource<String, WalletMetadataDTO>

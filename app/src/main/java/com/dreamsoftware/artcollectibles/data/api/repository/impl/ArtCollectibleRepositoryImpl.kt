@@ -12,7 +12,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlo
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IMemoryCacheDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.domain.models.*
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ internal class ArtCollectibleRepositoryImpl(
     private val favoritesDataSource: IFavoritesDataSource,
     private val visitorsDataSource: IVisitorsDataSource,
     private val tokenMetadataRepository: ITokenMetadataRepository,
-    private val artCollectibleMemoryCacheDataSource: IMemoryCacheDataSource<Any, Iterable<ArtCollectible>>
+    private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
 ) : IArtCollectibleRepository {
 
     private companion object {

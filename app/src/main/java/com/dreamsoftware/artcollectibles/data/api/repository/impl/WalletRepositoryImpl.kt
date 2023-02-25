@@ -13,6 +13,8 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataS
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletMetadataDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.WalletMetadataDTO
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
+import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.UserWalletCredentials
@@ -31,6 +33,7 @@ import java.net.URL
  * @param passwordUtils
  * @param walletDataSource
  * @param faucetDataSource
+ * @param walletMetadataMemoryCache
  */
 internal class WalletRepositoryImpl(
     private val accountBalanceMapper: AccountBalanceMapper,
@@ -41,7 +44,8 @@ internal class WalletRepositoryImpl(
     private val storageDataSource: IStorageDataSource,
     private val passwordUtils: PasswordUtils,
     private val walletDataSource: IWalletDataSource,
-    private val faucetDataSource: IFaucetBlockchainDataSource
+    private val faucetDataSource: IFaucetBlockchainDataSource,
+    private val walletMetadataMemoryCache: IWalletMetadataMemoryDataSource
 ): IWalletRepository {
 
     private companion object {
@@ -107,12 +111,21 @@ internal class WalletRepositoryImpl(
         }
     }
 
-    private suspend fun loadCredentials(userUid: String): Credentials = with(walletDataSource) {
-        with(walletSecretsDataSource.getByUserUid(userUid)) {
-            if(!hasWallet(name)) {
-                walletDataSource.install(name, URL(walletUri))
+    private suspend fun loadCredentials(userUid: String): Credentials = with(walletMetadataMemoryCache) {
+        val walletMetadata = try {
+            findByKey(userUid)
+        } catch (ex: CacheException) {
+            walletSecretsDataSource.getByUserUid(userUid).also {
+                save(userUid, it)
             }
-            loadCredentials(name, password)
+        }
+        with(walletDataSource) {
+            with(walletMetadata) {
+                if (!hasWallet(name)) {
+                    install(name, URL(walletUri))
+                }
+                loadCredentials(name, password)
+            }
         }
     }
 }

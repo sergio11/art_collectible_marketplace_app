@@ -10,10 +10,11 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IMemoryCacheDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
+import com.dreamsoftware.artcollectibles.data.memory.di.MemoryModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.utils.PasswordUtils
 import dagger.Module
 import dagger.Provides
@@ -21,7 +22,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@Module(includes = [FirebaseModule::class, BlockchainModule::class, IPFSModule::class, PreferencesModule::class])
+@Module(includes = [FirebaseModule::class, BlockchainModule::class, IPFSModule::class, PreferencesModule::class, MemoryModule::class])
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
@@ -127,7 +128,7 @@ class DataModule {
         favoritesDataSource: IFavoritesDataSource,
         visitorsDataSource: IVisitorsDataSource,
         tokenMetadataRepository: ITokenMetadataRepository,
-        artCollectibleMemoryCacheDataSource: IMemoryCacheDataSource<Any, Iterable<ArtCollectible>>
+        artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
@@ -220,7 +221,8 @@ class DataModule {
         secretDataSource: IWalletMetadataDataSource,
         passwordUtils: PasswordUtils,
         walletDataSource: IWalletDataSource,
-        faucetBlockchainDataSource: IFaucetBlockchainDataSource
+        faucetBlockchainDataSource: IFaucetBlockchainDataSource,
+        walletMetadataMemoryCache: IWalletMetadataMemoryDataSource
     ): IWalletRepository =
         WalletRepositoryImpl(
             accountBalanceMapper,
@@ -231,7 +233,8 @@ class DataModule {
             storageDataSource,
             passwordUtils,
             walletDataSource,
-            faucetBlockchainDataSource
+            faucetBlockchainDataSource,
+            walletMetadataMemoryCache
         )
 
     /**

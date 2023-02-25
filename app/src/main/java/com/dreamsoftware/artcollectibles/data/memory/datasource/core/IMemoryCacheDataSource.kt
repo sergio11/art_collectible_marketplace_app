@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.data.memory.datasource
+package com.dreamsoftware.artcollectibles.data.memory.datasource.core
 
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheErrorException
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheNoResultException

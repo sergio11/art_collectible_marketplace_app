@@ -1,19 +1,15 @@
-package com.dreamsoftware.artcollectibles.data.memory.datasource.impl
+package com.dreamsoftware.artcollectibles.data.memory.datasource.core.impl
 
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IMemoryCacheDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.core.IMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheErrorException
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheNoResultException
 import io.github.reactivecircus.cache4k.Cache
-import kotlin.time.Duration.Companion.minutes
 
-internal class MemoryCacheDataSourceImpl<in K: Any, T: Any>: IMemoryCacheDataSource<K, T> {
+abstract class SupportMemoryCacheDataSourceImpl<in K: Any, T: Any>: IMemoryCacheDataSource< K, T> {
 
     private val cache by lazy {
-        Cache.Builder()
-            .maximumCacheSize(MAXIMUM_CACHE_SIZE)
-            .expireAfterWrite(EXPIRE_AFTER_WRITE)
-            .build<K, T>()
+        buildCache()
     }
 
     @Throws(CacheNoResultException::class, CacheErrorException::class)
@@ -76,8 +72,5 @@ internal class MemoryCacheDataSourceImpl<in K: Any, T: Any>: IMemoryCacheDataSou
         throw CacheErrorException("Failed to delete from cache", ex)
     }
 
-    companion object {
-        private const val MAXIMUM_CACHE_SIZE = 10L
-        private val EXPIRE_AFTER_WRITE = 5L.minutes
-    }
+    abstract fun buildCache(): Cache<K, T>
 }
