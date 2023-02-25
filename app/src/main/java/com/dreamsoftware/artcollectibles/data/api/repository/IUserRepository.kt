@@ -34,4 +34,10 @@ interface IUserRepository {
 
     @Throws(SearchUserException::class)
     suspend fun search(term: String? = null): Iterable<UserInfo>
+
+    @Throws(FollowUserException::class)
+    suspend fun followUser(userUid: String)
+
+    @Throws(UnFollowUserException::class)
+    suspend fun unfollowUser(userUid: String)
 }

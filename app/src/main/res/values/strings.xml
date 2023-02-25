@@ -85,6 +85,8 @@
     <string name="search_query_empty">Write something here …</string>
     <string name="profile_following_count_text" formatted="false">%s Following</string>
     <string name="profile_followers_count_text" formatted="false">%s Followers</string>
+    <string name="profile_following_button_follow_text">follow</string>
+    <string name="profile_following_button_unfollow_text">unfollow</string>
     <!-- Add NFT -->
     <string name="add_nft_main_title_text">Mint new NFT</string>
     <string name="add_nft_create_button_text">Create</string>

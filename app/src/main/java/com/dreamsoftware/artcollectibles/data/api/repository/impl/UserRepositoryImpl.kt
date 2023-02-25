@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFollowersData
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
+import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -21,6 +22,7 @@ import kotlinx.coroutines.withContext
  * @param userDataSource
  * @param storageDataSource
  * @param followerDataSource
+ * @param preferencesDataSource
  * @param userInfoMapper
  * @param saveUserInfoMapper
  * @param authUserMapper
@@ -30,6 +32,7 @@ internal class UserRepositoryImpl(
     private val userDataSource: IUsersDataSource,
     private val storageDataSource: IStorageDataSource,
     private val followerDataSource: IFollowersDataSource,
+    private val preferencesDataSource: IPreferencesDataSource,
     private val userInfoMapper: UserInfoMapper,
     private val saveUserInfoMapper: SaveUserInfoMapper,
     private val authUserMapper: AuthUserMapper
@@ -52,19 +55,23 @@ internal class UserRepositoryImpl(
 
     @Throws(SignInException::class)
     override suspend fun signIn(authRequest: AuthRequest): AuthUser = try {
-        val authUser = authDataSource.signIn(authRequest.email, authRequest.password)
-        authUserMapper.mapInToOut(authUser)
+        with(authRequest) {
+            val authUser = authDataSource.signIn(email, password)
+            authUserMapper.mapInToOut(authUser)
+        }
     } catch (ex: Exception) {
         throw SignInException("An error occurred when trying to sign in user", ex)
     }
 
     @Throws(SignInException::class)
     override suspend fun signIn(authRequest: ExternalProviderAuthRequest): AuthUser = try {
-        val authUser = authDataSource.signInWithExternalProvider(
-            authRequest.accessToken,
-            authRequest.externalProviderAuthTypeEnum
-        )
-        authUserMapper.mapInToOut(authUser)
+        with(authRequest) {
+            val authUser = authDataSource.signInWithExternalProvider(
+                accessToken,
+                externalProviderAuthTypeEnum
+            )
+            authUserMapper.mapInToOut(authUser)
+        }
     } catch (ex: Exception) {
         throw SignInException("An error occurred when trying to sign in user", ex)
     }
@@ -174,6 +181,22 @@ internal class UserRepositoryImpl(
             }
         } catch (ex: Exception) {
             throw SearchUserException("An error occurred when trying to find users", ex)
+        }
+    }
+
+    @Throws(FollowUserException::class)
+    override suspend fun followUser(userUid: String) {
+        withContext(Dispatchers.IO) {
+            val authUserUid = preferencesDataSource.getAuthUserUid()
+            followerDataSource.follow(authUserUid, userUid)
+        }
+    }
+
+    @Throws(UnFollowUserException::class)
+    override suspend fun unfollowUser(userUid: String) {
+        withContext(Dispatchers.IO) {
+            val authUserUid = preferencesDataSource.getAuthUserUid()
+            followerDataSource.unfollow(authUserUid, userUid)
         }
     }
 }

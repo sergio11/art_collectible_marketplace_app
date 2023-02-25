@@ -348,4 +348,23 @@ class DomainModule {
         visitorsRepository: IVisitorsRepository
     ) = RegisterVisitorUseCase(visitorsRepository)
 
+    /**
+     * Provide Follow use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFollowUseCase(
+        userRepository: IUserRepository
+    ) = FollowUserUseCase(userRepository)
+
+    /**
+     * Provide Unfollow use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideUnfollowUseCase(
+        userRepository: IUserRepository
+    ) = UnfollowUserUseCase(userRepository)
 }

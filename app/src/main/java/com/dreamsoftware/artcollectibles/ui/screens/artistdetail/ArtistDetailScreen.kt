@@ -2,11 +2,9 @@ package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -29,9 +28,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.components.TextWithImage
 import com.dreamsoftware.artcollectibles.ui.components.UserStatisticsComponent
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
+import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 data class ArtistDetailScreenArgs(
@@ -67,7 +69,9 @@ fun ArtistDetailScreen(
             context = context,
             uiState = uiState,
             scrollState = scrollState,
-            density = density
+            density = density,
+            onFollowUser = ::followUser,
+            onUnfollowUser = ::unfollowUser
         )
     }
 }
@@ -77,7 +81,9 @@ fun ArtistDetailComponent(
     context: Context,
     uiState: ArtistDetailUiState,
     scrollState: ScrollState,
-    density: Density
+    density: Density,
+    onFollowUser: (userUid: String) -> Unit,
+    onUnfollowUser: (userUid: String) -> Unit,
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -93,13 +99,40 @@ fun ArtistDetailComponent(
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
                 .fillMaxWidth()
-            userInfo?.professionalTitle?.let {
-                Text(
-                    modifier = defaultModifier,
-                    text = it,
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.titleLarge
-                )
+            Box(
+                modifier = defaultModifier
+            ) {
+                userInfo?.professionalTitle?.let {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        text = it,
+                        fontFamily = montserratFontFamily,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                if(!isAuthUser) {
+                    CommonButton(
+                        modifier = Modifier.padding(start = 6.dp)
+                            .align(Alignment.CenterEnd),
+                        text = R.string.profile_following_button_follow_text,
+                        widthDp = 120.dp,
+                        enabled = !isLoading,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = PurpleGrey80,
+                            contentColor = Purple40
+                        ),
+                        buttonShape = ButtonDefaults.outlinedShape,
+                        onClick = {
+                            userInfo?.uid?.let {
+                                if(isFollowing) {
+                                    onFollowUser(it)
+                                } else {
+                                    onUnfollowUser(it)
+                                }
+                            }
+                        }
+                    )
+                }
             }
             Row(
                 modifier = defaultModifier,

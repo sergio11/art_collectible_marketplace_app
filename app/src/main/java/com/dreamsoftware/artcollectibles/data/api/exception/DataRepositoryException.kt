@@ -12,6 +12,8 @@ class SaveUserException(message: String? = null, cause: Throwable? = null): User
 class UpdateProfilePictureException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 class CloseSessionException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 class SearchUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
+class FollowUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
+class UnFollowUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 
 // Wallet Repository Exception
 abstract class WalletDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
