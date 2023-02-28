@@ -40,4 +40,7 @@ interface IUserRepository {
 
     @Throws(UnFollowUserException::class)
     suspend fun unfollowUser(userUid: String)
+
+    @Throws(CheckFollowersUserException::class)
+    suspend fun isFollowingTo(userUid: String): Boolean
 }

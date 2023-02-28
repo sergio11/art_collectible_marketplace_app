@@ -2,12 +2,10 @@ package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FollowUserUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAuthUserProfileUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetUserProfileUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.UnfollowUserUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,7 +14,8 @@ class ArtistDetailViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val followUserUseCase: FollowUserUseCase,
-    private val unfollowUserUseCase: UnfollowUserUseCase
+    private val unfollowUserUseCase: UnfollowUserUseCase,
+    private val checkAuthUserIsFollowingToUseCase: CheckAuthUserIsFollowingToUseCase
 ) : SupportViewModel<ArtistDetailUiState>() {
 
     override fun onGetDefaultState(): ArtistDetailUiState = ArtistDetailUiState()
@@ -36,7 +35,7 @@ class ArtistDetailViewModel @Inject constructor(
                 onFollowCompleted()
             },
             onError = {
-
+                it.printStackTrace()
             }
         )
     }
@@ -51,7 +50,7 @@ class ArtistDetailViewModel @Inject constructor(
                 onUnfollowCompleted()
             },
             onError = {
-
+                it.printStackTrace()
             }
         )
     }
@@ -59,16 +58,20 @@ class ArtistDetailViewModel @Inject constructor(
     private fun loadAllDataForUser(uid: String) {
         viewModelScope.launch {
             try {
-                val authUser = loadAuthUserDetail()
-                val userInfo = getUserProfileUseCase.invoke(
-                    scope = this,
-                    params = GetUserProfileUseCase.Params(uid)
-                )
+                val authUserDeferred =  async { loadAuthUserDetail() }
+                val loadProfileUseCaseDeferred = async { loadUserProfile(uid) }
+                val checkAuthUserIsFollowingToDeferred = async { checkAuthUserIsFollowingTo(uid) }
+
+                val authUser = authUserDeferred.await()
+                val userInfo = loadProfileUseCaseDeferred.await()
+                val isFollowingTo = checkAuthUserIsFollowingToDeferred.await()
+
                 updateState {
                     it.copy(
                         isLoading = false,
                         isAuthUser = userInfo.uid == authUser.uid,
-                        userInfo = userInfo
+                        userInfo = userInfo,
+                        isFollowing = isFollowingTo
                     )
                 }
             } catch (ex: Exception) {
@@ -79,6 +82,16 @@ class ArtistDetailViewModel @Inject constructor(
 
     private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
         scope = viewModelScope
+    )
+
+    private suspend fun loadUserProfile(userUid: String) = getUserProfileUseCase.invoke(
+        scope = viewModelScope,
+        params = GetUserProfileUseCase.Params(userUid)
+    )
+
+    private suspend fun checkAuthUserIsFollowingTo(userUid: String) = checkAuthUserIsFollowingToUseCase.invoke(
+        scope = viewModelScope,
+        params = CheckAuthUserIsFollowingToUseCase.Params(userUid)
     )
 
     private fun onFollowCompleted() {

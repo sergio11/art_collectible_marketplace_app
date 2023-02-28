@@ -193,6 +193,7 @@ class DataModule {
         userDataSource: IUsersDataSource,
         storageDataSource: IStorageDataSource,
         followerDataSource: IFollowersDataSource,
+        preferencesDataSource: IPreferencesDataSource,
         userInfoMapper: UserInfoMapper,
         saveUserInfoMapper: SaveUserInfoMapper,
         authUserMapper: AuthUserMapper
@@ -202,6 +203,7 @@ class DataModule {
             userDataSource,
             storageDataSource,
             followerDataSource,
+            preferencesDataSource,
             userInfoMapper,
             saveUserInfoMapper,
             authUserMapper

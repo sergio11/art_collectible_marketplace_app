@@ -28,11 +28,12 @@ internal class FollowersDataSourceImpl(
     @Throws(CheckFollowerException::class)
     override suspend fun isFollowedBy(from: String, to: String): Boolean = withContext(Dispatchers.IO) {
         try {
-            val result = firebaseStore.collection(COLLECTION_NAME)
-                .whereArrayContains(FOLLOWERS_COUNT_SUFFIX, from)
+            firebaseStore.collection(COLLECTION_NAME)
+                .whereArrayContains(FOLLOWING_IDS_FIELD_NAME, to)
                 .get()
                 .await()
-            !result.isEmpty
+                .documents.mapNotNull { it.id }
+                .contains(from + FOLLOWERS_SUFFIX)
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {
@@ -124,9 +125,15 @@ internal class FollowersDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(from + FOLLOWING_SUFFIX).set(hashMapOf(FOLLOWING_IDS_FIELD_NAME to FieldValue.arrayRemove(to)), SetOptions.merge()).await()
-                    document(from + FOLLOWING_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    val followingCount = document(from + FOLLOWING_COUNT_SUFFIX).get().await()?.data?.get(COUNT_FIELD_NAME).toString().toLongOrDefault(0L)
+                    if(followingCount > 0) {
+                        document(from + FOLLOWING_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    }
                     document(to + FOLLOWERS_SUFFIX).set(hashMapOf(FOLLOWERS_IDS_FIELD_NAME to FieldValue.arrayRemove(from)), SetOptions.merge()).await()
-                    document(to + FOLLOWERS_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    val followersCount = document(to + FOLLOWERS_COUNT_SUFFIX).get().await()?.data?.get(COUNT_FIELD_NAME).toString().toLongOrDefault(0L)
+                    if(followersCount > 0) {
+                        document(to + FOLLOWERS_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    }
                 }
             } catch (ex: FirebaseException) {
                 throw ex

@@ -110,11 +110,16 @@ fun ArtistDetailComponent(
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
-                if(!isAuthUser) {
+                if (!isAuthUser) {
                     CommonButton(
-                        modifier = Modifier.padding(start = 6.dp)
+                        modifier = Modifier
+                            .padding(start = 6.dp)
                             .align(Alignment.CenterEnd),
-                        text = R.string.profile_following_button_follow_text,
+                        text = if (isFollowing) {
+                            R.string.profile_following_button_unfollow_text
+                        } else {
+                            R.string.profile_following_button_follow_text
+                        },
                         widthDp = 120.dp,
                         enabled = !isLoading,
                         colors = ButtonDefaults.buttonColors(
@@ -124,10 +129,10 @@ fun ArtistDetailComponent(
                         buttonShape = ButtonDefaults.outlinedShape,
                         onClick = {
                             userInfo?.uid?.let {
-                                if(isFollowing) {
-                                    onFollowUser(it)
-                                } else {
+                                if (isFollowing) {
                                     onUnfollowUser(it)
+                                } else {
+                                    onFollowUser(it)
                                 }
                             }
                         }

@@ -199,4 +199,11 @@ internal class UserRepositoryImpl(
             followerDataSource.unfollow(authUserUid, userUid)
         }
     }
+
+    @Throws(CheckFollowersUserException::class)
+    override suspend fun isFollowingTo(userUid: String): Boolean =
+        withContext(Dispatchers.IO) {
+            val authUserUid = preferencesDataSource.getAuthUserUid()
+            followerDataSource.isFollowedBy(userUid, authUserUid)
+        }
 }

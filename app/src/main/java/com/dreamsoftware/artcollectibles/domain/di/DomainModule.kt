@@ -367,4 +367,14 @@ class DomainModule {
     fun provideUnfollowUseCase(
         userRepository: IUserRepository
     ) = UnfollowUserUseCase(userRepository)
+
+    /**
+     * Provide Check Auth user is following to use case
+     * @param userRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideCheckAuthUserIsFollowingToUseCase(
+        userRepository: IUserRepository
+    ) = CheckAuthUserIsFollowingToUseCase(userRepository)
 }
