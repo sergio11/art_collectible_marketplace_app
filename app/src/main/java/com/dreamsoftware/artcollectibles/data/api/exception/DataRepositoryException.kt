@@ -15,6 +15,8 @@ class SearchUserException(message: String? = null, cause: Throwable? = null): Us
 class FollowUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 class UnFollowUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 class CheckFollowersUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
+class GetFollowersUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
+class GetFollowingUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 
 // Wallet Repository Exception
 abstract class WalletDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)

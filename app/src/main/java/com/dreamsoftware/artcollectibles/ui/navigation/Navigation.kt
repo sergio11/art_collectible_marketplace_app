@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
 import java.math.BigInteger
@@ -44,6 +45,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
     }
+
     object ArtistDetail : DestinationItem(route = "artists/detail/{uid}", arguments = listOf(
         navArgument("uid") {
             type = NavType.StringType
@@ -62,6 +64,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
     }
+
     object MarketItemDetail : DestinationItem(route = "market/detail/{id}", arguments = listOf(
         navArgument("id") {
             type = NavType.StringType
@@ -79,6 +82,49 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                 MarketItemDetailScreenArgs(tokenId = BigInteger.valueOf(it))
             }
         }
+    }
+
+    object UserFollowers : DestinationItem(route = "users/{id}/{type}", arguments = listOf(
+        navArgument("id") {
+            type = NavType.StringType
+        },
+        navArgument("type") {
+            type = NavType.StringType
+        }
+    )) {
+
+        private const val SHOW_FOLLOWERS = "FOLLOWERS"
+        private const val SHOW_FOLLOWING = "FOLLOWING"
+
+        fun buildFollowersRoute(userInfo: UserInfo): String =
+            buildRoute(userInfo, SHOW_FOLLOWERS)
+
+        fun buildFollowingRoute(userInfo: UserInfo): String =
+            buildRoute(userInfo, SHOW_FOLLOWING)
+
+        fun parseArgs(args: Bundle): FollowersScreenArgs? = with(args) {
+            getString("id")?.let { userUid ->
+                getString("type")?.let { type ->
+                    FollowersScreenArgs(
+                        userUid = userUid,
+                        viewType = if(type == SHOW_FOLLOWERS) {
+                            FollowersScreenArgs.ViewTypeEnum.FOLLOWERS
+                        } else {
+                            FollowersScreenArgs.ViewTypeEnum.FOLLOWING
+                        }
+                    )
+                }
+            }
+        }
+
+        private fun buildRoute(userInfo: UserInfo, type: String): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = userInfo.uid
+            ).replace(
+                oldValue = "{type}",
+                newValue = type
+            )
     }
 }
 

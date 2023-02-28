@@ -187,23 +187,77 @@ internal class UserRepositoryImpl(
     @Throws(FollowUserException::class)
     override suspend fun followUser(userUid: String) {
         withContext(Dispatchers.IO) {
-            val authUserUid = preferencesDataSource.getAuthUserUid()
-            followerDataSource.follow(authUserUid, userUid)
+            try {
+                val authUserUid = preferencesDataSource.getAuthUserUid()
+                followerDataSource.follow(authUserUid, userUid)
+            }  catch (ex: Exception) {
+                throw FollowUserException("An error occurred when trying to follow to user", ex)
+            }
         }
     }
 
     @Throws(UnFollowUserException::class)
     override suspend fun unfollowUser(userUid: String) {
         withContext(Dispatchers.IO) {
-            val authUserUid = preferencesDataSource.getAuthUserUid()
-            followerDataSource.unfollow(authUserUid, userUid)
+            try {
+                val authUserUid = preferencesDataSource.getAuthUserUid()
+                followerDataSource.unfollow(authUserUid, userUid)
+            } catch (ex: Exception) {
+                throw UnFollowUserException("An error occurred when trying to unfollow to user", ex)
+            }
         }
     }
 
     @Throws(CheckFollowersUserException::class)
     override suspend fun isFollowingTo(userUid: String): Boolean =
         withContext(Dispatchers.IO) {
-            val authUserUid = preferencesDataSource.getAuthUserUid()
-            followerDataSource.isFollowedBy(userUid, authUserUid)
+            try {
+                val authUserUid = preferencesDataSource.getAuthUserUid()
+                followerDataSource.isFollowedBy(userUid, authUserUid)
+            } catch (ex: Exception) {
+                throw CheckFollowersUserException("An error occurred when trying to check followers", ex)
+            }
+        }
+
+    @Throws(GetFollowersUserException::class)
+    override suspend fun getFollowers(userId: String): Iterable<UserInfo> =
+        withContext(Dispatchers.IO) {
+            try {
+                val followersUidList = followerDataSource.getFollowers(userId)
+                userDataSource.getById(followersUidList).map {
+                    val countFollowersDeferred = async { followerDataSource.countFollowers(it.uid) }
+                    val countFollowingDeferred = async { followerDataSource.countFollowing(it.uid) }
+                    userInfoMapper.mapInToOut(
+                        UserInfoMapper.InputData(
+                            user = it,
+                            followers = countFollowersDeferred.await(),
+                            following = countFollowingDeferred.await()
+                        )
+                    )
+                }
+            } catch (ex: Exception) {
+                throw GetFollowersUserException("An error occurred when trying to get followers", ex)
+            }
+        }
+
+    @Throws(GetFollowingUserException::class)
+    override suspend fun getFollowing(userId: String): Iterable<UserInfo> =
+        withContext(Dispatchers.IO) {
+            try {
+                val followingUidList = followerDataSource.getFollowing(userId)
+                userDataSource.getById(followingUidList).map {
+                    val countFollowersDeferred = async { followerDataSource.countFollowers(it.uid) }
+                    val countFollowingDeferred = async { followerDataSource.countFollowing(it.uid) }
+                    userInfoMapper.mapInToOut(
+                        UserInfoMapper.InputData(
+                            user = it,
+                            followers = countFollowersDeferred.await(),
+                            following = countFollowingDeferred.await()
+                        )
+                    )
+                }
+            } catch (ex: Exception) {
+                throw GetFollowingUserException("An error occurred when trying to get followers", ex)
+            }
         }
 }

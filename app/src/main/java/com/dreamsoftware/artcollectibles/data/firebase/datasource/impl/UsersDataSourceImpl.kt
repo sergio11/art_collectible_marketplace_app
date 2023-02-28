@@ -9,6 +9,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.mapper.SaveUserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.mapper.UserMapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,21 @@ internal class UsersDataSourceImpl(
                 .document(uid).get().await()?.data?.let {
                     userMapper.mapInToOut(it)
                 } ?: throw UserNotFoundException("User not found")
+        } catch (ex: FirebaseException) {
+            throw ex
+        } catch (ex: Exception) {
+            throw UserErrorException("An error occurred when trying to get user information", ex)
+        }
+    }
+
+    @Throws(UserErrorException::class)
+    override suspend fun getById(uidList: Iterable<String>): Iterable<UserDTO> = withContext(Dispatchers.IO) {
+        try {
+            firebaseStore.collection(USERS_COLLECTION_NAME)
+                .whereIn(FieldPath.documentId(), uidList.toList())
+                .get().await()
+                .documents.mapNotNull { it.data }
+                .map { userMapper.mapInToOut(it) }
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {

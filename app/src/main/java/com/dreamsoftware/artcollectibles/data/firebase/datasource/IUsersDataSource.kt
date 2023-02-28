@@ -22,6 +22,12 @@ interface IUsersDataSource {
     suspend fun getById(uid: String): UserDTO
 
     /**
+     * @param uidList
+     */
+    @Throws(UserErrorException::class)
+    suspend fun getById(uidList: Iterable<String>): Iterable<UserDTO>
+
+    /**
      * Get user by address
      * @param userAddress
      */

@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +29,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.components.TextWithImage
@@ -44,7 +46,9 @@ data class ArtistDetailScreenArgs(
 fun ArtistDetailScreen(
     navController: NavController,
     args: ArtistDetailScreenArgs,
-    viewModel: ArtistDetailViewModel = hiltViewModel()
+    viewModel: ArtistDetailViewModel = hiltViewModel(),
+    onShowFollowers: (userInfo: UserInfo) -> Unit,
+    onShowFollowing: (userInfo: UserInfo) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -71,7 +75,9 @@ fun ArtistDetailScreen(
             scrollState = scrollState,
             density = density,
             onFollowUser = ::followUser,
-            onUnfollowUser = ::unfollowUser
+            onUnfollowUser = ::unfollowUser,
+            onShowFollowers = onShowFollowers,
+            onShowFollowing = onShowFollowing
         )
     }
 }
@@ -84,6 +90,8 @@ fun ArtistDetailComponent(
     density: Density,
     onFollowUser: (userUid: String) -> Unit,
     onUnfollowUser: (userUid: String) -> Unit,
+    onShowFollowers: (userInfo: UserInfo) -> Unit,
+    onShowFollowing: (userInfo: UserInfo) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -145,6 +153,9 @@ fun ArtistDetailComponent(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
+                    modifier = Modifier.clickable {
+                        userInfo?.let(onShowFollowers)
+                    },
                     text = userInfo?.followers?.let {
                         stringResource(id = R.string.profile_followers_count_text, it)
                     } ?: stringResource(id = R.string.no_text_value),
@@ -153,7 +164,9 @@ fun ArtistDetailComponent(
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    modifier = Modifier.padding(start = 6.dp),
+                    modifier = Modifier.padding(start = 6.dp).clickable {
+                        userInfo?.let(onShowFollowing)
+                    },
                     text = userInfo?.following?.let {
                         stringResource(id = R.string.profile_following_count_text, it)
                     } ?: stringResource(id = R.string.no_text_value),

@@ -43,4 +43,10 @@ interface IUserRepository {
 
     @Throws(CheckFollowersUserException::class)
     suspend fun isFollowingTo(userUid: String): Boolean
+
+    @Throws(GetFollowersUserException::class)
+    suspend fun getFollowers(userId: String): Iterable<UserInfo>
+
+    @Throws(GetFollowingUserException::class)
+    suspend fun getFollowing(userId: String): Iterable<UserInfo>
 }

@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
@@ -73,6 +74,15 @@ fun RootScreen(
                 navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
             }
         }
+        composable(DestinationItem.UserFollowers.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.UserFollowers.parseArgs(args)?.let { screenArgs ->
+                    FollowersScreen(navigationController, screenArgs) {
+                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    }
+                }
+            }
+        }
         composable(DestinationItem.Profile.route) {
             ProfileScreen(navigationController) {
                 navigationController.navigate(DestinationItem.OnBoarding.route) {
@@ -94,7 +104,11 @@ fun RootScreen(
         composable(DestinationItem.ArtistDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.ArtistDetail.parseArgs(args)?.let { screenArgs ->
-                    ArtistDetailScreen(navigationController, screenArgs)
+                    ArtistDetailScreen(navigationController, screenArgs, onShowFollowers = {
+                        navigationController.navigate(DestinationItem.UserFollowers.buildFollowersRoute(it))
+                    }, onShowFollowing = {
+                        navigationController.navigate(DestinationItem.UserFollowers.buildFollowingRoute(it))
+                    })
                 }
             }
         }
