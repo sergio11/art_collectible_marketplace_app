@@ -201,21 +201,23 @@ private fun MarketplaceRow(
     items: Iterable<ArtCollectibleForSale>,
     onMarketItemSelected: (item: ArtCollectibleForSale) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 10.dp)
-    ) {
-        Text(
-            text = title,
-            color = Color.White,
+    if(!Iterables.isEmpty(items)) {
+        Column(
             modifier = Modifier
-                .padding(bottom = 8.dp)
-                .fillMaxWidth(),
-            fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            style = MaterialTheme.typography.titleMedium
-        )
-        ArtCollectibleForSaleList(context, items, onMarketItemSelected)
+                .padding(vertical = 10.dp, horizontal = 10.dp)
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .fillMaxWidth(),
+                fontFamily = montserratFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleMedium
+            )
+            ArtCollectibleForSaleList(context, items, onMarketItemSelected)
+        }
     }
 }
 

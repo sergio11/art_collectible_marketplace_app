@@ -10,7 +10,6 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchMarketplaceSta
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchSellingMarketItemsUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,31 +18,66 @@ class HomeViewModel @Inject constructor(
     private val fetchSellingMarketItemsUseCase: FetchSellingMarketItemsUseCase,
     private val fetchMarketplaceStatisticsUseCase: FetchMarketplaceStatisticsUseCase,
     private val fetchMarketHistoryUseCase: FetchMarketHistoryUseCase
-): SupportViewModel<HomeUiState>() {
+) : SupportViewModel<HomeUiState>() {
 
     override fun onGetDefaultState(): HomeUiState = HomeUiState()
 
     fun loadData() {
         onLoading()
-        viewModelScope.launch {
-            try {
-                val marketStatistics = fetchMarketplaceStatistics()
-                val availableMarketItems = fetchAvailableMarketItems()
-                val sellingItems = fetchSellingMarketItems()
-                val marketHistory = fetchMarketHistory()
+        fetchMarketplaceStatistics()
+        fetchAvailableMarketItems()
+        fetchSellingMarketItems()
+        fetchMarketHistory()
+    }
+
+    private fun fetchMarketplaceStatistics() {
+        fetchMarketplaceStatisticsUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = { marketplaceStatistics ->
                 updateState {
                     it.copy(
                         isLoading = false,
-                        marketplaceStatistics = marketStatistics,
-                        availableMarketItems = availableMarketItems,
-                        sellingMarketItems = sellingItems,
-                        marketHistory = marketHistory
+                        marketplaceStatistics = marketplaceStatistics
                     )
                 }
-            } catch (ex: Exception) {
-                onErrorOccurred(ex)
-            }
-        }
+            },
+            onError = {}
+        )
+    }
+
+    private fun fetchAvailableMarketItems() {
+        fetchAvailableMarketItemsUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = { availableMarketItems ->
+                updateState {
+                    it.copy(availableMarketItems = availableMarketItems)
+                }
+            },
+            onError = {}
+        )
+    }
+
+    private fun fetchSellingMarketItems() {
+        fetchSellingMarketItemsUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = { sellingItems ->
+                updateState {
+                    it.copy(sellingMarketItems = sellingItems)
+                }
+            },
+            onError = {}
+        )
+    }
+
+    private fun fetchMarketHistory() {
+        fetchMarketHistoryUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = { marketHistory ->
+                updateState {
+                    it.copy(marketHistory = marketHistory)
+                }
+            },
+            onError = {})
     }
 
     private fun onLoading() {
@@ -55,18 +89,6 @@ class HomeViewModel @Inject constructor(
         Log.d("ART_COLL", "onErrorOccurred ${ex.message} CALLED!")
         updateState { it.copy(isLoading = false) }
     }
-
-    private suspend fun fetchMarketplaceStatistics() =
-        fetchMarketplaceStatisticsUseCase.invoke(scope = viewModelScope)
-
-    private suspend fun fetchAvailableMarketItems() =
-        fetchAvailableMarketItemsUseCase.invoke(scope = viewModelScope)
-
-    private suspend fun fetchSellingMarketItems() =
-        fetchSellingMarketItemsUseCase.invoke(scope = viewModelScope)
-
-    private suspend fun fetchMarketHistory() =
-        fetchMarketHistoryUseCase.invoke(scope = viewModelScope)
 }
 
 data class HomeUiState(
