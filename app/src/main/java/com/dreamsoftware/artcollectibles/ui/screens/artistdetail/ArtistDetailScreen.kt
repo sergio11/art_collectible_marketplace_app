@@ -154,7 +154,11 @@ fun ArtistDetailComponent(
             ) {
                 Text(
                     modifier = Modifier.clickable {
-                        userInfo?.let(onShowFollowers)
+                        userInfo?.let {
+                            if(it.followers > 0) {
+                                onShowFollowers(it)
+                            }
+                        }
                     },
                     text = userInfo?.followers?.let {
                         stringResource(id = R.string.profile_followers_count_text, it)
@@ -165,7 +169,11 @@ fun ArtistDetailComponent(
                 )
                 Text(
                     modifier = Modifier.padding(start = 6.dp).clickable {
-                        userInfo?.let(onShowFollowing)
+                        userInfo?.let {
+                            if(it.following > 0) {
+                                onShowFollowing(it)
+                            }
+                        }
                     },
                     text = userInfo?.following?.let {
                         stringResource(id = R.string.profile_following_count_text, it)

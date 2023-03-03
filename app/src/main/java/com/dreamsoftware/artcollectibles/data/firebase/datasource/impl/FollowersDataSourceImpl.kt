@@ -18,7 +18,7 @@ internal class FollowersDataSourceImpl(
         const val COLLECTION_NAME = "followers"
         const val COUNT_FIELD_NAME = "count"
         const val FOLLOWING_IDS_FIELD_NAME = "following_ids"
-        const val FOLLOWERS_IDS_FIELD_NAME = "following_ids"
+        const val FOLLOWERS_IDS_FIELD_NAME = "followers_ids"
         const val FOLLOWERS_COUNT_SUFFIX = "_followers_count"
         const val FOLLOWING_COUNT_SUFFIX = "_following_count"
         const val FOLLOWERS_SUFFIX = "_followers"
@@ -47,7 +47,8 @@ internal class FollowersDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(userId + FOLLOWERS_SUFFIX)
                 .get()
-                .await()?.data?.get(FOLLOWERS_IDS_FIELD_NAME) as? List<String> ?: emptyList()
+                .await()?.data?.get(FOLLOWERS_IDS_FIELD_NAME) as? List<String>
+                ?: throw GetFollowingException("No Followers found")
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {
@@ -61,7 +62,8 @@ internal class FollowersDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(userId + FOLLOWING_SUFFIX)
                 .get()
-                .await()?.data?.get(FOLLOWING_IDS_FIELD_NAME) as? List<String> ?: emptyList()
+                .await()?.data?.get(FOLLOWING_IDS_FIELD_NAME) as? List<String>
+                ?: throw GetFollowingException("No Followers found")
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {

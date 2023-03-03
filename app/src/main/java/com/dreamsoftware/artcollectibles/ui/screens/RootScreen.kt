@@ -77,7 +77,7 @@ fun RootScreen(
         composable(DestinationItem.UserFollowers.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.UserFollowers.parseArgs(args)?.let { screenArgs ->
-                    FollowersScreen(navigationController, screenArgs) {
+                    FollowersScreen(screenArgs) {
                         navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
                     }
                 }
