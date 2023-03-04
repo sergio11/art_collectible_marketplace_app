@@ -86,6 +86,31 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onAddNewTag(newTag: String) {
+        if (isProfileLoaded()) {
+            updateState {
+                it.copy(userInfo = it.userInfo?.let { userInfo ->
+                    userInfo.copy(tags = buildList {
+                        userInfo.tags?.let(::addAll)
+                        add(newTag)
+                    })
+                })
+            }
+        }
+    }
+
+    fun onDeleteTag(tag: String) {
+        if (isProfileLoaded()) {
+            updateState { state ->
+                state.copy(userInfo = state.userInfo?.let { userInfo ->
+                    userInfo.copy(tags = buildList {
+                        userInfo.tags?.filterNot { it == tag }?.let(::addAll)
+                    })
+                })
+            }
+        }
+    }
+
     fun load() {
         onLoading()
         loadProfileData()

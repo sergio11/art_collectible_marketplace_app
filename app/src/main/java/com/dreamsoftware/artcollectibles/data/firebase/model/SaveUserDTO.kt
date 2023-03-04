@@ -6,6 +6,7 @@ data class SaveUserDTO(
     val walletAddress: String,
     val professionalTitle: String? = null,
     val info: String? = null,
+    val tags: List<String>? = null,
     val contact: String? = null,
     val photoUrl: String? = null,
     val birthdate: String? = null,

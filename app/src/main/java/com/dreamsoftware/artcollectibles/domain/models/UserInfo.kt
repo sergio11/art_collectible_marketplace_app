@@ -9,6 +9,7 @@ data class UserInfo(
     val photoUrl: String? = null,
     val walletAddress: String,
     val birthdate: String? = null,
+    val tags: List<String>? = null,
     val externalProviderAuthType: ExternalProviderAuthTypeEnum? = null,
     val location: String? = null,
     val tokensSoldCount: Long = 0,

@@ -190,6 +190,17 @@ fun ArtistDetailComponent(
                 itemSize = 30.dp,
                 userInfo = userInfo
             )
+            userInfo?.tags?.let { tags ->
+                if(tags.isNotEmpty()) {
+                    TagsRow(
+                        modifier = Modifier
+                            .padding(horizontal = 20.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
+                        tagList = tags,
+                        isReadOnly = true
+                    )
+                }
+            }
             Row(
                 modifier = defaultModifier,
                 verticalAlignment = Alignment.CenterVertically,

@@ -77,7 +77,9 @@ fun ProfileScreen(
             onPictureChanged = ::onPictureChanged,
             onBirthdateChanged = ::onBirthdateChanged,
             onSaveClicked = ::saveUserInfo,
-            onCloseSessionClicked = ::closeSession
+            onCloseSessionClicked = ::closeSession,
+            onAddNewTag = ::onAddNewTag,
+            onDeleteTag = ::onDeleteTag
         )
     }
 }
@@ -96,7 +98,9 @@ internal fun ProfileComponent(
     onBirthdateChanged: (String) -> Unit,
     onPictureChanged: (Uri) -> Unit,
     onSaveClicked: () -> Unit,
-    onCloseSessionClicked: () -> Unit
+    onCloseSessionClicked: () -> Unit,
+    onAddNewTag: (tag: String) -> Unit,
+    onDeleteTag: (tag: String) -> Unit
 ) {
     var isProfilePicturePicker by rememberSaveable { mutableStateOf(false) }
     LoadingDialog(isShowingDialog = state.isLoading)
@@ -183,6 +187,11 @@ internal fun ProfileComponent(
                             placeHolderRes = R.string.profile_input_birthdate_placeholder,
                             value = state.userInfo?.birthdate,
                             onValueChange = onBirthdateChanged
+                        )
+                        TagsInputComponent(
+                            tagList = state.userInfo?.tags.orEmpty(),
+                            onAddNewTag = onAddNewTag,
+                            onDeleteTag = onDeleteTag
                         )
                         CommonDefaultTextField(
                             modifier = CommonDefaultTextFieldModifier.height(150.dp),

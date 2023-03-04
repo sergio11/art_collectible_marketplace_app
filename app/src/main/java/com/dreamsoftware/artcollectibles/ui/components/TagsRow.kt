@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
@@ -21,7 +22,10 @@ fun TagsRow(
     isReadOnly: Boolean = false,
     onDeleteClicked: (tag: String) -> Unit = {},
     content: @Composable () -> Unit = {}) {
-    FlowRow(modifier = modifier) {
+    FlowRow(
+        modifier = modifier,
+        crossAxisAlignment = FlowCrossAxisAlignment.Center
+    ) {
         tagList?.let { tags ->
             repeat(tags.size) {
                 TagInput(text = tags[it], isReadOnly) {

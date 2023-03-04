@@ -21,6 +21,7 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
                 externalProviderAuthType = externalProviderAuth?.let {
                     enumValueOf<ExternalProviderAuthTypeEnum>(it)
                 },
+                tags = tags,
                 location = location,
                 followers = followers,
                 following = following

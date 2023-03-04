@@ -13,6 +13,7 @@ class SaveUserInfoMapper: IOneSideMapper<UserInfo, SaveUserDTO> {
             professionalTitle = professionalTitle,
             walletAddress = walletAddress,
             info = info,
+            tags = tags,
             contact = contact,
             photoUrl = photoUrl,
             birthdate = birthdate,
