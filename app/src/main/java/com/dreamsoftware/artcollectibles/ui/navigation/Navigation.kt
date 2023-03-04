@@ -14,6 +14,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScr
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.tokens.TokensScreenArgs
 import java.math.BigInteger
 
 sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument> = emptyList()) {
@@ -111,6 +112,49 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                             FollowersScreenArgs.ViewTypeEnum.FOLLOWERS
                         } else {
                             FollowersScreenArgs.ViewTypeEnum.FOLLOWING
+                        }
+                    )
+                }
+            }
+        }
+
+        private fun buildRoute(userInfo: UserInfo, type: String): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = userInfo.uid
+            ).replace(
+                oldValue = "{type}",
+                newValue = type
+            )
+    }
+
+    object UserTokens : DestinationItem(route = "users/{id}/tokens/{type}", arguments = listOf(
+        navArgument("id") {
+            type = NavType.StringType
+        },
+        navArgument("type") {
+            type = NavType.StringType
+        }
+    )) {
+
+        private const val SHOW_TOKENS_OWNED = "TOKENS_OWNED"
+        private const val SHOW_TOKENS_CREATED = "TOKENS_CREATED"
+
+        fun buildShowTokensOwnedRoute(userInfo: UserInfo): String =
+            buildRoute(userInfo, SHOW_TOKENS_OWNED)
+
+        fun buildShowTokensCreatedRoute(userInfo: UserInfo): String =
+            buildRoute(userInfo, SHOW_TOKENS_CREATED)
+
+        fun parseArgs(args: Bundle): TokensScreenArgs? = with(args) {
+            getString("id")?.let { userAddress ->
+                getString("type")?.let { type ->
+                    TokensScreenArgs(
+                        userAddress = userAddress,
+                        viewType = if(type == SHOW_TOKENS_OWNED) {
+                            TokensScreenArgs.ViewTypeEnum.OWNED
+                        } else {
+                            TokensScreenArgs.ViewTypeEnum.CREATED
                         }
                     )
                 }

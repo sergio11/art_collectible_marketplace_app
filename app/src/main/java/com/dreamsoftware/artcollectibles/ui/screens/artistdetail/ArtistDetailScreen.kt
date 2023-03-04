@@ -47,7 +47,9 @@ fun ArtistDetailScreen(
     viewModel: ArtistDetailViewModel = hiltViewModel(),
     onShowFollowers: (userInfo: UserInfo) -> Unit,
     onShowFollowing: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (item: ArtCollectible) -> Unit
+    onGoToTokenDetail: (item: ArtCollectible) -> Unit,
+    onShowTokensOwnedBy: (userInfo: UserInfo) -> Unit,
+    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -77,7 +79,9 @@ fun ArtistDetailScreen(
             onUnfollowUser = ::unfollowUser,
             onShowFollowers = onShowFollowers,
             onShowFollowing = onShowFollowing,
-            onGoToTokenDetail = onGoToTokenDetail
+            onGoToTokenDetail = onGoToTokenDetail,
+            onShowTokensOwnedBy = onShowTokensOwnedBy,
+            onShowTokensCreatedBy = onShowTokensCreatedBy
         )
     }
 }
@@ -92,7 +96,9 @@ fun ArtistDetailComponent(
     onUnfollowUser: (userUid: String) -> Unit,
     onShowFollowers: (userInfo: UserInfo) -> Unit,
     onShowFollowing: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (item: ArtCollectible) -> Unit
+    onGoToTokenDetail: (item: ArtCollectible) -> Unit,
+    onShowTokensOwnedBy: (userInfo: UserInfo) -> Unit,
+    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -236,7 +242,10 @@ fun ArtistDetailComponent(
                     context = context,
                     title = stringResource(id = R.string.profile_tokens_owned_by_user_text),
                     items = tokensOwned,
-                    onGoToTokenDetail
+                    onShowAllItems = {
+                        userInfo?.let(onShowTokensOwnedBy)
+                    },
+                    onItemSelected = onGoToTokenDetail
                 )
             }
             if(!Iterables.isEmpty(tokensCreated)) {
@@ -245,7 +254,10 @@ fun ArtistDetailComponent(
                     context = context,
                     title = stringResource(id = R.string.profile_tokens_created_by_user_text),
                     items = tokensCreated,
-                    onGoToTokenDetail
+                    onShowAllItems = {
+                        userInfo?.let(onShowTokensCreatedBy)
+                    },
+                    onItemSelected = onGoToTokenDetail
                 )
             }
         }
@@ -258,6 +270,7 @@ private fun UserTokensRow(
     context: Context,
     title: String,
     items: Iterable<ArtCollectible>,
+    onShowAllItems: () -> Unit,
     onItemSelected: (item: ArtCollectible) -> Unit
 ) {
     if(!Iterables.isEmpty(items)) {
@@ -269,7 +282,8 @@ private fun UserTokensRow(
                 color = Color.Black,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clickable { onShowAllItems() },
                 fontFamily = montserratFontFamily,
                 fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge

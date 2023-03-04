@@ -18,6 +18,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.tokens.TokensScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 
 @Composable
@@ -83,6 +84,15 @@ fun RootScreen(
                 }
             }
         }
+        composable(DestinationItem.UserTokens.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.UserTokens.parseArgs(args)?.let { screenArgs ->
+                    TokensScreen(screenArgs) {
+                        navigationController.navigate(DestinationItem.TokenDetail.buildRoute(it))
+                    }
+                }
+            }
+        }
         composable(DestinationItem.Profile.route) {
             ProfileScreen(navigationController) {
                 navigationController.navigate(DestinationItem.OnBoarding.route) {
@@ -111,6 +121,10 @@ fun RootScreen(
                             navigate(DestinationItem.UserFollowers.buildFollowingRoute(it))
                         }, onGoToTokenDetail = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
+                        }, onShowTokensOwnedBy = {
+                            navigate(DestinationItem.UserTokens.buildShowTokensOwnedRoute(it))
+                        }, onShowTokensCreatedBy = {
+                            navigate(DestinationItem.UserTokens.buildShowTokensCreatedRoute(it))
                         })
                     }
                 }

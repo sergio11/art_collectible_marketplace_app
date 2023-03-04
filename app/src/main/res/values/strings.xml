@@ -89,6 +89,10 @@
     <string name="profile_following_button_unfollow_text">unfollow</string>
     <string name="profile_tokens_owned_by_user_text">Your owned tokens</string>
     <string name="profile_tokens_created_by_user_text">Your created tokens</string>
+    <string name="profile_tokens_owned_by_user_title_default">Your owned tokens</string>
+    <string name="profile_tokens_owned_by_user_title_count" formatted="false">Your owned tokens (%d)</string>
+    <string name="profile_tokens_created_by_user_title_default">Your created tokens</string>
+    <string name="profile_tokens_created_by_user_title_count" formatted="false">Your created tokens (%d)</string>
     <!-- Add NFT -->
     <string name="add_nft_main_title_text">Mint new NFT</string>
     <string name="add_nft_create_button_text">Create</string>
