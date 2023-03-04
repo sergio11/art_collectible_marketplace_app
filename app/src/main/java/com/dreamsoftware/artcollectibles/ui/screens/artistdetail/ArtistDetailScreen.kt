@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,14 +28,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
-import com.dreamsoftware.artcollectibles.ui.components.TextWithImage
-import com.dreamsoftware.artcollectibles.ui.components.UserStatisticsComponent
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.google.common.collect.Iterables
 
 data class ArtistDetailScreenArgs(
     val uid: String
@@ -48,7 +46,8 @@ fun ArtistDetailScreen(
     args: ArtistDetailScreenArgs,
     viewModel: ArtistDetailViewModel = hiltViewModel(),
     onShowFollowers: (userInfo: UserInfo) -> Unit,
-    onShowFollowing: (userInfo: UserInfo) -> Unit
+    onShowFollowing: (userInfo: UserInfo) -> Unit,
+    onGoToTokenDetail: (item: ArtCollectible) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -77,7 +76,8 @@ fun ArtistDetailScreen(
             onFollowUser = ::followUser,
             onUnfollowUser = ::unfollowUser,
             onShowFollowers = onShowFollowers,
-            onShowFollowing = onShowFollowing
+            onShowFollowing = onShowFollowing,
+            onGoToTokenDetail = onGoToTokenDetail
         )
     }
 }
@@ -91,7 +91,8 @@ fun ArtistDetailComponent(
     onFollowUser: (userUid: String) -> Unit,
     onUnfollowUser: (userUid: String) -> Unit,
     onShowFollowers: (userInfo: UserInfo) -> Unit,
-    onShowFollowing: (userInfo: UserInfo) -> Unit
+    onShowFollowing: (userInfo: UserInfo) -> Unit,
+    onGoToTokenDetail: (item: ArtCollectible) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -168,13 +169,15 @@ fun ArtistDetailComponent(
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    modifier = Modifier.padding(start = 6.dp).clickable {
-                        userInfo?.let {
-                            if(it.following > 0) {
-                                onShowFollowing(it)
+                    modifier = Modifier
+                        .padding(start = 6.dp)
+                        .clickable {
+                            userInfo?.let {
+                                if (it.following > 0) {
+                                    onShowFollowing(it)
+                                }
                             }
-                        }
-                    },
+                        },
                     text = userInfo?.following?.let {
                         stringResource(id = R.string.profile_following_count_text, it)
                     } ?: stringResource(id = R.string.no_text_value),
@@ -227,6 +230,62 @@ fun ArtistDetailComponent(
                 fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.bodyLarge
             )
+            if(!Iterables.isEmpty(tokensOwned)) {
+                UserTokensRow(
+                    modifier = defaultModifier,
+                    context = context,
+                    title = stringResource(id = R.string.profile_tokens_owned_by_user_text),
+                    items = tokensOwned,
+                    onGoToTokenDetail
+                )
+            }
+            if(!Iterables.isEmpty(tokensCreated)) {
+                UserTokensRow(
+                    modifier = defaultModifier,
+                    context = context,
+                    title = stringResource(id = R.string.profile_tokens_created_by_user_text),
+                    items = tokensCreated,
+                    onGoToTokenDetail
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UserTokensRow(
+    modifier: Modifier = Modifier,
+    context: Context,
+    title: String,
+    items: Iterable<ArtCollectible>,
+    onItemSelected: (item: ArtCollectible) -> Unit
+) {
+    if(!Iterables.isEmpty(items)) {
+        Column(
+            modifier = modifier
+        ) {
+            Text(
+                text = title,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .fillMaxWidth(),
+                fontFamily = montserratFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleLarge
+            )
+            LazyRow(
+                modifier = Modifier.padding(vertical = 30.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(Iterables.size(items)) { idx ->
+                    with(Iterables.get(items, idx)) {
+                        ArtCollectibleMiniCard(context, this) {
+                            onItemSelected(this)
+                        }
+                    }
+                }
+            }
         }
     }
 }

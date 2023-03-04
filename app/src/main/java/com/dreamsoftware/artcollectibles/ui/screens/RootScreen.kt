@@ -104,11 +104,15 @@ fun RootScreen(
         composable(DestinationItem.ArtistDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.ArtistDetail.parseArgs(args)?.let { screenArgs ->
-                    ArtistDetailScreen(navigationController, screenArgs, onShowFollowers = {
-                        navigationController.navigate(DestinationItem.UserFollowers.buildFollowersRoute(it))
-                    }, onShowFollowing = {
-                        navigationController.navigate(DestinationItem.UserFollowers.buildFollowingRoute(it))
-                    })
+                    with(navigationController) {
+                        ArtistDetailScreen(this, screenArgs, onShowFollowers = {
+                            navigate(DestinationItem.UserFollowers.buildFollowersRoute(it))
+                        }, onShowFollowing = {
+                            navigate(DestinationItem.UserFollowers.buildFollowingRoute(it))
+                        }, onGoToTokenDetail = {
+                            navigate(DestinationItem.TokenDetail.buildRoute(it))
+                        })
+                    }
                 }
             }
         }

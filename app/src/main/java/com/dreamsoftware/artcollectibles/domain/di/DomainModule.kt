@@ -397,4 +397,24 @@ class DomainModule {
     fun provideGetFollowingUseCase(
         userRepository: IUserRepository
     ) = GetFollowingUseCase(userRepository)
+
+    /**
+     * Provide Get tokens created by user
+     * @param artCollectibleRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetTokensCreatedByUserUseCase(
+        artCollectibleRepository: IArtCollectibleRepository
+    ) = GetTokensCreatedByUserUseCase(artCollectibleRepository)
+
+    /**
+     * Provide Get tokens owned by user
+     * @param artCollectibleRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetTokensOwnedByUserUseCase(
+        artCollectibleRepository: IArtCollectibleRepository
+    ) = GetTokensOwnedByUserUseCase(artCollectibleRepository)
 }

@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import androidx.lifecycle.viewModelScope
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
@@ -15,7 +16,9 @@ class ArtistDetailViewModel @Inject constructor(
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val unfollowUserUseCase: UnfollowUserUseCase,
-    private val checkAuthUserIsFollowingToUseCase: CheckAuthUserIsFollowingToUseCase
+    private val checkAuthUserIsFollowingToUseCase: CheckAuthUserIsFollowingToUseCase,
+    private val getTokensOwnedByUserUseCase: GetTokensOwnedByUserUseCase,
+    private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase
 ) : SupportViewModel<ArtistDetailUiState>() {
 
     override fun onGetDefaultState(): ArtistDetailUiState = ArtistDetailUiState()
@@ -61,11 +64,9 @@ class ArtistDetailViewModel @Inject constructor(
                 val authUserDeferred =  async { loadAuthUserDetail() }
                 val loadProfileUseCaseDeferred = async { loadUserProfile(uid) }
                 val checkAuthUserIsFollowingToDeferred = async { checkAuthUserIsFollowingTo(uid) }
-
                 val authUser = authUserDeferred.await()
                 val userInfo = loadProfileUseCaseDeferred.await()
                 val isFollowingTo = checkAuthUserIsFollowingToDeferred.await()
-
                 updateState {
                     it.copy(
                         isLoading = false,
@@ -74,6 +75,8 @@ class ArtistDetailViewModel @Inject constructor(
                         isFollowing = isFollowingTo
                     )
                 }
+                loadTokensOwnedByUser(userAddress = userInfo.walletAddress)
+                loadTokensCreatedByUser(userAddress = userInfo.walletAddress)
             } catch (ex: Exception) {
                 onErrorOccurred(ex)
             }
@@ -94,12 +97,38 @@ class ArtistDetailViewModel @Inject constructor(
         params = CheckAuthUserIsFollowingToUseCase.Params(userUid)
     )
 
+    private fun loadTokensOwnedByUser(userAddress: String) {
+        getTokensOwnedByUserUseCase.invoke(
+            scope = viewModelScope,
+            params = GetTokensOwnedByUserUseCase.Params(userAddress),
+            onSuccess = ::onLoadTokensOwnedCompleted,
+            onError =  ::onErrorOccurred
+        )
+    }
+
+    private fun loadTokensCreatedByUser(userAddress: String) {
+        getTokensCreatedByUserUseCase.invoke(
+            scope = viewModelScope,
+            params = GetTokensCreatedByUserUseCase.Params(userAddress),
+            onSuccess = ::onLoadTokensCreatedCompleted,
+            onError = ::onErrorOccurred
+        )
+    }
+
     private fun onFollowCompleted() {
         updateState { it.copy(isFollowing = true) }
     }
 
     private fun onUnfollowCompleted() {
         updateState { it.copy(isFollowing = false) }
+    }
+
+    private fun onLoadTokensOwnedCompleted(tokensOwned: Iterable<ArtCollectible>) {
+        updateState { it.copy(tokensOwned = tokensOwned) }
+    }
+
+    private fun onLoadTokensCreatedCompleted(tokensCreated: Iterable<ArtCollectible>) {
+        updateState { it.copy(tokensCreated = tokensCreated) }
     }
 
     private fun onLoading() {
@@ -117,5 +146,7 @@ data class ArtistDetailUiState(
     val isLoading: Boolean = false,
     val isAuthUser: Boolean = false,
     val userInfo: UserInfo? = null,
-    val isFollowing: Boolean = false
+    val isFollowing: Boolean = false,
+    val tokensOwned: Iterable<ArtCollectible> = emptyList(),
+    val tokensCreated: Iterable<ArtCollectible> = emptyList()
 )
