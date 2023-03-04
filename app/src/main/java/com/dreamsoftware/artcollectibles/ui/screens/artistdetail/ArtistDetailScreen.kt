@@ -161,15 +161,11 @@ fun ArtistDetailComponent(
             ) {
                 Text(
                     modifier = Modifier.clickable {
-                        userInfo?.let {
-                            if(it.followers > 0) {
-                                onShowFollowers(it)
-                            }
+                        if(followersCount > 0) {
+                            userInfo?.let(onShowFollowers)
                         }
                     },
-                    text = userInfo?.followers?.let {
-                        stringResource(id = R.string.profile_followers_count_text, it)
-                    } ?: stringResource(id = R.string.no_text_value),
+                    text = stringResource(id = R.string.profile_followers_count_text, followersCount),
                     fontWeight = FontWeight.Bold,
                     fontFamily = montserratFontFamily,
                     style = MaterialTheme.typography.titleSmall
@@ -178,15 +174,11 @@ fun ArtistDetailComponent(
                     modifier = Modifier
                         .padding(start = 6.dp)
                         .clickable {
-                            userInfo?.let {
-                                if (it.following > 0) {
-                                    onShowFollowing(it)
-                                }
+                            if(followingCount > 0) {
+                                userInfo?.let(onShowFollowing)
                             }
                         },
-                    text = userInfo?.following?.let {
-                        stringResource(id = R.string.profile_following_count_text, it)
-                    } ?: stringResource(id = R.string.no_text_value),
+                    text = stringResource(id = R.string.profile_following_count_text, followingCount),
                     fontWeight = FontWeight.Bold,
                     fontFamily = montserratFontFamily,
                     style = MaterialTheme.typography.titleSmall

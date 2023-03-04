@@ -29,7 +29,7 @@ internal class FollowersDataSourceImpl(
     override suspend fun isFollowedBy(from: String, to: String): Boolean = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .whereArrayContains(FOLLOWING_IDS_FIELD_NAME, to)
+                .whereArrayContains(FOLLOWERS_IDS_FIELD_NAME, to)
                 .get()
                 .await()
                 .documents.mapNotNull { it.id }

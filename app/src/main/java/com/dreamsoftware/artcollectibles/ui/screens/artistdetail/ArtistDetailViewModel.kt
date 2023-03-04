@@ -71,6 +71,8 @@ class ArtistDetailViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         isAuthUser = userInfo.uid == authUser.uid,
+                        followersCount = userInfo.followers,
+                        followingCount = userInfo.following,
                         userInfo = userInfo,
                         isFollowing = isFollowingTo
                     )
@@ -116,11 +118,21 @@ class ArtistDetailViewModel @Inject constructor(
     }
 
     private fun onFollowCompleted() {
-        updateState { it.copy(isFollowing = true) }
+        updateState {
+            it.copy(
+                isFollowing = true,
+                followersCount = it.followersCount + 1
+            )
+        }
     }
 
     private fun onUnfollowCompleted() {
-        updateState { it.copy(isFollowing = false) }
+        updateState {
+            it.copy(
+                isFollowing = false,
+                followersCount = it.followersCount - 1
+            )
+        }
     }
 
     private fun onLoadTokensOwnedCompleted(tokensOwned: Iterable<ArtCollectible>) {
@@ -147,6 +159,8 @@ data class ArtistDetailUiState(
     val isAuthUser: Boolean = false,
     val userInfo: UserInfo? = null,
     val isFollowing: Boolean = false,
+    val followersCount: Long = 0L,
+    val followingCount: Long = 0L,
     val tokensOwned: Iterable<ArtCollectible> = emptyList(),
     val tokensCreated: Iterable<ArtCollectible> = emptyList()
 )
