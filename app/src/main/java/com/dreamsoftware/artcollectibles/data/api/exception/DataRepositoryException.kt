@@ -62,3 +62,7 @@ class DeleteTokenMetadataDataException(message: String? = null, cause: Throwable
 class FetchByAuthorAddressDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)
 class FetchByCidDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)
 class PreferenceDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+
+// Categories Repository Exception
+abstract class CategoriesDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+class GetCategoriesDataException(message: String? = null, cause: Throwable? = null): CategoriesDataException(message, cause)

@@ -111,6 +111,10 @@ class DataModule {
     @Singleton
     fun provideWalletStatisticsMapper(): WalletStatisticsMapper = WalletStatisticsMapper()
 
+    @Provides
+    @Singleton
+    fun provideArtCollectibleCategoryMapper(): ArtCollectibleCategoryMapper = ArtCollectibleCategoryMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -324,4 +328,16 @@ class DataModule {
     fun provideVisitorsRepository(
         visitorsDataSource: IVisitorsDataSource
     ): IVisitorsRepository = VisitorsRepositoryImpl(visitorsDataSource)
+
+    /**
+     * Provide Art Collectible Category Repository
+     * @param categoriesDataSource
+     * @param artCollectibleCategoryMapper
+     */
+    @Provides
+    @Singleton
+    fun provideArtCollectibleCategoryRepository(
+        categoriesDataSource: ICategoriesDataSource,
+        artCollectibleCategoryMapper: ArtCollectibleCategoryMapper
+    ): IArtCollectibleCategoryRepository = ArtCollectibleCategoryRepositoryImpl(categoriesDataSource, artCollectibleCategoryMapper)
 }

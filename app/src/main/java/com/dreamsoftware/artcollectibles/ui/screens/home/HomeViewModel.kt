@@ -2,12 +2,10 @@ package com.dreamsoftware.artcollectibles.ui.screens.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchAvailableMarketItemsUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchMarketHistoryUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchMarketplaceStatisticsUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchSellingMarketItemsUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -17,7 +15,8 @@ class HomeViewModel @Inject constructor(
     private val fetchAvailableMarketItemsUseCase: FetchAvailableMarketItemsUseCase,
     private val fetchSellingMarketItemsUseCase: FetchSellingMarketItemsUseCase,
     private val fetchMarketplaceStatisticsUseCase: FetchMarketplaceStatisticsUseCase,
-    private val fetchMarketHistoryUseCase: FetchMarketHistoryUseCase
+    private val fetchMarketHistoryUseCase: FetchMarketHistoryUseCase,
+    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase
 ) : SupportViewModel<HomeUiState>() {
 
     override fun onGetDefaultState(): HomeUiState = HomeUiState()
@@ -28,6 +27,7 @@ class HomeViewModel @Inject constructor(
         fetchAvailableMarketItems()
         fetchSellingMarketItems()
         fetchMarketHistory()
+        fetchArtCollectibleCategories()
     }
 
     private fun fetchMarketplaceStatistics() {
@@ -80,6 +80,21 @@ class HomeViewModel @Inject constructor(
             onError = {})
     }
 
+    private fun fetchArtCollectibleCategories() {
+        getArtCollectibleCategoriesUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onCategoriesLoaded,
+            onError = {
+                it.printStackTrace()
+                Log.d("ART_COLL", "it.message -> ${it.message}")
+            }
+        )
+    }
+
+    private fun onCategoriesLoaded(categories: Iterable<ArtCollectibleCategory>) {
+        updateState { it.copy(categories = categories) }
+    }
+
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
@@ -94,6 +109,7 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val isLoading: Boolean = false,
     val marketplaceStatistics: MarketplaceStatistics? = null,
+    val categories: Iterable<ArtCollectibleCategory> = emptyList(),
     val availableMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val sellingMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val marketHistory: Iterable<ArtCollectibleForSale> = emptyList()

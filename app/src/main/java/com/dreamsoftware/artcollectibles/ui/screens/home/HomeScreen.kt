@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCategoryList
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
 import com.dreamsoftware.artcollectibles.ui.components.BottomBar
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
@@ -107,6 +108,9 @@ private fun HomeComponent(
             ) {
                 marketplaceStatistics?.let {
                     MarketStatisticsRow(it)
+                }
+                if(!Iterables.isEmpty(categories)) {
+                    ArtCollectibleCategoryList(context, categories)
                 }
                 MarketplaceRow(context, "Available Items", availableMarketItems, onGoToMarketItemDetail)
                 MarketplaceRow(context, "Your items for sale", sellingMarketItems, onGoToMarketItemDetail)

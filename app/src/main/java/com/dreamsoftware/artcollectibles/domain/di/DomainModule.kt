@@ -417,4 +417,14 @@ class DomainModule {
     fun provideGetTokensOwnedByUserUseCase(
         artCollectibleRepository: IArtCollectibleRepository
     ) = GetTokensOwnedByUserUseCase(artCollectibleRepository)
+
+    /**
+     * Provide Get Art Collectible Categories Use case
+     * @param artCollectibleCategoryRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetArtCollectibleCategoriesUseCase(
+        artCollectibleCategoryRepository: IArtCollectibleCategoryRepository
+    ) = GetArtCollectibleCategoriesUseCase(artCollectibleCategoryRepository)
 }

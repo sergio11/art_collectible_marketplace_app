@@ -79,6 +79,14 @@ class FirebaseModule {
         applicationAware: IApplicationAware
     ): SecretMapper = SecretMapper(cryptoUtils, applicationAware)
 
+
+    /**
+     * Provide Categories Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideCategoriesMapper(): CategoriesMapper = CategoriesMapper()
+
     /**
      * Provide Firebase Auth
      */
@@ -201,4 +209,16 @@ class FirebaseModule {
     fun provideFollowersDataSource(
         firebaseStore: FirebaseFirestore
     ): IFollowersDataSource = FollowersDataSourceImpl(firebaseStore)
+
+    /**
+     * Provide Categories Data Source
+     * @param categoriesMapper
+     * @param firebaseStore
+     */
+    @Provides
+    @Singleton
+    fun provideCategoriesDataSource(
+        categoriesMapper: CategoriesMapper,
+        firebaseStore: FirebaseFirestore
+    ): ICategoriesDataSource = CategoriesDataSourceImpl(categoriesMapper, firebaseStore)
 }

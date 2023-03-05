@@ -1,33 +1,25 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.domain.models.categories
-import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
+import com.google.common.collect.Iterables
 
 @Composable
-fun ArtCollectibleCategoryList() {
+fun ArtCollectibleCategoryList(context: Context, categories: Iterable<ArtCollectibleCategory>) {
     LazyRow(
-        modifier = Modifier.padding(vertical = 30.dp),
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 30.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(categories) { category ->
-            ArtCollectibleCategoryCard(title = category.title, image = painterResource(id = category.image))
+        items(Iterables.size(categories)) { category ->
+            with(Iterables.get(categories, category)) {
+                ArtCollectibleCategoryCard(context = context, title = name, imageUrl = imageUrl)
+            }
         }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewCategoryList() {
-    ArtCollectibleMarketplaceTheme {
-        ArtCollectibleCategoryList()
     }
 }

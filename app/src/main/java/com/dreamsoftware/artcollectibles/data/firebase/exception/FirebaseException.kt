@@ -42,3 +42,6 @@ class GetFollowingException(message: String? = null, cause: Throwable? = null): 
 class CountFollowersException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class CountFollowingException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class CheckFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+// Categories Data Source
+class GetCategoriesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
