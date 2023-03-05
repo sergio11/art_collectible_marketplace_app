@@ -8,9 +8,11 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
@@ -169,6 +171,25 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                 oldValue = "{type}",
                 newValue = type
             )
+    }
+
+    object CategoryDetail : DestinationItem(route = "categories/{id}", arguments = listOf(
+        navArgument("id") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(artCollectibleCategory: ArtCollectibleCategory): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = artCollectibleCategory.uid
+            )
+
+        fun parseArgs(args: Bundle): CategoryDetailScreenArgs? = with(args) {
+            getString("id")?.let {
+                CategoryDetailScreenArgs(uid = it)
+            }
+        }
     }
 }
 

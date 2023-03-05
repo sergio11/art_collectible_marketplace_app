@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
@@ -27,7 +28,8 @@ fun RootScreen(
     val navigationController = rememberNavController()
     NavHost(
         navController = navigationController,
-        startDestination = DestinationItem.OnBoarding.route) {
+        startDestination = DestinationItem.OnBoarding.route
+    ) {
         composable(DestinationItem.OnBoarding.route) {
             OnBoardingScreen(
                 onUserAlreadyAuthenticated = {
@@ -56,9 +58,11 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Home.route) {
-            HomeScreen(navigationController) {
+            HomeScreen(navigationController, onGoToMarketItemDetail = {
                 navigationController.navigate(DestinationItem.MarketItemDetail.buildRoute(it))
-            }
+            }, onGoToCategoryDetail = {
+                navigationController.navigate(DestinationItem.CategoryDetail.buildRoute(it))
+            })
         }
         composable(DestinationItem.MyTokens.route) {
             MyTokensScreen(navigationController) {
@@ -108,6 +112,13 @@ fun RootScreen(
                     }) {
                         navigationController.popBackStack()
                     }
+                }
+            }
+        }
+        composable(DestinationItem.CategoryDetail.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.CategoryDetail.parseArgs(args)?.let { screenArgs ->
+                    CategoryDetailScreen(screenArgs)
                 }
             }
         }

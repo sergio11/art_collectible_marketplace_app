@@ -427,4 +427,14 @@ class DomainModule {
     fun provideGetArtCollectibleCategoriesUseCase(
         artCollectibleCategoryRepository: IArtCollectibleCategoryRepository
     ) = GetArtCollectibleCategoriesUseCase(artCollectibleCategoryRepository)
+
+    /**
+     * Provide get category detail use case
+     * @param artCollectibleCategoryRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetCategoryDetailUseCase(
+        artCollectibleCategoryRepository: IArtCollectibleCategoryRepository
+    ) = GetCategoryDetailUseCase(artCollectibleCategoryRepository)
 }

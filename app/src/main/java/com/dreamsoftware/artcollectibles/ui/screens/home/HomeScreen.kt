@@ -28,6 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCategoryList
@@ -41,7 +42,8 @@ import com.google.common.collect.Iterables
 fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(),
-    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit
+    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
+    onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -64,7 +66,8 @@ fun HomeScreen(
             navController = navController,
             context = context,
             uiState = uiState,
-            onGoToMarketItemDetail = onGoToMarketItemDetail
+            onGoToMarketItemDetail = onGoToMarketItemDetail,
+            onGoToCategoryDetail = onGoToCategoryDetail
         )
     }
 }
@@ -75,7 +78,8 @@ private fun HomeComponent(
     navController: NavController,
     context: Context,
     uiState: HomeUiState,
-    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit
+    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
+    onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -110,7 +114,7 @@ private fun HomeComponent(
                     MarketStatisticsRow(it)
                 }
                 if(!Iterables.isEmpty(categories)) {
-                    ArtCollectibleCategoryList(context, categories)
+                    ArtCollectibleCategoryList(context, categories, onGoToCategoryDetail)
                 }
                 MarketplaceRow(context, "Available Items", availableMarketItems, onGoToMarketItemDetail)
                 MarketplaceRow(context, "Your items for sale", sellingMarketItems, onGoToMarketItemDetail)

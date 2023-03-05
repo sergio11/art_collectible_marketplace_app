@@ -66,3 +66,4 @@ class PreferenceDataException(message: String? = null, cause: Throwable? = null)
 // Categories Repository Exception
 abstract class CategoriesDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class GetCategoriesDataException(message: String? = null, cause: Throwable? = null): CategoriesDataException(message, cause)
+class GetCategoryDataException(message: String? = null, cause: Throwable? = null): CategoriesDataException(message, cause)

@@ -27,7 +27,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
 @Composable
-fun ArtCollectibleCategoryCard(context: Context, title: String, imageUrl: String) {
+fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, title: String, imageUrl: String) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(27.dp))
@@ -38,6 +38,7 @@ fun ArtCollectibleCategoryCard(context: Context, title: String, imageUrl: String
             )
             .height(186.dp)
             .width(280.dp)
+            .then(modifier)
     ) {
         AsyncImage(
             model = ImageRequest.Builder(context)
