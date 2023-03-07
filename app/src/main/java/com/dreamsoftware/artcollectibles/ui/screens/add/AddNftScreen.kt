@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.getCacheSubDir
@@ -92,6 +93,9 @@ fun AddNftScreen(
         )
     }
     with(viewModel) {
+        LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
+            load()
+        }
         AddNftComponent(
             state = state,
             lifecycleOwner = lifecycleOwner,
@@ -112,7 +116,8 @@ fun AddNftScreen(
             onRoyaltyChanged = ::onRoyaltyChanged,
             onCreateClicked = ::onCreate,
             onExitClicked = onExitClicked,
-            onAddNewTag = ::onAddNewTag
+            onAddNewTag = ::onAddNewTag,
+            onCategoryChanged = ::onCategoryChanged
         )
     }
 }
@@ -131,7 +136,8 @@ internal fun AddNftComponent(
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit,
-    onAddNewTag: (tag: String) -> Unit
+    onAddNewTag: (tag: String) -> Unit,
+    onCategoryChanged: (ArtCollectibleCategory) -> Unit
 ) {
     if (isCameraPermissionGranted) {
         if (state.imageUri == null) {
@@ -153,7 +159,8 @@ internal fun AddNftComponent(
                 onRoyaltyChanged = onRoyaltyChanged,
                 onCreateClicked = onCreateClicked,
                 onExitClicked = onExitClicked,
-                onAddNewTag = onAddNewTag
+                onAddNewTag = onAddNewTag,
+                onCategoryChanged = onCategoryChanged
             )
         }
     } else {
@@ -170,7 +177,8 @@ private fun AddNftForm(
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit,
-    onAddNewTag: (tag: String) -> Unit
+    onAddNewTag: (tag: String) -> Unit,
+    onCategoryChanged: (ArtCollectibleCategory) -> Unit
 ) {
     with(state) {
         var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
@@ -246,6 +254,14 @@ private fun AddNftForm(
                                 placeHolderRes = R.string.add_nft_input_name_placeholder,
                                 value = name,
                                 onValueChanged = onNameChanged
+                            )
+                            CategorySelectorInput(
+                                modifier = defaultModifier,
+                                category = categorySelected,
+                                categories = categories,
+                                labelRes = R.string.add_nft_input_category_label,
+                                placeHolderRes = R.string.add_nft_input_category_placeholder,
+                                onCategorySelected = onCategoryChanged
                             )
                             CommonDefaultTextField(
                                 modifier = defaultModifier.height(150.dp),

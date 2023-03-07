@@ -46,3 +46,6 @@ class CheckFollowerException(message: String? = null, cause: Throwable? = null):
 // Categories Data Source
 class GetCategoriesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class AddTokenToCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class RemoveTokenFromCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetTokensByCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

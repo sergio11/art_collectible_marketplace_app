@@ -27,7 +27,9 @@ fun CommonDefaultTextField(
     @StringRes placeHolderRes: Int,
     keyboardType: KeyboardType = KeyboardType.Text,
     isSingleLine: Boolean = true,
-    onValueChanged: (newValue: String) -> Unit = {}
+    onValueChanged: (newValue: String) -> Unit = {},
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     TextField(
         modifier = modifier,
@@ -38,6 +40,8 @@ fun CommonDefaultTextField(
         placeholder = { Text(stringResource(id = placeHolderRes), fontFamily = montserratFontFamily) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         singleLine = isSingleLine,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         maxLines = if(isSingleLine) 1 else Int.MAX_VALUE,
         onValueChange = onValueChanged)
 }
