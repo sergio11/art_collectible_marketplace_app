@@ -22,6 +22,7 @@ class CreateArtCollectibleUseCase(
                 fileUri = imagePath,
                 mediaType = "image/$mediaType",
                 tags = tags,
+                categoryUid = categoryUid,
                 authorAddress = credentials.address
             )
         ))
@@ -33,6 +34,7 @@ class CreateArtCollectibleUseCase(
         val name: String,
         val description: String? = null,
         val royalty: Long,
+        val categoryUid: String,
         val tags: List<String>
     )
 }

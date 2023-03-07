@@ -102,7 +102,8 @@ class AddNftViewModel @Inject constructor(
                     name = name,
                     description = description,
                     royalty = royalty.toLong(),
-                    tags = tags
+                    tags = tags,
+                    categoryUid = categorySelected?.uid ?: categories.first().uid
                 ),
                 onSuccess = ::onCreateSuccess,
                 onError = ::onCreateError
@@ -131,7 +132,12 @@ class AddNftViewModel @Inject constructor(
     }
 
     private fun onCategoriesLoaded(categories: Iterable<ArtCollectibleCategory>) {
-        updateState { it.copy(categories = categories) }
+        updateState {
+            it.copy(
+                categorySelected = categories.first(),
+                categories = categories
+            )
+        }
     }
 
     private fun createButtonShouldBeEnabled(name: String, description: String) =

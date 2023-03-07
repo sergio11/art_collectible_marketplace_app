@@ -10,6 +10,7 @@ class CreateTokenMetadataMapper: IOneSideMapper<CreateTokenMetadataDTO, FileMeta
         const val TOKEN_DESCRIPTION_KEY = "description"
         const val TOKEN_TAGS_KEY = "token_tags"
         const val TOKEN_AUTHOR_KEY = "author_address"
+        const val TOKEN_CATEGORY_UID_KEY = "category_uid"
     }
 
     override fun mapInToOut(input: CreateTokenMetadataDTO): FileMetadataDTO = with(input) {
@@ -18,7 +19,8 @@ class CreateTokenMetadataMapper: IOneSideMapper<CreateTokenMetadataDTO, FileMeta
             keyValues = hashMapOf(
                 TOKEN_DESCRIPTION_KEY to description.orEmpty(),
                 TOKEN_AUTHOR_KEY to authorAddress,
-                TOKEN_TAGS_KEY to tags.joinToString(separator = ",")
+                TOKEN_TAGS_KEY to tags.joinToString(separator = ","),
+                TOKEN_CATEGORY_UID_KEY to categoryUid
             )
         )
     }

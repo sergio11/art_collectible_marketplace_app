@@ -13,6 +13,7 @@ class TokenMetadataToEntityMapper: IOneSideMapper<TokenMetadataDTO, TokenMetadat
             description = description,
             createdAt = createdAt,
             imageUrl = imageUrl,
+            categoryUid = categoryUid,
             tags = tags,
             authorAddress = authorAddress
         )

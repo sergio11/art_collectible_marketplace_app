@@ -64,7 +64,7 @@ internal class ArtCollectibleRepositoryImpl(
                 val credentials = walletRepository.loadCredentials()
                 with(token) {
                     // Save token metadata
-                    val tokenMetadata = tokenMetadataRepository.create(token.metadata)
+                    val tokenMetadata = tokenMetadataRepository.create(metadata)
                     // Mint new token
                     val tokenId =
                         artCollectibleDataSource.mintToken(
