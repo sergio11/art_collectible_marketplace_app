@@ -91,21 +91,9 @@ class DataModule {
     @Singleton
     fun provideCreateArtCollectibleMetadataMapper(): CreateArtCollectibleMetadataMapper = CreateArtCollectibleMetadataMapper()
 
-    /**
-     * Provide Token Metadata Mapper
-     */
-    @Provides
-    @Singleton
-    fun provideTokenMetadataMapper(): TokenMetadataMapper = TokenMetadataMapper()
-
-
     @Provides
     @Singleton
     fun provideTokenMetadata2Mapper(): TokenMetadataToEntityMapper = TokenMetadataToEntityMapper()
-
-    @Provides
-    @Singleton
-    fun provideTokenMetadataEntityMapper(): TokenMetadataEntityMapper = TokenMetadataEntityMapper()
 
     @Provides
     @Singleton
@@ -114,6 +102,17 @@ class DataModule {
     @Provides
     @Singleton
     fun provideArtCollectibleCategoryMapper(): ArtCollectibleCategoryMapper = ArtCollectibleCategoryMapper()
+
+    /**
+     * Provide Token Metadata Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideTokenMetadataMapper(artCollectibleCategoryMapper: ArtCollectibleCategoryMapper): TokenMetadataMapper = TokenMetadataMapper(artCollectibleCategoryMapper)
+
+    @Provides
+    @Singleton
+    fun provideTokenMetadataEntityMapper(artCollectibleCategoryMapper: ArtCollectibleCategoryMapper): TokenMetadataEntityMapper = TokenMetadataEntityMapper(artCollectibleCategoryMapper)
 
     /**
      * Provide Art Collectibles Repository
@@ -290,6 +289,7 @@ class DataModule {
      * @param tokenMetadataMapper
      * @param tokenMetadataToEntityMapper
      * @param tokenMetadataEntityMapper
+     * @param categoriesDataSource
      */
     @Provides
     @Singleton
@@ -299,14 +299,16 @@ class DataModule {
         createArtCollectibleMetadataMapper: CreateArtCollectibleMetadataMapper,
         tokenMetadataMapper: TokenMetadataMapper,
         tokenMetadataToEntityMapper: TokenMetadataToEntityMapper,
-        tokenMetadataEntityMapper: TokenMetadataEntityMapper
+        tokenMetadataEntityMapper: TokenMetadataEntityMapper,
+        categoriesDataSource: ICategoriesDataSource
     ): ITokenMetadataRepository = TokenMetadataRepositoryImpl(
         ipfsDataSource,
         tokenMetadataDatabaseDataSource,
         createArtCollectibleMetadataMapper,
         tokenMetadataMapper,
         tokenMetadataToEntityMapper,
-        tokenMetadataEntityMapper
+        tokenMetadataEntityMapper,
+        categoriesDataSource
     )
 
     /**

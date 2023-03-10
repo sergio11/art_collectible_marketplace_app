@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataEntityMapp
 import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.ITokenMetadataRepository
 import com.dreamsoftware.artcollectibles.data.database.datasource.metadata.ITokenMetadataDatabaseDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMetadata
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectibleMetadata
@@ -26,6 +27,7 @@ import kotlinx.coroutines.withContext
  * @param tokenMetadataMapper
  * @param tokenMetadataToEntityMapper
  * @param tokenMetadataEntityMapper
+ * @param categoriesDataSource
  */
 internal class TokenMetadataRepositoryImpl(
     private val ipfsDataSource: IpfsDataSource,
@@ -33,7 +35,8 @@ internal class TokenMetadataRepositoryImpl(
     private val createArtCollectibleMetadataMapper: CreateArtCollectibleMetadataMapper,
     private val tokenMetadataMapper: TokenMetadataMapper,
     private val tokenMetadataToEntityMapper: TokenMetadataToEntityMapper,
-    private val tokenMetadataEntityMapper: TokenMetadataEntityMapper
+    private val tokenMetadataEntityMapper: TokenMetadataEntityMapper,
+    private val categoriesDataSource: ICategoriesDataSource
 ) : ITokenMetadataRepository {
 
     @Throws(CreateTokenMetadataDataException::class)
@@ -42,13 +45,14 @@ internal class TokenMetadataRepositoryImpl(
             try {
                 ipfsDataSource.create(createArtCollectibleMetadataMapper.mapInToOut(tokenMetadata))
                     .also {
-                        tokenMetadataDatabaseDataSource.save(
-                            tokenMetadataToEntityMapper.mapInToOut(
-                                it
-                            )
-                        )
+                        tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInToOut(it))
+                        categoriesDataSource.addToken(it.cid, it.categoryUid)
                     }.let {
-                        tokenMetadataMapper.mapInToOut(it)
+                        tokenMetadataMapper.mapInToOut(
+                            TokenMetadataMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
+                        ))
                     }
             } catch (ex: Exception) {
                 throw CreateTokenMetadataDataException("An error occurred when trying to save token metadata", ex)
@@ -61,7 +65,10 @@ internal class TokenMetadataRepositoryImpl(
             try {
                 // Delete token metadata from IPFS
                 ipfsDataSource.delete(tokenCID).also {
-                    tokenMetadataDatabaseDataSource.delete(tokenCID)
+                    tokenMetadataDatabaseDataSource.findOneByCid(tokenCID).let {
+                        categoriesDataSource.removeToken(it.cid, it.categoryUid)
+                        tokenMetadataDatabaseDataSource.delete(tokenCID)
+                    }
                 }
             } catch (ex: Exception) {
                 throw DeleteTokenMetadataDataException("An error occurred when deleting token metadata", ex)
@@ -76,7 +83,12 @@ internal class TokenMetadataRepositoryImpl(
                 tokenMetadataEntityMapper.mapInListToOutList(
                     tokenMetadataDatabaseDataSource.findByAuthorAddress(
                         address
-                    )
+                    ).map {
+                        TokenMetadataEntityMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
+                        )
+                    }
                 )
             } catch (ex: Exception) {
                 try {
@@ -85,6 +97,11 @@ internal class TokenMetadataRepositoryImpl(
                             tokenMetadataToEntityMapper.mapInListToOutList(
                                 it
                             )
+                        )
+                    }.map {
+                        TokenMetadataMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
                         )
                     }.let {
                         tokenMetadataMapper.mapInListToOutList(it)
@@ -100,14 +117,22 @@ internal class TokenMetadataRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 tokenMetadataEntityMapper.mapInToOut(
-                    tokenMetadataDatabaseDataSource.findOneByCid(cid)
+                    tokenMetadataDatabaseDataSource.findOneByCid(cid).let {
+                        TokenMetadataEntityMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
+                        )
+                    }
                 )
             } catch (ex: Exception) {
                 try {
                     ipfsDataSource.fetchByCid(cid).also {
                         tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInToOut(it))
                     }.let {
-                        tokenMetadataMapper.mapInToOut(it)
+                        tokenMetadataMapper.mapInToOut(TokenMetadataMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
+                        ))
                     }
                 } catch (ex: Exception) {
                     throw FetchByCidDataException("An error occurred when trying to fetch token metadata", ex)
@@ -120,7 +145,12 @@ internal class TokenMetadataRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 tokenMetadataEntityMapper.mapInListToOutList(
-                    tokenMetadataDatabaseDataSource.findByCidList(cidList)
+                    tokenMetadataDatabaseDataSource.findByCidList(cidList).map {
+                        TokenMetadataEntityMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
+                        )
+                    }
                 )
             } catch (ex: Exception) {
                 try {
@@ -128,6 +158,11 @@ internal class TokenMetadataRepositoryImpl(
                         .awaitAll()
                         .also {
                             tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInListToOutList(it))
+                        }.map {
+                            TokenMetadataMapper.InputData(
+                                tokenMetadata = it,
+                                category = categoriesDataSource.getByUid(it.categoryUid)
+                            )
                         }
                         .let {
                             tokenMetadataMapper.mapInListToOutList(it)

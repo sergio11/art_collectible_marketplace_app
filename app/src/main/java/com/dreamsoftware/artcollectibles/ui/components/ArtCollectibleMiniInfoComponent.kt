@@ -74,6 +74,13 @@ fun ArtCollectibleMiniInfoComponent(
                     ?: stringResource(id = R.string.no_text_value_small)
             )
         }
+        Row {
+            TextWithImage(
+                modifier = Modifier.padding(8.dp),
+                imageRes = R.drawable.token_category_icon,
+                text = artCollectible?.metadata?.category?.name ?: stringResource(id = R.string.no_text_value)
+            )
+        }
         Text(
             text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
             fontFamily = montserratFontFamily,

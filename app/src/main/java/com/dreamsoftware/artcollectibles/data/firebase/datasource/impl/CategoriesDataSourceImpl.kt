@@ -59,7 +59,7 @@ internal class CategoriesDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(categoryUid).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
-                    document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(
+                    document(categoryUid + KEY_COUNT_SUFFIX).set(hashMapOf(
                         COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
@@ -76,11 +76,11 @@ internal class CategoriesDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                 document(categoryUid).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
-                    val tokenCount = document(tokenId + KEY_COUNT_SUFFIX)
+                    val tokenCount = document(categoryUid + KEY_COUNT_SUFFIX)
                         .get().await()?.data?.get(COUNT_FIELD_NAME)
                         .toString().toLongOrDefault(0L)
                     if(tokenCount > 0) {
-                        document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(
+                        document(categoryUid + KEY_COUNT_SUFFIX).set(hashMapOf(
                             COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                     }
                 }
