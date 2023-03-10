@@ -142,6 +142,9 @@
     <string name="home_market_statistics_available_items_title">Available Items</string>
     <string name="home_market_statistics_sold_items_title">Sold Items</string>
     <string name="home_market_statistics_cancelled_items_title">Cancelled Items</string>
+    <string name="home_market_statistics_title">Market Statistics</string>
+    <string name="home_collectibles_categories_title">Collectibles categories</string>
+
     <!-- Market Item Detail -->
     <string name="market_item_detail_buy_item_button_text">Buy Item</string>
     <string name="market_item_detail_withdraw_from_sale_button_text">Withdraw from sale</string>

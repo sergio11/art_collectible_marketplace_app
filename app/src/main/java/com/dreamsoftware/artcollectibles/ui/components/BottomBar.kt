@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -20,9 +21,9 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 fun BottomBar(navController: NavController) {
     val items = listOf(
         NavigationItem.Home,
-        NavigationItem.MyTokens,
+        NavigationItem.Explore,
         NavigationItem.Add,
-        NavigationItem.Search,
+        NavigationItem.MyTokens,
         NavigationItem.Profile
     )
     NavigationBar(
@@ -35,7 +36,7 @@ fun BottomBar(navController: NavController) {
             NavigationBarItem(
                 icon = {
                     Image(
-                        imageVector = item.icon,
+                        painter = painterResource(id = item.iconRes),
                         contentDescription = item.title,
                         modifier = Modifier.size(30.dp),
                         colorFilter = ColorFilter.tint(Color.White)

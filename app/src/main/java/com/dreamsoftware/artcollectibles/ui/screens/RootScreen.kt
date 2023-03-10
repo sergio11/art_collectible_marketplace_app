@@ -74,7 +74,7 @@ fun RootScreen(
                 navigationController.popBackStack()
             }
         }
-        composable(DestinationItem.Search.route) {
+        composable(DestinationItem.Explore.route) {
             SearchScreen(navigationController) {
                 navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
             }

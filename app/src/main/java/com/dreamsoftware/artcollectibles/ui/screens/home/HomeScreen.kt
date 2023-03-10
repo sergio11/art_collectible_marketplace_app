@@ -114,7 +114,12 @@ private fun HomeComponent(
                     MarketStatisticsRow(it)
                 }
                 if(!Iterables.isEmpty(categories)) {
-                    ArtCollectibleCategoryList(context, categories, onGoToCategoryDetail)
+                    ArtCollectibleCategoryList(
+                        context = context,
+                        titleRes = R.string.home_collectibles_categories_title,
+                        categories = categories,
+                        onCategoryClicked = onGoToCategoryDetail
+                    )
                 }
                 MarketplaceRow(context, "Available Items", availableMarketItems, onGoToMarketItemDetail)
                 MarketplaceRow(context, "Your items for sale", sellingMarketItems, onGoToMarketItemDetail)
@@ -127,30 +132,45 @@ private fun HomeComponent(
 @Composable
 private fun MarketStatisticsRow(marketplaceStatistics: MarketplaceStatistics) {
     with(marketplaceStatistics) {
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-                .horizontalScroll(rememberScrollState())
+                .padding(vertical = 10.dp, horizontal = 10.dp)
         ) {
-            MarketStatisticsCard(
-                iconRes = R.drawable.available_market_items,
-                titleRes = R.string.home_market_statistics_available_items_title,
-                value = countAvailableMarketItems.toString(),
-                backgroundColor = Purple80
+            Text(
+                text = stringResource(id = R.string.home_market_statistics_title),
+                color = Color.White,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(),
+                fontFamily = montserratFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.titleLarge
             )
-            MarketStatisticsCard(
-                iconRes = R.drawable.sold_market_items,
-                titleRes = R.string.home_market_statistics_sold_items_title,
-                value = countSoldMarketItems.toString(),
-                backgroundColor = PurpleGrey80
-            )
-            MarketStatisticsCard(
-                iconRes = R.drawable.cancelled_market_items,
-                titleRes = R.string.home_market_statistics_cancelled_items_title,
-                value = countCanceledMarketItems.toString(),
-                backgroundColor = Pink80
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 30.dp)
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                MarketStatisticsCard(
+                    iconRes = R.drawable.available_market_items,
+                    titleRes = R.string.home_market_statistics_available_items_title,
+                    value = countAvailableMarketItems.toString(),
+                    backgroundColor = Purple80
+                )
+                MarketStatisticsCard(
+                    iconRes = R.drawable.sold_market_items,
+                    titleRes = R.string.home_market_statistics_sold_items_title,
+                    value = countSoldMarketItems.toString(),
+                    backgroundColor = PurpleGrey80
+                )
+                MarketStatisticsCard(
+                    iconRes = R.drawable.cancelled_market_items,
+                    titleRes = R.string.home_market_statistics_cancelled_items_title,
+                    value = countCanceledMarketItems.toString(),
+                    backgroundColor = Pink80
+                )
+            }
         }
     }
 }

@@ -1,12 +1,11 @@
 package com.dreamsoftware.artcollectibles.ui.navigation
 
 import android.os.Bundle
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
@@ -26,7 +25,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
     object Home : DestinationItem(route = "home")
     object MyTokens : DestinationItem(route = "myTokens")
     object Add : DestinationItem(route = "add")
-    object Search : DestinationItem(route = "search")
+    object Explore : DestinationItem(route = "explore")
     object Profile : DestinationItem(route = "profile")
     object TokenDetail : DestinationItem(route = "tokens/detail/{id}", arguments = listOf(
         navArgument("id") {
@@ -110,7 +109,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                 getString("type")?.let { type ->
                     FollowersScreenArgs(
                         userUid = userUid,
-                        viewType = if(type == SHOW_FOLLOWERS) {
+                        viewType = if (type == SHOW_FOLLOWERS) {
                             FollowersScreenArgs.ViewTypeEnum.FOLLOWERS
                         } else {
                             FollowersScreenArgs.ViewTypeEnum.FOLLOWING
@@ -153,7 +152,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                 getString("type")?.let { type ->
                     TokensScreenArgs(
                         userAddress = userAddress,
-                        viewType = if(type == SHOW_TOKENS_OWNED) {
+                        viewType = if (type == SHOW_TOKENS_OWNED) {
                             TokensScreenArgs.ViewTypeEnum.OWNED
                         } else {
                             TokensScreenArgs.ViewTypeEnum.CREATED
@@ -196,30 +195,38 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
 // MarketItemDetailScreen
 sealed class NavigationItem(
     var destination: DestinationItem,
-    var icon: ImageVector,
+    @DrawableRes var iconRes: Int,
     var title: String
 ) {
     object Home :
-        NavigationItem(destination = DestinationItem.Home, icon = Icons.Filled.Home, title = "Home")
+        NavigationItem(
+            destination = DestinationItem.Home,
+            iconRes = R.drawable.home_menu_item_icon,
+            title = "Home"
+        )
 
     object MyTokens : NavigationItem(
         destination = DestinationItem.MyTokens,
-        icon = Icons.Filled.Check,
+        iconRes = R.drawable.my_nft_menu_item_icon,
         title = "MyTokens"
     )
 
     object Add :
-        NavigationItem(destination = DestinationItem.Add, icon = Icons.Filled.Add, title = "Add")
+        NavigationItem(
+            destination = DestinationItem.Add,
+            iconRes = R.drawable.add_menu_item_icon,
+            title = "Add"
+        )
 
-    object Search : NavigationItem(
-        destination = DestinationItem.Search,
-        icon = Icons.Filled.Search,
+    object Explore : NavigationItem(
+        destination = DestinationItem.Explore,
+        iconRes  = R.drawable.explore_menu_item_icon,
         title = "Search"
     )
 
     object Profile : NavigationItem(
         destination = DestinationItem.Profile,
-        icon = Icons.Filled.Person,
+        iconRes  = R.drawable.profile_menu_item_icon,
         title = "Profile"
     )
 }
