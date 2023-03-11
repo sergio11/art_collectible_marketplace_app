@@ -189,6 +189,7 @@ private fun TokenDetailBody(
                     .padding(8.dp),
                 artCollectible = artCollectible
             )
+            Spacer(modifier = Modifier.height(50.dp))
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier

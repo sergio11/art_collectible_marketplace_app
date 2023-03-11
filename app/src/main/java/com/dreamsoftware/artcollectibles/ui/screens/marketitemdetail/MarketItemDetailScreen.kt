@@ -120,7 +120,9 @@ fun MarketItemDetailComponent(
                 )
             }
             TagsRow(
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
                 tagList = artCollectibleForSale?.token?.metadata?.tags,
                 isReadOnly = true
             )
@@ -130,12 +132,13 @@ fun MarketItemDetailComponent(
                     .padding(8.dp),
                 artCollectible = artCollectibleForSale?.token
             )
+            Spacer(modifier = Modifier.height(50.dp))
             if (!isLoading) {
                 if (!isTokenSeller) {
                     CommonButton(
                         modifier = Modifier
-                            .padding(top = 20.dp, bottom = 8.dp)
-                            .width(300.dp),
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
                         text = R.string.market_item_detail_buy_item_button_text,
                         onClick = {
                             artCollectibleForSale?.let {
@@ -147,8 +150,8 @@ fun MarketItemDetailComponent(
                 if (isTokenAuthor) {
                     CommonButton(
                         modifier = Modifier
-                            .padding(top = 20.dp, bottom = 8.dp)
-                            .width(300.dp),
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                            .fillMaxWidth(),
                         text = R.string.market_item_detail_withdraw_from_sale_button_text,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Red,
