@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.palette.graphics.Palette
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -19,12 +18,10 @@ import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 fun UserMiniInfoComponent(
     modifier: Modifier = Modifier,
     showPicture: Boolean = true,
-    userInfo: UserInfo?,
-    palette: Palette? = null
+    userInfo: UserInfo?
 ) {
     Row(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth()
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
@@ -42,9 +39,7 @@ fun UserMiniInfoComponent(
                 style = MaterialTheme.typography.labelLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = palette?.lightVibrantSwatch?.rgb?.let { paletteColor ->
-                    Color(paletteColor)
-                } ?: Color.Black
+                color = Color.Black
             )
             userInfo?.professionalTitle?.let {
                 Text(
@@ -53,12 +48,10 @@ fun UserMiniInfoComponent(
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = palette?.lightMutedSwatch?.rgb?.let { paletteColor ->
-                        Color(paletteColor)
-                    } ?: Color.DarkGray,
+                    color = Color.DarkGray,
                 )
             }
-            UserStatisticsComponent(itemSize = 15.dp, userInfo = userInfo, palette = palette)
+            UserStatisticsComponent(itemSize = 15.dp, userInfo = userInfo)
         }
     }
 }

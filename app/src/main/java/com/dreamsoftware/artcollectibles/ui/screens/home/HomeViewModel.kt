@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -16,7 +18,8 @@ class HomeViewModel @Inject constructor(
     private val fetchSellingMarketItemsUseCase: FetchSellingMarketItemsUseCase,
     private val fetchMarketplaceStatisticsUseCase: FetchMarketplaceStatisticsUseCase,
     private val fetchMarketHistoryUseCase: FetchMarketHistoryUseCase,
-    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase
+    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
+    private val getMoreFollowedUsers: GetMoreFollowedUsers
 ) : SupportViewModel<HomeUiState>() {
 
     override fun onGetDefaultState(): HomeUiState = HomeUiState()
@@ -28,6 +31,7 @@ class HomeViewModel @Inject constructor(
         fetchSellingMarketItems()
         fetchMarketHistory()
         fetchArtCollectibleCategories()
+        getMoreFollowedUsers()
     }
 
     private fun fetchMarketplaceStatistics() {
@@ -91,8 +95,23 @@ class HomeViewModel @Inject constructor(
         )
     }
 
+    private fun getMoreFollowedUsers() {
+        getMoreFollowedUsers.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onMoreFollowedUsers,
+            onError = {
+                it.printStackTrace()
+                Log.d("ART_COLL", "it.message -> ${it.message}")
+            }
+        )
+    }
+
     private fun onCategoriesLoaded(categories: Iterable<ArtCollectibleCategory>) {
         updateState { it.copy(categories = categories) }
+    }
+
+    private fun onMoreFollowedUsers(moreFollowedUsers: Iterable<UserInfo>) {
+        updateState { it.copy(moreFollowedUsers = moreFollowedUsers) }
     }
 
     private fun onLoading() {
@@ -112,5 +131,6 @@ data class HomeUiState(
     val categories: Iterable<ArtCollectibleCategory> = emptyList(),
     val availableMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val sellingMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
-    val marketHistory: Iterable<ArtCollectibleForSale> = emptyList()
+    val marketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
+    val moreFollowedUsers: Iterable<UserInfo> = emptyList()
 )

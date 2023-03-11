@@ -3,6 +3,8 @@ package com.dreamsoftware.artcollectibles.ui.components
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -12,7 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -22,9 +26,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.palette.graphics.Palette
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -32,6 +33,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
 @Composable
 fun UserInfoArtistCard(
@@ -39,80 +41,71 @@ fun UserInfoArtistCard(
     context: Context,
     user: UserInfo
 ) {
-    var infoCardPalette by remember {
-        mutableStateOf(
-            ContextCompat.getDrawable(context, R.drawable.user_placeholder)?.toBitmapOrNull(40, 40)
-                ?.let {
-                    Palette.from(it).generate()
-                }
-        )
-    }
     Card(
-        modifier = modifier,
+        modifier = Modifier
+            .clip(RoundedCornerShape(27.dp))
+            .border(
+                width = 1.dp,
+                color = Color.White.copy(0.5f),
+                shape = RoundedCornerShape(27.dp)
+            )
+            .height(186.dp)
+            .width(280.dp)
+            .then(modifier),
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(infoCardPalette?.darkVibrantSwatch?.rgb?.let {
-            Color(it)
-        } ?: Color.White),
+        colors = CardDefaults.cardColors(Color.White),
         shape = RoundedCornerShape(27.dp),
         border = BorderStroke(3.dp, Color.White),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
+
+        Box {
             // User Profile Image
-            UserProfileImage(context, user) {
-                infoCardPalette = it
-            }
+            UserProfileImage(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(),
+                context = context,
+                user = user
+            )
             // User Profile Detail
             UserMiniInfoComponent(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .background(color = whiteTranslucent, shape = RectangleShape)
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 userInfo = user,
-                showPicture = false,
-                palette = infoCardPalette
+                showPicture = false
             )
-            //UserProfileDetail(context, user, infoCardPalette)
         }
     }
 }
 
 @Composable
 private fun UserProfileImage(
+    modifier: Modifier,
     context: Context,
-    user: UserInfo,
-    onPaletteGenerated: (Palette) -> Unit
+    user: UserInfo
 ) {
     Box {
-        val imageDefaultModifier = Modifier
-            .height(155.dp)
-            .fillMaxWidth()
         with(user) {
             photoUrl?.let {
                 AsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(it)
-                        // Disable hardware bitmaps as Palette needs to read the image's pixels.
-                        .allowHardware(false)
                         .crossfade(true)
-                        .listener(onSuccess = { _, result ->
-                            // Create the palette on a background thread.
-                            Palette.Builder(result.drawable.toBitmap()).generate { palette ->
-                                palette?.let(onPaletteGenerated)
-                            }
-                        })
                         .build(),
                     placeholder = painterResource(R.drawable.user_placeholder),
                     contentDescription = stringResource(R.string.image_content_description),
                     contentScale = ContentScale.Crop,
-                    modifier = imageDefaultModifier
+                    modifier = modifier
                 )
             } ?: run {
                 Image(
                     painter = painterResource(R.drawable.user_placeholder),
                     contentDescription = "User Placeholder",
                     contentScale = ContentScale.Crop,
-                    modifier = imageDefaultModifier
+                    modifier = modifier
                 )
             }
             externalProviderAuthType?.let {

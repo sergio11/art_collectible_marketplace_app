@@ -24,4 +24,7 @@ interface IFollowersDataSource {
 
     @Throws(RemoveFollowerException::class)
     suspend fun unfollow(from: String, to: String)
+
+    @Throws(GetMoreFollowedUsersException::class)
+    suspend fun getMoreFollowedUsers(limit: Long = 5): List<String>
 }

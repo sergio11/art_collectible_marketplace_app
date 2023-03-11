@@ -446,4 +446,13 @@ class DomainModule {
     fun provideGetAvailableMarketItemsByCategory(
         artMarketplaceRepository: IArtMarketplaceRepository
     ) = GetAvailableMarketItemsByCategory(artMarketplaceRepository)
+
+    /**
+     * Provide get more followed users
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetMoreFollowedUsers(
+        userRepository: IUserRepository
+    ) = GetMoreFollowedUsers(userRepository)
 }

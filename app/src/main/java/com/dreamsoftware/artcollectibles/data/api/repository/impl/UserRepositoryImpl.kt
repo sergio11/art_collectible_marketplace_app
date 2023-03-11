@@ -260,4 +260,25 @@ internal class UserRepositoryImpl(
                 throw GetFollowingUserException("An error occurred when trying to get followers", ex)
             }
         }
+
+    @Throws(GetMoreFollowedUsersException::class)
+    override suspend fun getMoreFollowedUsers(limit: Long): Iterable<UserInfo> =
+        withContext(Dispatchers.IO) {
+            try {
+                followerDataSource.getMoreFollowedUsers(limit).map { uid ->
+                    val userInfo = async { userDataSource.getById(uid) }
+                    val countFollowersDeferred = async { followerDataSource.countFollowers(uid) }
+                    val countFollowingDeferred = async { followerDataSource.countFollowing(uid) }
+                    userInfoMapper.mapInToOut(
+                        UserInfoMapper.InputData(
+                            user = userInfo.await(),
+                            followers = countFollowersDeferred.await(),
+                            following = countFollowingDeferred.await()
+                        )
+                    )
+                }
+            } catch (ex: Exception) {
+                throw GetMoreFollowedUsersException("An error occurred when trying to get more followed users", ex)
+            }
+        }
 }

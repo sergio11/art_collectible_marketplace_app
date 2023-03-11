@@ -58,11 +58,15 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Home.route) {
-            HomeScreen(navigationController, onGoToMarketItemDetail = {
-                navigationController.navigate(DestinationItem.MarketItemDetail.buildRoute(it))
-            }, onGoToCategoryDetail = {
-                navigationController.navigate(DestinationItem.CategoryDetail.buildRoute(it))
-            })
+            with(navigationController) {
+                HomeScreen(this, onGoToMarketItemDetail = {
+                    navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                }, onGoToCategoryDetail = {
+                    navigate(DestinationItem.CategoryDetail.buildRoute(it))
+                }, onGoToUserDetail = {
+                    navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                })
+            }
         }
         composable(DestinationItem.MyTokens.route) {
             MyTokensScreen(navigationController) {

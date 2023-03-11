@@ -18,6 +18,8 @@ class CheckFollowersUserException(message: String? = null, cause: Throwable? = n
 class GetFollowersUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 class GetFollowingUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 
+class GetMoreFollowedUsersException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
+
 // Wallet Repository Exception
 abstract class WalletDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class LoadWalletCredentialsException(message: String? = null, cause: Throwable? = null): WalletDataException(message, cause)

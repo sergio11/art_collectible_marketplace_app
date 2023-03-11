@@ -31,10 +31,8 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
-import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCategoryList
-import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
-import com.dreamsoftware.artcollectibles.ui.components.BottomBar
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
 
@@ -43,7 +41,8 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(),
     onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
-    onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit
+    onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
+    onGoToUserDetail: (userInfo: UserInfo) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -67,7 +66,8 @@ fun HomeScreen(
             context = context,
             uiState = uiState,
             onGoToMarketItemDetail = onGoToMarketItemDetail,
-            onGoToCategoryDetail = onGoToCategoryDetail
+            onGoToCategoryDetail = onGoToCategoryDetail,
+            onGoToUserDetail = onGoToUserDetail
         )
     }
 }
@@ -79,7 +79,8 @@ private fun HomeComponent(
     context: Context,
     uiState: HomeUiState,
     onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
-    onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit
+    onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
+    onGoToUserDetail: (userInfo: UserInfo) -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -119,6 +120,14 @@ private fun HomeComponent(
                         titleRes = R.string.home_collectibles_categories_title,
                         categories = categories,
                         onCategoryClicked = onGoToCategoryDetail
+                    )
+                }
+                if(!Iterables.isEmpty(moreFollowedUsers)) {
+                    UserInfoArtistList(
+                        context = context,
+                        titleRes = R.string.home_featured_artists_title,
+                        userList = moreFollowedUsers,
+                        onUserClicked = onGoToUserDetail
                     )
                 }
                 MarketplaceRow(context, R.string.home_available_items_for_sale_title, availableMarketItems, onGoToMarketItemDetail)

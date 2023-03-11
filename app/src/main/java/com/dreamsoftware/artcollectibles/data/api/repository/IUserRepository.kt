@@ -49,4 +49,7 @@ interface IUserRepository {
 
     @Throws(GetFollowingUserException::class)
     suspend fun getFollowing(userId: String): Iterable<UserInfo>
+
+    @Throws(GetMoreFollowedUsersException::class)
+    suspend fun getMoreFollowedUsers(limit: Long): Iterable<UserInfo>
 }

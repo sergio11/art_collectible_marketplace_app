@@ -1,9 +1,11 @@
 package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFollowersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -12,7 +14,7 @@ import okhttp3.internal.toLongOrDefault
 
 internal class FollowersDataSourceImpl(
     private val firebaseStore: FirebaseFirestore
-): IFollowersDataSource {
+) : IFollowersDataSource {
 
     private companion object {
         const val COLLECTION_NAME = "followers"
@@ -26,20 +28,21 @@ internal class FollowersDataSourceImpl(
     }
 
     @Throws(CheckFollowerException::class)
-    override suspend fun isFollowedBy(from: String, to: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            firebaseStore.collection(COLLECTION_NAME)
-                .whereArrayContains(FOLLOWERS_IDS_FIELD_NAME, to)
-                .get()
-                .await()
-                .documents.mapNotNull { it.id }
-                .contains(from + FOLLOWERS_SUFFIX)
-        } catch (ex: FirebaseException) {
-            throw ex
-        } catch (ex: Exception) {
-            throw GetFavoritesException("An error occurred when trying to get favorites", ex)
+    override suspend fun isFollowedBy(from: String, to: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME)
+                    .whereArrayContains(FOLLOWERS_IDS_FIELD_NAME, to)
+                    .get()
+                    .await()
+                    .documents.mapNotNull { it.id }
+                    .contains(from + FOLLOWERS_SUFFIX)
+            } catch (ex: FirebaseException) {
+                throw ex
+            } catch (ex: Exception) {
+                throw GetFavoritesException("An error occurred when trying to get favorites", ex)
+            }
         }
-    }
 
     @Throws(GetFollowersException::class)
     override suspend fun getFollowers(userId: String): List<String> = withContext(Dispatchers.IO) {
@@ -108,10 +111,34 @@ internal class FollowersDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(from + FOLLOWING_SUFFIX).set(hashMapOf(FOLLOWING_IDS_FIELD_NAME to FieldValue.arrayUnion(to)), SetOptions.merge()).await()
-                    document(from + FOLLOWING_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
-                    document(to + FOLLOWERS_SUFFIX).set(hashMapOf(FOLLOWERS_IDS_FIELD_NAME to FieldValue.arrayUnion(from)), SetOptions.merge()).await()
-                    document(to + FOLLOWERS_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(from + FOLLOWING_SUFFIX).set(
+                        hashMapOf(
+                            FOLLOWING_IDS_FIELD_NAME to FieldValue.arrayUnion(
+                                to
+                            )
+                        ), SetOptions.merge()
+                    ).await()
+                    document(from + FOLLOWING_COUNT_SUFFIX).set(
+                        hashMapOf(
+                            COUNT_FIELD_NAME to FieldValue.increment(
+                                1
+                            )
+                        ), SetOptions.merge()
+                    ).await()
+                    document(to + FOLLOWERS_SUFFIX).set(
+                        hashMapOf(
+                            FOLLOWERS_IDS_FIELD_NAME to FieldValue.arrayUnion(
+                                from
+                            )
+                        ), SetOptions.merge()
+                    ).await()
+                    document(to + FOLLOWERS_COUNT_SUFFIX).set(
+                        hashMapOf(
+                            COUNT_FIELD_NAME to FieldValue.increment(
+                                1
+                            )
+                        ), SetOptions.merge()
+                    ).await()
                 }
             } catch (ex: FirebaseException) {
                 throw ex
@@ -126,15 +153,45 @@ internal class FollowersDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(from + FOLLOWING_SUFFIX).set(hashMapOf(FOLLOWING_IDS_FIELD_NAME to FieldValue.arrayRemove(to)), SetOptions.merge()).await()
-                    val followingCount = document(from + FOLLOWING_COUNT_SUFFIX).get().await()?.data?.get(COUNT_FIELD_NAME).toString().toLongOrDefault(0L)
-                    if(followingCount > 0) {
-                        document(from + FOLLOWING_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(from + FOLLOWING_SUFFIX).set(
+                        hashMapOf(
+                            FOLLOWING_IDS_FIELD_NAME to FieldValue.arrayRemove(
+                                to
+                            )
+                        ), SetOptions.merge()
+                    ).await()
+                    val followingCount =
+                        document(from + FOLLOWING_COUNT_SUFFIX).get().await()?.data?.get(
+                            COUNT_FIELD_NAME
+                        ).toString().toLongOrDefault(0L)
+                    if (followingCount > 0) {
+                        document(from + FOLLOWING_COUNT_SUFFIX).set(
+                            hashMapOf(
+                                COUNT_FIELD_NAME to FieldValue.increment(
+                                    -1
+                                )
+                            ), SetOptions.merge()
+                        ).await()
                     }
-                    document(to + FOLLOWERS_SUFFIX).set(hashMapOf(FOLLOWERS_IDS_FIELD_NAME to FieldValue.arrayRemove(from)), SetOptions.merge()).await()
-                    val followersCount = document(to + FOLLOWERS_COUNT_SUFFIX).get().await()?.data?.get(COUNT_FIELD_NAME).toString().toLongOrDefault(0L)
-                    if(followersCount > 0) {
-                        document(to + FOLLOWERS_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(to + FOLLOWERS_SUFFIX).set(
+                        hashMapOf(
+                            FOLLOWERS_IDS_FIELD_NAME to FieldValue.arrayRemove(
+                                from
+                            )
+                        ), SetOptions.merge()
+                    ).await()
+                    val followersCount =
+                        document(to + FOLLOWERS_COUNT_SUFFIX).get().await()?.data?.get(
+                            COUNT_FIELD_NAME
+                        ).toString().toLongOrDefault(0L)
+                    if (followersCount > 0) {
+                        document(to + FOLLOWERS_COUNT_SUFFIX).set(
+                            hashMapOf(
+                                COUNT_FIELD_NAME to FieldValue.increment(
+                                    -1
+                                )
+                            ), SetOptions.merge()
+                        ).await()
                     }
                 }
             } catch (ex: FirebaseException) {
@@ -144,4 +201,21 @@ internal class FollowersDataSourceImpl(
             }
         }
     }
+
+    @Throws(GetMoreFollowedUsersException::class)
+    override suspend fun getMoreFollowedUsers(limit: Long): List<String> =
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME)
+                    .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
+                    .limit(limit).get()
+                    .await()?.documents?.mapNotNull { it.id }
+                    ?.filter { it.contains(FOLLOWERS_COUNT_SUFFIX) }
+                    ?.map { it.removeSuffix(FOLLOWERS_COUNT_SUFFIX) }.orEmpty()
+            } catch (ex: FirebaseException) {
+                throw ex
+            } catch (ex: Exception) {
+                throw GetMoreFollowedUsersException("An error occurred when trying to get more followed users")
+            }
+        }
 }
