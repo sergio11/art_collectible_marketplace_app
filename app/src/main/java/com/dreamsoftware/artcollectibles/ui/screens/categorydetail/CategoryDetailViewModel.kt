@@ -2,6 +2,8 @@ package com.dreamsoftware.artcollectibles.ui.screens.categorydetail
 
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAvailableMarketItemsByCategory
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCategoryDetailUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +11,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
-    private val getCategoryDetailUseCase: GetCategoryDetailUseCase
+    private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
+    private val getAvailableMarketItemsByCategory: GetAvailableMarketItemsByCategory
 ) : SupportViewModel<CategoryDetailUiState>() {
 
     override fun onGetDefaultState(): CategoryDetailUiState = CategoryDetailUiState()
@@ -22,6 +25,12 @@ class CategoryDetailViewModel @Inject constructor(
             onSuccess = ::onCategoryDetailLoaded,
             onError = ::onErrorOccurred
         )
+        getAvailableMarketItemsByCategory.invoke(
+            scope = viewModelScope,
+            params = GetAvailableMarketItemsByCategory.Params(categoryUid = uid),
+            onSuccess = ::onAvailableMarketItemsByCategoryLoaded,
+            onError = ::onErrorOccurred
+        )
     }
 
     private fun onCategoryDetailLoaded(category: ArtCollectibleCategory) {
@@ -30,6 +39,12 @@ class CategoryDetailViewModel @Inject constructor(
                 isLoading = false,
                 category = category
             )
+        }
+    }
+
+    private fun onAvailableMarketItemsByCategoryLoaded(tokenList: Iterable<ArtCollectibleForSale>) {
+        updateState {
+            it.copy(tokensForSale = tokenList)
         }
     }
 
@@ -44,5 +59,6 @@ class CategoryDetailViewModel @Inject constructor(
 
 data class CategoryDetailUiState(
     val isLoading: Boolean = false,
-    val category: ArtCollectibleCategory? = null
+    val category: ArtCollectibleCategory? = null,
+    val tokensForSale: Iterable<ArtCollectibleForSale> = emptyList()
 )

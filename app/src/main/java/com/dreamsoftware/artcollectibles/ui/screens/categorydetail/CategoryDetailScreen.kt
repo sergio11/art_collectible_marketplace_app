@@ -20,7 +20,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
 import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.MainAxisAlignment
+import com.google.common.collect.Iterables
 
 data class CategoryDetailScreenArgs(
     val uid: String
@@ -29,7 +35,8 @@ data class CategoryDetailScreenArgs(
 @Composable
 fun CategoryDetailScreen(
     args: CategoryDetailScreenArgs,
-    viewModel: CategoryDetailViewModel = hiltViewModel()
+    viewModel: CategoryDetailViewModel = hiltViewModel(),
+    onShowTokenForSaleDetail: (tokenForSale: ArtCollectibleForSale) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -54,7 +61,8 @@ fun CategoryDetailScreen(
             context = context,
             uiState = uiState,
             scrollState = scrollState,
-            density = density
+            density = density,
+            onTokenForSaleClicked = onShowTokenForSaleDetail
         )
     }
 }
@@ -64,7 +72,8 @@ fun CategoryDetailComponent(
     context: Context,
     uiState: CategoryDetailUiState,
     scrollState: ScrollState,
-    density: Density
+    density: Density,
+    onTokenForSaleClicked: (tokenForSale: ArtCollectibleForSale) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -77,9 +86,21 @@ fun CategoryDetailComponent(
                 stringResource(id = R.string.no_text_value)
             } ?: stringResource(id = R.string.no_text_value)
         ) {
-            val defaultModifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 8.dp)
-                .fillMaxWidth()
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                crossAxisAlignment = FlowCrossAxisAlignment.Center,
+                mainAxisAlignment = MainAxisAlignment.Center,
+                mainAxisSpacing = 8.dp,
+                crossAxisSpacing = 8.dp
+            ) {
+                repeat(Iterables.size(tokensForSale)) {
+                    with(Iterables.get(tokensForSale, it)) {
+                        ArtCollectibleForSaleCard(context = context, artCollectibleForSale = this) {
+                            onTokenForSaleClicked(this)
+                        }
+                    }
+                }
+            }
         }
     }
 }

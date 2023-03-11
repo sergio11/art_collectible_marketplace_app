@@ -91,7 +91,7 @@ private fun HomeComponent(
                 TopAppBar(
                     title = {
                         Text(
-                            "Art Collectible Marketplace",
+                            stringResource(id = R.string.home_main_title),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
@@ -121,9 +121,9 @@ private fun HomeComponent(
                         onCategoryClicked = onGoToCategoryDetail
                     )
                 }
-                MarketplaceRow(context, "Available Items", availableMarketItems, onGoToMarketItemDetail)
-                MarketplaceRow(context, "Your items for sale", sellingMarketItems, onGoToMarketItemDetail)
-                MarketplaceRow(context, "Last Market History", marketHistory, onGoToMarketItemDetail)
+                MarketplaceRow(context, R.string.home_available_items_for_sale_title, availableMarketItems, onGoToMarketItemDetail)
+                MarketplaceRow(context, R.string.home_your_items_for_sale_title, sellingMarketItems, onGoToMarketItemDetail)
+                MarketplaceRow(context, R.string.home_last_market_history_title, marketHistory, onGoToMarketItemDetail)
             }
         }
     }
@@ -225,7 +225,7 @@ private fun MarketStatisticsCard(
 @Composable
 private fun MarketplaceRow(
     context: Context,
-    title: String,
+    @StringRes titleRes: Int,
     items: Iterable<ArtCollectibleForSale>,
     onMarketItemSelected: (item: ArtCollectibleForSale) -> Unit
 ) {
@@ -235,14 +235,14 @@ private fun MarketplaceRow(
                 .padding(vertical = 10.dp, horizontal = 10.dp)
         ) {
             Text(
-                text = title,
+                text = stringResource(id = titleRes),
                 color = Color.White,
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
                 fontFamily = montserratFontFamily,
                 fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleLarge
             )
             ArtCollectibleForSaleList(context, items, onMarketItemSelected)
         }

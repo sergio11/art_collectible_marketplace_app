@@ -118,7 +118,9 @@ fun RootScreen(
         composable(DestinationItem.CategoryDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.CategoryDetail.parseArgs(args)?.let { screenArgs ->
-                    CategoryDetailScreen(screenArgs)
+                    CategoryDetailScreen(screenArgs) {
+                        navigationController.navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                    }
                 }
             }
         }

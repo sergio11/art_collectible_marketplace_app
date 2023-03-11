@@ -437,4 +437,13 @@ class DomainModule {
     fun provideGetCategoryDetailUseCase(
         artCollectibleCategoryRepository: IArtCollectibleCategoryRepository
     ) = GetCategoryDetailUseCase(artCollectibleCategoryRepository)
+
+    /**
+     * Provide get available marker items by category use case
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetAvailableMarketItemsByCategory(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = GetAvailableMarketItemsByCategory(artMarketplaceRepository)
 }

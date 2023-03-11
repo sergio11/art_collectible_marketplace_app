@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
@@ -32,7 +33,8 @@ internal class ArtCollectibleRepositoryImpl(
     private val favoritesDataSource: IFavoritesDataSource,
     private val visitorsDataSource: IVisitorsDataSource,
     private val tokenMetadataRepository: ITokenMetadataRepository,
-    private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
+    private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource,
+    private val artCollectibleCategoryDataSource: ICategoriesDataSource
 ) : IArtCollectibleRepository {
 
     private companion object {
@@ -204,6 +206,17 @@ internal class ArtCollectibleRepositoryImpl(
                 throw GetTokensException("An error occurred when trying to get tokens", ex)
             }
         }
+
+    @Throws(GetTokensByCategoryException::class)
+    override suspend fun getTokensByCategory(categoryUid: String): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            try {
+                getTokensCreated()
+            } catch (ex: Exception) {
+                throw GetTokensByCategoryException("An error occurred when trying to get tokens by category")
+            }
+        }
+
 
     private suspend fun mapToArtCollectible(
         credentials: UserWalletCredentials,

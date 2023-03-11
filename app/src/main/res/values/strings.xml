@@ -144,7 +144,10 @@
     <string name="home_market_statistics_cancelled_items_title">Cancelled Items</string>
     <string name="home_market_statistics_title">Market Statistics</string>
     <string name="home_collectibles_categories_title">Collectibles categories</string>
-
+    <string name="home_available_items_for_sale_title">Available items for sale</string>
+    <string name="home_your_items_for_sale_title">Your items for sale</string>
+    <string name="home_last_market_history_title">Last Market History</string>
+    <string name="home_main_title">NFT Marketplace</string>
     <!-- Market Item Detail -->
     <string name="market_item_detail_buy_item_button_text">Buy Item</string>
     <string name="market_item_detail_withdraw_from_sale_button_text">Withdraw from sale</string>

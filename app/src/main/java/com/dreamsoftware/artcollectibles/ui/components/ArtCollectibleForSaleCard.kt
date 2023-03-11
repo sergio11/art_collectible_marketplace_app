@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,6 +28,8 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
+import com.dreamsoftware.artcollectibles.ui.theme.Purple80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
@@ -48,7 +51,9 @@ fun ArtCollectibleForSaleCard(
                     RoundedCornerShape(30.dp)
                 )
                 .clip(RoundedCornerShape(30.dp))
-                .background(Color.White.copy(0.2f))
+                .background(brush = Brush.horizontalGradient(
+                    listOf(Purple80, Purple40)
+                ))
                 .clickable { onClicked() }
         ) {
             ArtCollectibleForSaleImage(context, token)
