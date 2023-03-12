@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -81,19 +82,26 @@ fun ArtCollectibleMiniInfoComponent(
                 text = artCollectible?.metadata?.category?.name ?: stringResource(id = R.string.no_text_value)
             )
         }
-        Text(
-            text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = if(showPreviewDescription) {
-                DEFAULT_LIMIT_DESC_MAX_LINES
-            } else {
-                Int.MAX_VALUE
-            }
-        )
+        if(showPreviewDescription) {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = DEFAULT_LIMIT_DESC_MAX_LINES,
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = montserratFontFamily
+            )
+        } else {
+            ExpandableText(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = montserratFontFamily
+            )
+        }
     }
 }
