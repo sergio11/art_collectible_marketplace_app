@@ -149,6 +149,7 @@
     <string name="home_last_market_history_title">Last Market History</string>
     <string name="home_main_title">NFT Marketplace</string>
     <string name="home_featured_artists_title">Featured artists</string>
+    <string name="home_art_collectibles_featured_title">Art collectibles featured</string>
 
     <!-- Market Item Detail -->
     <string name="market_item_detail_buy_item_button_text">Buy Item</string>

@@ -1,18 +1,26 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import com.dreamsoftware.artcollectibles.data.api.exception.AddToFavoritesDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.GetMoreLikedTokensDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.RemoveFromFavoritesDataException
+import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IFavoritesRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 /**
  * Favorites Repository Impl
  * @param favoritesDataSource
+ * @param artCollectibleRepository
  */
 internal class FavoritesRepositoryImpl(
-    private val favoritesDataSource: IFavoritesDataSource
+    private val favoritesDataSource: IFavoritesDataSource,
+    private val artCollectibleRepository: IArtCollectibleRepository
 ): IFavoritesRepository {
 
     @Throws(AddToFavoritesDataException::class)
@@ -38,4 +46,17 @@ internal class FavoritesRepositoryImpl(
             }
         }
     }
+
+    @Throws(GetMoreLikedTokensDataException::class)
+    override suspend fun getMoreLikedTokens(limit: Long): Iterable<ArtCollectible> =
+        withContext(Dispatchers.IO) {
+            try {
+                favoritesDataSource.getMoreLikedTokens(limit).map {
+                    async { artCollectibleRepository.getTokenById(BigInteger(it)) }
+                }.awaitAll()
+            } catch (ex: Exception) {
+                throw GetMoreLikedTokensDataException("An error ocurred when trying to get more liked tokens")
+            }
+        }
+
 }

@@ -28,10 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
@@ -42,7 +39,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
-    onGoToUserDetail: (userInfo: UserInfo) -> Unit
+    onGoToUserDetail: (userInfo: UserInfo) -> Unit,
+    onGoToTokenDetail: (userInfo: ArtCollectible) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -67,7 +65,8 @@ fun HomeScreen(
             uiState = uiState,
             onGoToMarketItemDetail = onGoToMarketItemDetail,
             onGoToCategoryDetail = onGoToCategoryDetail,
-            onGoToUserDetail = onGoToUserDetail
+            onGoToUserDetail = onGoToUserDetail,
+            onGoToTokenDetail = onGoToTokenDetail
         )
     }
 }
@@ -80,7 +79,8 @@ private fun HomeComponent(
     uiState: HomeUiState,
     onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
-    onGoToUserDetail: (userInfo: UserInfo) -> Unit
+    onGoToUserDetail: (userInfo: UserInfo) -> Unit,
+    onGoToTokenDetail: (userInfo: ArtCollectible) -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -128,6 +128,14 @@ private fun HomeComponent(
                         titleRes = R.string.home_featured_artists_title,
                         userList = moreFollowedUsers,
                         onUserClicked = onGoToUserDetail
+                    )
+                }
+                if(!Iterables.isEmpty(moreLikedTokens)) {
+                    ArtCollectiblesFeaturedList(
+                        context = context,
+                        titleRes = R.string.home_art_collectibles_featured_title,
+                        items = moreLikedTokens,
+                        onItemSelected = onGoToTokenDetail
                     )
                 }
                 MarketplaceRow(context, R.string.home_available_items_for_sale_title, availableMarketItems, onGoToMarketItemDetail)
@@ -272,6 +280,43 @@ private fun ArtCollectibleForSaleList(
             with(Iterables.get(items, idx)) {
                 ArtCollectibleForSaleCard(context, this) {
                     onItemSelected(this)
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun ArtCollectiblesFeaturedList(
+    @StringRes titleRes: Int,
+    context: Context,
+    items: Iterable<ArtCollectible>,
+    onItemSelected: (item: ArtCollectible) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(vertical = 10.dp, horizontal = 10.dp)
+    ) {
+        Text(
+            text = stringResource(id = titleRes),
+            color = Color.White,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth(),
+            fontFamily = montserratFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.titleLarge
+        )
+        LazyRow(
+            modifier = Modifier.padding(vertical = 30.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(Iterables.size(items)) { idx ->
+                with(Iterables.get(items, idx)) {
+                    ArtCollectibleMiniCard(context, this) {
+                        onItemSelected(this)
+                    }
                 }
             }
         }

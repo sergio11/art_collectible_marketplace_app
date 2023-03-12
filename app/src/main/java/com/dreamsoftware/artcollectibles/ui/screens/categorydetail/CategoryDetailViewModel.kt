@@ -3,7 +3,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.categorydetail
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAvailableMarketItemsByCategory
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAvailableMarketItemsByCategoryUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCategoryDetailUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
-    private val getAvailableMarketItemsByCategory: GetAvailableMarketItemsByCategory
+    private val getAvailableMarketItemsByCategoryUseCase: GetAvailableMarketItemsByCategoryUseCase
 ) : SupportViewModel<CategoryDetailUiState>() {
 
     override fun onGetDefaultState(): CategoryDetailUiState = CategoryDetailUiState()
@@ -25,9 +25,9 @@ class CategoryDetailViewModel @Inject constructor(
             onSuccess = ::onCategoryDetailLoaded,
             onError = ::onErrorOccurred
         )
-        getAvailableMarketItemsByCategory.invoke(
+        getAvailableMarketItemsByCategoryUseCase.invoke(
             scope = viewModelScope,
-            params = GetAvailableMarketItemsByCategory.Params(categoryUid = uid),
+            params = GetAvailableMarketItemsByCategoryUseCase.Params(categoryUid = uid),
             onSuccess = ::onAvailableMarketItemsByCategoryLoaded,
             onError = ::onErrorOccurred
         )

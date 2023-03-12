@@ -1,12 +1,10 @@
 package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.exception.AddToFavoritesException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.FirebaseException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.GetFavoritesException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.RemoveFromFavoritesException
+import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -21,17 +19,19 @@ internal class FavoritesDataSourceImpl(
         const val COLLECTION_NAME = "favorites"
         const val COUNT_FIELD_NAME = "count"
         const val IDS_FIELD_NAME = "ids"
-        const val KEY_COUNT_SUFFIX = "_count"
+        const val USER_KEY_COUNT_SUFFIX = "_user_count"
+        const val TOKEN_KEY_COUNT_SUFFIX = "_token_count"
     }
 
     @Throws(GetFavoritesException::class)
     override suspend fun hasAdded(tokenId: String, userAddress: String): Boolean = withContext(Dispatchers.IO) {
         try {
-            val result = firebaseStore.collection(COLLECTION_NAME)
-                .whereArrayContains(IDS_FIELD_NAME, userAddress)
+            firebaseStore.collection(COLLECTION_NAME)
+                .whereArrayContains(IDS_FIELD_NAME, tokenId)
                 .get()
                 .await()
-            !result.isEmpty
+                .documents.mapNotNull { it.id }
+                .contains(userAddress)
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {
@@ -54,10 +54,10 @@ internal class FavoritesDataSourceImpl(
     }
 
     @Throws(GetFavoritesException::class)
-    override suspend fun count(id: String): Long = withContext(Dispatchers.IO) {
+    override suspend fun tokenCount(tokenId: String): Long = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .document(id + KEY_COUNT_SUFFIX)
+                .document(tokenId + TOKEN_KEY_COUNT_SUFFIX)
                 .get()
                 .await()?.data?.get(COUNT_FIELD_NAME)
                 .toString()
@@ -75,9 +75,9 @@ internal class FavoritesDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
-                    document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(tokenId + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                     document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
-                    document(userAddress + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
                 throw ex
@@ -93,9 +93,9 @@ internal class FavoritesDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userAddress)), SetOptions.merge()).await()
-                    document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(tokenId + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                     document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
-                    document(userAddress + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
                 throw ex
@@ -104,4 +104,21 @@ internal class FavoritesDataSourceImpl(
             }
         }
     }
+
+    @Throws(GetMoreLikedTokensException::class)
+    override suspend fun getMoreLikedTokens(limit: Long): List<String> =
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME)
+                    .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
+                    .limit(limit).get()
+                    .await()?.documents?.mapNotNull { it.id }
+                    ?.filter { it.contains(TOKEN_KEY_COUNT_SUFFIX) }
+                    ?.map { it.removeSuffix(TOKEN_KEY_COUNT_SUFFIX) }.orEmpty()
+            } catch (ex: FirebaseException) {
+                throw ex
+            } catch (ex: Exception) {
+                throw GetMoreLikedTokensException("An error occurred when trying to get more liked tokens")
+            }
+        }
 }

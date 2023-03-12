@@ -443,16 +443,25 @@ class DomainModule {
      */
     @Provides
     @ViewModelScoped
-    fun provideGetAvailableMarketItemsByCategory(
+    fun provideGetAvailableMarketItemsByCategoryUseCase(
         artMarketplaceRepository: IArtMarketplaceRepository
-    ) = GetAvailableMarketItemsByCategory(artMarketplaceRepository)
+    ) = GetAvailableMarketItemsByCategoryUseCase(artMarketplaceRepository)
 
     /**
      * Provide get more followed users
      */
     @Provides
     @ViewModelScoped
-    fun provideGetMoreFollowedUsers(
+    fun provideGetMoreFollowedUsersUseCase(
         userRepository: IUserRepository
-    ) = GetMoreFollowedUsers(userRepository)
+    ) = GetMoreFollowedUsersUseCase(userRepository)
+
+    /**
+     * Provide Get More liked tokens
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetMoreLikedTokensUseCase(
+        favoritesRepository: IFavoritesRepository
+    ) = GetMoreLikedTokensUseCase(favoritesRepository)
 }

@@ -2,13 +2,9 @@ package com.dreamsoftware.artcollectibles.ui.screens.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
-import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -19,7 +15,8 @@ class HomeViewModel @Inject constructor(
     private val fetchMarketplaceStatisticsUseCase: FetchMarketplaceStatisticsUseCase,
     private val fetchMarketHistoryUseCase: FetchMarketHistoryUseCase,
     private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
-    private val getMoreFollowedUsers: GetMoreFollowedUsers
+    private val getMoreFollowedUsersUseCase: GetMoreFollowedUsersUseCase,
+    private val getMoreLikedTokensUseCase: GetMoreLikedTokensUseCase
 ) : SupportViewModel<HomeUiState>() {
 
     override fun onGetDefaultState(): HomeUiState = HomeUiState()
@@ -32,6 +29,7 @@ class HomeViewModel @Inject constructor(
         fetchMarketHistory()
         fetchArtCollectibleCategories()
         getMoreFollowedUsers()
+        getMoreLikedTokensUseCase()
     }
 
     private fun fetchMarketplaceStatistics() {
@@ -96,9 +94,20 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getMoreFollowedUsers() {
-        getMoreFollowedUsers.invoke(
+        getMoreFollowedUsersUseCase.invoke(
             scope = viewModelScope,
             onSuccess = ::onMoreFollowedUsers,
+            onError = {
+                it.printStackTrace()
+                Log.d("ART_COLL", "it.message -> ${it.message}")
+            }
+        )
+    }
+
+    private fun getMoreLikedTokensUseCase() {
+        getMoreLikedTokensUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onMoreLikedTokens,
             onError = {
                 it.printStackTrace()
                 Log.d("ART_COLL", "it.message -> ${it.message}")
@@ -112,6 +121,10 @@ class HomeViewModel @Inject constructor(
 
     private fun onMoreFollowedUsers(moreFollowedUsers: Iterable<UserInfo>) {
         updateState { it.copy(moreFollowedUsers = moreFollowedUsers) }
+    }
+
+    private fun onMoreLikedTokens(moreLikedTokens: Iterable<ArtCollectible>) {
+        updateState { it.copy(moreLikedTokens = moreLikedTokens) }
     }
 
     private fun onLoading() {
@@ -132,5 +145,6 @@ data class HomeUiState(
     val availableMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val sellingMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val marketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
-    val moreFollowedUsers: Iterable<UserInfo> = emptyList()
+    val moreFollowedUsers: Iterable<UserInfo> = emptyList(),
+    val moreLikedTokens: Iterable<ArtCollectible> = emptyList()
 )

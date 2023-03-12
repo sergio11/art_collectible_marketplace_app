@@ -4,9 +4,9 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IArtMarketplaceRepo
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
 
-class GetAvailableMarketItemsByCategory(
+class GetAvailableMarketItemsByCategoryUseCase(
     private val artMarketplaceRepository: IArtMarketplaceRepository
-): BaseUseCaseWithParams<GetAvailableMarketItemsByCategory.Params, Iterable<ArtCollectibleForSale>>() {
+): BaseUseCaseWithParams<GetAvailableMarketItemsByCategoryUseCase.Params, Iterable<ArtCollectibleForSale>>() {
 
     override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> {
         return artMarketplaceRepository.fetchSellingMarketItems()

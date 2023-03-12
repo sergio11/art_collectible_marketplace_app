@@ -65,6 +65,8 @@ fun RootScreen(
                     navigate(DestinationItem.CategoryDetail.buildRoute(it))
                 }, onGoToUserDetail = {
                     navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                }, onGoToTokenDetail = {
+                    navigate(DestinationItem.TokenDetail.buildRoute(it))
                 })
             }
         }

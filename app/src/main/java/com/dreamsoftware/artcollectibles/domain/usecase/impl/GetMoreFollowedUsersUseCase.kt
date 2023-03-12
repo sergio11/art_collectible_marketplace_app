@@ -4,7 +4,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCase
 
-class GetMoreFollowedUsers(
+class GetMoreFollowedUsersUseCase(
     private val userRepository: IUserRepository
 ): BaseUseCase<Iterable<UserInfo>>() {
 
