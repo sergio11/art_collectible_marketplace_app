@@ -56,6 +56,7 @@ abstract class FavoritesDataException(message: String? = null, cause: Throwable?
 class AddToFavoritesDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 class RemoveFromFavoritesDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 class GetMoreLikedTokensDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
+class GetMyFavoriteTokensDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 // Visitors Repository Exception
 abstract class VisitorsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class RegisterVisitorDataException(message: String? = null, cause: Throwable? = null): VisitorsDataException(message, cause)

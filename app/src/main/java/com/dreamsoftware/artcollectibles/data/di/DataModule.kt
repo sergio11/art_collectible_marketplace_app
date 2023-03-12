@@ -319,13 +319,15 @@ class DataModule {
      * Provide Favorites Repository
      * @param favoritesDataSource
      * @param artCollectibleRepository
+     * @param walletRepository
      */
     @Provides
     @Singleton
     fun provideFavoritesRepository(
         favoritesDataSource: IFavoritesDataSource,
-        artCollectibleRepository: IArtCollectibleRepository
-    ): IFavoritesRepository = FavoritesRepositoryImpl(favoritesDataSource, artCollectibleRepository)
+        artCollectibleRepository: IArtCollectibleRepository,
+        walletRepository: IWalletRepository
+    ): IFavoritesRepository = FavoritesRepositoryImpl(favoritesDataSource, artCollectibleRepository, walletRepository)
 
     /**
      * Provide Visitors Repository

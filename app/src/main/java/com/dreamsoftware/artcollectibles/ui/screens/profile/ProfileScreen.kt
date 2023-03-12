@@ -33,6 +33,7 @@ import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.theme.*
@@ -107,25 +108,18 @@ internal fun ProfileComponent(
     Scaffold(
         bottomBar = {
             BottomBar(navController)
+        },
+        topBar = {
+            CommonTopAppBar(titleRes = R.string.profile_main_title_text)
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            ScreenBackgroundImage(imageRes = R.drawable.common_background)
+            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Text(
-                    text = stringResource(R.string.profile_main_title_text),
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .fillMaxWidth(),
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.headlineLarge
-                )
                 Card(
                     modifier = Modifier.padding(20.dp),
                     elevation = CardDefaults.cardElevation(4.dp),
-                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
+                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.7f)),
                     shape = RoundedCornerShape(27.dp),
                     border = BorderStroke(3.dp, Color.White)
                 ) {

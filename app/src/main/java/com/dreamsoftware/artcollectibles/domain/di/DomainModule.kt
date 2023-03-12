@@ -464,4 +464,13 @@ class DomainModule {
     fun provideGetMoreLikedTokensUseCase(
         favoritesRepository: IFavoritesRepository
     ) = GetMoreLikedTokensUseCase(favoritesRepository)
+
+    /**
+     * Provide Get my favorite tokens use case
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetMyFavoriteTokensUseCase(
+        favoritesRepository: IFavoritesRepository
+    ) = GetMyFavoriteTokensUseCase(favoritesRepository)
 }

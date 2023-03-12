@@ -82,7 +82,7 @@ internal fun SearchComponent(
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            ScreenBackgroundImage(imageRes = R.drawable.common_background)
+            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
             Column {
                 SearchView(
                     context = context,

@@ -1,18 +1,25 @@
 package com.dreamsoftware.artcollectibles.ui.screens.mytokens
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -20,13 +27,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCard
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
-import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
-import com.dreamsoftware.artcollectibles.ui.components.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun MyTokensScreen(
@@ -47,7 +51,7 @@ fun MyTokensScreen(
             }
         }
     }
-    val lazyListState = rememberLazyListState()
+    val lazyGridState = rememberLazyGridState()
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             loadTokens()
@@ -56,7 +60,7 @@ fun MyTokensScreen(
             navController = navController,
             context = context,
             state = uiState,
-            lazyListState = lazyListState,
+            lazyGridState = lazyGridState,
             onNewTabSelected = ::onNewTabSelected,
             onTokenClicked = onGoToTokenDetail,
             onRetryCalled = { loadTokens() }
@@ -70,7 +74,7 @@ internal fun MyTokensComponent(
     navController: NavController,
     context: Context,
     state: MyTokensUiState,
-    lazyListState: LazyListState,
+    lazyGridState: LazyGridState,
     onNewTabSelected: (type: MyTokensTabsTypeEnum) -> Unit,
     onTokenClicked: (token: ArtCollectible) -> Unit,
     onRetryCalled: () -> Unit
@@ -80,13 +84,19 @@ internal fun MyTokensComponent(
         Scaffold(
             bottomBar = {
                 BottomBar(navController)
-            }
+            },
+            topBar = {
+                CommonTopAppBar(state.tabSelectedTitle ?: R.string.my_tokens_main_title)
+            },
+            containerColor = Purple40
         ) { paddingValues ->
+            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
             Box(modifier = Modifier.padding(paddingValues)) {
-                ScreenBackgroundImage(imageRes = R.drawable.common_background)
-                Column {
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     MyTokensTabsRow(state, onNewTabSelected)
-                    MyTokensLazyList(context, state, lazyListState, onTokenClicked)
+                    MyTokensLazyList(context, state, lazyGridState, onTokenClicked)
                     ErrorStateNotificationComponent(
                         isVisible = tokens.isEmpty() || !errorMessage.isNullOrBlank(),
                         imageRes = if (tokens.isEmpty()) {
@@ -117,17 +127,19 @@ private fun MyTokensTabsRow(
 ) {
     with(state) {
         if (tabs.isNotEmpty()) {
-            TabRow(selectedTabIndex = tabSelectedIndex) {
+            TabRow(
+                selectedTabIndex = tabSelectedIndex,
+                containerColor = Color.White.copy(alpha = 0.9f)) {
                 tabs.forEach { tab ->
                     Tab(
                         selected = tab.isSelected,
                         onClick = { onNewTabSelected(tab.type) },
-                        text = {
-                            Text(
-                                text = stringResource(id = tab.titleRes),
-                                fontFamily = montserratFontFamily,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
+                        icon = {
+                            Image(
+                                painter = painterResource(tab.iconRes),
+                                contentDescription = "Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.size(40.dp)
                             )
                         }
                     )
@@ -141,24 +153,22 @@ private fun MyTokensTabsRow(
 private fun MyTokensLazyList(
     context: Context,
     state: MyTokensUiState,
-    lazyListState: LazyListState,
+    lazyGridState: LazyGridState,
     onTokenClicked: (token: ArtCollectible) -> Unit
 ) {
     with(state) {
         if (!isLoading) {
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+            LazyVerticalGrid(
+                modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp),
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                state = lazyGridState
             ) {
                 items(tokens.size) { index ->
-                    ArtCollectibleCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onTokenClicked(tokens[index]) },
-                        context = context,
-                        artCollectible = tokens[index]
-                    )
+                    ArtCollectibleMiniCard(context = context, artCollectible = tokens[index]) {
+                        onTokenClicked(tokens[index])
+                    }
                 }
             }
         }

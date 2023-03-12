@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyFavoriteTokensUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyTokensCreatedUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyTokensOwnedUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class MyTokensViewModel @Inject constructor(
     private val getMyTokensCreatedUseCase: GetMyTokensCreatedUseCase,
     private val getMyTokensOwnedUseCase: GetMyTokensOwnedUseCase,
-    private val myTokensScreenErrorMapper: MyTokensScreenErrorMapper
+    private val myTokensScreenErrorMapper: MyTokensScreenErrorMapper,
+    private val getMyFavoriteTokensUseCase: GetMyFavoriteTokensUseCase
 ) : SupportViewModel<MyTokensUiState>() {
 
     override fun onGetDefaultState(): MyTokensUiState =
@@ -24,12 +26,19 @@ class MyTokensViewModel @Inject constructor(
             tabs = listOf(
                 MyTokensTabUi(
                     type = MyTokensTabsTypeEnum.TOKENS_OWNED,
-                    titleRes = R.string.my_tokens_tab_tokens_owned_text,
+                    iconRes = R.drawable.owned_tab_icon,
+                    titleRes = R.string.my_tokens_tokens_owned_title,
                     isSelected = true
                 ),
                 MyTokensTabUi(
                     type = MyTokensTabsTypeEnum.TOKENS_CREATED,
-                    titleRes = R.string.my_tokens_tab_tokens_created_text
+                    iconRes = R.drawable.created_tab_icon,
+                    titleRes = R.string.my_tokens_tokens_created_title
+                ),
+                MyTokensTabUi(
+                    type = MyTokensTabsTypeEnum.TOKENS_LIKED,
+                    iconRes = R.drawable.favorite_tab_icon,
+                    titleRes = R.string.my_tokens_tokens_favorites_title
                 )
             )
         )
@@ -48,10 +57,16 @@ class MyTokensViewModel @Inject constructor(
     fun loadTokens() {
         onLoading()
         getSelectedTabType()?.let {
-            if (it == MyTokensTabsTypeEnum.TOKENS_OWNED) {
-                loadMyTokensOwned()
-            } else {
-                loadMyTokensCreated()
+            when (it) {
+                MyTokensTabsTypeEnum.TOKENS_OWNED -> {
+                    loadMyTokensOwned()
+                }
+                MyTokensTabsTypeEnum.TOKENS_LIKED -> {
+                    loadMyFavoriteTokens()
+                }
+                else -> {
+                    loadMyTokensCreated()
+                }
             }
         } ?: loadMyTokensOwned()
     }
@@ -66,6 +81,14 @@ class MyTokensViewModel @Inject constructor(
 
     private fun loadMyTokensOwned() {
         getMyTokensOwnedUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onLoadTokensCompleted,
+            onError = ::onErrorOccurred
+        )
+    }
+
+    private fun loadMyFavoriteTokens() {
+        getMyFavoriteTokensUseCase.invoke(
             scope = viewModelScope,
             onSuccess = ::onLoadTokensCompleted,
             onError = ::onErrorOccurred
@@ -114,6 +137,9 @@ data class MyTokensUiState(
 ) {
     val tabSelectedIndex: Int
         get() = tabs.indexOfFirst { it.isSelected }
+
+    val tabSelectedTitle: Int?
+        get() = tabs.find { it.isSelected }?.titleRes
 
     val tabSelectedType: MyTokensTabsTypeEnum
         get() = tabs.find { it.isSelected }?.type ?: MyTokensTabsTypeEnum.TOKENS_OWNED

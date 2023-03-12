@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
 
@@ -89,23 +90,11 @@ private fun HomeComponent(
                 BottomBar(navController)
             },
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            stringResource(id = R.string.home_main_title),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = montserratFontFamily,
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White
-                        )
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
-                )
+                CommonTopAppBar(R.string.home_main_title)
             },
             containerColor = Purple40
         ) { paddingValues ->
+            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
             Column(
                 Modifier
                     .padding(paddingValues)
@@ -314,7 +303,7 @@ private fun ArtCollectiblesFeaturedList(
         ) {
             items(Iterables.size(items)) { idx ->
                 with(Iterables.get(items, idx)) {
-                    ArtCollectibleMiniCard(context, this) {
+                    ArtCollectibleMiniCard(context = context, artCollectible = this) {
                         onItemSelected(this)
                     }
                 }

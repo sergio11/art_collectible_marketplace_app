@@ -112,8 +112,10 @@
     <string name="add_nft_input_category_label">Category</string>
     <string name="add_nft_input_category_placeholder">Art Collectible Category</string>
     <!-- My Tokens -->
-    <string name="my_tokens_tab_tokens_owned_text">Tokens Owned</string>
-    <string name="my_tokens_tab_tokens_created_text">Tokens Created</string>
+    <string name="my_tokens_main_title">My NFTs</string>
+    <string name="my_tokens_tokens_created_title">My created NFTs</string>
+    <string name="my_tokens_tokens_owned_title">My owned NFTs</string>
+    <string name="my_tokens_tokens_favorites_title">My favorites NFTs</string>
     <string name="my_tokens_tab_tokens_owned_error">An error occurred when trying to get tokens owned</string>
     <string name="my_tokens_tab_tokens_created_error">An error occurred when trying to get tokens created</string>
     <string name="my_tokens_tab_tokens_owned_not_found_error">You don\'t have any art collectibles</string>

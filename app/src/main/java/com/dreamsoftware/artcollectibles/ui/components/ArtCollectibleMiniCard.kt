@@ -29,20 +29,33 @@ import com.dreamsoftware.artcollectibles.ui.theme.*
 
 @Composable
 fun ArtCollectibleMiniCard(
+    modifier: Modifier = Modifier,
     context: Context,
     artCollectible: ArtCollectible,
+    reverseStyle: Boolean = false,
     onClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .height(262.dp)
             .width(175.dp)
-            .border(1.dp, Purple200, RoundedCornerShape(30.dp))
+            .border(
+                2.dp, if (reverseStyle) {
+                    Color.White
+                } else {
+                    Purple200
+                }, RoundedCornerShape(30.dp)
+            )
             .clip(RoundedCornerShape(30.dp))
-            .background(brush = Brush.horizontalGradient(
-                listOf(Purple80, Purple40)
-            ))
+            .background(
+                color = if (reverseStyle) {
+                    Purple200
+                } else {
+                    Color.White.copy(alpha = 0.9f)
+                }
+            )
             .clickable { onClicked() }
+            .then(modifier)
     ) {
         ArtCollectibleImage(context, artCollectible)
         Column(
@@ -53,7 +66,11 @@ fun ArtCollectibleMiniCard(
             Text(
                 artCollectible.displayName,
                 fontFamily = montserratFontFamily,
-                color = Color.White,
+                color = if (reverseStyle) {
+                    Color.White
+                } else {
+                    Color.Black
+                },
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -62,7 +79,11 @@ fun ArtCollectibleMiniCard(
             )
             Text(
                 artCollectible.metadata.description,
-                color = whiteTranslucent,
+                color = if (reverseStyle) {
+                    Color.White
+                } else {
+                    Color.Black
+                },
                 fontFamily = montserratFontFamily,
                 textAlign = TextAlign.Left,
                 style = MaterialTheme.typography.bodySmall,
@@ -74,9 +95,12 @@ fun ArtCollectibleMiniCard(
             modifier = Modifier.padding(horizontal = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Spacer(Modifier.weight(1f))
-            FavoriteCountComponent(artCollectible = artCollectible, defaultColor = whiteTranslucent)
+            FavoriteCountComponent(artCollectible = artCollectible, defaultColor = if (reverseStyle) {
+                Color.White
+            } else {
+                Color.Black
+            })
         }
     }
 }

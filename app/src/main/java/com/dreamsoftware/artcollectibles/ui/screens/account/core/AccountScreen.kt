@@ -52,7 +52,7 @@ fun AccountScreen(
                 Card(
                     modifier = Modifier.padding(bottom = 20.dp),
                     elevation = CardDefaults.cardElevation(4.dp),
-                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
+                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.7f)),
                     shape = RoundedCornerShape(27.dp),
                     border = BorderStroke(3.dp, Color.White)
                 ) {

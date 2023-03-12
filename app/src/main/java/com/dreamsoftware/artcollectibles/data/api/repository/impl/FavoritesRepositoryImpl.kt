@@ -2,9 +2,11 @@ package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import com.dreamsoftware.artcollectibles.data.api.exception.AddToFavoritesDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.GetMoreLikedTokensDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.GetMyFavoriteTokensDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.RemoveFromFavoritesDataException
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IFavoritesRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +19,12 @@ import java.math.BigInteger
  * Favorites Repository Impl
  * @param favoritesDataSource
  * @param artCollectibleRepository
+ * @param walletRepository
  */
 internal class FavoritesRepositoryImpl(
     private val favoritesDataSource: IFavoritesDataSource,
-    private val artCollectibleRepository: IArtCollectibleRepository
+    private val artCollectibleRepository: IArtCollectibleRepository,
+    private val walletRepository: IWalletRepository
 ): IFavoritesRepository {
 
     @Throws(AddToFavoritesDataException::class)
@@ -46,6 +50,19 @@ internal class FavoritesRepositoryImpl(
             }
         }
     }
+
+    @Throws(GetMyFavoriteTokensDataException::class)
+    override suspend fun getMyFavoriteTokens(): Iterable<ArtCollectible> =
+        withContext(Dispatchers.IO) {
+            try {
+                val authCredentials = walletRepository.loadCredentials()
+                favoritesDataSource.getList(authCredentials.address).map {
+                    async { artCollectibleRepository.getTokenById(BigInteger(it)) }
+                }.awaitAll()
+            } catch (ex: Exception) {
+                throw GetMyFavoriteTokensDataException("An error occurred when trying to get my favorite tokens", ex)
+            }
+        }
 
     @Throws(GetMoreLikedTokensDataException::class)
     override suspend fun getMoreLikedTokens(limit: Long): Iterable<ArtCollectible> =

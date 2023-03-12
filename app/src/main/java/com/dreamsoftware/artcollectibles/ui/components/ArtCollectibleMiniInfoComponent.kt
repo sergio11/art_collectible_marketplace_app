@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -20,12 +21,10 @@ import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
-private const val DEFAULT_LIMIT_DESC_MAX_LINES = 3
-
 @Composable
 fun ArtCollectibleMiniInfoComponent(
     modifier: Modifier = Modifier,
-    showPreviewDescription: Boolean = false,
+    showPreviewDescription: Boolean = true,
     artCollectible: ArtCollectible?
 ) {
     Column(modifier = modifier) {
@@ -37,6 +36,7 @@ fun ArtCollectibleMiniInfoComponent(
                 .fillMaxWidth(),
             style = MaterialTheme.typography.titleLarge,
             maxLines = 1,
+            color = Color.Black,
             overflow = TextOverflow.Ellipsis
         )
         Text(
@@ -47,6 +47,7 @@ fun ArtCollectibleMiniInfoComponent(
             modifier = Modifier
                 .padding(horizontal = 8.dp, vertical = 2.dp)
                 .fillMaxWidth(),
+            color = Color.Black,
             style = MaterialTheme.typography.titleSmall
         )
         Row {
@@ -83,17 +84,6 @@ fun ArtCollectibleMiniInfoComponent(
             )
         }
         if(showPreviewDescription) {
-            Text(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = DEFAULT_LIMIT_DESC_MAX_LINES,
-                style = MaterialTheme.typography.bodyLarge,
-                fontFamily = montserratFontFamily
-            )
-        } else {
             ExpandableText(
                 modifier = Modifier
                     .padding(8.dp)

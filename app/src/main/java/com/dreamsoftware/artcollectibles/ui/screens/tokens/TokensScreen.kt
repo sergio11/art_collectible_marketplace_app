@@ -118,7 +118,7 @@ internal fun TokensComponent(
                     ) {
                         items(Iterables.size(tokensResult)) { index ->
                             val token = Iterables.get(tokensResult, index)
-                            ArtCollectibleMiniCard(context, token) {
+                            ArtCollectibleMiniCard(context = context, artCollectible = token) {
                                 onGoToTokenDetail(token)
                             }
                         }

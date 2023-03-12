@@ -297,7 +297,7 @@ private fun UserTokensRow(
             ) {
                 items(Iterables.size(items)) { idx ->
                     with(Iterables.get(items, idx)) {
-                        ArtCollectibleMiniCard(context, this) {
+                        ArtCollectibleMiniCard(context = context, reverseStyle = true, artCollectible = this) {
                             onItemSelected(this)
                         }
                     }
