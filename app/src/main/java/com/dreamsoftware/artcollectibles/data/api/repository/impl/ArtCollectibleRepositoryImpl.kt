@@ -10,7 +10,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
-import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICommentsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
@@ -34,7 +34,7 @@ internal class ArtCollectibleRepositoryImpl(
     private val visitorsDataSource: IVisitorsDataSource,
     private val tokenMetadataRepository: ITokenMetadataRepository,
     private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource,
-    private val artCollectibleCategoryDataSource: ICategoriesDataSource
+    private val commentsDataSource: ICommentsDataSource
 ) : IArtCollectibleRepository {
 
     private companion object {
@@ -229,6 +229,7 @@ internal class ArtCollectibleRepositoryImpl(
             val tokenOwnerDeferred = async { userRepository.getByAddress(token.creator) }
             val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
             val favoritesCountDeferred = async { favoritesDataSource.tokenCount(tokenId) }
+            val commentsCountDeferred = async { commentsDataSource.count(tokenId) }
             val hasAddedToFavDeferred =
                 async { favoritesDataSource.hasAdded(tokenId, credentials.address) }
             artCollectibleMapper.mapInToOut(
@@ -239,6 +240,7 @@ internal class ArtCollectibleRepositoryImpl(
                     owner = tokenOwnerDeferred.await(),
                     visitorsCount = visitorsCountDeferred.await(),
                     favoritesCount = favoritesCountDeferred.await(),
+                    commentsCount = commentsCountDeferred.await(),
                     hasAddedToFav = hasAddedToFavDeferred.await()
                 )
             )

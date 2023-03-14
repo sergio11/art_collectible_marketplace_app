@@ -88,6 +88,20 @@ class FirebaseModule {
     fun provideCategoriesMapper(): CategoriesMapper = CategoriesMapper()
 
     /**
+     * Provide Comment Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideCommentMapper(): CommentMapper = CommentMapper()
+
+    /**
+     * Provide Save Comment Mapper
+     */
+    @Provides
+    @Singleton
+    fun provideSaveCommentMapper(): SaveCommentMapper = SaveCommentMapper()
+
+    /**
      * Provide Firebase Auth
      */
     @Provides
@@ -221,4 +235,18 @@ class FirebaseModule {
         categoriesMapper: CategoriesMapper,
         firebaseStore: FirebaseFirestore
     ): ICategoriesDataSource = CategoriesDataSourceImpl(categoriesMapper, firebaseStore)
+
+    /**
+     * Provide Comments Data Source
+     * @param firebaseStore
+     * @param commentMapper
+     * @param saveCommentMapper
+     */
+    @Provides
+    @Singleton
+    fun provideCommentsDataSource(
+        firebaseStore: FirebaseFirestore,
+        commentMapper: CommentMapper,
+        saveCommentMapper: SaveCommentMapper
+    ): ICommentsDataSource = CommentsDataSourceImpl(firebaseStore, commentMapper, saveCommentMapper)
 }

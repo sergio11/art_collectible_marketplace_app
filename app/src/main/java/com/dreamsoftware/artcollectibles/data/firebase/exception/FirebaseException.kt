@@ -51,3 +51,11 @@ class GetCategoryException(message: String? = null, cause: Throwable? = null): F
 class AddTokenToCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class RemoveTokenFromCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetTokensByCategoryException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+// Comments Data Source
+class SaveCommentException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetCommentsByTokenIdException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class CountCommentsException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class DeleteCommentException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+

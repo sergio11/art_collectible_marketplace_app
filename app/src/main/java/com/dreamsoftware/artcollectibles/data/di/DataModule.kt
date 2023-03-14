@@ -125,7 +125,7 @@ class DataModule {
      * @param visitorsDataSource
      * @param tokenMetadataRepository
      * @param artCollectibleMemoryCacheDataSource
-     * @param artCollectibleCategoryDataSource
+     * @param commentsDataSource
      */
     @Provides
     @Singleton
@@ -139,7 +139,7 @@ class DataModule {
         visitorsDataSource: IVisitorsDataSource,
         tokenMetadataRepository: ITokenMetadataRepository,
         artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource,
-        artCollectibleCategoryDataSource: ICategoriesDataSource
+        commentsDataSource: ICommentsDataSource
     ): IArtCollectibleRepository =
         ArtCollectibleRepositoryImpl(
             artCollectibleDataSource,
@@ -151,7 +151,7 @@ class DataModule {
             visitorsDataSource,
             tokenMetadataRepository,
             artCollectibleMemoryCacheDataSource,
-            artCollectibleCategoryDataSource
+            commentsDataSource
         )
 
 

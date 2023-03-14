@@ -10,6 +10,7 @@ class ArtCollectible(
     val favoritesCount: Long,
     val hasAddedToFav: Boolean,
     val visitorsCount: Long,
+    val commentsCount: Long,
     val author: UserInfo,
     val owner: UserInfo,
 ) {

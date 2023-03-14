@@ -17,7 +17,8 @@ class ArtCollectibleMapper: IOneSideMapper<ArtCollectibleMapper.InputData, ArtCo
             owner = owner,
             favoritesCount = favoritesCount,
             hasAddedToFav = hasAddedToFav,
-            visitorsCount = visitorsCount
+            visitorsCount = visitorsCount,
+            commentsCount = commentsCount
         )
     }
 
@@ -31,6 +32,7 @@ class ArtCollectibleMapper: IOneSideMapper<ArtCollectibleMapper.InputData, ArtCo
         val owner: UserInfo,
         val visitorsCount: Long = 0L,
         val favoritesCount: Long = 0L,
+        val commentsCount: Long = 0L,
         val hasAddedToFav: Boolean = false
     )
 }

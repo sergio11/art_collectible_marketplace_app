@@ -82,6 +82,12 @@ fun ArtCollectibleMiniInfoComponent(
                 imageRes = R.drawable.token_category_icon,
                 text = artCollectible?.metadata?.category?.name ?: stringResource(id = R.string.no_text_value)
             )
+            TextWithImage(
+                modifier = Modifier.padding(8.dp),
+                imageRes = R.drawable.comments_icon,
+                text = artCollectible?.commentsCount?.toString()
+                    ?: stringResource(id = R.string.no_text_value_small)
+            )
         }
         if(showPreviewDescription) {
             ExpandableText(

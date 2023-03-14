@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFollowersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 import com.google.firebase.firestore.FieldValue
