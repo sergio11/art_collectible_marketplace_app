@@ -491,4 +491,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetCommentsByTokenUseCase(commentsRepository: ICommentsRepository) =
         GetCommentsByTokenUseCase(commentsRepository)
+
+    /**
+     * Provide Delete Comment use case
+     * @param commentsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideDeleteCommentUseCase(commentsRepository: ICommentsRepository) =
+        DeleteCommentUseCase(commentsRepository)
 }

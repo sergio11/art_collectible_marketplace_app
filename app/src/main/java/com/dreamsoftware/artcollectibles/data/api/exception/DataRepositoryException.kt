@@ -77,3 +77,6 @@ class GetCategoryDataException(message: String? = null, cause: Throwable? = null
 abstract class CommentsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class GetCommentsByTokenDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
 class SaveCommentDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class DeleteCommentDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+
+class GetCommentByIdDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)

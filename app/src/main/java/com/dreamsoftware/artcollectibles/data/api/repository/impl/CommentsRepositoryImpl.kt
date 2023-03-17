@@ -1,5 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import com.dreamsoftware.artcollectibles.data.api.exception.DeleteCommentDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.GetCommentByIdDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.GetCommentsByTokenDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.SaveCommentDataException
 import com.dreamsoftware.artcollectibles.data.api.mapper.CommentMapper
@@ -37,6 +39,31 @@ internal class CommentsRepositoryImpl(
             }
         } catch (ex: Exception) {
             throw SaveCommentDataException("An error occurred when trying to save a comment")
+        }
+    }
+
+    @Throws(DeleteCommentDataException::class)
+    override suspend fun delete(tokenId: String, uid: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                commentsDataSource.delete(tokenId, uid)
+            } catch (ex: Exception) {
+                throw DeleteCommentDataException("An error occurred when trying to delete comment", ex)
+            }
+        }
+    }
+
+    @Throws(GetCommentByIdDataException::class)
+    override suspend fun getCommentByUid(uid: String): Comment = withContext(Dispatchers.IO) {
+        try {
+            commentMapper.mapInToOut(commentsDataSource.getCommentById(uid).let {
+                CommentMapper.InputData(
+                    commentDTO = it,
+                    userInfoDTO = userRepository.get(it.userUid)
+                )
+            })
+        } catch (ex: Exception) {
+            throw GetCommentByIdDataException("An error occurred when trying to get comment", ex)
         }
     }
 
