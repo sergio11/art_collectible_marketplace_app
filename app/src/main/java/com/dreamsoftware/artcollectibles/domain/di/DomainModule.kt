@@ -473,4 +473,22 @@ class DomainModule {
     fun provideGetMyFavoriteTokensUseCase(
         favoritesRepository: IFavoritesRepository
     ) = GetMyFavoriteTokensUseCase(favoritesRepository)
+
+    /**
+     * Provide Save Comments Use case
+     * @param commentsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideSaveCommentUseCase(commentsRepository: ICommentsRepository)
+        = SaveCommentUseCase(commentsRepository)
+
+    /**
+     * Provide Get Comments by token use case
+     * @param commentsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetCommentsByTokenUseCase(commentsRepository: ICommentsRepository) =
+        GetCommentsByTokenUseCase(commentsRepository)
 }

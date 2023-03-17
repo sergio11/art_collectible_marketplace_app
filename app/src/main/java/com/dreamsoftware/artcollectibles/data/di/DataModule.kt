@@ -114,6 +114,14 @@ class DataModule {
     @Singleton
     fun provideTokenMetadataEntityMapper(artCollectibleCategoryMapper: ArtCollectibleCategoryMapper): TokenMetadataEntityMapper = TokenMetadataEntityMapper(artCollectibleCategoryMapper)
 
+    @Provides
+    @Singleton
+    fun provideCommentMapper(): CommentMapper = CommentMapper()
+
+    @Provides
+    @Singleton
+    fun provideSaveCommentMapper(): SaveCommentMapper = SaveCommentMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -350,4 +358,20 @@ class DataModule {
         categoriesDataSource: ICategoriesDataSource,
         artCollectibleCategoryMapper: ArtCollectibleCategoryMapper
     ): IArtCollectibleCategoryRepository = ArtCollectibleCategoryRepositoryImpl(categoriesDataSource, artCollectibleCategoryMapper)
+
+    /**
+     * Provide Comments Repository
+     * @param commentsDataSource
+     * @param commentMapper
+     * @param userRepository
+     * @param saveCommentMapper
+     */
+    @Provides
+    @Singleton
+    fun provideCommentsRepository(
+        commentsDataSource: ICommentsDataSource,
+        commentMapper: CommentMapper,
+        userRepository: IUserRepository,
+        saveCommentMapper: SaveCommentMapper
+    ): ICommentsRepository = CommentsRepositoryImpl(commentsDataSource, commentMapper, userRepository, saveCommentMapper)
 }

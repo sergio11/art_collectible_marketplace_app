@@ -72,3 +72,8 @@ class PreferenceDataException(message: String? = null, cause: Throwable? = null)
 abstract class CategoriesDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class GetCategoriesDataException(message: String? = null, cause: Throwable? = null): CategoriesDataException(message, cause)
 class GetCategoryDataException(message: String? = null, cause: Throwable? = null): CategoriesDataException(message, cause)
+
+// Comment Repository Exception
+abstract class CommentsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+class GetCommentsByTokenDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class SaveCommentDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
