@@ -17,7 +17,7 @@ class SaveCommentMapper: IOneSideMapper<SaveCommentDTO, Map<String, Any?>> {
             UID_KEY to uid,
             COMMENT_KEY to comment,
             USER_UID_KEY to userUid,
-            TOKEN_ID_KEY to tokenId
+            TOKEN_ID_KEY to tokenId.toString()
         )
     }
 

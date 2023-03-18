@@ -19,7 +19,7 @@ class CommentMapper: IOneSideMapper<Map<String, Any?>, CommentDTO> {
             uid = get(UID_KEY) as String,
             comment = get(COMMENT_KEY) as String,
             userUid = get(USER_UID_KEY) as String,
-            tokenId = get(TOKEN_ID_KEY) as BigInteger
+            tokenId = BigInteger(get(TOKEN_ID_KEY) as String)
         )
     }
 

@@ -2,9 +2,11 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,18 +15,24 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import java.math.BigInteger
 
 private val HEADER_HEIGHT = 250.dp
@@ -79,7 +87,8 @@ fun TokenDetailScreen(
             onTokenRemovedFromFavorites = ::removeTokenFromFavorites,
             onConfirmBurnTokenDialogVisibilityChanged = ::onConfirmBurnTokenDialogVisibilityChanged,
             onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
-            onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged
+            onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged,
+            onPublishComment = ::onPublishComment
         )
     }
 }
@@ -99,7 +108,8 @@ fun TokenDetailComponent(
     onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
-    onItemPriceChanged: (price: String) -> Unit
+    onItemPriceChanged: (price: String) -> Unit,
+    onPublishComment: (comment: String) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -111,6 +121,7 @@ fun TokenDetailComponent(
             title = artCollectible?.displayName
         ) {
             TokenDetailBody(
+                context = context,
                 uiState = uiState,
                 onOpenArtistDetailCalled = onOpenArtistDetailCalled,
                 onBurnTokenCalled = onBurnTokenCalled,
@@ -121,7 +132,8 @@ fun TokenDetailComponent(
                 onTokenRemovedFromFavorites = onTokenRemovedFromFavorites,
                 onConfirmBurnTokenDialogVisibilityChanged = onConfirmBurnTokenDialogVisibilityChanged,
                 onConfirmWithDrawFromSaleDialogVisibilityChanged = onConfirmWithDrawFromSaleDialogVisibilityChanged,
-                onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged
+                onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged,
+                onPublishComment = onPublishComment
             )
         }
     }
@@ -130,6 +142,7 @@ fun TokenDetailComponent(
 
 @Composable
 private fun TokenDetailBody(
+    context: Context,
     uiState: TokenDetailUiState,
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
@@ -140,7 +153,8 @@ private fun TokenDetailBody(
     onTokenRemovedFromFavorites: (tokenId: BigInteger) -> Unit,
     onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
-    onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit
+    onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onPublishComment: (comment: String) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -155,7 +169,9 @@ private fun TokenDetailBody(
                 onConfirmPutForSaleDialogVisibilityChanged(false)
             }
             //.......................................................................
-            Box(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+            Box(modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()) {
                 UserMiniInfoComponent(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -179,7 +195,9 @@ private fun TokenDetailBody(
                 )
             }
             TagsRow(
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
                 tagList = artCollectible.metadata.tags,
                 isReadOnly = true
             )
@@ -190,6 +208,12 @@ private fun TokenDetailBody(
                 artCollectible = artCollectible
             )
             Spacer(modifier = Modifier.height(50.dp))
+            PublishCommentComponent(
+                modifier = Modifier.padding(vertical = 8.dp),
+                authUserInfo = authUserInfo,
+                commentsCount = artCollectible.commentsCount,
+                onPublishComment = onPublishComment
+            )
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier

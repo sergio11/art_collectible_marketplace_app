@@ -1,9 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import com.dreamsoftware.artcollectibles.data.api.exception.DeleteCommentDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.GetCommentByIdDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.GetCommentsByTokenDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.SaveCommentDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.CommentMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.SaveCommentMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.ICommentsRepository
@@ -50,6 +47,15 @@ internal class CommentsRepositoryImpl(
             } catch (ex: Exception) {
                 throw DeleteCommentDataException("An error occurred when trying to delete comment", ex)
             }
+        }
+    }
+
+    @Throws(CountCommentsByTokenDataException::class)
+    override suspend fun count(tokenId: String): Long = withContext(Dispatchers.IO) {
+        try {
+            commentsDataSource.count(tokenId)
+        } catch (ex: Exception) {
+            throw CountCommentsByTokenDataException("An error occurred when trying to count comments")
         }
     }
 

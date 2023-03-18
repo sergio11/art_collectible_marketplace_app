@@ -140,6 +140,9 @@
     <string name="token_detail_put_item_for_sale_input_price_label">Art Collectible Price</string>
     <string name="token_detail_put_item_for_sale_input_price_placeholder">Enter the price of the collectible in MATIC</string>
     <string name="token_detail_created_at_label" formatted="false">Created at %s</string>
+    <string name="token_detail_comments_publish_button_text">Publish</string>
+    <string name="token_detail_comments_publish_placeholder_text">Add a comment</string>
+    <string name="token_detail_comments_see_more_text" formatted="false">See the %d comments published</string>
     <!-- Home Marketplace -->
     <string name="home_market_statistics_available_items_title">Available Items</string>
     <string name="home_market_statistics_sold_items_title">Sold Items</string>

@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
@@ -20,12 +21,11 @@ class TokenDetailViewModel @Inject constructor(
     private val isTokenAddedForSaleUseCase: IsTokenAddedForSaleUseCase,
     private val addTokenTokenToFavoritesUseCase: AddTokenToFavoritesUseCase,
     private val removeTokenFromFavoritesUseCase: RemoveTokenFromFavoritesUseCase,
-    private val registerVisitorUseCase: RegisterVisitorUseCase
+    private val registerVisitorUseCase: RegisterVisitorUseCase,
+    private val saveCommentUseCase: SaveCommentUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
-
-    private var authUserInfo: UserInfo? = null
 
     fun loadDetail(tokenId: BigInteger) {
         onLoading()
@@ -103,34 +103,38 @@ class TokenDetailViewModel @Inject constructor(
     }
 
     fun addTokenToFavorites(tokenId: BigInteger) {
-        authUserInfo?.let {
-            addTokenTokenToFavoritesUseCase.invoke(
-                scope = viewModelScope,
-                params = AddTokenToFavoritesUseCase.Params(
-                    tokenId = tokenId.toString(),
-                    userAddress = it.walletAddress
-                ),
-                onSuccess = {
-                    onTokenAddedToFavorites()
-                },
-                onError = ::onErrorOccurred
-            )
+        with(uiState.value) {
+            authUserInfo?.let {
+                addTokenTokenToFavoritesUseCase.invoke(
+                    scope = viewModelScope,
+                    params = AddTokenToFavoritesUseCase.Params(
+                        tokenId = tokenId.toString(),
+                        userAddress = it.walletAddress
+                    ),
+                    onSuccess = {
+                        onTokenAddedToFavorites()
+                    },
+                    onError = ::onErrorOccurred
+                )
+            }
         }
     }
 
     fun removeTokenFromFavorites(tokenId: BigInteger) {
-        authUserInfo?.let {
-            removeTokenFromFavoritesUseCase.invoke(
-                scope = viewModelScope,
-                params = RemoveTokenFromFavoritesUseCase.Params(
-                    tokenId = tokenId.toString(),
-                    userAddress = it.walletAddress
-                ),
-                onSuccess = {
-                    onTokenRemovedFromFavorites()
-                },
-                onError = ::onErrorOccurred
-            )
+        with(uiState.value) {
+            authUserInfo?.let {
+                removeTokenFromFavoritesUseCase.invoke(
+                    scope = viewModelScope,
+                    params = RemoveTokenFromFavoritesUseCase.Params(
+                        tokenId = tokenId.toString(),
+                        userAddress = it.walletAddress
+                    ),
+                    onSuccess = {
+                        onTokenRemovedFromFavorites()
+                    },
+                    onError = ::onErrorOccurred
+                )
+            }
         }
     }
 
@@ -146,6 +150,27 @@ class TokenDetailViewModel @Inject constructor(
         updateState { it.copy(isConfirmPutForSaleDialogVisible = isVisible) }
     }
 
+    fun onPublishComment(comment: String) {
+        with(uiState.value) {
+            artCollectible?.let { token ->
+                authUserInfo?.let { userInfo ->
+                    saveCommentUseCase.invoke(
+                        scope = viewModelScope,
+                        params = SaveCommentUseCase.Params(
+                            comment = comment,
+                            userUid = userInfo.uid,
+                            tokenId = token.id
+                        ),
+                        onSuccess = {
+                            Log.d("ART_COLL", "Comment - onSuccess uid - ${it.uid}")
+                        },
+                        onError = ::onErrorOccurred
+                    )
+                }
+            }
+        }
+    }
+
     /**
      * Private Methods
      */
@@ -155,14 +180,13 @@ class TokenDetailViewModel @Inject constructor(
             try {
                 val artCollectible = loadTokenDetail(tokenId)
                 val isTokenAddedForSale = isTokenAddedForSale(tokenId)
-                val authUser = loadAuthUserDetail().also {
-                    authUserInfo = it
-                }
+                val authUser = loadAuthUserDetail()
                 val isTokenOwner = artCollectible.owner.uid == authUser.uid
                 val isTokenCreator = artCollectible.author.uid == authUser.uid
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
+                        authUserInfo = authUser,
                         isLoading = false,
                         isTokenOwner = isTokenOwner,
                         isTokenAddedForSale = isTokenAddedForSale,
@@ -232,6 +256,7 @@ class TokenDetailViewModel @Inject constructor(
     }
 
     private fun onErrorOccurred(ex: Exception) {
+        ex.printStackTrace()
         updateState {
             it.copy(
                 isLoading = false,
@@ -276,6 +301,7 @@ class TokenDetailViewModel @Inject constructor(
 
 data class TokenDetailUiState(
     var artCollectible: ArtCollectible? = null,
+    var authUserInfo: UserInfo? = null,
     val isLoading: Boolean = false,
     val isBurned: Boolean = false,
     val isTokenOwner: Boolean = false,

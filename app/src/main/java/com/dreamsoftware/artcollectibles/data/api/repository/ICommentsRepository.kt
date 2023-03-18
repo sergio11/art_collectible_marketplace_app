@@ -12,6 +12,9 @@ interface ICommentsRepository {
     @Throws(DeleteCommentDataException::class)
     suspend fun delete(tokenId: String, uid: String)
 
+    @Throws(CountCommentsByTokenDataException::class)
+    suspend fun count(tokenId: String): Long
+
     @Throws(GetCommentByIdDataException::class)
     suspend fun getCommentByUid(uid: String): Comment
 
