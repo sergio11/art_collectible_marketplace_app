@@ -1,10 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import android.content.Context
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -32,6 +29,7 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
+import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
@@ -39,43 +37,66 @@ import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 fun UserInfoArtistCard(
     modifier: Modifier,
     context: Context,
-    user: UserInfo
+    user: UserInfo,
+    reverseStyle: Boolean = false,
 ) {
     Card(
         modifier = Modifier
-            .clip(RoundedCornerShape(27.dp))
+            .clip(RoundedCornerShape(30.dp))
             .border(
-                width = 1.dp,
-                color = Color.White.copy(0.5f),
-                shape = RoundedCornerShape(27.dp)
+                2.dp, if (reverseStyle) {
+                    Color.White
+                } else {
+                    Purple200
+                }, RoundedCornerShape(30.dp)
             )
-            .height(186.dp)
-            .width(280.dp)
+            .background(
+                color = if (reverseStyle) {
+                    Purple200
+                } else {
+                    Color.White.copy(alpha = 0.9f)
+                }
+            )
+            .height(300.dp)
+            .width(200.dp)
             .then(modifier),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(Color.White),
         shape = RoundedCornerShape(27.dp),
         border = BorderStroke(3.dp, Color.White),
     ) {
-
-        Box {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             // User Profile Image
             UserProfileImage(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth(),
+                    .height(155.dp)
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .border(
+                        1.dp,
+                        color = Color.Transparent,
+                        shape = RoundedCornerShape(27.dp)
+                    )
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(27.dp)),
                 context = context,
                 user = user
             )
             // User Profile Detail
             UserMiniInfoComponent(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .background(color = whiteTranslucent, shape = RectangleShape)
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(4.dp),
                 userInfo = user,
                 showPicture = false
+            )
+            UserFollowersInfoComponent(
+                modifier = Modifier
+                    .padding(4.dp),
+                smallSize = true,
+                followersCount = user.followers,
+                followingCount = user.following
             )
         }
     }

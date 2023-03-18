@@ -83,6 +83,7 @@
     <string name="search_user_info_name_empty">Anonymous user</string>
     <string name="search_user_info_description_empty">This user has preferred not to give details about his profile</string>
     <string name="search_query_empty">Write something here …</string>
+    <string name="search_main_title_text">Discover new artists</string>
     <string name="profile_following_count_text" formatted="false">%s Following</string>
     <string name="profile_followers_count_text" formatted="false">%s Followers</string>
     <string name="profile_following_button_follow_text">follow</string>

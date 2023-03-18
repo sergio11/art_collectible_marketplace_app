@@ -26,6 +26,8 @@ import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 import com.dreamsoftware.artcollectibles.ui.components.SearchView
 import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
 import com.dreamsoftware.artcollectibles.ui.components.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.google.common.collect.Iterables
 
 @Composable
@@ -79,7 +81,11 @@ internal fun SearchComponent(
     Scaffold(
         bottomBar = {
             BottomBar(navController)
-        }
+        },
+        topBar = {
+            CommonTopAppBar(R.string.search_main_title_text)
+        },
+        containerColor = Purple40
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
             ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)

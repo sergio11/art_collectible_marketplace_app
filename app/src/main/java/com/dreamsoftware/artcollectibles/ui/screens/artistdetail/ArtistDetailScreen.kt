@@ -154,36 +154,17 @@ fun ArtistDetailComponent(
                     )
                 }
             }
-            Row(
+            UserFollowersInfoComponent(
                 modifier = defaultModifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    modifier = Modifier.clickable {
-                        if(followersCount > 0) {
-                            userInfo?.let(onShowFollowers)
-                        }
-                    },
-                    text = stringResource(id = R.string.profile_followers_count_text, followersCount),
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(start = 6.dp)
-                        .clickable {
-                            if(followingCount > 0) {
-                                userInfo?.let(onShowFollowing)
-                            }
-                        },
-                    text = stringResource(id = R.string.profile_following_count_text, followingCount),
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.titleSmall
-                )
-            }
+                followersCount = followersCount,
+                followingCount = followingCount,
+                onShowFollowers = {
+                    userInfo?.let(onShowFollowers)
+                },
+                onShowFollowing = {
+                    userInfo?.let(onShowFollowing)
+                }
+            )
             UserStatisticsComponent(
                 modifier = Modifier
                     .padding(horizontal = 20.dp, vertical = 8.dp),
