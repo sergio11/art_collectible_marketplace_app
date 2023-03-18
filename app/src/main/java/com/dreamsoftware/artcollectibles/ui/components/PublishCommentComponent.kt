@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -30,19 +31,26 @@ fun PublishCommentComponent(
     modifier: Modifier = Modifier,
     authUserInfo: UserInfo? = null,
     commentsCount: Long? = null,
-    onPublishComment: (comment: String) -> Unit = {}
+    onPublishComment: (comment: String) -> Unit = {},
+    onSeeAllComments: () -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var placeholderEnabled by remember { mutableStateOf(true) }
     var comment by remember { mutableStateOf("") }
-    Column(modifier = modifier)  {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween
+    )  {
         commentsCount?.let {
             if(it > 0) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .clickable {
+                            onSeeAllComments()
+                        },
                     text = stringResource(id = R.string.token_detail_comments_see_more_text, it),
                     fontFamily = montserratFontFamily,
                     color = Color.Black,
@@ -57,7 +65,7 @@ fun PublishCommentComponent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){

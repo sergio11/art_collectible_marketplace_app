@@ -142,7 +142,7 @@
     <string name="token_detail_created_at_label" formatted="false">Created at %s</string>
     <string name="token_detail_comments_publish_button_text">Publish</string>
     <string name="token_detail_comments_publish_placeholder_text">Add a comment</string>
-    <string name="token_detail_comments_see_more_text" formatted="false">See the %d comments published</string>
+    <string name="token_detail_comments_see_more_text" formatted="false">See the %d comments published …</string>
     <!-- Home Marketplace -->
     <string name="home_market_statistics_available_items_title">Available Items</string>
     <string name="home_market_statistics_sold_items_title">Sold Items</string>
@@ -170,4 +170,7 @@
     <string name="followers_detail_title_count" formatted="false">Followers (%d)</string>
     <string name="following_detail_title_default">Following</string>
     <string name="following_detail_title_count" formatted="false">Following (%d)</string>
+    <!-- Comments -->
+    <string name="comments_detail_title_default">Comments</string>
+    <string name="comments_detail_title_count" formatted="false">Comments (%d)</string>
 </resources>

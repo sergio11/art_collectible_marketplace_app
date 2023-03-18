@@ -12,6 +12,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
@@ -113,11 +114,22 @@ fun RootScreen(
         composable(DestinationItem.TokenDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.TokenDetail.parseArgs(args)?.let { screenArgs ->
-                    TokenDetailScreen(navigationController, screenArgs, onOpenArtistDetailCalled = {
-                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
-                    }) {
-                        navigationController.popBackStack()
+                    with(navigationController) {
+                        TokenDetailScreen(screenArgs, onOpenArtistDetailCalled = {
+                            navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                        }, onTokenBurned =  {
+                            popBackStack()
+                        }, onOpenAllCommentsByToken = {
+                            navigate(DestinationItem.CommentsList.buildRoute(it))
+                        })
                     }
+                }
+            }
+        }
+        composable(DestinationItem.CommentsList.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.CommentsList.parseArgs(args)?.let { screenArgs ->
+                    CommentsScreen(args = screenArgs)
                 }
             }
         }
