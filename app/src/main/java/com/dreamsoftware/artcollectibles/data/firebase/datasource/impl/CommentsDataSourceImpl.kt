@@ -36,7 +36,10 @@ internal class CommentsDataSourceImpl(
                     .set(saveCommentMapper.mapInToOut(comment), SetOptions.merge())
                     .await()
                 document(comment.tokenId.toString())
-                    .set(hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayUnion(comment.uid)), SetOptions.merge())
+                    .set(
+                        hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayUnion(comment.uid)),
+                        SetOptions.merge()
+                    )
                     .await()
                 document(comment.tokenId.toString() + COMMENTS_COUNT_SUFFIX).set(
                     hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)),
@@ -60,7 +63,10 @@ internal class CommentsDataSourceImpl(
                         .delete()
                         .await()
                     document(tokenId)
-                        .set(hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayRemove(uid)), SetOptions.merge())
+                        .set(
+                            hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayRemove(uid)),
+                            SetOptions.merge()
+                        )
                         .await()
                     document(tokenId + COMMENTS_COUNT_SUFFIX).set(
                         hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)),
@@ -100,7 +106,7 @@ internal class CommentsDataSourceImpl(
                 .document(uid)
                 .get()
                 .await()?.data?.let { commentMapper.mapInToOut(it) }
-                    ?: throw GetCommentByIdException("No comment found")
+                ?: throw GetCommentByIdException("No comment found")
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {
@@ -131,9 +137,10 @@ internal class CommentsDataSourceImpl(
             }
         }
 
-    private suspend fun getCommentsByIds(uidList: Iterable<String>): Iterable<CommentDTO> = firebaseStore.collection(COLLECTION_NAME)
-        .whereIn(FieldPath.documentId(), uidList.toList())
-        .get().await()
-        .documents.mapNotNull { it.data }
-        .map { commentMapper.mapInToOut(it) }
+    private suspend fun getCommentsByIds(uidList: Iterable<String>): Iterable<CommentDTO> =
+        firebaseStore.collection(COLLECTION_NAME)
+            .whereIn(FieldPath.documentId(), uidList.toList())
+            .get().await()
+            .documents.mapNotNull { it.data }
+            .map { commentMapper.mapInToOut(it) }.sortedByDescending { it.createdAt }
 }

@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.mapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.CommentDTO
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 import java.math.BigInteger
+import java.util.Date
 
 class CommentMapper: IOneSideMapper<Map<String, Any?>, CommentDTO> {
 
@@ -19,7 +20,8 @@ class CommentMapper: IOneSideMapper<Map<String, Any?>, CommentDTO> {
             uid = get(UID_KEY) as String,
             comment = get(COMMENT_KEY) as String,
             userUid = get(USER_UID_KEY) as String,
-            tokenId = BigInteger(get(TOKEN_ID_KEY) as String)
+            tokenId = BigInteger(get(TOKEN_ID_KEY) as String),
+            createdAt = Date((get(CREATED_AT_KEY) as String).toLong())
         )
     }
 

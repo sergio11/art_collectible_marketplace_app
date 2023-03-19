@@ -26,6 +26,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.UserAccountProfilePicture
+import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -112,41 +113,53 @@ internal fun CommentsComponent(
 @Composable
 private fun CommentItemDetail(comment: Comment) {
     with(comment) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(2.dp, Purple200, RoundedCornerShape(percent = 30))
                 .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
-            UserAccountProfilePicture(size = 70.dp, userInfo = user)
-            Column(
-                modifier = Modifier.padding(start = 16.dp),
-                verticalArrangement = Arrangement.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = user.name,
-                    fontFamily = montserratFontFamily,
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Left
-                )
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = text,
-                    fontFamily = montserratFontFamily,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 5,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Left
-                )
+                UserAccountProfilePicture(size = 70.dp, userInfo = user)
+                Column(
+                    modifier = Modifier.padding(start = 16.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = user.name,
+                        fontFamily = montserratFontFamily,
+                        color = Color.Gray,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Left
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 4.dp),
+                        text = text,
+                        fontFamily = montserratFontFamily,
+                        color = Color.Black,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 5,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Left
+                    )
+                }
             }
-
+            Text(
+                modifier = Modifier.align(Alignment.End),
+                text = createdAt.format(),
+                fontFamily = montserratFontFamily,
+                color = Color.Gray,
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Left
+            )
         }
     }
 }

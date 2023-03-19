@@ -78,6 +78,6 @@ fun Context.getMimeType(uri: Uri): String? =
     }
 
 fun Date.format(): String =
-    SimpleDateFormat("yyyy-mm-dd").format(this)
+    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(this)
 
 

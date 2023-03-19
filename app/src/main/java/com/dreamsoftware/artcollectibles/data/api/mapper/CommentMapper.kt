@@ -8,12 +8,15 @@ import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 class CommentMapper: IOneSideMapper<CommentMapper.InputData, Comment> {
 
     override fun mapInToOut(input: InputData): Comment = with(input) {
-        Comment(
-            uid = commentDTO.uid,
-            text = commentDTO.comment,
-            user = userInfoDTO,
-            tokenId = commentDTO.tokenId
-        )
+        with(commentDTO) {
+            Comment(
+                uid = uid,
+                text = comment,
+                user = userInfoDTO,
+                tokenId = tokenId,
+                createdAt = createdAt
+            )
+        }
     }
 
     override fun mapInListToOutList(input: Iterable<InputData>): Iterable<Comment> =
