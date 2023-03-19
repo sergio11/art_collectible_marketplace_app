@@ -115,7 +115,7 @@ private fun CommentItemDetail(comment: Comment) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(2.dp, Purple200)
+                .border(2.dp, Purple200, RoundedCornerShape(percent = 30))
                 .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -141,7 +141,7 @@ private fun CommentItemDetail(comment: Comment) {
                     fontFamily = montserratFontFamily,
                     color = Color.Black,
                     style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
+                    maxLines = 5,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Left
                 )

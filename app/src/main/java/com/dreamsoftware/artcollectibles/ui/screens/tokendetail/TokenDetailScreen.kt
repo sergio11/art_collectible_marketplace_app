@@ -125,11 +125,7 @@ fun TokenDetailComponent(
                 onConfirmWithDrawFromSaleDialogVisibilityChanged = onConfirmWithDrawFromSaleDialogVisibilityChanged,
                 onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged,
                 onPublishComment = onPublishComment,
-                onSeeAllComments = {
-                    artCollectible?.let {
-                        onSeeAllCommentsByToken(it.id)
-                    }
-                }
+                onSeeAllComments = onSeeAllCommentsByToken
             )
         }
     }
@@ -150,7 +146,7 @@ private fun TokenDetailBody(
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onPublishComment: (comment: String) -> Unit,
-    onSeeAllComments: () -> Unit = {}
+    onSeeAllComments: (tokenId: BigInteger) -> Unit = {}
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -201,7 +197,8 @@ private fun TokenDetailBody(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                artCollectible = artCollectible
+                artCollectible = artCollectible,
+                onSeeAllComments = onSeeAllComments
             )
             Spacer(modifier = Modifier.height(50.dp))
             PublishCommentComponent(
@@ -209,7 +206,9 @@ private fun TokenDetailBody(
                 authUserInfo = authUserInfo,
                 commentsCount = artCollectible.commentsCount,
                 onPublishComment = onPublishComment,
-                onSeeAllComments = onSeeAllComments
+                onSeeAllComments = {
+                    onSeeAllComments(artCollectible.id)
+                }
             )
             if (isTokenOwner) {
                 CommonButton(

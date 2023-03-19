@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,12 +21,14 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import java.math.BigInteger
 
 @Composable
 fun ArtCollectibleMiniInfoComponent(
     modifier: Modifier = Modifier,
     showPreviewDescription: Boolean = true,
-    artCollectible: ArtCollectible?
+    artCollectible: ArtCollectible?,
+    onSeeAllComments: (tokenId: BigInteger) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Text(
@@ -83,7 +86,13 @@ fun ArtCollectibleMiniInfoComponent(
                 text = artCollectible?.metadata?.category?.name ?: stringResource(id = R.string.no_text_value)
             )
             TextWithImage(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(8.dp).clickable {
+                    artCollectible?.let {
+                        if(it.commentsCount > 0) {
+                            onSeeAllComments(it.id)
+                        }
+                    }
+                },
                 imageRes = R.drawable.comments_icon,
                 text = artCollectible?.commentsCount?.toString()
                     ?: stringResource(id = R.string.no_text_value_small)

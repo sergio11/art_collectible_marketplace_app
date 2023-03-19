@@ -3,7 +3,7 @@ package com.dreamsoftware.artcollectibles.domain.models
 import java.math.BigInteger
 import java.util.*
 
-class ArtCollectible(
+data class ArtCollectible(
     val id: BigInteger,
     val royalty: BigInteger,
     val metadata: ArtCollectibleMetadata,

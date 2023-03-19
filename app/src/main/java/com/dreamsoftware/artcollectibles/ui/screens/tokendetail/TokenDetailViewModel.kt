@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
@@ -161,9 +162,7 @@ class TokenDetailViewModel @Inject constructor(
                             userUid = userInfo.uid,
                             tokenId = token.id
                         ),
-                        onSuccess = {
-                            Log.d("ART_COLL", "Comment - onSuccess uid - ${it.uid}")
-                        },
+                        onSuccess = ::onCommentPublished,
                         onError = ::onErrorOccurred
                     )
                 }
@@ -236,6 +235,14 @@ class TokenDetailViewModel @Inject constructor(
                 isTokenAddedForSale = false,
                 isConfirmWithDrawFromSaleDialogVisible = false
             )
+        }
+    }
+
+    private fun onCommentPublished(comment: Comment) {
+        updateState {
+            it.copy(artCollectible = it.artCollectible?.let { token ->
+                token.copy(commentsCount = token.commentsCount + 1)
+            })
         }
     }
 

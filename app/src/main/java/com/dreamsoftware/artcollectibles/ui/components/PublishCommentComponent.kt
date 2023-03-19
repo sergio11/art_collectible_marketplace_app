@@ -1,10 +1,13 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
+import android.view.KeyEvent.KEYCODE_ENTER
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,9 +18,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,12 +43,20 @@ fun PublishCommentComponent(
     val focusManager = LocalFocusManager.current
     var placeholderEnabled by remember { mutableStateOf(true) }
     var comment by remember { mutableStateOf("") }
+    val publishCommentCaller = {
+        if (comment.isNotBlank()) {
+            onPublishComment(comment).also {
+                focusManager.clearFocus()
+                comment = ""
+            }
+        }
+    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.SpaceBetween
-    )  {
+    ) {
         commentsCount?.let {
-            if(it > 0) {
+            if (it > 0) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -68,7 +81,7 @@ fun PublishCommentComponent(
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             UserAccountProfilePicture(size = 50.dp, userInfo = authUserInfo)
             BasicTextField(
                 modifier = Modifier
@@ -76,9 +89,17 @@ fun PublishCommentComponent(
                     .padding(horizontal = 8.dp)
                     .onFocusChanged {
                         placeholderEnabled = !it.isFocused
+                    }
+                    .onKeyEvent {
+                        if (it.nativeKeyEvent.keyCode == KEYCODE_ENTER) {
+                            publishCommentCaller()
+                            true
+                        } else {
+                            false
+                        }
                     },
                 value = comment.ifBlank {
-                    if(placeholderEnabled) {
+                    if (placeholderEnabled) {
                         stringResource(id = R.string.token_detail_comments_publish_placeholder_text)
                     } else {
                         ""
@@ -88,10 +109,19 @@ fun PublishCommentComponent(
                     comment = it
                 },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        publishCommentCaller()
+                    }
+                ),
                 decorationBox = { innerTextField ->
                     Row(
                         Modifier
-                            .background(Color.LightGray.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
+                            .background(
+                                Color.LightGray.copy(alpha = 0.6f),
+                                RoundedCornerShape(percent = 30)
+                            )
                             .padding(16.dp)
                             .focusRequester(focusRequester)
                     ) {
@@ -107,14 +137,7 @@ fun PublishCommentComponent(
                     contentColor = Purple40
                 ),
                 buttonShape = ButtonDefaults.textShape,
-                onClick = {
-                    if(comment.isNotBlank()) {
-                        onPublishComment(comment).also {
-                            focusManager.clearFocus()
-                            comment = ""
-                        }
-                    }
-                }
+                onClick = publishCommentCaller
             )
         }
     }
