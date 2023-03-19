@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.favorites
+package com.dreamsoftware.artcollectibles.ui.screens.visitors
 
 
 import android.content.Context
@@ -29,19 +29,19 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 
-data class FavoritesScreenArgs(
+data class VisitorsScreenArgs(
     val tokenId: String
 )
 
 @Composable
-fun FavoritesScreen(
-    args: FavoritesScreenArgs,
-    viewModel: FavoritesViewModel = hiltViewModel(),
+fun VisitorsScreen(
+    args: VisitorsScreenArgs,
+    viewModel: VisitorsViewModel = hiltViewModel(),
     onGoToArtistDetail: (artist: UserInfo) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
-        initialValue = FavoritesUiState(),
+        initialValue = VisitorsUiState(),
         key1 = lifecycle,
         key2 = viewModel
     ) {
@@ -57,7 +57,7 @@ fun FavoritesScreen(
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             load(args.tokenId)
         }
-        FavoritesComponent(
+        VisitorsComponent(
             context = context,
             state = uiState,
             lazyGridState = lazyGridState,
@@ -68,9 +68,9 @@ fun FavoritesScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun FavoritesComponent(
+internal fun VisitorsComponent(
     context: Context,
-    state: FavoritesUiState,
+    state: VisitorsUiState,
     lazyGridState: LazyGridState,
     onGoToArtistDetail: (artist: UserInfo) -> Unit
 ) {
@@ -117,7 +117,6 @@ internal fun FavoritesComponent(
                                 user = artist
                             )
                         }
-
                     }
                 }
             }
@@ -127,7 +126,7 @@ internal fun FavoritesComponent(
 
 @Composable
 private fun getTopAppBarTitle(data: Iterable<UserInfo>) = if(Iterables.isEmpty(data)) {
-    stringResource(id = R.string.favorites_detail_title_default)
+    stringResource(id = R.string.visitors_detail_title_default)
 } else {
-    stringResource(id = R.string.favorites_detail_title_count, Iterables.size(data))
+    stringResource(id = R.string.visitors_detail_title_count, Iterables.size(data))
 }

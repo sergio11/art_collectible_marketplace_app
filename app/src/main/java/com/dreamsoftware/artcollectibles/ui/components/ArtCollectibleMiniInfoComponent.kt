@@ -29,7 +29,8 @@ fun ArtCollectibleMiniInfoComponent(
     showPreviewDescription: Boolean = true,
     artCollectible: ArtCollectible?,
     onSeeAllComments: (tokenId: BigInteger) -> Unit = {},
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit = {}
+    onSeeLikesByToken: (tokenId: BigInteger) -> Unit = {},
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Text(
@@ -74,7 +75,11 @@ fun ArtCollectibleMiniInfoComponent(
                 artCollectible = artCollectible
             )
             TextWithIcon(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(8.dp).clickable {
+                    artCollectible?.let {
+                        onSeeVisitorsByToken(it.id)
+                    }
+                },
                 icon = if ((artCollectible?.visitorsCount ?: 0) > 0) {
                     Icons.Filled.Visibility
                 } else {

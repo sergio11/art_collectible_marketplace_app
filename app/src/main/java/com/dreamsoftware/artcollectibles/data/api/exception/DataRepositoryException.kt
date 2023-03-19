@@ -61,6 +61,7 @@ class GetUserLikesByTokenDataException(message: String? = null, cause: Throwable
 // Visitors Repository Exception
 abstract class VisitorsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class RegisterVisitorDataException(message: String? = null, cause: Throwable? = null): VisitorsDataException(message, cause)
+class GetVisitorsByTokenDataException(message: String? = null, cause: Throwable? = null): VisitorsDataException(message, cause)
 // Token Metadata Repository Exception
 abstract class TokenMetadataDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class CreateTokenMetadataDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)

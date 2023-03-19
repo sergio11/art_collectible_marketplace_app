@@ -177,4 +177,7 @@
     <!-- Favorites -->
     <string name="favorites_detail_title_default">Likes</string>
     <string name="favorites_detail_title_count" formatted="false">Likes (%d)</string>
+    <!-- Visitors -->
+    <string name="visitors_detail_title_default">Visitors</string>
+    <string name="visitors_detail_title_count" formatted="false">Visitors (%d)</string>
 </resources>

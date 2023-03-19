@@ -509,4 +509,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetUserLikesByTokenUseCase(favoritesRepository: IFavoritesRepository) =
         GetUserLikesByTokenUseCase(favoritesRepository)
+
+    /**
+     * Provide Get Visitors By Token Use case
+     * @param visitorsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetVisitorsByTokenUseCase(visitorsRepository: IVisitorsRepository) =
+        GetVisitorsByTokenUseCase(visitorsRepository)
 }

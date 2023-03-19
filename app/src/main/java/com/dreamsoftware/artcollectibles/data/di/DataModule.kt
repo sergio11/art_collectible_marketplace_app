@@ -342,12 +342,14 @@ class DataModule {
     /**
      * Provide Visitors Repository
      * @param visitorsDataSource
+     * @param userRepository
      */
     @Provides
     @Singleton
     fun provideVisitorsRepository(
-        visitorsDataSource: IVisitorsDataSource
-    ): IVisitorsRepository = VisitorsRepositoryImpl(visitorsDataSource)
+        visitorsDataSource: IVisitorsDataSource,
+        userRepository: IUserRepository
+    ): IVisitorsRepository = VisitorsRepositoryImpl(visitorsDataSource, userRepository)
 
     /**
      * Provide Art Collectible Category Repository

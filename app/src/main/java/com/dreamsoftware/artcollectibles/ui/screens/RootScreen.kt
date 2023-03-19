@@ -22,6 +22,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokens.TokensScreen
+import com.dreamsoftware.artcollectibles.ui.screens.visitors.VisitorsScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 
 @Composable
@@ -124,6 +125,8 @@ fun RootScreen(
                             navigate(DestinationItem.CommentsList.buildRoute(it))
                         }, onSeeLikesByToken = {
                             navigate(DestinationItem.FavoriteList.buildRoute(it))
+                        }, onSeeVisitorsByToken = {
+                            navigate(DestinationItem.VisitorsList.buildRoute(it))
                         })
                     }
                 }
@@ -140,6 +143,15 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.FavoriteList.parseArgs(args)?.let { screenArgs ->
                     FavoritesScreen(args = screenArgs) {
+                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    }
+                }
+            }
+        }
+        composable(DestinationItem.VisitorsList.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.VisitorsList.parseArgs(args)?.let { screenArgs ->
+                    VisitorsScreen(args = screenArgs) {
                         navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
                     }
                 }

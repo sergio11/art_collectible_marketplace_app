@@ -35,6 +35,8 @@ class GetUserLikesByTokenException(message: String? = null, cause: Throwable? = 
 class AddVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 
+class GetVisitorsByTokenException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
 // Followers Data Source
 class AddFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class RemoveFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

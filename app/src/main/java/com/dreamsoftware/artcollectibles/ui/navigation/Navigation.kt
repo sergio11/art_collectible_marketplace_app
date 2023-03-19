@@ -18,6 +18,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArg
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokens.TokensScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.visitors.VisitorsScreenArgs
 import java.math.BigInteger
 
 sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument> = emptyList()) {
@@ -230,6 +231,27 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         fun parseArgs(args: Bundle): FavoritesScreenArgs? = with(args) {
             getString("id")?.let {
                 FavoritesScreenArgs(
+                    tokenId = it
+                )
+            }
+        }
+    }
+
+    object VisitorsList : DestinationItem(route = "token/{id}/visitors", arguments = listOf(
+        navArgument("id") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(tokenId: BigInteger): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = tokenId.toString()
+            )
+
+        fun parseArgs(args: Bundle): VisitorsScreenArgs? = with(args) {
+            getString("id")?.let {
+                VisitorsScreenArgs(
                     tokenId = it
                 )
             }

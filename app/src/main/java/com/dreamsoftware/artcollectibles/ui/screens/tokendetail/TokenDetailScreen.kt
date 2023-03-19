@@ -39,7 +39,8 @@ fun TokenDetailScreen(
     onSeeArtistDetail: (userInfo: UserInfo) -> Unit,
     onTokenBurned: () -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit
+    onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -81,7 +82,8 @@ fun TokenDetailScreen(
             onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged,
             onPublishComment = ::onPublishComment,
             onSeeCommentsByToken = onSeeCommentsByToken,
-            onSeeLikesByToken = onSeeLikesByToken
+            onSeeLikesByToken = onSeeLikesByToken,
+            onSeeVisitorsByToken = onSeeVisitorsByToken
         )
     }
 }
@@ -104,7 +106,8 @@ fun TokenDetailComponent(
     onItemPriceChanged: (price: String) -> Unit,
     onPublishComment: (comment: String) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit
+    onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -129,7 +132,8 @@ fun TokenDetailComponent(
                 onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged,
                 onPublishComment = onPublishComment,
                 onSeeAllComments = onSeeCommentsByToken,
-                onSeeLikesByToken = onSeeLikesByToken
+                onSeeLikesByToken = onSeeLikesByToken,
+                onSeeVisitorsByToken = onSeeVisitorsByToken
             )
         }
     }
@@ -151,7 +155,8 @@ private fun TokenDetailBody(
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onPublishComment: (comment: String) -> Unit,
     onSeeAllComments: (tokenId: BigInteger) -> Unit,
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit
+    onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -204,7 +209,8 @@ private fun TokenDetailBody(
                     .padding(8.dp),
                 artCollectible = artCollectible,
                 onSeeAllComments = onSeeAllComments,
-                onSeeLikesByToken = onSeeLikesByToken
+                onSeeLikesByToken = onSeeLikesByToken,
+                onSeeVisitorsByToken = onSeeVisitorsByToken
             )
             Spacer(modifier = Modifier.height(50.dp))
             PublishCommentComponent(

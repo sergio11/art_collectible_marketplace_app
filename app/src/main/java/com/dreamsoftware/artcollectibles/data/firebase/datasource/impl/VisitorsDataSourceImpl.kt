@@ -1,10 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
-import com.dreamsoftware.artcollectibles.data.firebase.exception.AddVisitorException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.FirebaseException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.GetFavoritesException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.GetVisitorException
+import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -56,7 +53,21 @@ internal class VisitorsDataSourceImpl(
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {
-            throw GetFavoritesException("An error occurred when trying to get favorites", ex)
+            throw GetFavoritesException("An error occurred when trying to get visitors", ex)
+        }
+    }
+
+    @Throws(GetVisitorsByTokenException::class)
+    override suspend fun getByTokenId(tokenId: String): List<String> = withContext(Dispatchers.IO) {
+        try {
+            firebaseStore.collection(COLLECTION_NAME)
+                .document(tokenId)
+                .get()
+                .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
+        } catch (ex: FirebaseException) {
+            throw ex
+        } catch (ex: Exception) {
+            throw GetVisitorsByTokenException("An error occurred when trying to get visitors", ex)
         }
     }
 }
