@@ -174,4 +174,7 @@
     <!-- Comments -->
     <string name="comments_detail_title_default">Comments</string>
     <string name="comments_detail_title_count" formatted="false">Comments (%d)</string>
+    <!-- Favorites -->
+    <string name="favorites_detail_title_default">Likes</string>
+    <string name="favorites_detail_title_count" formatted="false">Likes (%d)</string>
 </resources>

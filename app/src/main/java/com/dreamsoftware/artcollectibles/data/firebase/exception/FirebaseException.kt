@@ -30,6 +30,7 @@ class GetFavoritesException(message: String? = null, cause: Throwable? = null): 
 class AddToFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class RemoveFromFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetMoreLikedTokensException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetUserLikesByTokenException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 // Visitors Data Source
 class AddVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

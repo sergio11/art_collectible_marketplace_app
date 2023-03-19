@@ -1,9 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.firebase.datasource
 
-import com.dreamsoftware.artcollectibles.data.firebase.exception.AddToFavoritesException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.GetFavoritesException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.GetMoreLikedTokensException
-import com.dreamsoftware.artcollectibles.data.firebase.exception.RemoveFromFavoritesException
+import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 
 interface IFavoritesDataSource {
 
@@ -24,4 +21,7 @@ interface IFavoritesDataSource {
 
     @Throws(GetMoreLikedTokensException::class)
     suspend fun getMoreLikedTokens(limit: Long): List<String>
+
+    @Throws(GetUserLikesByTokenException::class)
+    suspend fun getUserLikesByToken(tokenId: String): List<String>
 }

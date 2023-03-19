@@ -13,6 +13,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreen
+import com.dreamsoftware.artcollectibles.ui.screens.favorites.FavoritesScreen
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
@@ -115,12 +116,14 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.TokenDetail.parseArgs(args)?.let { screenArgs ->
                     with(navigationController) {
-                        TokenDetailScreen(screenArgs, onOpenArtistDetailCalled = {
+                        TokenDetailScreen(screenArgs, onSeeArtistDetail = {
                             navigate(DestinationItem.ArtistDetail.buildRoute(it))
                         }, onTokenBurned =  {
                             popBackStack()
-                        }, onOpenAllCommentsByToken = {
+                        }, onSeeCommentsByToken = {
                             navigate(DestinationItem.CommentsList.buildRoute(it))
+                        }, onSeeLikesByToken = {
+                            navigate(DestinationItem.FavoriteList.buildRoute(it))
                         })
                     }
                 }
@@ -130,6 +133,15 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.CommentsList.parseArgs(args)?.let { screenArgs ->
                     CommentsScreen(args = screenArgs)
+                }
+            }
+        }
+        composable(DestinationItem.FavoriteList.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.FavoriteList.parseArgs(args)?.let { screenArgs ->
+                    FavoritesScreen(args = screenArgs) {
+                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    }
                 }
             }
         }

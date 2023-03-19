@@ -500,4 +500,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideDeleteCommentUseCase(commentsRepository: ICommentsRepository) =
         DeleteCommentUseCase(commentsRepository)
+
+    /**
+     * Provide Get user likes by token use case
+     * @param favoritesRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetUserLikesByTokenUseCase(favoritesRepository: IFavoritesRepository) =
+        GetUserLikesByTokenUseCase(favoritesRepository)
 }

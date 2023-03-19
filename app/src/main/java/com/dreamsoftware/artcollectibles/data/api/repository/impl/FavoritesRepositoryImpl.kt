@@ -1,14 +1,13 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import com.dreamsoftware.artcollectibles.data.api.exception.AddToFavoritesDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.GetMoreLikedTokensDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.GetMyFavoriteTokensDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.RemoveFromFavoritesDataException
+import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IFavoritesRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -20,11 +19,13 @@ import java.math.BigInteger
  * @param favoritesDataSource
  * @param artCollectibleRepository
  * @param walletRepository
+ * @param userRepository
  */
 internal class FavoritesRepositoryImpl(
     private val favoritesDataSource: IFavoritesDataSource,
     private val artCollectibleRepository: IArtCollectibleRepository,
-    private val walletRepository: IWalletRepository
+    private val walletRepository: IWalletRepository,
+    private val userRepository: IUserRepository
 ): IFavoritesRepository {
 
     @Throws(AddToFavoritesDataException::class)
@@ -72,7 +73,19 @@ internal class FavoritesRepositoryImpl(
                     async { artCollectibleRepository.getTokenById(BigInteger(it)) }
                 }.awaitAll()
             } catch (ex: Exception) {
-                throw GetMoreLikedTokensDataException("An error ocurred when trying to get more liked tokens")
+                throw GetMoreLikedTokensDataException("An error occurred when trying to get more liked tokens", ex)
+            }
+        }
+
+    @Throws(GetUserLikesByTokenDataException::class)
+    override suspend fun getUserLikesByToken(tokenId: String): Iterable<UserInfo> =
+        withContext(Dispatchers.IO) {
+            try {
+                favoritesDataSource.getUserLikesByToken(tokenId).asSequence().map { userAddress ->
+                    async { runCatching { userRepository.getByAddress(userAddress) }.getOrNull() }
+                }.toList().awaitAll().filterNotNull()
+            } catch (ex: Exception) {
+                throw GetUserLikesByTokenDataException("An error occurred when trying to get user likes by token", ex)
             }
         }
 

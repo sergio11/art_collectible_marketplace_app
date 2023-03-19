@@ -28,7 +28,8 @@ fun ArtCollectibleMiniInfoComponent(
     modifier: Modifier = Modifier,
     showPreviewDescription: Boolean = true,
     artCollectible: ArtCollectible?,
-    onSeeAllComments: (tokenId: BigInteger) -> Unit = {}
+    onSeeAllComments: (tokenId: BigInteger) -> Unit = {},
+    onSeeLikesByToken: (tokenId: BigInteger) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Text(
@@ -65,7 +66,11 @@ fun ArtCollectibleMiniInfoComponent(
                 text = artCollectible?.royalty?.let { "$it%" } ?: stringResource(id = R.string.no_text_value)
             )
             FavoriteCountComponent(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(8.dp).clickable {
+                    artCollectible?.let {
+                        onSeeLikesByToken(it.id)
+                    }
+                },
                 artCollectible = artCollectible
             )
             TextWithIcon(

@@ -13,7 +13,7 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreenArgs
-import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsUiState
+import com.dreamsoftware.artcollectibles.ui.screens.favorites.FavoritesScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreenArgs
@@ -193,7 +193,6 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         }
     }
 
-
     object CommentsList : DestinationItem(route = "token/{id}/comments", arguments = listOf(
         navArgument("id") {
             type = NavType.StringType
@@ -209,6 +208,28 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         fun parseArgs(args: Bundle): CommentsScreenArgs? = with(args) {
             getString("id")?.let {
                 CommentsScreenArgs(
+                    tokenId = it
+                )
+            }
+        }
+    }
+
+
+    object FavoriteList : DestinationItem(route = "token/{id}/likes", arguments = listOf(
+        navArgument("id") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(tokenId: BigInteger): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = tokenId.toString()
+            )
+
+        fun parseArgs(args: Bundle): FavoritesScreenArgs? = with(args) {
+            getString("id")?.let {
+                FavoritesScreenArgs(
                     tokenId = it
                 )
             }

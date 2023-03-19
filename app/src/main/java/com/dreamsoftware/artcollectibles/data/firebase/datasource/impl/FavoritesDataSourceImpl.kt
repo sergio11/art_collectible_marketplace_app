@@ -121,4 +121,19 @@ internal class FavoritesDataSourceImpl(
                 throw GetMoreLikedTokensException("An error occurred when trying to get more liked tokens")
             }
         }
+
+    @Throws(GetUserLikesByTokenException::class)
+    override suspend fun getUserLikesByToken(tokenId: String): List<String> =
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME)
+                    .document(tokenId)
+                    .get()
+                    .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
+            } catch (ex: FirebaseException) {
+                throw ex
+            } catch (ex: Exception) {
+                throw GetUserLikesByTokenException("An error occurred when trying to get user likes by token")
+            }
+        }
 }
