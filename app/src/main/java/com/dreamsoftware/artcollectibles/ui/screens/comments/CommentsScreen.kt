@@ -1,20 +1,23 @@
 package com.dreamsoftware.artcollectibles.ui.screens.comments
 
 
-import android.content.Context
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -22,6 +25,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.UserAccountProfilePicture
+import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
@@ -48,13 +53,11 @@ fun CommentsScreen(
         }
     }
     val lazyListState = rememberLazyListState()
-    val context = LocalContext.current
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             load(args.tokenId)
         }
         CommentsComponent(
-            context = context,
             state = uiState,
             lazyListState = lazyListState
         )
@@ -65,7 +68,6 @@ fun CommentsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CommentsComponent(
-    context: Context,
     state: CommentsUiState,
     lazyListState: LazyListState
 ) {
@@ -98,8 +100,7 @@ internal fun CommentsComponent(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(Iterables.size(comments)) { index ->
-                            val comment = Iterables.get(comments, index)
-                            Text(text = comment.comment)
+                            CommentItemDetail(Iterables.get(comments, index))
                         }
                     }
                 }
@@ -109,9 +110,51 @@ internal fun CommentsComponent(
 }
 
 @Composable
+private fun CommentItemDetail(comment: Comment) {
+    with(comment) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(2.dp, Purple200)
+                .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            UserAccountProfilePicture(size = 70.dp, userInfo = user)
+            Column(
+                modifier = Modifier.padding(start = 16.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = user.name,
+                    fontFamily = montserratFontFamily,
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Left
+                )
+                Text(
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = text,
+                    fontFamily = montserratFontFamily,
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Left
+                )
+            }
+
+        }
+    }
+}
+
+@Composable
 private fun getTopAppBarTitle(
     data: Iterable<Comment>
-) = if(Iterables.isEmpty(data)) {
+) = if (Iterables.isEmpty(data)) {
     stringResource(id = R.string.comments_detail_title_default)
 } else {
     stringResource(id = R.string.comments_detail_title_count, Iterables.size(data))

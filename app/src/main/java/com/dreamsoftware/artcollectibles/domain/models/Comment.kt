@@ -4,7 +4,7 @@ import java.math.BigInteger
 
 data class Comment(
     val uid: String,
-    val comment: String,
+    val text: String,
     val user: UserInfo,
     val tokenId: BigInteger
 )

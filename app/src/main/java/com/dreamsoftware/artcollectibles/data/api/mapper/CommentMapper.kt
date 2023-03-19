@@ -10,7 +10,7 @@ class CommentMapper: IOneSideMapper<CommentMapper.InputData, Comment> {
     override fun mapInToOut(input: InputData): Comment = with(input) {
         Comment(
             uid = commentDTO.uid,
-            comment = commentDTO.comment,
+            text = commentDTO.comment,
             user = userInfoDTO,
             tokenId = commentDTO.tokenId
         )
