@@ -35,7 +35,7 @@ fun UserStatisticsComponent(
     ) {
         StatisticItem(itemSize, icon = R.drawable.tokens_bought_count, value = userInfo?.tokensBoughtCount, palette = palette)
         StatisticItem(itemSize, icon = R.drawable.tokens_sold_count, value = userInfo?.tokensSoldCount, palette = palette)
-        StatisticItem(itemSize, icon = R.drawable.token_creator_icon, value = userInfo?.tokensCreatedCount, palette = palette)
+        StatisticItem(itemSize, icon = R.drawable.token_creator_icon_metric, value = userInfo?.tokensCreatedCount, palette = palette)
         StatisticItem(itemSize, icon = R.drawable.tokens_owned_count, value = userInfo?.tokensOwnedCount, palette = palette)
     }
 }

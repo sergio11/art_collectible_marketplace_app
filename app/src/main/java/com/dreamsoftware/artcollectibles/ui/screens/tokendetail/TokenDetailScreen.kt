@@ -210,7 +210,8 @@ private fun TokenDetailBody(
                 artCollectible = artCollectible,
                 onSeeAllComments = onSeeAllComments,
                 onSeeLikesByToken = onSeeLikesByToken,
-                onSeeVisitorsByToken = onSeeVisitorsByToken
+                onSeeVisitorsByToken = onSeeVisitorsByToken,
+                onSeeCreatorDetail = onSeeArtistDetail
             )
             Spacer(modifier = Modifier.height(50.dp))
             PublishCommentComponent(

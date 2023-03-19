@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -30,7 +31,8 @@ fun ArtCollectibleMiniInfoComponent(
     artCollectible: ArtCollectible?,
     onSeeAllComments: (tokenId: BigInteger) -> Unit = {},
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit = {},
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit = {}
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit = {},
+    onSeeCreatorDetail: (userInfo: UserInfo) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Text(
@@ -57,13 +59,15 @@ fun ArtCollectibleMiniInfoComponent(
         )
         Row {
             TextWithImage(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(8.dp).clickable {
+                    artCollectible?.author?.let(onSeeCreatorDetail)
+                },
                 imageRes = R.drawable.token_creator_icon,
                 text = artCollectible?.author?.name ?: stringResource(id = R.string.no_text_value)
             )
             TextWithImage(
                 modifier = Modifier.padding(8.dp),
-                imageRes = R.drawable.crown,
+                imageRes = R.drawable.token_royalty_icon,
                 text = artCollectible?.royalty?.let { "$it%" } ?: stringResource(id = R.string.no_text_value)
             )
             FavoriteCountComponent(
