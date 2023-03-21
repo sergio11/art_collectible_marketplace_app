@@ -13,9 +13,11 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.DynamicArray;
+import org.web3j.abi.datatypes.DynamicStruct;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.StaticStruct;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -66,6 +68,8 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final String FUNC_FETCHITEMFORSALE = "fetchItemForSale";
 
+    public static final String FUNC_FETCHITEMFORSALEBYMETADATACID = "fetchItemForSaleByMetadataCID";
+
     public static final String FUNC_FETCHLASTMARKETHISTORYITEMS = "fetchLastMarketHistoryItems";
 
     public static final String FUNC_FETCHMARKETHISTORY = "fetchMarketHistory";
@@ -76,11 +80,15 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final String FUNC_FETCHSELLINGMARKETITEMS = "fetchSellingMarketItems";
 
+    public static final String FUNC_FETCHTOKENMARKETHISTORY = "fetchTokenMarketHistory";
+
     public static final String FUNC_FETCHWALLETSTATISTICS = "fetchWalletStatistics";
 
     public static final String FUNC_GETARTCOLLECTIBLEADDRESS = "getArtCollectibleAddress";
 
     public static final String FUNC_ISTOKENADDEDFORSALE = "isTokenAddedForSale";
+
+    public static final String FUNC_ISTOKENMETADATACIDADDEDFORSALE = "isTokenMetadataCIDAddedForSale";
 
     public static final String FUNC_OWNER = "owner";
 
@@ -365,6 +373,13 @@ public class ArtMarketplaceContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, ArtCollectibleForSale.class);
     }
 
+    public RemoteFunctionCall<ArtCollectibleForSale> fetchItemForSaleByMetadataCID(String metadataCID) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHITEMFORSALEBYMETADATACID, 
+                Arrays.<Type>asList(new Utf8String(metadataCID)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<ArtCollectibleForSale>() {}));
+        return executeRemoteCallSingleValueReturn(function, ArtCollectibleForSale.class);
+    }
+
     public RemoteFunctionCall<List> fetchLastMarketHistoryItems(BigInteger count) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHLASTMARKETHISTORYITEMS, 
                 Arrays.<Type>asList(new Uint256(count)),
@@ -432,6 +447,21 @@ public class ArtMarketplaceContract extends Contract {
                 });
     }
 
+    public RemoteFunctionCall<List> fetchTokenMarketHistory(BigInteger tokenId) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHTOKENMARKETHISTORY, 
+                Arrays.<Type>asList(new Uint256(tokenId)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleForSale>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
     public RemoteFunctionCall<WalletStatistics> fetchWalletStatistics(String ownerAddress) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHWALLETSTATISTICS, 
                 Arrays.<Type>asList(new Address(160, ownerAddress)),
@@ -449,6 +479,13 @@ public class ArtMarketplaceContract extends Contract {
     public RemoteFunctionCall<Boolean> isTokenAddedForSale(BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISTOKENADDEDFORSALE, 
                 Arrays.<Type>asList(new Uint256(tokenId)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
+        return executeRemoteCallSingleValueReturn(function, Boolean.class);
+    }
+
+    public RemoteFunctionCall<Boolean> isTokenMetadataCIDAddedForSale(String metadataCID) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_ISTOKENMETADATACIDADDEDFORSALE, 
+                Arrays.<Type>asList(new Utf8String(metadataCID)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
@@ -527,10 +564,12 @@ public class ArtMarketplaceContract extends Contract {
         return new ArtMarketplaceContract(contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public static class ArtCollectibleForSale extends StaticStruct {
+    public static class ArtCollectibleForSale extends DynamicStruct {
         public BigInteger marketItemId;
 
         public BigInteger tokenId;
+
+        public String metadataCID;
 
         public String creator;
 
@@ -540,39 +579,57 @@ public class ArtMarketplaceContract extends Contract {
 
         public BigInteger price;
 
+        public BigInteger putForSaleAt;
+
         public Boolean sold;
+
+        public BigInteger soldAt;
 
         public Boolean canceled;
 
-        public ArtCollectibleForSale(BigInteger marketItemId, BigInteger tokenId, String creator, String seller, String owner, BigInteger price, Boolean sold, Boolean canceled) {
+        public BigInteger canceledAt;
+
+        public ArtCollectibleForSale(BigInteger marketItemId, BigInteger tokenId, String metadataCID, String creator, String seller, String owner, BigInteger price, BigInteger putForSaleAt, Boolean sold, BigInteger soldAt, Boolean canceled, BigInteger canceledAt) {
             super(new Uint256(marketItemId),
                     new Uint256(tokenId),
+                    new Utf8String(metadataCID),
                     new Address(160, creator),
                     new Address(160, seller),
                     new Address(160, owner),
                     new Uint256(price),
+                    new Uint256(putForSaleAt),
                     new Bool(sold),
-                    new Bool(canceled));
+                    new Uint256(soldAt),
+                    new Bool(canceled),
+                    new Uint256(canceledAt));
             this.marketItemId = marketItemId;
             this.tokenId = tokenId;
+            this.metadataCID = metadataCID;
             this.creator = creator;
             this.seller = seller;
             this.owner = owner;
             this.price = price;
+            this.putForSaleAt = putForSaleAt;
             this.sold = sold;
+            this.soldAt = soldAt;
             this.canceled = canceled;
+            this.canceledAt = canceledAt;
         }
 
-        public ArtCollectibleForSale(Uint256 marketItemId, Uint256 tokenId, Address creator, Address seller, Address owner, Uint256 price, Bool sold, Bool canceled) {
-            super(marketItemId, tokenId, creator, seller, owner, price, sold, canceled);
+        public ArtCollectibleForSale(Uint256 marketItemId, Uint256 tokenId, Utf8String metadataCID, Address creator, Address seller, Address owner, Uint256 price, Uint256 putForSaleAt, Bool sold, Uint256 soldAt, Bool canceled, Uint256 canceledAt) {
+            super(marketItemId, tokenId, metadataCID, creator, seller, owner, price, putForSaleAt, sold, soldAt, canceled, canceledAt);
             this.marketItemId = marketItemId.getValue();
             this.tokenId = tokenId.getValue();
+            this.metadataCID = metadataCID.getValue();
             this.creator = creator.getValue();
             this.seller = seller.getValue();
             this.owner = owner.getValue();
             this.price = price.getValue();
+            this.putForSaleAt = putForSaleAt.getValue();
             this.sold = sold.getValue();
+            this.soldAt = soldAt.getValue();
             this.canceled = canceled.getValue();
+            this.canceledAt = canceledAt.getValue();
         }
     }
 

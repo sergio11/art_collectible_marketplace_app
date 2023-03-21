@@ -58,7 +58,17 @@ public class ArtCollectibleContract extends Contract {
 
     public static final String FUNC_GETAPPROVED = "getApproved";
 
+    public static final String FUNC_GETPAGINATEDTOKENSCREATEDBY = "getPaginatedTokensCreatedBy";
+
+    public static final String FUNC_GETPAGINATEDTOKENSCREATEDBYME = "getPaginatedTokensCreatedByMe";
+
+    public static final String FUNC_GETPAGINATEDTOKENSOWNEDBY = "getPaginatedTokensOwnedBy";
+
+    public static final String FUNC_GETPAGINATEDTOKENSOWNEDBYME = "getPaginatedTokensOwnedByMe";
+
     public static final String FUNC_GETTOKENBYID = "getTokenById";
+
+    public static final String FUNC_GETTOKENBYMETADATACID = "getTokenByMetadataCid";
 
     public static final String FUNC_GETTOKENCREATORBYID = "getTokenCreatorById";
 
@@ -449,9 +459,78 @@ public class ArtCollectibleContract extends Contract {
         return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
+    public RemoteFunctionCall<List> getPaginatedTokensCreatedBy(String creatorAddress, BigInteger count) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETPAGINATEDTOKENSCREATEDBY, 
+                Arrays.<Type>asList(new Address(160, creatorAddress),
+                new Uint256(count)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> getPaginatedTokensCreatedByMe(BigInteger count) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETPAGINATEDTOKENSCREATEDBYME, 
+                Arrays.<Type>asList(new Uint256(count)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> getPaginatedTokensOwnedBy(String ownedAddress, BigInteger count) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETPAGINATEDTOKENSOWNEDBY, 
+                Arrays.<Type>asList(new Address(160, ownedAddress),
+                new Uint256(count)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> getPaginatedTokensOwnedByMe(BigInteger count) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETPAGINATEDTOKENSOWNEDBYME, 
+                Arrays.<Type>asList(new Uint256(count)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
     public RemoteFunctionCall<ArtCollectible> getTokenById(BigInteger tokenId) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOKENBYID, 
                 Arrays.<Type>asList(new Uint256(tokenId)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<ArtCollectible>() {}));
+        return executeRemoteCallSingleValueReturn(function, ArtCollectible.class);
+    }
+
+    public RemoteFunctionCall<ArtCollectible> getTokenByMetadataCid(String metadataCid) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOKENBYMETADATACID, 
+                Arrays.<Type>asList(new Utf8String(metadataCid)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<ArtCollectible>() {}));
         return executeRemoteCallSingleValueReturn(function, ArtCollectible.class);
     }

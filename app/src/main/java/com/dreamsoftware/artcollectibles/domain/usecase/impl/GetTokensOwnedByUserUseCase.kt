@@ -9,7 +9,7 @@ class GetTokensOwnedByUserUseCase(
 ): BaseUseCaseWithParams<GetTokensOwnedByUserUseCase.Params, Iterable<ArtCollectible>>() {
 
     override suspend fun onExecuted(params: Params): Iterable<ArtCollectible> {
-        return artCollectibleRepository.getTokensOwned()
+        return artCollectibleRepository.getTokensOwnedBy(params.userAddress)
     }
 
     data class Params(

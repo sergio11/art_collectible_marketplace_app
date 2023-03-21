@@ -35,10 +35,24 @@ interface IArtCollectibleRepository {
     suspend fun getTokensOwned(): Iterable<ArtCollectible>
 
     /**
+     * Allows you to retrieve the list of tokens owned by owner address
+     * @param ownerAddress
+     */
+    @Throws(GetTokensOwnedException::class)
+    suspend fun getTokensOwnedBy(ownerAddress: String): Iterable<ArtCollectible>
+
+    /**
      * Allows you to retrieve the list of tokens created by current auth user
      */
     @Throws(GetTokensCreatedException::class)
     suspend fun getTokensCreated(): Iterable<ArtCollectible>
+
+    /**
+     * Allows you to retrieve the list of tokens created by creator address
+     * @param creatorAddress
+     */
+    @Throws(GetTokensCreatedException::class)
+    suspend fun getTokensCreatedBy(creatorAddress: String): Iterable<ArtCollectible>
 
     /**
      * Retrieve token information by id

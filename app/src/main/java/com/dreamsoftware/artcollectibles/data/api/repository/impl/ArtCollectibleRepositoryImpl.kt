@@ -78,6 +78,10 @@ internal class ArtCollectibleRepositoryImpl(
                         tokenId,
                         userCredentialsMapper.mapOutToIn(credentials)
                     )
+                    with(artCollectibleMemoryCacheDataSource) {
+                        delete(TOKENS_CREATED_KEY)
+                        delete(TOKENS_OWNED_KEY)
+                    }
                     mapToArtCollectible(credentials, tokenMetadata, tokenMinted)
                 }
             } catch (ex: Exception) {
@@ -99,7 +103,11 @@ internal class ArtCollectibleRepositoryImpl(
             // Delete token
             artCollectibleDataSource.burnToken(tokenId, credentials)
             // Delete memory cache entry
-            artCollectibleMemoryCacheDataSource.delete(tokenId)
+            with(artCollectibleMemoryCacheDataSource) {
+                delete(tokenId)
+                delete(TOKENS_CREATED_KEY)
+                delete(TOKENS_OWNED_KEY)
+            }
         } catch (ex: Exception) {
             throw DeleteArtCollectibleException(
                 "An error occurred when trying to delete a new token", ex
@@ -126,6 +134,22 @@ internal class ArtCollectibleRepositoryImpl(
                         artCollectibleMemoryCacheDataSource.save(TOKENS_OWNED_KEY, it)
                     }
                 }
+            } catch (ex: Exception) {
+                throw GetTokensOwnedException(
+                    "An error occurred when trying to get tokens owned", ex
+                )
+            }
+        }
+
+    @Throws(GetTokensOwnedException::class)
+    override suspend fun getTokensOwnedBy(ownerAddress: String): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                mapToArtCollectible(credentials, artCollectibleDataSource.getTokensOwnedBy(
+                    userCredentialsMapper.mapOutToIn(credentials),
+                    ownerAddress
+                ))
             } catch (ex: Exception) {
                 throw GetTokensOwnedException(
                     "An error occurred when trying to get tokens owned", ex
@@ -165,6 +189,22 @@ internal class ArtCollectibleRepositoryImpl(
             }
         }
 
+    @Throws(GetTokensCreatedException::class)
+    override suspend fun getTokensCreatedBy(creatorAddress: String): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                mapToArtCollectible(credentials, artCollectibleDataSource.getTokensCreatedBy(
+                    userCredentialsMapper.mapOutToIn(credentials),
+                    creatorAddress
+                ))
+            } catch (ex: Exception) {
+                throw GetTokensOwnedException(
+                    "An error occurred when trying to get tokens owned", ex
+                )
+            }
+        }
+
     @Throws(GetTokenByIdException::class)
     override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible =
         withContext(Dispatchers.Default) {
@@ -191,17 +231,10 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                artCollectibleDataSource.getTokens(
+                mapToArtCollectible(credentials, artCollectibleDataSource.getTokens(
                     tokenList,
                     userCredentialsMapper.mapOutToIn(credentials)
-                ).asSequence()
-                    .map { token ->
-                        async {
-                            val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
-                            mapToArtCollectible(credentials, tokenMetadata, token)
-                        }
-                    }
-                    .toList().awaitAll()
+                ))
             } catch (ex: Exception) {
                 throw GetTokensException("An error occurred when trying to get tokens", ex)
             }
@@ -217,6 +250,23 @@ internal class ArtCollectibleRepositoryImpl(
             }
         }
 
+    private suspend fun mapToArtCollectible(
+        credentials: UserWalletCredentials,
+        tokenList: Iterable<ArtCollectibleBlockchainDTO>
+    ) = withContext(Dispatchers.Default){
+        tokenList.asSequence().map { token ->
+            async {
+                try {
+                    artCollectibleMemoryCacheDataSource.findByKey(token.tokenId).first()
+                } catch (ex: CacheException) {
+                    val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
+                    mapToArtCollectible(credentials, tokenMetadata, token).also {
+                        artCollectibleMemoryCacheDataSource.save(token.tokenId, listOf(it))
+                    }
+                }
+            }
+        }.toList().awaitAll()
+    }
 
     private suspend fun mapToArtCollectible(
         credentials: UserWalletCredentials,
