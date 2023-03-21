@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.dreamsoftware.artcollectibles.ui.navigation.NavigationItem
-import com.dreamsoftware.artcollectibles.ui.theme.BottomBarColor
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
@@ -45,7 +45,7 @@ fun BottomBar(navController: NavController) {
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = BottomBarColor
+                    indicatorColor = DarkPurple
                 ),
                 alwaysShowLabel = false,
                 selected = currentRoute == item.destination.route,
