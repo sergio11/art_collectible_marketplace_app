@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.comments
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -39,7 +40,8 @@ data class CommentsScreenArgs(
 @Composable
 fun CommentsScreen(
     args: CommentsScreenArgs,
-    viewModel: CommentsViewModel = hiltViewModel()
+    viewModel: CommentsViewModel = hiltViewModel(),
+    onSeeCommentDetail: (comment: Comment) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -60,7 +62,8 @@ fun CommentsScreen(
         }
         CommentsComponent(
             state = uiState,
-            lazyListState = lazyListState
+            lazyListState = lazyListState,
+            onSeeCommentDetail = onSeeCommentDetail
         )
     }
 }
@@ -70,7 +73,8 @@ fun CommentsScreen(
 @Composable
 internal fun CommentsComponent(
     state: CommentsUiState,
-    lazyListState: LazyListState
+    lazyListState: LazyListState,
+    onSeeCommentDetail: (comment: Comment) -> Unit
 ) {
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -101,7 +105,13 @@ internal fun CommentsComponent(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(Iterables.size(comments)) { index ->
-                            CommentItemDetail(Iterables.get(comments, index))
+                            val comment = Iterables.get(comments, index)
+                            CommentItemDetail(
+                                modifier = Modifier.clickable {
+                                    onSeeCommentDetail(comment)
+                                },
+                                comment = comment
+                            )
                         }
                     }
                 }
@@ -111,7 +121,7 @@ internal fun CommentsComponent(
 }
 
 @Composable
-private fun CommentItemDetail(comment: Comment) {
+private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
     with(comment) {
         Column(
             modifier = Modifier
@@ -119,6 +129,7 @@ private fun CommentItemDetail(comment: Comment) {
                 .border(2.dp, Purple200, RoundedCornerShape(percent = 30))
                 .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
                 .padding(16.dp)
+                .then(modifier)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically

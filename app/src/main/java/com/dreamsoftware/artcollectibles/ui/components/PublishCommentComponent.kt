@@ -41,6 +41,7 @@ fun PublishCommentComponent(
     commentsCount: Long? = null,
     lastComments: Iterable<Comment> = emptyList(),
     onPublishComment: (comment: String) -> Unit = {},
+    onSeeCommentDetail: (comment: Comment) -> Unit = {},
     onSeeAllComments: () -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -65,7 +66,8 @@ fun PublishCommentComponent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(25.dp)
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = 8.dp)
+                        .clickable { onSeeCommentDetail(this) },
                     text = "${user.name}: $text",
                     fontFamily = montserratFontFamily,
                     color = Color.Black,

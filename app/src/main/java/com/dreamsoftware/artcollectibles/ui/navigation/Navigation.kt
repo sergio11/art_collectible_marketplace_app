@@ -6,12 +6,10 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.commentdetail.CommentDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.favorites.FavoritesScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArgs
@@ -211,6 +209,31 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
                 CommentsScreenArgs(
                     tokenId = it
                 )
+            }
+        }
+    }
+
+    object CommentDetail : DestinationItem(route = "token/{tokenId}/comments/{commentId}", arguments = listOf(
+        navArgument("tokenId") {
+            type = NavType.StringType
+        },
+        navArgument("commentId") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(comment: Comment): String =
+            route.replace(
+                oldValue = "{tokenId}",
+                newValue = comment.tokenId.toString()
+            ).replace(
+                oldValue = "{commentId}",
+                newValue = comment.uid
+            )
+
+        fun parseArgs(args: Bundle): CommentDetailScreenArgs? = with(args) {
+            getString("commentId")?.let {
+                CommentDetailScreenArgs(uid = it)
             }
         }
     }

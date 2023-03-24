@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import java.math.BigInteger
@@ -38,6 +39,7 @@ fun TokenDetailScreen(
     viewModel: TokenDetailViewModel = hiltViewModel(),
     onSeeArtistDetail: (userInfo: UserInfo) -> Unit,
     onTokenBurned: () -> Unit,
+    onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
@@ -81,6 +83,7 @@ fun TokenDetailScreen(
             onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
             onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged,
             onPublishComment = ::onPublishComment,
+            onSeeCommentDetail = onSeeCommentDetail,
             onSeeCommentsByToken = onSeeCommentsByToken,
             onSeeLikesByToken = onSeeLikesByToken,
             onSeeVisitorsByToken = onSeeVisitorsByToken
@@ -105,6 +108,7 @@ fun TokenDetailComponent(
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onItemPriceChanged: (price: String) -> Unit,
     onPublishComment: (comment: String) -> Unit,
+    onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
@@ -131,6 +135,7 @@ fun TokenDetailComponent(
                 onConfirmWithDrawFromSaleDialogVisibilityChanged = onConfirmWithDrawFromSaleDialogVisibilityChanged,
                 onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged,
                 onPublishComment = onPublishComment,
+                onSeeCommentDetail = onSeeCommentDetail,
                 onSeeAllComments = onSeeCommentsByToken,
                 onSeeLikesByToken = onSeeLikesByToken,
                 onSeeVisitorsByToken = onSeeVisitorsByToken
@@ -154,6 +159,7 @@ private fun TokenDetailBody(
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onPublishComment: (comment: String) -> Unit,
+    onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeAllComments: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
@@ -220,6 +226,7 @@ private fun TokenDetailBody(
                 commentsCount = artCollectible.commentsCount,
                 lastComments = lastComments,
                 onPublishComment = onPublishComment,
+                onSeeCommentDetail = onSeeCommentDetail,
                 onSeeAllComments = {
                     onSeeAllComments(artCollectible.id)
                 }

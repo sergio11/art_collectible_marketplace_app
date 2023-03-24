@@ -180,4 +180,6 @@
     <!-- Visitors -->
     <string name="visitors_detail_title_default">Visitors</string>
     <string name="visitors_detail_title_count" formatted="false">Visitors (%d)</string>
+    <!-- Comment Detail -->
+    <string name="comment_detail_delete_button_text">Delete comment</string>
 </resources>
