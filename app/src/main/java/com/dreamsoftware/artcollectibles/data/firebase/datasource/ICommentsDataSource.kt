@@ -40,4 +40,12 @@ interface ICommentsDataSource {
      */
     @Throws(GetCommentsByTokenIdException::class)
     suspend fun getByTokenId(tokenId: String): Iterable<CommentDTO>
+
+    /**
+     * Get last comments by token
+     * @param tokenId
+     * @param limit
+     */
+    @Throws(GetCommentsByTokenIdException::class)
+    suspend fun getLastCommentsByToken(tokenId: String, limit: Int): Iterable<CommentDTO>
 }

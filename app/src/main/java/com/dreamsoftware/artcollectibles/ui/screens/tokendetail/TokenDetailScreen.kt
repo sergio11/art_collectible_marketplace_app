@@ -213,16 +213,18 @@ private fun TokenDetailBody(
                 onSeeVisitorsByToken = onSeeVisitorsByToken,
                 onSeeCreatorDetail = onSeeArtistDetail
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             PublishCommentComponent(
                 modifier = Modifier.padding(16.dp),
                 authUserInfo = authUserInfo,
                 commentsCount = artCollectible.commentsCount,
+                lastComments = lastComments,
                 onPublishComment = onPublishComment,
                 onSeeAllComments = {
                     onSeeAllComments(artCollectible.id)
                 }
             )
+            Spacer(modifier = Modifier.height(20.dp))
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier

@@ -21,21 +21,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.google.common.collect.Iterables
 
 @Composable
 fun PublishCommentComponent(
     modifier: Modifier = Modifier,
     authUserInfo: UserInfo? = null,
     commentsCount: Long? = null,
+    lastComments: Iterable<Comment> = emptyList(),
     onPublishComment: (comment: String) -> Unit = {},
     onSeeAllComments: () -> Unit = {}
 ) {
@@ -53,8 +57,25 @@ fun PublishCommentComponent(
     }
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.Center
     ) {
+        repeat(Iterables.size(lastComments)) {
+            with(Iterables.get(lastComments, it)) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(25.dp)
+                        .padding(horizontal = 8.dp),
+                    text = "${user.name}: $text",
+                    fontFamily = montserratFontFamily,
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Left
+                )
+            }
+        }
         commentsCount?.let {
             if (it > 0) {
                 Text(
@@ -66,8 +87,8 @@ fun PublishCommentComponent(
                         },
                     text = stringResource(id = R.string.token_detail_comments_see_more_text, it),
                     fontFamily = montserratFontFamily,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.LightGray,
+                    style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.SemiBold,

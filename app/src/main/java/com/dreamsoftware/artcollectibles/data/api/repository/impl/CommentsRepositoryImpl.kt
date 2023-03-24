@@ -88,4 +88,20 @@ internal class CommentsRepositoryImpl(
             throw GetCommentsByTokenDataException("An error occurred when trying to get comments by token id", ex)
         }
     }
+
+    @Throws(GetCommentsByTokenDataException::class)
+    override suspend fun getLastCommentsByToken(tokenId: String, limit: Int): Iterable<Comment> = withContext(Dispatchers.IO) {
+        try {
+            commentMapper.mapInListToOutList(commentsDataSource.getLastCommentsByToken(tokenId, limit).map {
+                async {
+                    CommentMapper.InputData(
+                        commentDTO = it,
+                        userInfoDTO = userRepository.get(it.userUid)
+                    )
+                }
+            }.awaitAll())
+        } catch (ex: Exception) {
+            throw GetCommentsByTokenDataException("An error occurred when trying to get comments by token id", ex)
+        }
+    }
 }

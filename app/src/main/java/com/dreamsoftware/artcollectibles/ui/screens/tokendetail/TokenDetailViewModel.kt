@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.Comment
@@ -23,8 +22,13 @@ class TokenDetailViewModel @Inject constructor(
     private val addTokenTokenToFavoritesUseCase: AddTokenToFavoritesUseCase,
     private val removeTokenFromFavoritesUseCase: RemoveTokenFromFavoritesUseCase,
     private val registerVisitorUseCase: RegisterVisitorUseCase,
-    private val saveCommentUseCase: SaveCommentUseCase
+    private val saveCommentUseCase: SaveCommentUseCase,
+    private val getLastCommentsByTokenUseCase: GetLastCommentsByTokenUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
+
+    private companion object {
+        const val COMMENTS_BY_TOKEN_LIMIT = 4
+    }
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
 
@@ -182,6 +186,7 @@ class TokenDetailViewModel @Inject constructor(
                 val authUser = loadAuthUserDetail()
                 val isTokenOwner = artCollectible.owner.uid == authUser.uid
                 val isTokenCreator = artCollectible.author.uid == authUser.uid
+                val lastComments = getLastCommentsByToken(tokenId, COMMENTS_BY_TOKEN_LIMIT)
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
@@ -189,10 +194,11 @@ class TokenDetailViewModel @Inject constructor(
                         isLoading = false,
                         isTokenOwner = isTokenOwner,
                         isTokenAddedForSale = isTokenAddedForSale,
-                        tokenAddedToFavorites = artCollectible.hasAddedToFav
+                        tokenAddedToFavorites = artCollectible.hasAddedToFav,
+                        lastComments = lastComments
                     )
                 }
-                if(!isTokenOwner && !isTokenCreator) {
+                if (!isTokenOwner && !isTokenCreator) {
                     registerVisitor(tokenId, authUser.walletAddress)
                 }
             } catch (ex: Exception) {
@@ -239,10 +245,16 @@ class TokenDetailViewModel @Inject constructor(
     }
 
     private fun onCommentPublished(comment: Comment) {
-        updateState {
-            it.copy(artCollectible = it.artCollectible?.let { token ->
-                token.copy(commentsCount = token.commentsCount + 1)
-            })
+        viewModelScope.launch {
+            val lastComments = getLastCommentsByToken(comment.tokenId, COMMENTS_BY_TOKEN_LIMIT)
+            updateState {
+                it.copy(
+                    artCollectible = it.artCollectible?.let { token ->
+                        token.copy(commentsCount = token.commentsCount + 1)
+                    },
+                    lastComments = lastComments
+                )
+            }
         }
     }
 
@@ -280,6 +292,15 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
     )
 
+    private suspend fun getLastCommentsByToken(tokenId: BigInteger, limit: Int) =
+        getLastCommentsByTokenUseCase.invoke(
+            scope = viewModelScope,
+            params = GetLastCommentsByTokenUseCase.Params(
+                tokenId = tokenId.toString(),
+                limit = limit
+            )
+        )
+
     private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
         scope = viewModelScope
     )
@@ -315,6 +336,7 @@ data class TokenDetailUiState(
     val isTokenAddedForSale: Boolean = false,
     val tokenPrice: String? = null,
     val tokenAddedToFavorites: Boolean = false,
+    val lastComments: Iterable<Comment> = emptyList(),
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,
     val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,

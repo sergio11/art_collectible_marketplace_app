@@ -20,4 +20,8 @@ interface ICommentsRepository {
 
     @Throws(GetCommentsByTokenDataException::class)
     suspend fun getByTokenId(tokenId: String): Iterable<Comment>
+
+    @Throws(GetCommentsByTokenDataException::class)
+    suspend fun getLastCommentsByToken(tokenId: String, limit: Int): Iterable<Comment>
+
 }

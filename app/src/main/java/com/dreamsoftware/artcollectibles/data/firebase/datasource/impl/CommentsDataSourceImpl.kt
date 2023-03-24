@@ -111,7 +111,7 @@ internal class CommentsDataSourceImpl(
             throw ex
         } catch (ex: Exception) {
             throw GetCommentByIdException(
-                "An error occurred when trying to get followers",
+                "An error occurred when trying to get comments",
                 ex
             )
         }
@@ -131,11 +131,33 @@ internal class CommentsDataSourceImpl(
                 throw ex
             } catch (ex: Exception) {
                 throw GetCommentsByTokenIdException(
-                    "An error occurred when trying to get followers",
+                    "An error occurred when trying to get comments",
                     ex
                 )
             }
         }
+
+    @Throws(GetCommentsByTokenIdException::class)
+    override suspend fun getLastCommentsByToken(
+        tokenId: String,
+        limit: Int
+    ): Iterable<CommentDTO> = withContext(Dispatchers.IO) {
+        try {
+            firebaseStore.collection(COLLECTION_NAME)
+                .document(tokenId)
+                .get()
+                .await()?.data?.let { it[COMMENTS_FIELD_NAME] as? Iterable<String> }
+                ?.let { getCommentsByIds(it).take(limit) }
+                ?: throw GetCommentsByTokenIdException("No comments found")
+        } catch (ex: FirebaseException) {
+            throw ex
+        } catch (ex: Exception) {
+            throw GetCommentsByTokenIdException(
+                "An error occurred when trying to get comments",
+                ex
+            )
+        }
+    }
 
     private suspend fun getCommentsByIds(uidList: Iterable<String>): Iterable<CommentDTO> =
         firebaseStore.collection(COLLECTION_NAME)

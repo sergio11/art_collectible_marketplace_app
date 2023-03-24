@@ -518,4 +518,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetVisitorsByTokenUseCase(visitorsRepository: IVisitorsRepository) =
         GetVisitorsByTokenUseCase(visitorsRepository)
+
+    /**
+     * Provide get last comments by token use case
+     * @param commentsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetLastCommentsByTokenUseCase(commentsRepository: ICommentsRepository) =
+        GetLastCommentsByTokenUseCase(commentsRepository)
 }
