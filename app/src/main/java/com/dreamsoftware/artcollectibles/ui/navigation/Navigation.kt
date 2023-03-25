@@ -35,10 +35,10 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         }
     )) {
 
-        fun buildRoute(artCollectible: ArtCollectible): String =
+        fun buildRoute(tokenId: BigInteger): String =
             route.replace(
                 oldValue = "{id}",
-                newValue = "${artCollectible.id}"
+                newValue = "$tokenId"
             )
 
         fun parseArgs(args: Bundle): TokenDetailScreenArgs? = with(args) {

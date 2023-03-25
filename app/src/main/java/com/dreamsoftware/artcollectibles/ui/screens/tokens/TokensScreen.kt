@@ -27,6 +27,7 @@ import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 data class TokensScreenArgs(
     val userAddress: String,
@@ -41,7 +42,7 @@ data class TokensScreenArgs(
 fun TokensScreen(
     args: TokensScreenArgs,
     viewModel: TokensViewModel = hiltViewModel(),
-    onGoToTokenDetail: (token: ArtCollectible) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -84,7 +85,7 @@ internal fun TokensComponent(
     state: TokensUiState,
     args: TokensScreenArgs,
     lazyGridState: LazyGridState,
-    onGoToTokenDetail: (token: ArtCollectible) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -119,7 +120,7 @@ internal fun TokensComponent(
                         items(Iterables.size(tokensResult)) { index ->
                             val token = Iterables.get(tokensResult, index)
                             ArtCollectibleMiniCard(context = context, artCollectible = token) {
-                                onGoToTokenDetail(token)
+                                onGoToTokenDetail(token.id)
                             }
                         }
 

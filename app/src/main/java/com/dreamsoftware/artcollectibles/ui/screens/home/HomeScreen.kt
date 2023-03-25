@@ -33,6 +33,7 @@ import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 @Composable
 fun HomeScreen(
@@ -41,7 +42,7 @@ fun HomeScreen(
     onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (userInfo: ArtCollectible) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -81,7 +82,7 @@ private fun HomeComponent(
     onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (userInfo: ArtCollectible) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -124,7 +125,9 @@ private fun HomeComponent(
                         context = context,
                         titleRes = R.string.home_art_collectibles_featured_title,
                         items = moreLikedTokens,
-                        onItemSelected = onGoToTokenDetail
+                        onItemSelected = {
+                            onGoToTokenDetail(it.id)
+                        }
                     )
                 }
                 MarketplaceRow(context, R.string.home_available_items_for_sale_title, availableMarketItems, onGoToMarketItemDetail)

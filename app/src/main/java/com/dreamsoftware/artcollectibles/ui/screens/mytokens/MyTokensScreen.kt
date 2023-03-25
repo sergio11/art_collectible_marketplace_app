@@ -2,15 +2,11 @@ package com.dreamsoftware.artcollectibles.ui.screens.mytokens
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -31,12 +27,13 @@ import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
+import java.math.BigInteger
 
 @Composable
 fun MyTokensScreen(
     navController: NavController,
     viewModel: MyTokensViewModel = hiltViewModel(),
-    onGoToTokenDetail: (token: ArtCollectible) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -62,7 +59,9 @@ fun MyTokensScreen(
             state = uiState,
             lazyGridState = lazyGridState,
             onNewTabSelected = ::onNewTabSelected,
-            onTokenClicked = onGoToTokenDetail,
+            onTokenClicked = {
+                onGoToTokenDetail(it.id)
+            },
             onRetryCalled = { loadTokens() }
         )
     }

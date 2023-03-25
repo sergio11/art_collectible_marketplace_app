@@ -35,6 +35,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 data class ArtistDetailScreenArgs(
     val uid: String
@@ -47,7 +48,7 @@ fun ArtistDetailScreen(
     viewModel: ArtistDetailViewModel = hiltViewModel(),
     onShowFollowers: (userInfo: UserInfo) -> Unit,
     onShowFollowing: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (item: ArtCollectible) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowTokensOwnedBy: (userInfo: UserInfo) -> Unit,
     onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
 ) {
@@ -96,7 +97,7 @@ fun ArtistDetailComponent(
     onUnfollowUser: (userUid: String) -> Unit,
     onShowFollowers: (userInfo: UserInfo) -> Unit,
     onShowFollowing: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (item: ArtCollectible) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowTokensOwnedBy: (userInfo: UserInfo) -> Unit,
     onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit
 ) {
@@ -229,7 +230,9 @@ fun ArtistDetailComponent(
                     onShowAllItems = {
                         userInfo?.let(onShowTokensOwnedBy)
                     },
-                    onItemSelected = onGoToTokenDetail
+                    onItemSelected = {
+                        onGoToTokenDetail(it.id)
+                    }
                 )
             }
             if(!Iterables.isEmpty(tokensCreated)) {
@@ -241,7 +244,9 @@ fun ArtistDetailComponent(
                     onShowAllItems = {
                         userInfo?.let(onShowTokensCreatedBy)
                     },
-                    onItemSelected = onGoToTokenDetail
+                    onItemSelected = {
+                        onGoToTokenDetail(it.id)
+                    }
                 )
             }
         }

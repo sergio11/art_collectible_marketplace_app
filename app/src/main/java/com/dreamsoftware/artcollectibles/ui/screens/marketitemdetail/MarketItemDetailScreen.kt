@@ -28,6 +28,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.math.BigInteger
 
@@ -40,6 +42,7 @@ fun MarketItemDetailScreen(
     args: MarketItemDetailScreenArgs,
     viewModel: MarketItemDetailViewModel = hiltViewModel(),
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
+    onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onExitCalled: () -> Unit
 ) {
     val context = LocalContext.current
@@ -69,7 +72,8 @@ fun MarketItemDetailScreen(
             onBuyItemCalled = ::buyItem,
             onWithdrawFromSaleCalled = ::withDrawFromSale,
             onOpenArtistDetailCalled = onOpenArtistDetailCalled,
-            onExitCalled = onExitCalled
+            onExitCalled = onExitCalled,
+            onOpenTokenDetailCalled = onOpenTokenDetailCalled
         )
     }
 }
@@ -81,6 +85,7 @@ fun MarketItemDetailComponent(
     scrollState: ScrollState,
     density: Density,
     onBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
+    onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onExitCalled: () -> Unit
@@ -119,13 +124,6 @@ fun MarketItemDetailComponent(
                     price = artCollectibleForSale?.price
                 )
             }
-            TagsRow(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                tagList = artCollectibleForSale?.token?.metadata?.tags,
-                isReadOnly = true
-            )
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -147,6 +145,21 @@ fun MarketItemDetailComponent(
                         }
                     )
                 }
+                CommonButton(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    text = R.string.market_item_detail_open_item_button_text,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Purple700,
+                        contentColor = Color.White
+                    ),
+                    onClick = {
+                        artCollectibleForSale?.token?.id?.let {
+                            onOpenTokenDetailCalled(it)
+                        }
+                    }
+                )
                 if (isTokenAuthor) {
                     CommonButton(
                         modifier = Modifier
@@ -164,6 +177,7 @@ fun MarketItemDetailComponent(
                         }
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }

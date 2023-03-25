@@ -31,6 +31,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 import java.math.BigInteger
@@ -215,13 +216,6 @@ private fun TokenDetailBody(
                     }
                 )
             }
-            TagsRow(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                tagList = artCollectible.metadata.tags,
-                isReadOnly = true
-            )
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -231,6 +225,10 @@ private fun TokenDetailBody(
                 onSeeLikesByToken = onSeeLikesByToken,
                 onSeeVisitorsByToken = onSeeVisitorsByToken,
                 onSeeCreatorDetail = onSeeArtistDetail
+            )
+            TokenTags(
+                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                tags = artCollectible.metadata.tags
             )
             TokenMarketHistory(
                 modifier = Modifier.padding(8.dp),
@@ -261,6 +259,14 @@ private fun TokenDetailBody(
                     } else {
                         R.string.token_detail_put_item_for_sale_button_text
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isTokenAddedForSale) {
+                            Color.Red
+                        } else {
+                            Purple500
+                        },
+                        contentColor = Color.White
+                    ),
                     onClick = {
                         if (isTokenAddedForSale) {
                             onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
@@ -274,6 +280,7 @@ private fun TokenDetailBody(
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = R.string.token_detail_burn_token_button_text,
+                    enabled = !isTokenAddedForSale,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red,
                         contentColor = Color.White
@@ -375,6 +382,33 @@ private fun ConfirmPutItemForSaleDialog(
 }
 
 @Composable
+private fun TokenTags(
+    modifier: Modifier = Modifier,
+    tags: List<String>
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            text = stringResource(id = R.string.token_detail_tags_title_text),
+            fontFamily = montserratFontFamily,
+            color = Color.Black,
+            style = MaterialTheme.typography.titleLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Left
+        )
+        TagsRow(
+            tagList = tags,
+            isReadOnly = true
+        )
+    }
+}
+
+@Composable
 private fun TokenMarketHistory(
     modifier: Modifier = Modifier,
     tokenMarketHistory: Iterable<ArtCollectibleForSale>,
@@ -384,7 +418,8 @@ private fun TokenMarketHistory(
         modifier = modifier
     ) {
         Text(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 16.dp)
                 .clickable { onSeeAllTokenHistory() },
             text = stringResource(id = R.string.token_detail_last_transactions_title_text),
