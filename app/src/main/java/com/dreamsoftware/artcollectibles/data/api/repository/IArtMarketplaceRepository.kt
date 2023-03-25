@@ -32,6 +32,13 @@ interface IArtMarketplaceRepository {
     suspend fun fetchMarketHistory(): Iterable<ArtCollectibleForSale>
 
     /**
+     * Allow us to fetch token market history
+     * @param tokenId
+     */
+    @Throws(FetchMarketHistoryException::class)
+    suspend fun fetchTokenMarketHistory(tokenId: BigInteger): Iterable<ArtCollectibleForSale>
+
+    /**
      * Put item for Sale
      * @param tokenId
      * @param price

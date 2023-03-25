@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
@@ -23,11 +24,13 @@ class TokenDetailViewModel @Inject constructor(
     private val removeTokenFromFavoritesUseCase: RemoveTokenFromFavoritesUseCase,
     private val registerVisitorUseCase: RegisterVisitorUseCase,
     private val saveCommentUseCase: SaveCommentUseCase,
-    private val getLastCommentsByTokenUseCase: GetLastCommentsByTokenUseCase
+    private val getLastCommentsByTokenUseCase: GetLastCommentsByTokenUseCase,
+    private val getLastTokenMarketTransactionsUseCase: GetLastTokenMarketTransactionsUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     private companion object {
         const val COMMENTS_BY_TOKEN_LIMIT = 4
+        const val HISTORY_BY_TOKEN_LIMIT = 4
     }
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
@@ -187,6 +190,7 @@ class TokenDetailViewModel @Inject constructor(
                 val isTokenOwner = artCollectible.owner.uid == authUser.uid
                 val isTokenCreator = artCollectible.author.uid == authUser.uid
                 val lastComments = getLastCommentsByToken(tokenId, COMMENTS_BY_TOKEN_LIMIT)
+                val lastMarketHistory = getLastTokenMarketTransactions(tokenId, HISTORY_BY_TOKEN_LIMIT)
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
@@ -195,7 +199,8 @@ class TokenDetailViewModel @Inject constructor(
                         isTokenOwner = isTokenOwner,
                         isTokenAddedForSale = isTokenAddedForSale,
                         tokenAddedToFavorites = artCollectible.hasAddedToFav,
-                        lastComments = lastComments
+                        lastComments = lastComments,
+                        lastMarketHistory = lastMarketHistory
                     )
                 }
                 if (!isTokenOwner && !isTokenCreator) {
@@ -292,6 +297,15 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
     )
 
+    private suspend fun getLastTokenMarketTransactions(tokenId: BigInteger, limit: Int) =
+        getLastTokenMarketTransactionsUseCase.invoke(
+            scope = viewModelScope,
+            params = GetLastTokenMarketTransactionsUseCase.Params(
+                tokenId = tokenId,
+                limit = limit
+            )
+        )
+
     private suspend fun getLastCommentsByToken(tokenId: BigInteger, limit: Int) =
         getLastCommentsByTokenUseCase.invoke(
             scope = viewModelScope,
@@ -337,6 +351,7 @@ data class TokenDetailUiState(
     val tokenPrice: String? = null,
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),
+    val lastMarketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,
     val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,

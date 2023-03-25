@@ -82,4 +82,17 @@ interface IArtMarketplaceBlockchainDataSource {
      */
     suspend fun fetchWalletStatistics(credentials: Credentials, ownerAddress: String): WalletStatisticsDTO
 
+    /**
+     * Check if token CID added for sale
+     * @param cid
+     * @param credentials
+     */
+    suspend fun isTokenCIDAddedForSale(cid: String, credentials: Credentials): Boolean
+
+    /**
+     * Fetch token market history
+     * @param tokenId
+     * @param credentials
+     */
+    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
 }

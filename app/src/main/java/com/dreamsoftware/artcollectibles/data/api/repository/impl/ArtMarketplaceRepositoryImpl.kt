@@ -107,6 +107,19 @@ internal class ArtMarketplaceRepositoryImpl(
             }
         }
 
+    @Throws(FetchMarketHistoryException::class)
+    override suspend fun fetchTokenMarketHistory(tokenId: BigInteger): Iterable<ArtCollectibleForSale> =
+        withContext(Dispatchers.IO) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(tokenId,
+                    userCredentialsMapper.mapOutToIn(credentials))
+                mapToArtCollectibleForSaleList(artCollectibleForSaleList)
+            } catch (ex: Exception) {
+                throw FetchMarketHistoryException("An error occurred when fetching the token market history", ex)
+            }
+        }
+
     @Throws(PutItemForSaleException::class)
     override suspend fun putItemForSale(tokenId: BigInteger, price: Float) =
         withContext(Dispatchers.IO) {
@@ -227,7 +240,10 @@ internal class ArtMarketplaceRepositoryImpl(
                     owner = ownerDeferred.await(),
                     price = price,
                     sold = sold,
-                    canceled = canceled
+                    canceled = canceled,
+                    putForSaleAt = putForSaleAt,
+                    soldAt = soldAt,
+                    canceledAt = canceledAt
                 )
             }
         }
@@ -252,7 +268,10 @@ internal class ArtMarketplaceRepositoryImpl(
                                 owner = owner,
                                 price = price,
                                 sold = sold,
-                                canceled = canceled
+                                canceled = canceled,
+                                putForSaleAt = putForSaleAt,
+                                soldAt = soldAt,
+                                canceledAt = canceledAt
                             )
                         }
                     }

@@ -537,4 +537,22 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetCommentDetailUseCase(commentsRepository: ICommentsRepository) =
         GetCommentDetailUseCase(commentsRepository)
+
+    /**
+     * Provide Get token market history use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetTokenMarketHistoryUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
+        GetTokenMarketHistoryUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide Get last token market transactions use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetLastTokenMarketTransactionsUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
+        GetLastTokenMarketTransactionsUseCase(artMarketplaceRepository)
 }

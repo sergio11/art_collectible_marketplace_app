@@ -99,13 +99,37 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     override suspend fun fetchMarketplaceStatistics(credentials: Credentials): MarketplaceStatisticsDTO =
         withContext(Dispatchers.IO) {
-            marketStatisticsMapper.mapInToOut(loadContract(credentials).fetchMarketStatistics().send())
+            marketStatisticsMapper.mapInToOut(
+                loadContract(credentials).fetchMarketStatistics().send()
+            )
         }
 
-    override suspend fun fetchWalletStatistics(credentials: Credentials, ownerAddress: String): WalletStatisticsDTO =
+    override suspend fun fetchWalletStatistics(
+        credentials: Credentials,
+        ownerAddress: String
+    ): WalletStatisticsDTO =
         withContext(Dispatchers.IO) {
-            walletStatisticsMapper.mapInToOut(loadContract(credentials).fetchWalletStatistics(ownerAddress).send())
+            walletStatisticsMapper.mapInToOut(
+                loadContract(credentials).fetchWalletStatistics(
+                    ownerAddress
+                ).send()
+            )
         }
+
+    override suspend fun isTokenCIDAddedForSale(cid: String, credentials: Credentials): Boolean =
+        withContext(Dispatchers.IO) {
+            loadContract(credentials).isTokenMetadataCIDAddedForSale(cid).send()
+        }
+
+    override suspend fun fetchTokenMarketHistory(
+        tokenId: BigInteger,
+        credentials: Credentials
+    ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
+        val marketItems = loadContract(credentials).fetchTokenMarketHistory(tokenId)
+            .send()
+            .filterIsInstance<ArtCollectibleForSale>()
+        artMarketplaceMapper.mapInListToOutList(marketItems)
+    }
 
     private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials) =
         with(loadContract(credentials)) {
