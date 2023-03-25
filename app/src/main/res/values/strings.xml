@@ -144,6 +144,9 @@
     <string name="token_detail_comments_publish_button_text">Publish</string>
     <string name="token_detail_comments_publish_placeholder_text">Add a comment</string>
     <string name="token_detail_comments_see_more_text" formatted="false">See the %d comments published …</string>
+    <string name="token_detail_comments_publish_title_text">Comments</string>
+    <string name="token_detail_last_transactions_title_text">Last transactions</string>
+    <string name="token_detail_last_transactions_cancelled_text" formatted="false">%s withdraws from the sale</string>
     <!-- Home Marketplace -->
     <string name="home_market_statistics_available_items_title">Available Items</string>
     <string name="home_market_statistics_sold_items_title">Sold Items</string>

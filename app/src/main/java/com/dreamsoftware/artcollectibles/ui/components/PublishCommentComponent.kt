@@ -60,6 +60,16 @@ fun PublishCommentComponent(
         modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 16.dp),
+            text = stringResource(id = R.string.token_detail_comments_publish_title_text),
+            fontFamily = montserratFontFamily,
+            color = Color.Black,
+            style = MaterialTheme.typography.titleLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Left
+        )
         repeat(Iterables.size(lastComments)) {
             with(Iterables.get(lastComments, it)) {
                 Text(

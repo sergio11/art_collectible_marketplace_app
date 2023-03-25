@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,15 +18,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.google.common.collect.Iterables
 import java.math.BigInteger
 
 private const val PRICE_NUMBER_OF_DECIMALS = 5
@@ -219,9 +227,12 @@ private fun TokenDetailBody(
                 onSeeVisitorsByToken = onSeeVisitorsByToken,
                 onSeeCreatorDetail = onSeeArtistDetail
             )
-            Spacer(modifier = Modifier.height(30.dp))
+            TokenMarketHistory(
+                modifier = Modifier.padding(8.dp),
+                tokenMarketHistory = lastMarketHistory
+            )
             PublishCommentComponent(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(8.dp),
                 authUserInfo = authUserInfo,
                 commentsCount = artCollectible.commentsCount,
                 lastComments = lastComments,
@@ -263,6 +274,7 @@ private fun TokenDetailBody(
                         onConfirmBurnTokenDialogVisibilityChanged(true)
                     }
                 )
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     }
@@ -350,6 +362,33 @@ private fun ConfirmPutItemForSaleDialog(
                     onItemPriceChanged(it)
                 }
             )
+        }
+    }
+}
+
+@Composable
+private fun TokenMarketHistory(
+    modifier: Modifier = Modifier,
+    tokenMarketHistory: Iterable<ArtCollectibleForSale>
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 16.dp),
+            text = stringResource(id = R.string.token_detail_last_transactions_title_text),
+            fontFamily = montserratFontFamily,
+            color = Color.Black,
+            style = MaterialTheme.typography.titleLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Left
+        )
+        repeat(Iterables.size(tokenMarketHistory)) {
+            TokenTransactionItem(
+                item = Iterables.get(tokenMarketHistory, it)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

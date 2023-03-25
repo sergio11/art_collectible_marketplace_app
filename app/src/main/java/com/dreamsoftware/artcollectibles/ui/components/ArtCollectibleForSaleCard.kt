@@ -86,22 +86,7 @@ fun ArtCollectibleForSaleCard(
                 modifier = Modifier.padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.matic_icon),
-                        contentDescription = "Matic Icon",
-                        modifier = Modifier.size(13.dp)
-                    )
-                    Text(
-                        price.toString(),
-                        color = Color.White,
-                        fontSize = 13.sp,
-                        textAlign = TextAlign.Left
-                    )
-                }
+                ArtCollectiblePrice(price = price)
                 Spacer(Modifier.weight(1f))
                 FavoriteCountComponent(artCollectible = token, defaultColor = whiteTranslucent)
             }

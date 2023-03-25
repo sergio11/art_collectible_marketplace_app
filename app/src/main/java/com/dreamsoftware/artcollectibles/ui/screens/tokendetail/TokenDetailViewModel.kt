@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
