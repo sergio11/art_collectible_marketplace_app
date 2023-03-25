@@ -125,6 +125,8 @@
     <string name="token_detail_burn_token_button_text">Burn token</string>
     <string name="token_detail_edit_token_button_text">Edit token</string>
     <string name="token_detail_burn_token_confirm_title_text">Burn token</string>
+    <string name="token_detail_go_market_button_text">See in market</string>
+    <string name="token_detail_available_for_sale_text">This collectible is available for sale</string>
     <string name="token_detail_burn_token_confirm_description_text">Burn token</string>
     <string name="token_detail_burn_token_confirm_accept_button_text">Accept</string>
     <string name="token_detail_burn_token_confirm_cancel_button_text">Cancel</string>

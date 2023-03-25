@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,9 +16,11 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -32,6 +35,7 @@ import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 import java.math.BigInteger
@@ -52,7 +56,8 @@ fun TokenDetailScreen(
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeTokenHistory: (tokenId: BigInteger) -> Unit
+    onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
+    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -97,7 +102,8 @@ fun TokenDetailScreen(
             onSeeCommentsByToken = onSeeCommentsByToken,
             onSeeLikesByToken = onSeeLikesByToken,
             onSeeVisitorsByToken = onSeeVisitorsByToken,
-            onSeeTokenHistory = onSeeTokenHistory
+            onSeeTokenHistory = onSeeTokenHistory,
+            onSeeMarketItemDetail = onSeeMarketItemDetail
         )
     }
 }
@@ -123,7 +129,8 @@ fun TokenDetailComponent(
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeTokenHistory: (tokenId: BigInteger) -> Unit
+    onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
+    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -151,7 +158,8 @@ fun TokenDetailComponent(
                 onSeeAllComments = onSeeCommentsByToken,
                 onSeeLikesByToken = onSeeLikesByToken,
                 onSeeVisitorsByToken = onSeeVisitorsByToken,
-                onSeeTokenHistory = onSeeTokenHistory
+                onSeeTokenHistory = onSeeTokenHistory,
+                onSeeMarketItemDetail = onSeeMarketItemDetail
             )
         }
     }
@@ -176,7 +184,8 @@ private fun TokenDetailBody(
     onSeeAllComments: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeTokenHistory: (tokenId: BigInteger) -> Unit
+    onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
+    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -191,9 +200,11 @@ private fun TokenDetailBody(
                 onConfirmPutForSaleDialogVisibilityChanged(false)
             }
             //.......................................................................
-            Box(modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            ) {
                 UserMiniInfoComponent(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -208,13 +219,39 @@ private fun TokenDetailBody(
                         .align(Alignment.CenterEnd),
                     isChecked = tokenAddedToFavorites,
                     onCheckedChange = {
-                        if(tokenAddedToFavorites) {
+                        if (tokenAddedToFavorites) {
                             onTokenRemovedFromFavorites(artCollectible.id)
                         } else {
                             onTokenAddedToFavorites(artCollectible.id)
                         }
                     }
                 )
+            }
+            if (isTokenAddedForSale) {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .clickable { onSeeMarketItemDetail(artCollectible.id) },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(10.dp),
+                        painter = painterResource(id = R.drawable.available_for_sale),
+                        contentDescription = "Token Image"
+                    )
+                    Text(
+                        text = stringResource(id = R.string.token_detail_available_for_sale_text),
+                        fontFamily = montserratFontFamily,
+                        color = Color.Black,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Left
+                    )
+                }
             }
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
@@ -227,7 +264,9 @@ private fun TokenDetailBody(
                 onSeeCreatorDetail = onSeeArtistDetail
             )
             TokenTags(
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
                 tags = artCollectible.metadata.tags
             )
             TokenMarketHistory(
@@ -249,6 +288,21 @@ private fun TokenDetailBody(
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))
+            if (isTokenAddedForSale) {
+                CommonButton(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    text = R.string.token_detail_go_market_button_text,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Purple700,
+                        contentColor = Color.White
+                    ),
+                    onClick = {
+                        onSeeMarketItemDetail(artCollectible.id)
+                    }
+                )
+            }
             if (isTokenOwner) {
                 CommonButton(
                     modifier = Modifier
@@ -289,8 +343,8 @@ private fun TokenDetailBody(
                         onConfirmBurnTokenDialogVisibilityChanged(true)
                     }
                 )
-                Spacer(modifier = Modifier.height(20.dp))
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

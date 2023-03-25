@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -39,7 +38,7 @@ import java.math.BigInteger
 fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(),
-    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
+    onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userInfo: UserInfo) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
@@ -79,7 +78,7 @@ private fun HomeComponent(
     navController: NavController,
     context: Context,
     uiState: HomeUiState,
-    onGoToMarketItemDetail: (token: ArtCollectibleForSale) -> Unit,
+    onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userInfo: UserInfo) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
@@ -236,7 +235,7 @@ private fun MarketplaceRow(
     context: Context,
     @StringRes titleRes: Int,
     items: Iterable<ArtCollectibleForSale>,
-    onMarketItemSelected: (item: ArtCollectibleForSale) -> Unit
+    onMarketItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     if(!Iterables.isEmpty(items)) {
         Column(
@@ -262,7 +261,7 @@ private fun MarketplaceRow(
 private fun ArtCollectibleForSaleList(
     context: Context,
     items: Iterable<ArtCollectibleForSale>,
-    onItemSelected: (item: ArtCollectibleForSale) -> Unit
+    onItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.padding(vertical = 30.dp),
@@ -271,7 +270,7 @@ private fun ArtCollectibleForSaleList(
         items(Iterables.size(items)) { idx ->
             with(Iterables.get(items, idx)) {
                 ArtCollectibleForSaleCard(context, this) {
-                    onItemSelected(this)
+                    onItemSelected(token.id)
                 }
             }
         }

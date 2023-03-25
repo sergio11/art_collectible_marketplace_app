@@ -75,10 +75,10 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         }
     )) {
 
-        fun buildRoute(artCollectibleForSale: ArtCollectibleForSale): String =
+        fun buildRoute(tokenId: BigInteger): String =
             route.replace(
                 oldValue = "{id}",
-                newValue = "${artCollectibleForSale.token.id}"
+                newValue = "$tokenId"
             )
 
         fun parseArgs(args: Bundle): MarketItemDetailScreenArgs? = with(args) {

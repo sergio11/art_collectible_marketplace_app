@@ -27,6 +27,7 @@ import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 data class CategoryDetailScreenArgs(
     val uid: String
@@ -36,7 +37,7 @@ data class CategoryDetailScreenArgs(
 fun CategoryDetailScreen(
     args: CategoryDetailScreenArgs,
     viewModel: CategoryDetailViewModel = hiltViewModel(),
-    onShowTokenForSaleDetail: (tokenForSale: ArtCollectibleForSale) -> Unit
+    onShowTokenForSaleDetail: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -73,7 +74,7 @@ fun CategoryDetailComponent(
     uiState: CategoryDetailUiState,
     scrollState: ScrollState,
     density: Density,
-    onTokenForSaleClicked: (tokenForSale: ArtCollectibleForSale) -> Unit
+    onTokenForSaleClicked: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -96,7 +97,7 @@ fun CategoryDetailComponent(
                 repeat(Iterables.size(tokensForSale)) {
                     with(Iterables.get(tokensForSale, it)) {
                         ArtCollectibleForSaleCard(context = context, artCollectibleForSale = this) {
-                            onTokenForSaleClicked(this)
+                            onTokenForSaleClicked(token.id)
                         }
                     }
                 }
