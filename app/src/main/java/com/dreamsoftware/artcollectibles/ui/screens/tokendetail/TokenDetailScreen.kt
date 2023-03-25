@@ -50,7 +50,8 @@ fun TokenDetailScreen(
     onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
+    onSeeTokenHistory: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -94,7 +95,8 @@ fun TokenDetailScreen(
             onSeeCommentDetail = onSeeCommentDetail,
             onSeeCommentsByToken = onSeeCommentsByToken,
             onSeeLikesByToken = onSeeLikesByToken,
-            onSeeVisitorsByToken = onSeeVisitorsByToken
+            onSeeVisitorsByToken = onSeeVisitorsByToken,
+            onSeeTokenHistory = onSeeTokenHistory
         )
     }
 }
@@ -119,7 +121,8 @@ fun TokenDetailComponent(
     onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
+    onSeeTokenHistory: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -146,7 +149,8 @@ fun TokenDetailComponent(
                 onSeeCommentDetail = onSeeCommentDetail,
                 onSeeAllComments = onSeeCommentsByToken,
                 onSeeLikesByToken = onSeeLikesByToken,
-                onSeeVisitorsByToken = onSeeVisitorsByToken
+                onSeeVisitorsByToken = onSeeVisitorsByToken,
+                onSeeTokenHistory = onSeeTokenHistory
             )
         }
     }
@@ -170,7 +174,8 @@ private fun TokenDetailBody(
     onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeAllComments: (tokenId: BigInteger) -> Unit,
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit
+    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
+    onSeeTokenHistory: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -229,7 +234,10 @@ private fun TokenDetailBody(
             )
             TokenMarketHistory(
                 modifier = Modifier.padding(8.dp),
-                tokenMarketHistory = lastMarketHistory
+                tokenMarketHistory = lastMarketHistory,
+                onSeeAllTokenHistory = {
+                    onSeeTokenHistory(artCollectible.id)
+                }
             )
             PublishCommentComponent(
                 modifier = Modifier.padding(8.dp),
@@ -369,13 +377,16 @@ private fun ConfirmPutItemForSaleDialog(
 @Composable
 private fun TokenMarketHistory(
     modifier: Modifier = Modifier,
-    tokenMarketHistory: Iterable<ArtCollectibleForSale>
+    tokenMarketHistory: Iterable<ArtCollectibleForSale>,
+    onSeeAllTokenHistory: () -> Unit
 ) {
     Column(
         modifier = modifier
     ) {
         Text(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .clickable { onSeeAllTokenHistory() },
             text = stringResource(id = R.string.token_detail_last_transactions_title_text),
             fontFamily = montserratFontFamily,
             color = Color.Black,

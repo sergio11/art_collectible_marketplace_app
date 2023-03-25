@@ -185,4 +185,8 @@
     <string name="visitors_detail_title_count" formatted="false">Visitors (%d)</string>
     <!-- Comment Detail -->
     <string name="comment_detail_delete_button_text">Delete comment</string>
+
+    <!-- Token history -->
+    <string name="token_history_title_default">Token History</string>
+    <string name="token_history_title_count" formatted="false">Token History (%d)</string>
 </resources>

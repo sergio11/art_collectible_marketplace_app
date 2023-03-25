@@ -22,6 +22,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.tokenhistory.TokenHistoryScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokens.TokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.visitors.VisitorsScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
@@ -130,6 +131,8 @@ fun RootScreen(
                             navigate(DestinationItem.VisitorsList.buildRoute(it))
                         }, onSeeCommentDetail = {
                             navigate(DestinationItem.CommentDetail.buildRoute(it))
+                        }, onSeeTokenHistory = {
+                            navigate(DestinationItem.TokenHistoryList.buildRoute(it))
                         })
                     }
                 }
@@ -168,6 +171,13 @@ fun RootScreen(
                     VisitorsScreen(args = screenArgs) {
                         navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
                     }
+                }
+            }
+        }
+        composable(DestinationItem.TokenHistoryList.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.TokenHistoryList.parseArgs(args)?.let { screenArgs ->
+                    TokenHistoryScreen(args = screenArgs)
                 }
             }
         }
