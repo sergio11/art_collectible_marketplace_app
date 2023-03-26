@@ -269,7 +269,7 @@ private fun ArtCollectibleForSaleList(
     ) {
         items(Iterables.size(items)) { idx ->
             with(Iterables.get(items, idx)) {
-                ArtCollectibleForSaleCard(context, this) {
+                ArtCollectibleForSaleCard(context = context, artCollectibleForSale = this) {
                     onItemSelected(token.id)
                 }
             }

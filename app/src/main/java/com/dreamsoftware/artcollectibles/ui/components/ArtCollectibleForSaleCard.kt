@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import android.content.Context
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -28,33 +26,39 @@ import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.Purple80
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
-import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
+import com.dreamsoftware.artcollectibles.ui.theme.*
 
 
 @Composable
 fun ArtCollectibleForSaleCard(
+    modifier: Modifier = Modifier,
     context: Context,
     artCollectibleForSale: ArtCollectibleForSale,
+    reverseStyle: Boolean = false,
     onClicked: () -> Unit
 ) {
     with(artCollectibleForSale) {
         Column(
             modifier = Modifier
-                .height(262.dp)
-                .width(175.dp)
+                .height(300.dp)
+                .width(190.dp)
                 .border(
-                    1.dp,
-                    Color.White.copy(0.5f),
-                    RoundedCornerShape(30.dp)
+                    2.dp, if (reverseStyle) {
+                        BackgroundWhite
+                    } else {
+                        Purple200
+                    }, RoundedCornerShape(30.dp)
                 )
                 .clip(RoundedCornerShape(30.dp))
-                .background(brush = Brush.horizontalGradient(
-                    listOf(Purple80, Purple40)
-                ))
+                .background(
+                    color = if (reverseStyle) {
+                        Purple200
+                    } else {
+                        BackgroundWhite
+                    }
+                )
                 .clickable { onClicked() }
+                .then(modifier)
         ) {
             ArtCollectibleForSaleImage(context, token)
             Column(
@@ -65,7 +69,11 @@ fun ArtCollectibleForSaleCard(
                 Text(
                     token.metadata.name,
                     fontFamily = montserratFontFamily,
-                    color = Color.White,
+                    color = if (reverseStyle) {
+                        BackgroundWhite
+                    } else {
+                        Color.Black
+                    },
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -74,21 +82,50 @@ fun ArtCollectibleForSaleCard(
                 )
                 Text(
                     token.metadata.description,
-                    color = whiteTranslucent,
+                    color = if (reverseStyle) {
+                        BackgroundWhite
+                    } else {
+                        Color.Black
+                    },
                     fontFamily = montserratFontFamily,
                     textAlign = TextAlign.Left,
                     style = MaterialTheme.typography.bodySmall,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
                 )
+                TextWithImage(
+                    modifier = Modifier.padding(top = 8.dp),
+                    imageRes = R.drawable.token_category_icon,
+                    text = token.metadata.category.name,
+                    tintColor = if (reverseStyle) {
+                        BackgroundWhite
+                    } else {
+                        Color.Black
+                    }
+                )
             }
             Row(
                 modifier = Modifier.padding(horizontal = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ArtCollectiblePrice(price = price)
+                ArtCollectiblePrice(
+                    iconSize = 15.dp,
+                    textSize = 15.sp,
+                    price = price,
+                    textColor = if (reverseStyle) {
+                        BackgroundWhite
+                    } else {
+                        Color.Black
+                    }
+                )
                 Spacer(Modifier.weight(1f))
-                FavoriteCountComponent(artCollectible = token, defaultColor = whiteTranslucent)
+                FavoriteCountComponent(
+                    artCollectible = token, defaultColor = if (reverseStyle) {
+                        BackgroundWhite
+                    } else {
+                        Color.Black
+                    }
+                )
             }
         }
     }

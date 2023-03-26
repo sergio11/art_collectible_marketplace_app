@@ -27,6 +27,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -41,10 +42,10 @@ fun ArtCollectibleMiniCard(
     Column(
         modifier = Modifier
             .height(300.dp)
-            .width(200.dp)
+            .width(190.dp)
             .border(
                 2.dp, if (reverseStyle) {
-                    Color.White
+                    BackgroundWhite
                 } else {
                     Purple200
                 }, RoundedCornerShape(30.dp)
@@ -54,7 +55,7 @@ fun ArtCollectibleMiniCard(
                 color = if (reverseStyle) {
                     Purple200
                 } else {
-                    Color.White.copy(alpha = 0.9f)
+                    BackgroundWhite
                 }
             )
             .clickable { onClicked() }
@@ -70,7 +71,7 @@ fun ArtCollectibleMiniCard(
                 artCollectible.displayName,
                 fontFamily = montserratFontFamily,
                 color = if (reverseStyle) {
-                    Color.White
+                    BackgroundWhite
                 } else {
                     Color.Black
                 },
@@ -83,7 +84,7 @@ fun ArtCollectibleMiniCard(
             Text(
                 artCollectible.metadata.description,
                 color = if (reverseStyle) {
-                    Color.White
+                    BackgroundWhite
                 } else {
                     Color.Black
                 },
@@ -100,7 +101,7 @@ fun ArtCollectibleMiniCard(
             imageRes = R.drawable.token_category_icon,
             text = artCollectible.metadata.category.name,
             tintColor = if (reverseStyle) {
-                Color.White
+                BackgroundWhite
             } else {
                 Color.Black
             }
@@ -118,7 +119,7 @@ fun ArtCollectibleMiniCard(
                     Icons.Filled.VisibilityOff
                 },
                 tintColor = if (reverseStyle) {
-                    Color.White
+                    BackgroundWhite
                 } else {
                     Color.Black
                 },
@@ -128,14 +129,14 @@ fun ArtCollectibleMiniCard(
                 modifier = Modifier.padding(8.dp),
                 imageRes = R.drawable.comments_icon,
                 tintColor = if (reverseStyle) {
-                    Color.White
+                    BackgroundWhite
                 } else {
                     Color.Black
                 },
                 text = artCollectible.commentsCount.toString()
             )
             FavoriteCountComponent(artCollectible = artCollectible, defaultColor = if (reverseStyle) {
-                Color.White
+                BackgroundWhite
             } else {
                 Color.Black
             })

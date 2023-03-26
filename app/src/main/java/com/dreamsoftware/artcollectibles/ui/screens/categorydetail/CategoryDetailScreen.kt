@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -88,7 +89,7 @@ fun CategoryDetailComponent(
             } ?: stringResource(id = R.string.no_text_value)
         ) {
             FlowRow(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 4.dp),
                 crossAxisAlignment = FlowCrossAxisAlignment.Center,
                 mainAxisAlignment = MainAxisAlignment.Center,
                 mainAxisSpacing = 8.dp,
@@ -96,7 +97,7 @@ fun CategoryDetailComponent(
             ) {
                 repeat(Iterables.size(tokensForSale)) {
                     with(Iterables.get(tokensForSale, it)) {
-                        ArtCollectibleForSaleCard(context = context, artCollectibleForSale = this) {
+                        ArtCollectibleForSaleCard(context = context, reverseStyle = true, artCollectibleForSale = this) {
                             onTokenForSaleClicked(token.id)
                         }
                     }
