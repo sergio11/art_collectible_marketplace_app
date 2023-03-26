@@ -1,7 +1,10 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PhotoAlbum
 import androidx.compose.material.icons.sharp.Lens
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleOwner
 import com.dreamsoftware.artcollectibles.ui.extensions.getCameraProvider
 import java.io.File
@@ -41,9 +46,13 @@ fun CameraDisplayComponent(
     context: Context,
     outputDirectory: File,
     executor: Executor,
-    onImageCaptured: (File) -> Unit,
+    onImageCaptured: (Uri) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let(onImageCaptured)
+        }
     val lensFacing = CameraSelector.LENS_FACING_BACK
     val preview = Preview.Builder().build()
     val previewView = remember { PreviewView(context) }
@@ -62,10 +71,16 @@ fun CameraDisplayComponent(
         )
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
-    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         AndroidView({ previewView }, modifier = Modifier.fillMaxSize())
         IconButton(
-            modifier = Modifier.padding(bottom = 20.dp),
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .align(Alignment.BottomCenter),
             onClick = {
                 takePhoto(
                     imageCapture = imageCapture,
@@ -87,6 +102,22 @@ fun CameraDisplayComponent(
                 )
             }
         )
+        IconButton(
+            modifier = Modifier
+                .padding(bottom = 20.dp, end = 8.dp)
+                .align(Alignment.BottomEnd),
+            onClick = { galleryLauncher.launch("image/*") },
+            content = {
+                Icon(
+                    imageVector = Icons.Default.PhotoAlbum,
+                    contentDescription = "PhotoAlbum",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(160.dp)
+                        .padding(1.dp)
+                )
+            }
+        )
     }
 }
 
@@ -94,7 +125,7 @@ private fun takePhoto(
     imageCapture: ImageCapture,
     outputDirectory: File,
     executor: Executor,
-    onImageCaptured: (File) -> Unit,
+    onImageCaptured: (Uri) -> Unit,
     onError: (ImageCaptureException) -> Unit
 ) {
     val photoFile = File(
@@ -111,7 +142,7 @@ private fun takePhoto(
                 onError(exception)
             }
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                onImageCaptured(photoFile)
+                onImageCaptured(photoFile.toUri())
             }
         })
 }
