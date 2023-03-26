@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
@@ -26,39 +27,35 @@ fun CategorySelectorInput(
     ExposedDropdownMenuBox(
         modifier = modifier,
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        onExpandedChange = {
+            expanded = !expanded
+        }
     ) {
         CommonDefaultTextField(
             // The `menuAnchor` modifier must be passed to the text field for correctness.
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             labelRes = labelRes,
             placeHolderRes = placeHolderRes,
+            isReadOnly = true,
             value = selectedOptionText,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            onValueChanged = { value ->
-                categories.find { it.name == value }?.let(onCategorySelected)
-                selectedOptionText = value
-            }
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
         )
-        // filter options based on text field value
-        val filteringCategories = categories.filter {
-            it.name.contains(selectedOptionText, ignoreCase = true)
-        }
-        if (filteringCategories.isNotEmpty()) {
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-                filteringCategories.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption.name) },
-                        onClick = {
-                            selectedOptionText = selectionOption.name
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                    )
-                }
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            categories.forEach { selectionOption ->
+                DropdownMenuItem(
+                    text = { Text(selectionOption.name) },
+                    onClick = {
+                        selectedOptionText = selectionOption.name
+                        expanded = false
+                        categories.find { it.name == selectedOptionText }?.let(onCategorySelected)
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                )
             }
         }
     }

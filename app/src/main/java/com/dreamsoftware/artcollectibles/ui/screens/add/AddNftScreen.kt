@@ -8,6 +8,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -115,6 +116,7 @@ fun AddNftScreen(
             onCreateClicked = ::onCreate,
             onExitClicked = onExitClicked,
             onAddNewTag = ::onAddNewTag,
+            onDeleteTag = ::onDeleteTag,
             onCategoryChanged = ::onCategoryChanged
         )
     }
@@ -136,6 +138,7 @@ internal fun AddNftComponent(
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
+    onDeleteTag: (tag: String) -> Unit,
     onCategoryChanged: (ArtCollectibleCategory) -> Unit
 ) {
     Scaffold(
@@ -165,6 +168,7 @@ internal fun AddNftComponent(
                         onCreateClicked = onCreateClicked,
                         onExitClicked = onExitClicked,
                         onAddNewTag = onAddNewTag,
+                        onDeleteTag = onDeleteTag,
                         onCategoryChanged = onCategoryChanged
                     )
                 }
@@ -185,6 +189,7 @@ private fun AddNftForm(
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
+    onDeleteTag: (tag: String) -> Unit,
     onCategoryChanged: (ArtCollectibleCategory) -> Unit
 ) {
     with(state) {
@@ -233,7 +238,7 @@ private fun AddNftForm(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val defaultModifier = Modifier
-                            .padding(vertical = 20.dp)
+                            .padding(vertical = 15.dp)
                             .width(300.dp)
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
@@ -244,15 +249,25 @@ private fun AddNftForm(
                             contentDescription = stringResource(R.string.image_content_description),
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .size(250.dp)
+                                .size(200.dp)
                                 .clip(CircleShape)
+                                .border(2.dp, Color.White, CircleShape)
                         )
+                        Spacer(modifier = Modifier.padding(10.dp))
                         CommonDefaultTextField(
                             modifier = defaultModifier,
                             labelRes = R.string.add_nft_input_name_label,
                             placeHolderRes = R.string.add_nft_input_name_placeholder,
                             value = name,
                             onValueChanged = onNameChanged
+                        )
+                        TagsInputComponent(
+                            modifier = defaultModifier,
+                            titleRes = R.string.add_nft_input_related_topic_label,
+                            placeholderRes = R.string.add_nft_input_related_topic_placeholder,
+                            tagList = tags,
+                            onAddNewTag = onAddNewTag,
+                            onDeleteTag = onDeleteTag
                         )
                         CategorySelectorInput(
                             modifier = defaultModifier,
@@ -262,6 +277,14 @@ private fun AddNftForm(
                             placeHolderRes = R.string.add_nft_input_category_placeholder,
                             onCategorySelected = onCategoryChanged
                         )
+                        SliderComponent(
+                            modifier = defaultModifier,
+                            title = "${stringResource(R.string.add_nft_input_royalty_label)} ${royalty.toLong()}%",
+                            value = royalty,
+                            valueRange = ROYALTY_RANGE,
+                            steps = ROYALTY_STEPS,
+                            onValueChange = onRoyaltyChanged
+                        )
                         CommonDefaultTextField(
                             modifier = defaultModifier.height(150.dp),
                             labelRes = R.string.add_nft_input_description_label,
@@ -270,27 +293,7 @@ private fun AddNftForm(
                             isSingleLine = false,
                             onValueChanged = onDescriptionChanged
                         )
-                        Text(
-                            text = "${stringResource(R.string.add_nft_input_royalty_label)} ${royalty.toLong()}%",
-                            fontFamily = montserratFontFamily,
-                            modifier = Modifier
-                                .padding(vertical = 10.dp)
-                                .width(300.dp),
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Purple500
-                        )
-                        Slider(
-                            modifier = defaultModifier,
-                            value = royalty,
-                            valueRange = ROYALTY_RANGE,
-                            steps = ROYALTY_STEPS,
-                            onValueChange = onRoyaltyChanged
-                        )
-                        TagsInputComponent(
-                            modifier = defaultModifier,
-                            tagList = tags,
-                            onAddNewTag = onAddNewTag
-                        )
+                        Spacer(modifier = Modifier.padding(20.dp))
                         CommonButton(
                             enabled = !isLoading && isCreateButtonEnabled,
                             modifier = Modifier
@@ -309,6 +312,10 @@ private fun AddNftForm(
                                 .padding(bottom = 8.dp)
                                 .width(300.dp),
                             text = R.string.add_nft_cancel_button_text,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Red,
+                                contentColor = Color.White
+                            ),
                             onClick = {
                                 confirmCancelAddNftState = true
                             }

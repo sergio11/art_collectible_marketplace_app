@@ -10,10 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -167,7 +164,9 @@ private fun CommonDetailToolbar(
                     placeholder = painterResource(R.drawable.user_placeholder),
                     contentDescription = stringResource(R.string.image_content_description),
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(55.dp).clip(CircleShape)
+                    modifier = Modifier
+                        .size(55.dp)
+                        .clip(CircleShape)
                 )
             },
             title = {},
@@ -189,10 +188,9 @@ private fun CommonDetailTitle(
     var titleWidthPx by remember { mutableStateOf(0f) }
     Text(
         text = title.orEmpty(),
-        fontSize = 30.sp,
         color = Color.White,
         fontFamily = montserratFontFamily,
-        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.displaySmall,
         modifier = Modifier
             .graphicsLayer {
                 val collapseRange: Float = (headerHeightPx - toolbarHeightPx)

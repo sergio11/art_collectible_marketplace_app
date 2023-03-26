@@ -184,6 +184,8 @@ internal fun ProfileComponent(
                         )
                         TagsInputComponent(
                             tagList = state.userInfo?.tags.orEmpty(),
+                            titleRes = R.string.profile_input_tags_label,
+                            placeholderRes = R.string.profile_input_tags_placeholder,
                             onAddNewTag = onAddNewTag,
                             onDeleteTag = onDeleteTag
                         )

@@ -63,6 +63,8 @@
     <string name="profile_input_professional_title_label">Professional Title</string>
     <string name="profile_input_professional_title_placeholder">Your professional title</string>
     <string name="profile_input_location_label">Location</string>
+    <string name="profile_input_tags_label">Interested in</string>
+    <string name="profile_input_tags_placeholder">Write several topics in which you are interested</string>
     <string name="profile_input_location_placeholder">Your location</string>
     <string name="profile_input_wallet_address_label">Wallet Address</string>
     <string name="profile_input_wallet_address_placeholder">Your Wallet Address</string>
@@ -103,6 +105,8 @@
     <string name="add_nft_input_description_label">Description</string>
     <string name="add_nft_input_description_placeholder">Art Collectible Description</string>
     <string name="add_nft_input_royalty_label">Royalty</string>
+    <string name="add_nft_input_related_topic_label">Related topic</string>
+    <string name="add_nft_input_related_topic_placeholder">Write some topics related to this NFT</string>
     <string name="add_nft_cancel_confirm_title_text">Are you sure to cancel NFT creation process?</string>
     <string name="add_nft_cancel_confirm_description_text">Information related to the NFT will be discarded</string>
     <string name="add_nft_cancel_confirm_accept_button_text">Accept</string>
@@ -162,7 +166,6 @@
     <string name="home_main_title">NFT Marketplace</string>
     <string name="home_featured_artists_title">Featured artists</string>
     <string name="home_art_collectibles_featured_title">Art collectibles featured</string>
-
     <!-- Market Item Detail -->
     <string name="market_item_detail_buy_item_button_text">Buy Item</string>
     <string name="market_item_detail_open_item_button_text">Open Detail</string>

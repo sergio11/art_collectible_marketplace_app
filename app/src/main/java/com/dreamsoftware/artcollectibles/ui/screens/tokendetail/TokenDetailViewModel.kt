@@ -190,8 +190,14 @@ class TokenDetailViewModel @Inject constructor(
                 val authUser = loadAuthUserDetail()
                 val isTokenOwner = artCollectible.owner.uid == authUser.uid
                 val isTokenCreator = artCollectible.author.uid == authUser.uid
-                val lastComments = getLastCommentsByToken(tokenId, COMMENTS_BY_TOKEN_LIMIT)
-                val lastMarketHistory = getLastTokenMarketTransactions(tokenId, HISTORY_BY_TOKEN_LIMIT)
+                val lastComments = if (artCollectible.commentsCount > 0) {
+                    getLastCommentsByToken(tokenId, COMMENTS_BY_TOKEN_LIMIT)
+                } else {
+                    emptyList()
+                }
+                val lastMarketHistory = runCatching {
+                    getLastTokenMarketTransactions(tokenId, HISTORY_BY_TOKEN_LIMIT)
+                }.getOrDefault(emptyList())
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,

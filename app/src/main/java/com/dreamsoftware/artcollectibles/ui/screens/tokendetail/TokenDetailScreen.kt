@@ -468,27 +468,29 @@ private fun TokenMarketHistory(
     tokenMarketHistory: Iterable<ArtCollectibleForSale>,
     onSeeAllTokenHistory: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-    ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp)
-                .clickable { onSeeAllTokenHistory() },
-            text = stringResource(id = R.string.token_detail_last_transactions_title_text),
-            fontFamily = montserratFontFamily,
-            color = Color.Black,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Left
-        )
-        repeat(Iterables.size(tokenMarketHistory)) {
-            TokenTransactionItem(
-                item = Iterables.get(tokenMarketHistory, it)
+    if(Iterables.size(tokenMarketHistory) > 0) {
+        Column(
+            modifier = modifier
+        ) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 16.dp)
+                    .clickable { onSeeAllTokenHistory() },
+                text = stringResource(id = R.string.token_detail_last_transactions_title_text),
+                fontFamily = montserratFontFamily,
+                color = Color.Black,
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Left
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            repeat(Iterables.size(tokenMarketHistory)) {
+                TokenTransactionItem(
+                    item = Iterables.get(tokenMarketHistory, it)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+            }
         }
     }
 }
