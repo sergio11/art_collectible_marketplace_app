@@ -7,13 +7,10 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -40,6 +38,7 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.getCacheSubDir
 import com.dreamsoftware.artcollectibles.ui.extensions.getMimeType
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -117,7 +116,8 @@ fun AddNftScreen(
             onExitClicked = onExitClicked,
             onAddNewTag = ::onAddNewTag,
             onDeleteTag = ::onDeleteTag,
-            onCategoryChanged = ::onCategoryChanged
+            onCategoryChanged = ::onCategoryChanged,
+            onResetImage = ::onResetImage
         )
     }
 }
@@ -139,7 +139,8 @@ internal fun AddNftComponent(
     onExitClicked: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit,
-    onCategoryChanged: (ArtCollectibleCategory) -> Unit
+    onCategoryChanged: (ArtCollectibleCategory) -> Unit,
+    onResetImage: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -169,7 +170,8 @@ internal fun AddNftComponent(
                         onExitClicked = onExitClicked,
                         onAddNewTag = onAddNewTag,
                         onDeleteTag = onDeleteTag,
-                        onCategoryChanged = onCategoryChanged
+                        onCategoryChanged = onCategoryChanged,
+                        onResetImage = onResetImage
                     )
                 }
             } else {
@@ -188,6 +190,7 @@ private fun AddNftForm(
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
     onExitClicked: () -> Unit,
+    onResetImage: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit,
     onCategoryChanged: (ArtCollectibleCategory) -> Unit
@@ -240,20 +243,41 @@ private fun AddNftForm(
                         val defaultModifier = Modifier
                             .padding(vertical = 15.dp)
                             .width(300.dp)
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(imageUri)
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(R.drawable.user_placeholder),
-                            contentDescription = stringResource(R.string.image_content_description),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(200.dp)
-                                .clip(CircleShape)
-                                .border(2.dp, Color.White, CircleShape)
-                        )
+                        Box {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageUri)
+                                    .crossfade(true)
+                                    .build(),
+                                placeholder = painterResource(R.drawable.user_placeholder),
+                                contentDescription = stringResource(R.string.image_content_description),
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(200.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, Color.White, CircleShape)
+                            )
+                            Image(
+                                modifier = Modifier
+                                    .background(Color.White, CircleShape)
+                                    .size(40.dp)
+                                    .padding(4.dp)
+                                    .clip(CircleShape)
+                                    .align(Alignment.BottomEnd)
+                                    .clickable { onResetImage() },
+                                painter = painterResource(id = R.drawable.remove_nft_photo),
+                                contentDescription = "Remove picture"
+                            )
+                        }
                         Spacer(modifier = Modifier.padding(10.dp))
+                        Text(
+                            text = stringResource(id = R.string.add_nft_subtitle_text),
+                            fontFamily = montserratFontFamily,
+                            modifier = defaultModifier,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = DarkPurple,
+                            textAlign = TextAlign.Center
+                        )
                         CommonDefaultTextField(
                             modifier = defaultModifier,
                             labelRes = R.string.add_nft_input_name_label,
