@@ -71,4 +71,10 @@ interface IArtCollectibleRepository {
      */
     @Throws(GetTokensByCategoryException::class)
     suspend fun getTokensByCategory(categoryUid: String): Iterable<ArtCollectible>
+
+    /**
+     * Get Similar tokens
+     */
+    @Throws(GetTokensByCategoryException::class)
+    suspend fun getSimilarTokens(tokenCid: String, count: Int): Iterable<ArtCollectible>
 }

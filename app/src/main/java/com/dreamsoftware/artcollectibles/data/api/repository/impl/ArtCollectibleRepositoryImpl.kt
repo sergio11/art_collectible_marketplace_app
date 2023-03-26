@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleBlockchainDTO
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICommentsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
@@ -34,7 +35,8 @@ internal class ArtCollectibleRepositoryImpl(
     private val visitorsDataSource: IVisitorsDataSource,
     private val tokenMetadataRepository: ITokenMetadataRepository,
     private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource,
-    private val commentsDataSource: ICommentsDataSource
+    private val commentsDataSource: ICommentsDataSource,
+    private val categoriesDataSource: ICategoriesDataSource
 ) : IArtCollectibleRepository {
 
     private companion object {
@@ -126,11 +128,12 @@ internal class ArtCollectibleRepositoryImpl(
                     val tokens = artCollectibleDataSource.getTokensOwned(
                         userCredentialsMapper.mapOutToIn(credentials)
                     )
-                    tokenMetadataRepository.fetchByCid(tokens.map { it.metadataCID }).mapNotNull { tokenMetadata ->
-                        tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
-                            mapToArtCollectible(credentials, tokenMetadata, token)
-                        }
-                    }.also {
+                    tokenMetadataRepository.fetchByCid(tokens.map { it.metadataCID })
+                        .mapNotNull { tokenMetadata ->
+                            tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
+                                mapToArtCollectible(credentials, tokenMetadata, token)
+                            }
+                        }.also {
                         artCollectibleMemoryCacheDataSource.save(TOKENS_OWNED_KEY, it)
                     }
                 }
@@ -146,10 +149,12 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                mapToArtCollectible(credentials, artCollectibleDataSource.getTokensOwnedBy(
-                    userCredentialsMapper.mapOutToIn(credentials),
-                    ownerAddress
-                ))
+                mapToArtCollectible(
+                    credentials, artCollectibleDataSource.getTokensOwnedBy(
+                        userCredentialsMapper.mapOutToIn(credentials),
+                        ownerAddress
+                    )
+                )
             } catch (ex: Exception) {
                 throw GetTokensOwnedException(
                     "An error occurred when trying to get tokens owned", ex
@@ -194,10 +199,12 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                mapToArtCollectible(credentials, artCollectibleDataSource.getTokensCreatedBy(
-                    userCredentialsMapper.mapOutToIn(credentials),
-                    creatorAddress
-                ))
+                mapToArtCollectible(
+                    credentials, artCollectibleDataSource.getTokensCreatedBy(
+                        userCredentialsMapper.mapOutToIn(credentials),
+                        creatorAddress
+                    )
+                )
             } catch (ex: Exception) {
                 throw GetTokensOwnedException(
                     "An error occurred when trying to get tokens owned", ex
@@ -231,10 +238,12 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                mapToArtCollectible(credentials, artCollectibleDataSource.getTokens(
-                    tokenList,
-                    userCredentialsMapper.mapOutToIn(credentials)
-                ))
+                mapToArtCollectible(
+                    credentials, artCollectibleDataSource.getTokens(
+                        tokenList,
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
+                )
             } catch (ex: Exception) {
                 throw GetTokensException("An error occurred when trying to get tokens", ex)
             }
@@ -244,7 +253,41 @@ internal class ArtCollectibleRepositoryImpl(
     override suspend fun getTokensByCategory(categoryUid: String): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
-                getTokensCreated()
+                val credentials = walletRepository.loadCredentials()
+                val tokenList = categoriesDataSource.getTokensByUid(categoryUid)
+                mapToArtCollectible(
+                    credentials, artCollectibleDataSource.getTokensByCID(
+                        tokenList,
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
+                )
+            } catch (ex: Exception) {
+                throw GetTokensByCategoryException("An error occurred when trying to get tokens by category")
+            }
+        }
+
+    /**
+     * Get similar tokens by category
+     * @param tokenCid
+     * @param count
+     */
+    @Throws(GetTokensByCategoryException::class)
+    override suspend fun getSimilarTokens(tokenCid: String, count: Int): Iterable<ArtCollectible> =
+        withContext(Dispatchers.Default) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                val tokenMetadata = tokenMetadataRepository.fetchByCid(tokenCid)
+                val tokenList = categoriesDataSource.getTokensByUid(tokenMetadata.category.uid)
+                    .filter { it != tokenCid }.toMutableList().apply {
+                    shuffle()
+                    take(count)
+                }
+                mapToArtCollectible(
+                    credentials, artCollectibleDataSource.getTokensByCID(
+                        tokenList,
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
+                )
             } catch (ex: Exception) {
                 throw GetTokensByCategoryException("An error occurred when trying to get tokens by category")
             }
@@ -253,7 +296,7 @@ internal class ArtCollectibleRepositoryImpl(
     private suspend fun mapToArtCollectible(
         credentials: UserWalletCredentials,
         tokenList: Iterable<ArtCollectibleBlockchainDTO>
-    ) = withContext(Dispatchers.Default){
+    ) = withContext(Dispatchers.Default) {
         tokenList.asSequence().map { token ->
             async {
                 try {

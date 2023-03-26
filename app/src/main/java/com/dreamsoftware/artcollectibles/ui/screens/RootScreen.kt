@@ -135,6 +135,8 @@ fun RootScreen(
                             navigate(DestinationItem.TokenHistoryList.buildRoute(it))
                         }, onSeeMarketItemDetail = {
                             navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                        }, onSeeTokenDetail = {
+                            navigate(DestinationItem.TokenDetail.buildRoute(it))
                         })
                     }
                 }

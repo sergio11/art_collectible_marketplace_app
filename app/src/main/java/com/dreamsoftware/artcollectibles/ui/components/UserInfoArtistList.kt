@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -31,14 +33,16 @@ fun UserInfoArtistList(
             text = stringResource(id = titleRes),
             color = Color.White,
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(8.dp)
                 .fillMaxWidth(),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Left,
             fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleLarge
         )
         LazyRow(
-            modifier = Modifier.padding(vertical = 30.dp),
+            modifier = Modifier.padding(vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(Iterables.size(userList)) { idx ->

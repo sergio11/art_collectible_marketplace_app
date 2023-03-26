@@ -155,6 +155,7 @@
     <string name="token_detail_tags_title_text">Related topics</string>
     <string name="token_detail_last_transactions_title_text">Last transactions</string>
     <string name="token_detail_last_transactions_cancelled_text" formatted="false">%s withdraws from the sale</string>
+    <string name="token_detail_similar_row_title_text">Other collectibles that might interest you</string>
     <!-- Home Marketplace -->
     <string name="home_market_statistics_available_items_title">Available Items</string>
     <string name="home_market_statistics_sold_items_title">Sold Items</string>

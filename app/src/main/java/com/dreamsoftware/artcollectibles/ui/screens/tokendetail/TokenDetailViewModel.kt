@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
@@ -26,12 +25,14 @@ class TokenDetailViewModel @Inject constructor(
     private val registerVisitorUseCase: RegisterVisitorUseCase,
     private val saveCommentUseCase: SaveCommentUseCase,
     private val getLastCommentsByTokenUseCase: GetLastCommentsByTokenUseCase,
-    private val getLastTokenMarketTransactionsUseCase: GetLastTokenMarketTransactionsUseCase
+    private val getLastTokenMarketTransactionsUseCase: GetLastTokenMarketTransactionsUseCase,
+    private val getSimilarTokensUseCase: GetSimilarTokensUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     private companion object {
         const val COMMENTS_BY_TOKEN_LIMIT = 4
         const val HISTORY_BY_TOKEN_LIMIT = 4
+        const val SIMILAR_TOKENS_LIMIT = 6
     }
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
@@ -195,9 +196,7 @@ class TokenDetailViewModel @Inject constructor(
                 } else {
                     emptyList()
                 }
-                val lastMarketHistory = runCatching {
-                    getLastTokenMarketTransactions(tokenId, HISTORY_BY_TOKEN_LIMIT)
-                }.getOrDefault(emptyList())
+                val lastMarketHistory = getLastTokenMarketTransactions(tokenId, HISTORY_BY_TOKEN_LIMIT)
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
@@ -210,6 +209,7 @@ class TokenDetailViewModel @Inject constructor(
                         lastMarketHistory = lastMarketHistory
                     )
                 }
+                loadSimilarTokens(artCollectible.metadata.cid)
                 if (!isTokenOwner && !isTokenCreator) {
                     registerVisitor(tokenId, authUser.walletAddress)
                 }
@@ -304,7 +304,7 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
     )
 
-    private suspend fun getLastTokenMarketTransactions(tokenId: BigInteger, limit: Int) =
+    private suspend fun getLastTokenMarketTransactions(tokenId: BigInteger, limit: Int) =  runCatching {
         getLastTokenMarketTransactionsUseCase.invoke(
             scope = viewModelScope,
             params = GetLastTokenMarketTransactionsUseCase.Params(
@@ -312,6 +312,8 @@ class TokenDetailViewModel @Inject constructor(
                 limit = limit
             )
         )
+    }.getOrDefault(emptyList())
+
 
     private suspend fun getLastCommentsByToken(tokenId: BigInteger, limit: Int) =
         getLastCommentsByTokenUseCase.invoke(
@@ -330,6 +332,24 @@ class TokenDetailViewModel @Inject constructor(
         isTokenAddedForSaleUseCase.invoke(
             scope = viewModelScope, params = IsTokenAddedForSaleUseCase.Params(tokenId)
         )
+
+    private fun loadSimilarTokens(tokenCid: String) {
+        getSimilarTokensUseCase.invoke(
+            scope = viewModelScope,
+            params = GetSimilarTokensUseCase.Params(
+                cid = tokenCid,
+                count = SIMILAR_TOKENS_LIMIT
+            ),
+            onSuccess = { similarTokens ->
+                 updateState {
+                     it.copy(similarTokens = similarTokens)
+                 }
+            },
+            onError = {
+                // ignore error
+            }
+        )
+    }
 
     private fun registerVisitor(tokenId: BigInteger, userAddress: String) {
         registerVisitorUseCase.invoke(
@@ -359,6 +379,7 @@ data class TokenDetailUiState(
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),
     val lastMarketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
+    val similarTokens: Iterable<ArtCollectible> = emptyList(),
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,
     val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,

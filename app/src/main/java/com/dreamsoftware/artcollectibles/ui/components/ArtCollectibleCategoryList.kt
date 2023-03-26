@@ -34,14 +34,13 @@ fun ArtCollectibleCategoryList(
             text = stringResource(id = titleRes),
             color = Color.White,
             modifier = Modifier
-                .padding(horizontal = 8.dp)
+                .padding(8.dp)
                 .fillMaxWidth(),
             fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleLarge
         )
         LazyRow(
-            modifier = Modifier.padding(vertical = 30.dp),
+            modifier = Modifier.padding(vertical = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(Iterables.size(categories)) { category ->

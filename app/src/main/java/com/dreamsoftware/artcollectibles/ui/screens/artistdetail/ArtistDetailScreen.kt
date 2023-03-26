@@ -2,9 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,12 +13,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,13 +24,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
-import com.google.common.collect.Iterables
 import java.math.BigInteger
 
 data class ArtistDetailScreenArgs(
@@ -173,7 +167,7 @@ fun ArtistDetailComponent(
                 userInfo = userInfo
             )
             userInfo?.tags?.let { tags ->
-                if(tags.isNotEmpty()) {
+                if (tags.isNotEmpty()) {
                     TagsRow(
                         modifier = Modifier
                             .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -221,74 +215,32 @@ fun ArtistDetailComponent(
                 fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.bodyLarge
             )
-            if(!Iterables.isEmpty(tokensOwned)) {
-                UserTokensRow(
-                    modifier = defaultModifier,
-                    context = context,
-                    title = stringResource(id = R.string.profile_tokens_owned_by_user_text),
-                    items = tokensOwned,
-                    onShowAllItems = {
-                        userInfo?.let(onShowTokensOwnedBy)
-                    },
-                    onItemSelected = {
-                        onGoToTokenDetail(it.id)
-                    }
-                )
-            }
-            if(!Iterables.isEmpty(tokensCreated)) {
-                UserTokensRow(
-                    modifier = defaultModifier,
-                    context = context,
-                    title = stringResource(id = R.string.profile_tokens_created_by_user_text),
-                    items = tokensCreated,
-                    onShowAllItems = {
-                        userInfo?.let(onShowTokensCreatedBy)
-                    },
-                    onItemSelected = {
-                        onGoToTokenDetail(it.id)
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun UserTokensRow(
-    modifier: Modifier = Modifier,
-    context: Context,
-    title: String,
-    items: Iterable<ArtCollectible>,
-    onShowAllItems: () -> Unit,
-    onItemSelected: (item: ArtCollectible) -> Unit
-) {
-    if(!Iterables.isEmpty(items)) {
-        Column(
-            modifier = modifier
-        ) {
-            Text(
-                text = title,
-                color = Color.Black,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-                    .fillMaxWidth()
-                    .clickable { onShowAllItems() },
-                fontFamily = montserratFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.titleLarge
-            )
-            LazyRow(
-                modifier = Modifier.padding(vertical = 30.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(Iterables.size(items)) { idx ->
-                    with(Iterables.get(items, idx)) {
-                        ArtCollectibleMiniCard(context = context, reverseStyle = true, artCollectible = this) {
-                            onItemSelected(this)
-                        }
-                    }
+            ArtCollectiblesRow(
+                modifier = defaultModifier,
+                context = context,
+                reverseStyle = true,
+                titleRes = R.string.profile_tokens_owned_by_user_text,
+                items = tokensOwned,
+                onShowAllItems = {
+                    userInfo?.let(onShowTokensOwnedBy)
+                },
+                onItemSelected = {
+                    onGoToTokenDetail(it.id)
                 }
-            }
+            )
+            ArtCollectiblesRow(
+                modifier = defaultModifier,
+                context = context,
+                reverseStyle = true,
+                titleRes = R.string.profile_tokens_created_by_user_text,
+                items = tokensCreated,
+                onShowAllItems = {
+                    userInfo?.let(onShowTokensCreatedBy)
+                },
+                onItemSelected = {
+                    onGoToTokenDetail(it.id)
+                }
+            )
         }
     }
 }

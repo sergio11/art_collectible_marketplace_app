@@ -58,6 +58,7 @@ fun TokenDetailScreen(
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
     onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onSeeTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -103,7 +104,8 @@ fun TokenDetailScreen(
             onSeeLikesByToken = onSeeLikesByToken,
             onSeeVisitorsByToken = onSeeVisitorsByToken,
             onSeeTokenHistory = onSeeTokenHistory,
-            onSeeMarketItemDetail = onSeeMarketItemDetail
+            onSeeMarketItemDetail = onSeeMarketItemDetail,
+            onSeeTokenDetail = onSeeTokenDetail
         )
     }
 }
@@ -130,7 +132,8 @@ fun TokenDetailComponent(
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
-    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit
+    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onSeeTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -142,6 +145,7 @@ fun TokenDetailComponent(
             title = artCollectible?.displayName
         ) {
             TokenDetailBody(
+                context = context,
                 uiState = uiState,
                 onSeeArtistDetail = onSeeArtistDetail,
                 onBurnTokenCalled = onBurnTokenCalled,
@@ -159,7 +163,8 @@ fun TokenDetailComponent(
                 onSeeLikesByToken = onSeeLikesByToken,
                 onSeeVisitorsByToken = onSeeVisitorsByToken,
                 onSeeTokenHistory = onSeeTokenHistory,
-                onSeeMarketItemDetail = onSeeMarketItemDetail
+                onSeeMarketItemDetail = onSeeMarketItemDetail,
+                onSeeTokenDetail = onSeeTokenDetail
             )
         }
     }
@@ -168,6 +173,7 @@ fun TokenDetailComponent(
 
 @Composable
 private fun TokenDetailBody(
+    context: Context,
     uiState: TokenDetailUiState,
     onSeeArtistDetail: (userInfo: UserInfo) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
@@ -185,7 +191,8 @@ private fun TokenDetailBody(
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
-    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit
+    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onSeeTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -285,6 +292,16 @@ private fun TokenDetailBody(
                 onSeeCommentDetail = onSeeCommentDetail,
                 onSeeAllComments = {
                     onSeeAllComments(artCollectible.id)
+                }
+            )
+            ArtCollectiblesRow(
+                modifier = Modifier.padding(8.dp),
+                context = context,
+                reverseStyle = true,
+                titleRes = R.string.token_detail_similar_row_title_text,
+                items = similarTokens,
+                onItemSelected = {
+                    onSeeTokenDetail(it.id)
                 }
             )
             Spacer(modifier = Modifier.height(20.dp))

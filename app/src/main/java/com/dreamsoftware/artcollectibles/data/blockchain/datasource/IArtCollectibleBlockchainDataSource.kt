@@ -50,9 +50,19 @@ interface IArtCollectibleBlockchainDataSource {
     suspend fun getTokenById(tokenId: BigInteger, credentials: Credentials): ArtCollectibleBlockchainDTO
 
     /**
+     * Retrieve token information by CID
+     */
+    suspend fun getTokenByCID(cid: String, credentials: Credentials): ArtCollectibleBlockchainDTO
+
+    /**
      * Retrieve a token list
      */
     suspend fun getTokens(tokenList: Iterable<BigInteger>, credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO>
+
+    /**
+     * Retrieve a token list
+     */
+    suspend fun getTokensByCID(cidList: Iterable<String>, credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO>
 
     /**
      * Fetch Tokens Statistics

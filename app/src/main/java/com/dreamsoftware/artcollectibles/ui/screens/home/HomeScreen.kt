@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -119,16 +121,15 @@ private fun HomeComponent(
                         onUserClicked = onGoToUserDetail
                     )
                 }
-                if(!Iterables.isEmpty(moreLikedTokens)) {
-                    ArtCollectiblesFeaturedList(
-                        context = context,
-                        titleRes = R.string.home_art_collectibles_featured_title,
-                        items = moreLikedTokens,
-                        onItemSelected = {
-                            onGoToTokenDetail(it.id)
-                        }
-                    )
-                }
+                ArtCollectiblesRow(
+                    context = context,
+                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
+                    titleRes = R.string.home_art_collectibles_featured_title,
+                    items = moreLikedTokens,
+                    onItemSelected = {
+                        onGoToTokenDetail(it.id)
+                    }
+                )
                 MarketplaceRow(context, R.string.home_available_items_for_sale_title, availableMarketItems, onGoToMarketItemDetail)
                 MarketplaceRow(context, R.string.home_your_items_for_sale_title, sellingMarketItems, onGoToMarketItemDetail)
                 MarketplaceRow(context, R.string.home_last_market_history_title, marketHistory, onGoToMarketItemDetail)
@@ -148,16 +149,15 @@ private fun MarketStatisticsRow(marketplaceStatistics: MarketplaceStatistics) {
                 text = stringResource(id = R.string.home_market_statistics_title),
                 color = Color.White,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(8.dp)
                     .fillMaxWidth(),
                 fontFamily = montserratFontFamily,
-                fontWeight = FontWeight.SemiBold,
                 style = MaterialTheme.typography.titleLarge
             )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 30.dp)
+                    .padding(vertical = 10.dp)
                     .horizontalScroll(rememberScrollState())
             ) {
                 MarketStatisticsCard(
@@ -246,10 +246,12 @@ private fun MarketplaceRow(
                 text = stringResource(id = titleRes),
                 color = Color.White,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
+                    .padding(8.dp)
                     .fillMaxWidth(),
                 fontFamily = montserratFontFamily,
-                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Left,
                 style = MaterialTheme.typography.titleLarge
             )
             ArtCollectibleForSaleList(context, items, onMarketItemSelected)
@@ -264,50 +266,13 @@ private fun ArtCollectibleForSaleList(
     onItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier.padding(vertical = 30.dp),
+        modifier = Modifier.padding(vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(Iterables.size(items)) { idx ->
             with(Iterables.get(items, idx)) {
                 ArtCollectibleForSaleCard(context = context, artCollectibleForSale = this) {
                     onItemSelected(token.id)
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun ArtCollectiblesFeaturedList(
-    @StringRes titleRes: Int,
-    context: Context,
-    items: Iterable<ArtCollectible>,
-    onItemSelected: (item: ArtCollectible) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 10.dp)
-    ) {
-        Text(
-            text = stringResource(id = titleRes),
-            color = Color.White,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
-            fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.SemiBold,
-            style = MaterialTheme.typography.titleLarge
-        )
-        LazyRow(
-            modifier = Modifier.padding(vertical = 30.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(Iterables.size(items)) { idx ->
-                with(Iterables.get(items, idx)) {
-                    ArtCollectibleMiniCard(context = context, artCollectible = this) {
-                        onItemSelected(this)
-                    }
                 }
             }
         }
