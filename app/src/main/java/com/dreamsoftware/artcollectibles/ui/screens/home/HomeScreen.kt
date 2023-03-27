@@ -130,9 +130,24 @@ private fun HomeComponent(
                         onGoToTokenDetail(it.id)
                     }
                 )
-                MarketplaceRow(context, R.string.home_available_items_for_sale_title, availableMarketItems, onGoToMarketItemDetail)
-                MarketplaceRow(context, R.string.home_your_items_for_sale_title, sellingMarketItems, onGoToMarketItemDetail)
-                MarketplaceRow(context, R.string.home_last_market_history_title, marketHistory, onGoToMarketItemDetail)
+                ArtCollectibleForSaleRow(
+                    context = context,
+                    titleRes = R.string.home_available_items_for_sale_title,
+                    items = availableMarketItems,
+                    onMarketItemSelected = onGoToMarketItemDetail
+                )
+                ArtCollectibleForSaleRow(
+                    context = context,
+                    titleRes = R.string.home_your_items_for_sale_title,
+                    items = sellingMarketItems,
+                    onMarketItemSelected = onGoToMarketItemDetail
+                )
+                ArtCollectibleForSaleRow(
+                    context = context,
+                    titleRes = R.string.home_last_market_history_title,
+                    items = marketHistory,
+                    onMarketItemSelected = onGoToMarketItemDetail
+                )
             }
         }
     }
@@ -190,16 +205,18 @@ private fun MarketStatisticsCard(
     value: String,
     backgroundColor: Color
 ) {
-    Box(modifier = Modifier
-        .size(200.dp)
-        .padding(horizontal = 8.dp)
-        .border(
-            2.dp,
-            Color.White,
-            RoundedCornerShape(30.dp)
-        )
-        .clip(RoundedCornerShape(30.dp))
-        .background(backgroundColor)) {
+    Box(
+        modifier = Modifier
+            .size(200.dp)
+            .padding(horizontal = 8.dp)
+            .border(
+                2.dp,
+                Color.White,
+                RoundedCornerShape(30.dp)
+            )
+            .clip(RoundedCornerShape(30.dp))
+            .background(backgroundColor)
+    ) {
         Image(
             modifier = Modifier
                 .size(120.dp)
@@ -208,10 +225,12 @@ private fun MarketStatisticsCard(
             painter = painterResource(id = iconRes),
             contentDescription = "market_items"
         )
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .align(Alignment.TopCenter)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .align(Alignment.TopCenter)
+        ) {
             Text(
                 text = stringResource(id = titleRes),
                 color = Color.White,
@@ -226,55 +245,6 @@ private fun MarketStatisticsCard(
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineLarge
             )
-        }
-    }
-}
-
-@Composable
-private fun MarketplaceRow(
-    context: Context,
-    @StringRes titleRes: Int,
-    items: Iterable<ArtCollectibleForSale>,
-    onMarketItemSelected: (tokenId: BigInteger) -> Unit
-) {
-    if(!Iterables.isEmpty(items)) {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 10.dp, horizontal = 10.dp)
-        ) {
-            Text(
-                text = stringResource(id = titleRes),
-                color = Color.White,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                fontFamily = montserratFontFamily,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.titleLarge
-            )
-            ArtCollectibleForSaleList(context, items, onMarketItemSelected)
-        }
-    }
-}
-
-@Composable
-private fun ArtCollectibleForSaleList(
-    context: Context,
-    items: Iterable<ArtCollectibleForSale>,
-    onItemSelected: (tokenId: BigInteger) -> Unit
-) {
-    LazyRow(
-        modifier = Modifier.padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        items(Iterables.size(items)) { idx ->
-            with(Iterables.get(items, idx)) {
-                ArtCollectibleForSaleCard(context = context, artCollectibleForSale = this) {
-                    onItemSelected(token.id)
-                }
-            }
         }
     }
 }

@@ -564,4 +564,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetSimilarTokensUseCase(artCollectibleRepository: IArtCollectibleRepository) =
         GetSimilarTokensUseCase(artCollectibleRepository)
+
+    /**
+     * Provide get similar market items use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetSimilarMarketItemsUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
+        GetSimilarMarketItemsUseCase(artMarketplaceRepository)
 }

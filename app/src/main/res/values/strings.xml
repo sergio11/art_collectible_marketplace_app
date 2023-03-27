@@ -178,6 +178,7 @@
     <string name="market_item_detail_token_bought_title_text">You have successfully acquired this collectible</string>
     <string name="market_item_detail_token_bought_description_text">You are now the owner of this collectible</string>
     <string name="market_item_detail_token_bought_accept_button_text">Accept</string>
+    <string name="market_item_detail_similar_row_title_text">Other collectibles that might interest you</string>
     <!-- Followers -->
     <string name="followers_detail_title_default">Followers</string>
     <string name="followers_detail_title_count" formatted="false">Followers (%d)</string>

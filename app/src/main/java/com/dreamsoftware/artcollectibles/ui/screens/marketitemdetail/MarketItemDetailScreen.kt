@@ -28,7 +28,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.math.BigInteger
@@ -43,6 +42,7 @@ fun MarketItemDetailScreen(
     viewModel: MarketItemDetailViewModel = hiltViewModel(),
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
+    onOpenMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onExitCalled: () -> Unit
 ) {
     val context = LocalContext.current
@@ -73,7 +73,8 @@ fun MarketItemDetailScreen(
             onWithdrawFromSaleCalled = ::withDrawFromSale,
             onOpenArtistDetailCalled = onOpenArtistDetailCalled,
             onExitCalled = onExitCalled,
-            onOpenTokenDetailCalled = onOpenTokenDetailCalled
+            onOpenTokenDetailCalled = onOpenTokenDetailCalled,
+            onOpenMarketItemDetail = onOpenMarketItemDetail
         )
     }
 }
@@ -88,6 +89,7 @@ fun MarketItemDetailComponent(
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
+    onOpenMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onExitCalled: () -> Unit
 ) {
     with(uiState) {
@@ -129,6 +131,13 @@ fun MarketItemDetailComponent(
                     .fillMaxWidth()
                     .padding(8.dp),
                 artCollectible = artCollectibleForSale?.token
+            )
+            ArtCollectibleForSaleRow(
+                context = context,
+                titleRes = R.string.market_item_detail_similar_row_title_text,
+                items = similarMarketItems,
+                reverseStyle = true,
+                onMarketItemSelected = onOpenMarketItemDetail
             )
             Spacer(modifier = Modifier.height(50.dp))
             if (!isLoading) {

@@ -1,12 +1,11 @@
 package com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.BuyItemUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchItemForSaleUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAuthUserProfileUseCase
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.WithdrawFromSaleUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.math.BigInteger
@@ -17,8 +16,13 @@ class MarketItemDetailViewModel @Inject constructor(
     private val fetchItemForSaleUseCase: FetchItemForSaleUseCase,
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val buyItemUseCase: BuyItemUseCase,
-    private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase
+    private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
+    private val getSimilarMarketItemsUseCase: GetSimilarMarketItemsUseCase
 ) : SupportViewModel<MarketUiState>() {
+
+    companion object {
+        const val SIMILAR_TOKENS_LIMIT = 6
+    }
 
     override fun onGetDefaultState(): MarketUiState = MarketUiState()
 
@@ -29,7 +33,8 @@ class MarketItemDetailViewModel @Inject constructor(
 
     fun buyItem(tokenId: BigInteger, price: BigInteger) {
         onLoading()
-        buyItemUseCase.invoke(scope = viewModelScope,
+        buyItemUseCase.invoke(
+            scope = viewModelScope,
             params = BuyItemUseCase.Params(tokenId, price),
             onSuccess = { onBuyItemSuccess() },
             onError = ::onErrorOccurred
@@ -70,6 +75,7 @@ class MarketItemDetailViewModel @Inject constructor(
                         isTokenAuthor = marketItem.token.author.uid == authUser.uid
                     )
                 }
+                getSimilarMarketItemsUseCase(tokenId)
             }.onFailure(::onErrorOccurred)
         }
     }
@@ -102,6 +108,27 @@ class MarketItemDetailViewModel @Inject constructor(
         }
     }
 
+    private fun getSimilarMarketItemsUseCase(tokenId: BigInteger) {
+        getSimilarMarketItemsUseCase.invoke(
+            scope = viewModelScope,
+            params = GetSimilarMarketItemsUseCase.Params(
+                tokenId = tokenId,
+                count = SIMILAR_TOKENS_LIMIT
+            ),
+            onSuccess = { items ->
+                Log.d("ART_COLL", "onSuccess - items ${Iterables.size(items)}")
+                updateState {
+                    it.copy(similarMarketItems = items)
+                }
+            },
+            onError = {
+                it.printStackTrace()
+                Log.d("ART_COLL", "onError - ex ${it.message}")
+                // ignore error
+            }
+        )
+    }
+
     private suspend fun fetchItemForSale(tokenId: BigInteger) = fetchItemForSaleUseCase.invoke(
         scope = viewModelScope,
         params = FetchItemForSaleUseCase.Params(tokenId)
@@ -118,5 +145,6 @@ data class MarketUiState(
     val itemBought: Boolean = false,
     val itemWithdrawnFromSale: Boolean = false,
     val isTokenAuthor: Boolean = false,
-    val artCollectibleForSale: ArtCollectibleForSale? = null
+    val artCollectibleForSale: ArtCollectibleForSale? = null,
+    val similarMarketItems: Iterable<ArtCollectibleForSale> = emptyList()
 )

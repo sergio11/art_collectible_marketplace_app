@@ -223,6 +223,8 @@ fun RootScreen(
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
                         }, onExitCalled = {
                             popBackStack()
+                        }, onOpenMarketItemDetail = {
+                            navigate(DestinationItem.MarketItemDetail.buildRoute(it))
                         })
                     }
                 }

@@ -63,6 +63,13 @@ interface IArtMarketplaceBlockchainDataSource {
     suspend fun fetchItemForSale(tokenId: BigInteger, credentials: Credentials): ArtCollectibleForSaleDTO
 
     /**
+     * Fetch item for sale by metadata CID
+     * @param cid
+     * @param credentials
+     */
+    suspend fun fetchItemForSaleByMetadataCID(cid: String, credentials: Credentials): ArtCollectibleForSaleDTO
+
+    /**
      * Is token added for sale
      * @param tokenId
      * @param credentials

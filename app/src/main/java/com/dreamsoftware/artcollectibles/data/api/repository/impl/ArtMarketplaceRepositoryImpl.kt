@@ -9,13 +9,16 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
+import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
+import java.util.stream.Collectors
 
 /**
  * Art Marketplace Repository Impl
@@ -25,6 +28,7 @@ import java.math.BigInteger
  * @param walletRepository
  * @param userCredentialsMapper
  * @param marketplaceStatisticsMapper
+ * @param categoriesDataSource
  */
 internal class ArtMarketplaceRepositoryImpl(
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
@@ -32,7 +36,8 @@ internal class ArtMarketplaceRepositoryImpl(
     private val userRepository: IUserRepository,
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
-    private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper
+    private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
+    private val categoriesDataSource: ICategoriesDataSource
 ) : IArtMarketplaceRepository {
 
     @Throws(FetchAvailableMarketItemsException::class)
@@ -112,11 +117,17 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectibleForSaleList = artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(tokenId,
-                    userCredentialsMapper.mapOutToIn(credentials))
+                val artCollectibleForSaleList =
+                    artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(
+                        tokenId,
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
                 mapToArtCollectibleForSaleList(artCollectibleForSaleList)
             } catch (ex: Exception) {
-                throw FetchMarketHistoryException("An error occurred when fetching the token market history", ex)
+                throw FetchMarketHistoryException(
+                    "An error occurred when fetching the token market history",
+                    ex
+                )
             }
         }
 
@@ -223,15 +234,59 @@ internal class ArtMarketplaceRepositoryImpl(
         }
     }
 
+    @Throws(GetMarketItemsByCategoryException::class)
+    override suspend fun getSimilarMarketItems(
+        tokenId: BigInteger,
+        count: Int
+    ): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
+        try {
+            val artCollectible = artCollectibleRepository.getTokenById(tokenId)
+            val credentials = walletRepository.loadCredentials()
+            with(artMarketplaceBlockchainDataSource) {
+                categoriesDataSource.getTokensByUid(artCollectible.metadata.category.uid)
+                    .filter { it != artCollectible.metadata.cid }
+                    .toMutableList()
+                    .apply {
+                        shuffle()
+                    }
+                    .asFlow()
+                    .filter { cid ->
+                        isTokenCIDAddedForSale(
+                            cid,
+                            userCredentialsMapper.mapOutToIn(credentials)
+                        )
+                    }
+                    .take(count)
+                    .map { cid ->
+                        fetchItemForSaleByMetadataCID(
+                            cid,
+                            userCredentialsMapper.mapOutToIn(credentials)
+                        )
+                    }
+                    .toList()
+                    .let {
+                        mapToArtCollectibleForSaleList(it)
+                    }
+            }
+        } catch (ex: Exception) {
+            throw GetMarketItemsByCategoryException(
+                "An error occurred when trying to get similar market items",
+                ex
+            )
+        }
+    }
+
     private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO): ArtCollectibleForSale =
         withContext(Dispatchers.Default) {
             with(item) {
                 val tokenDeferred = async {
                     artCollectibleRepository.getTokenById(tokenId)
                 }
-                val ownerDeferred = async { runCatching {
-                    userRepository.getByAddress(owner)
-                }.getOrNull() }
+                val ownerDeferred = async {
+                    runCatching {
+                        userRepository.getByAddress(owner)
+                    }.getOrNull()
+                }
                 val sellerDeferred = async { userRepository.getByAddress(seller) }
                 ArtCollectibleForSale(
                     marketItemId = marketItemId,
