@@ -41,6 +41,10 @@ class MarketItemDetailViewModel @Inject constructor(
         )
     }
 
+    fun onConfirmBuyItemDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isConfirmBuyItemDialogVisible = isVisible) }
+    }
+
     fun withDrawFromSale(tokenId: BigInteger) {
         withdrawFromSaleUseCase.invoke(
             scope = viewModelScope,
@@ -81,12 +85,20 @@ class MarketItemDetailViewModel @Inject constructor(
     }
 
     private fun onLoading() {
-        updateState { it.copy(isLoading = true) }
+        updateState { it.copy(
+            isLoading = true,
+            isConfirmBuyItemDialogVisible = false
+        ) }
     }
 
     private fun onErrorOccurred(ex: Throwable) {
+        ex.printStackTrace()
+        Log.d("ART_COLL", "onErrorOccurred ${ex.message} CALLED!")
         updateState {
-            it.copy(isLoading = false)
+            it.copy(
+                isLoading = false,
+                isConfirmBuyItemDialogVisible = false
+            )
         }
     }
 
@@ -94,7 +106,8 @@ class MarketItemDetailViewModel @Inject constructor(
         updateState {
             it.copy(
                 isLoading = false,
-                itemBought = true
+                itemBought = true,
+                isConfirmBuyItemDialogVisible = false
             )
         }
     }
@@ -144,6 +157,7 @@ data class MarketUiState(
     val isTokenSeller: Boolean = false,
     val itemBought: Boolean = false,
     val itemWithdrawnFromSale: Boolean = false,
+    val isConfirmBuyItemDialogVisible: Boolean = false,
     val isTokenAuthor: Boolean = false,
     val artCollectibleForSale: ArtCollectibleForSale? = null,
     val similarMarketItems: Iterable<ArtCollectibleForSale> = emptyList()

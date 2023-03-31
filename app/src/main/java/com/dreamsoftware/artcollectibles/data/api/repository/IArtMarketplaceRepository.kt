@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.data.api.exception.*
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import java.math.BigInteger
@@ -77,10 +76,10 @@ interface IArtMarketplaceRepository {
     /**
      * Buy item
      * @param tokenId
-     * @param price
+     * @param priceInEth
      */
     @Throws(BuyItemException::class)
-    suspend fun buyItem(tokenId: BigInteger, price: BigInteger)
+    suspend fun buyItem(tokenId: BigInteger, priceInEth: BigInteger)
 
     /**
      * Get similar market items

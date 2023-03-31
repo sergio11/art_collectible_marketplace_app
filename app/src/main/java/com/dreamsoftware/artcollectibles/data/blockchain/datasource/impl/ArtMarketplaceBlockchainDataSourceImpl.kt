@@ -1,9 +1,11 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.core.SupportBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.MarketStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.WalletStatisticsMapper
@@ -25,7 +27,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val walletStatisticsMapper: WalletStatisticsMapper,
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j,
-) : IArtMarketplaceBlockchainDataSource {
+) : SupportBlockchainDataSource(blockchainConfig, web3j), IArtMarketplaceBlockchainDataSource {
 
     private companion object {
         private val DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH = BigDecimal.valueOf(0.010)
@@ -63,8 +65,10 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
                 val defaultCostOfPuttingForSale =
                     Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER)
                         .toBigInteger()
+                Log.d("ART_COLL", "putItemForSale - price - $price")
                 val putItemForSalePrice =
-                    Convert.toWei(price.toString(), Convert.Unit.ETHER).toBigInteger()
+                    Convert.toWei(price.toString(), Convert.Unit.WEI).toBigInteger()
+                Log.d("ART_COLL", "putItemForSalePrice - $price")
                 putItemForSale(tokenId, putItemForSalePrice, defaultCostOfPuttingForSale).send()
             }
         }
@@ -75,9 +79,12 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         }
     }
 
-    override suspend fun buyItem(tokenId: BigInteger, price: BigInteger, credentials: Credentials) {
+    override suspend fun buyItem(tokenId: BigInteger, credentials: Credentials) {
         withContext(Dispatchers.IO) {
-            loadContract(credentials).buyItem(tokenId, price).send()
+            with(loadContract(credentials)) {
+                val itemForSale = fetchItemForSale(tokenId).send()
+                buyItem(tokenId, itemForSale.price).send()
+            }
         }
     }
 

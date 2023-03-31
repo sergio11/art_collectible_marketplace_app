@@ -28,6 +28,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.math.BigInteger
@@ -70,6 +71,7 @@ fun MarketItemDetailScreen(
             scrollState = scrollState,
             density = density,
             onBuyItemCalled = ::buyItem,
+            onConfirmBuyItemDialogVisibilityChanged = ::onConfirmBuyItemDialogVisibilityChanged,
             onWithdrawFromSaleCalled = ::withDrawFromSale,
             onOpenArtistDetailCalled = onOpenArtistDetailCalled,
             onExitCalled = onExitCalled,
@@ -85,6 +87,7 @@ fun MarketItemDetailComponent(
     uiState: MarketUiState,
     scrollState: ScrollState,
     density: Density,
+    onConfirmBuyItemDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -96,6 +99,7 @@ fun MarketItemDetailComponent(
         // =======================
         TokenWithdrawnFromSaleDialog(uiState, onExitCalled)
         TokenBoughtDialog(uiState, onExitCalled)
+        ConfirmBuyItemDialog(uiState, onBuyItemCalled, onExitCalled)
         // ========================
         CommonDetailScreen(
             context = context,
@@ -146,11 +150,13 @@ fun MarketItemDetailComponent(
                         modifier = Modifier
                             .padding(horizontal = 10.dp, vertical = 8.dp)
                             .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Purple200,
+                            contentColor = Color.White
+                        ),
                         text = R.string.market_item_detail_buy_item_button_text,
                         onClick = {
-                            artCollectibleForSale?.let {
-                                onBuyItemCalled(it.token.id, it.price)
-                            }
+                            onConfirmBuyItemDialogVisibilityChanged(true)
                         }
                     )
                 }
@@ -228,6 +234,29 @@ private fun TokenWithdrawnFromSaleDialog(
             descriptionRes = R.string.market_item_detail_token_withdrawn_from_sale_description_text,
             acceptRes = R.string.market_item_detail_token_withdrawn_from_sale_accept_button_text,
             onAcceptClicked = onConfirmCalled
+        )
+    }
+}
+
+@Composable
+private fun ConfirmBuyItemDialog(
+    uiState: MarketUiState,
+    onConfirmBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
+    onDialogCancelled: () -> Unit
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = isConfirmBuyItemDialogVisible,
+            titleRes = R.string.market_item_detail_token_buy_confirm_title_text,
+            descriptionRes = R.string.market_item_detail_token_buy_confirm_description_text,
+            acceptRes = R.string.market_item_detail_token_buy_confirm_accept_button_text,
+            cancelRes = R.string.market_item_detail_token_buy_confirm_cancel_button_text,
+            onAcceptClicked = {
+                artCollectibleForSale?.let {
+                    onConfirmBuyItemCalled(it.token.id, it.price)
+                }
+            },
+            onCancelClicked = onDialogCancelled
         )
     }
 }

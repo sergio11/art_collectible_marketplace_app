@@ -50,10 +50,9 @@ interface IArtMarketplaceBlockchainDataSource {
     /**
      * Buy an item with a `tokenId` and pay the owner and the creator
      * @param tokenId
-     * @param price
      * @param credentials
      */
-    suspend fun buyItem(tokenId: BigInteger, price: BigInteger, credentials: Credentials)
+    suspend fun buyItem(tokenId: BigInteger, credentials: Credentials)
 
     /**
      * Fetch item for sale

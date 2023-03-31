@@ -38,6 +38,6 @@ class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibl
         input.map(::mapInToOut)
 
     private fun convertFromWeiToEth(priceInWei: BigInteger) =
-        Convert.fromWei(priceInWei.toString(), Convert.Unit.ETHER)
+        Convert.fromWei(priceInWei.toString(), Convert.Unit.WEI)
             .toBigInteger()
 }

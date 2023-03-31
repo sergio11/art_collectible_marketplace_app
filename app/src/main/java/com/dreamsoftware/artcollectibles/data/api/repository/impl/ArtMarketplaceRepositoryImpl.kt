@@ -18,7 +18,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
-import java.util.stream.Collectors
 
 /**
  * Art Marketplace Repository Impl
@@ -219,13 +218,12 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
     @Throws(BuyItemException::class)
-    override suspend fun buyItem(tokenId: BigInteger, price: BigInteger) {
+    override suspend fun buyItem(tokenId: BigInteger, priceInEth: BigInteger) {
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
                 artMarketplaceBlockchainDataSource.buyItem(
                     tokenId,
-                    price,
                     userCredentialsMapper.mapOutToIn(credentials)
                 )
             } catch (ex: Exception) {
