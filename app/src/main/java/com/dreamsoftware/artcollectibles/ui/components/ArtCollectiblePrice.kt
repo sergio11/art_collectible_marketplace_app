@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectiblePrices
 import com.dreamsoftware.artcollectibles.ui.extensions.format
-import java.math.BigInteger
 
 private val DEFAULT_TEXT_SIZE = 13.sp
 private val DEFAULT_TEXT_COLOR = Color.White
@@ -31,10 +29,12 @@ fun ArtCollectiblePrice(
     iconSize: Dp = DEFAULT_ICON_SIZE,
     textSize: TextUnit = DEFAULT_TEXT_SIZE,
     textColor: Color = DEFAULT_TEXT_COLOR,
+    fullMode: Boolean = false,
     priceData: ArtCollectiblePrices?
 ){
     Column(modifier = modifier) {
         Row(
+            modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -46,19 +46,21 @@ fun ArtCollectiblePrice(
                 textAlign = TextAlign.Left
             )
         }
-        priceData?.priceInEUR?.let {
-            TextWithImage(
-                modifier = Modifier.padding(8.dp),
-                imageRes = R.drawable.euro_icon,
-                text = it.format()
-            )
-        }
-        priceData?.priceInUSD?.let {
-            TextWithImage(
-                modifier = Modifier.padding(8.dp),
-                imageRes = R.drawable.usd_icon,
-                text = it.format()
-            )
+        if(fullMode) {
+            priceData?.priceInEUR?.let {
+                TextWithImage(
+                    modifier = Modifier.padding(8.dp),
+                    imageRes = R.drawable.euro_icon,
+                    text = it.format()
+                )
+            }
+            priceData?.priceInUSD?.let {
+                TextWithImage(
+                    modifier = Modifier.padding(8.dp),
+                    imageRes = R.drawable.usd_icon,
+                    text = it.format()
+                )
+            }
         }
     }
 }

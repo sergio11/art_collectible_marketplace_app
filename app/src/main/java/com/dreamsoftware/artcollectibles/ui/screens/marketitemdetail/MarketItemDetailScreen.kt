@@ -154,6 +154,16 @@ fun MarketItemDetailComponent(
                     .padding(8.dp),
                 artCollectible = artCollectibleForSale?.token
             )
+            ArtCollectiblePrice(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                iconSize = 30.dp,
+                textSize = 20.sp,
+                textColor = DarkPurple,
+                fullMode = true,
+                priceData = artCollectibleForSale?.price
+            )
             ArtCollectibleForSaleRow(
                 context = context,
                 titleRes = R.string.market_item_detail_similar_row_title_text,
