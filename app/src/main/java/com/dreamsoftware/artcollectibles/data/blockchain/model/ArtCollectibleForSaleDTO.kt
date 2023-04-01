@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.model
 
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
 
@@ -10,7 +11,8 @@ data class ArtCollectibleForSaleDTO(
     val creator: String,
     val seller: String,
     val owner: String,
-    val price: BigInteger,
+    val priceInWei: BigInteger,
+    val priceInEth: BigDecimal,
     val sold: Boolean,
     val canceled: Boolean,
     val putForSaleAt: Date,

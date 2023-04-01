@@ -41,10 +41,10 @@ interface IArtMarketplaceRepository {
     /**
      * Put item for Sale
      * @param tokenId
-     * @param price
+     * @param priceInEth
      */
     @Throws(PutItemForSaleException::class)
-    suspend fun putItemForSale(tokenId: BigInteger, price: Float)
+    suspend fun putItemForSale(tokenId: BigInteger, priceInEth: Float)
 
     /**
      * Fetch item for Sale
@@ -76,10 +76,9 @@ interface IArtMarketplaceRepository {
     /**
      * Buy item
      * @param tokenId
-     * @param priceInEth
      */
     @Throws(BuyItemException::class)
-    suspend fun buyItem(tokenId: BigInteger, priceInEth: BigInteger)
+    suspend fun buyItem(tokenId: BigInteger)
 
     /**
      * Get similar market items

@@ -33,12 +33,12 @@ interface IArtMarketplaceBlockchainDataSource {
     suspend fun fetchMarketHistory(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
 
     /**
-     * list an item with a `tokenId` for a `price`
+     * list an item with a `tokenId` for a `priceInEth`
      * @param tokenId
-     * @param price
+     * @param priceInEth
      * @param credentials
      */
-    suspend fun putItemForSale(tokenId: BigInteger, price: Float, credentials: Credentials)
+    suspend fun putItemForSale(tokenId: BigInteger, priceInEth: Float, credentials: Credentials)
 
     /**
      * Cancel a listing of an item with a `tokenId`

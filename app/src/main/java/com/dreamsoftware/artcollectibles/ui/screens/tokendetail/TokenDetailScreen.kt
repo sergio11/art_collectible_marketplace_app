@@ -16,7 +16,6 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -39,8 +38,6 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 import java.math.BigInteger
-
-private const val PRICE_NUMBER_OF_DECIMALS = 5
 
 data class TokenDetailScreenArgs(
     val tokenId: BigInteger
@@ -216,9 +213,9 @@ private fun TokenDetailBody(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .clickable {
-                            onSeeArtistDetail(artCollectible.author)
+                            onSeeArtistDetail(artCollectible.owner)
                         },
-                    userInfo = artCollectible.author
+                    userInfo = artCollectible.owner
                 )
                 FavoriteButton(
                     modifier = Modifier
@@ -417,7 +414,7 @@ private fun ConfirmBurnTokenDialog(
 private fun ConfirmPutItemForSaleDialog(
     uiState: TokenDetailUiState,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
-    onItemPriceChanged: (price: String) -> Unit,
+    onItemPriceChanged: (priceInEth: String) -> Unit,
     onDialogCancelled: () -> Unit
 ) {
     with(uiState) {
@@ -439,8 +436,7 @@ private fun ConfirmPutItemForSaleDialog(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 labelRes = R.string.token_detail_put_item_for_sale_input_price_label,
                 placeHolderRes = R.string.token_detail_put_item_for_sale_input_price_placeholder,
-                value = tokenPrice,
-                numberOfDecimals = PRICE_NUMBER_OF_DECIMALS,
+                value = tokenPriceInEth,
                 leadingIcon = {
                     MaticIconComponent(size = 20.dp)
                 },

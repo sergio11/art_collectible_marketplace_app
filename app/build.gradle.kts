@@ -59,6 +59,7 @@ android {
             buildConfigField(type = "String", name = "PINATA_API_KEY", value = "\"${getProperty("pinataApiKey")}\"")
             // Blockchain Configuration
             buildConfigField(type = "String", name = "ALCHEMY_URL", value = "\"https://polygon-mumbai.g.alchemy.com/v2/${gradleLocalProperties(rootDir).getProperty("alchemyAccountPrivateKey")}/\"")
+            buildConfigField(type = "String", name = "CRYPTO_COMPARE_URL", value = "\"https://min-api.cryptocompare.com/\"")
             buildConfigField(type = "Long", name = "CHAIN_ID", value = "80001L")
             buildConfigField(type = "Long", name = "GAS_PRICE", value = "50000000000L")
             buildConfigField(type = "Long", name = "GAS_LIMIT", value = "5000000L")

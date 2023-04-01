@@ -8,15 +8,18 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IArtMarketplaceRepo
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IMarketPricesBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectiblePrices
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 import java.math.BigInteger
 
 /**
@@ -28,6 +31,7 @@ import java.math.BigInteger
  * @param userCredentialsMapper
  * @param marketplaceStatisticsMapper
  * @param categoriesDataSource
+ * @param marketPricesBlockchainDataSource
  */
 internal class ArtMarketplaceRepositoryImpl(
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
@@ -36,7 +40,8 @@ internal class ArtMarketplaceRepositoryImpl(
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
     private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
-    private val categoriesDataSource: ICategoriesDataSource
+    private val categoriesDataSource: ICategoriesDataSource,
+    private val marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource
 ) : IArtMarketplaceRepository {
 
     @Throws(FetchAvailableMarketItemsException::class)
@@ -131,13 +136,13 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
     @Throws(PutItemForSaleException::class)
-    override suspend fun putItemForSale(tokenId: BigInteger, price: Float) =
+    override suspend fun putItemForSale(tokenId: BigInteger, priceInEth: Float) =
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
                 artMarketplaceBlockchainDataSource.putItemForSale(
                     tokenId,
-                    price,
+                    priceInEth,
                     userCredentialsMapper.mapOutToIn(credentials)
                 )
             } catch (ex: Exception) {
@@ -218,7 +223,7 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
     @Throws(BuyItemException::class)
-    override suspend fun buyItem(tokenId: BigInteger, priceInEth: BigInteger) {
+    override suspend fun buyItem(tokenId: BigInteger) {
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
@@ -291,7 +296,7 @@ internal class ArtMarketplaceRepositoryImpl(
                     token = tokenDeferred.await(),
                     seller = sellerDeferred.await(),
                     owner = ownerDeferred.await(),
-                    price = price,
+                    price = getArtCollectiblePrices(this),
                     sold = sold,
                     canceled = canceled,
                     putForSaleAt = putForSaleAt,
@@ -319,7 +324,7 @@ internal class ArtMarketplaceRepositoryImpl(
                                 token = token,
                                 seller = seller,
                                 owner = owner,
-                                price = price,
+                                price = getArtCollectiblePrices(this),
                                 sold = sold,
                                 canceled = canceled,
                                 putForSaleAt = putForSaleAt,
@@ -331,4 +336,23 @@ internal class ArtMarketplaceRepositoryImpl(
                 }
             }.toList().awaitAll().filterNotNull()
         }
+
+
+    private suspend fun getArtCollectiblePrices(itemForSale: ArtCollectibleForSaleDTO) =  with(itemForSale) {
+        runCatching {
+            marketPricesBlockchainDataSource.getPricesOf(priceInEth).let {
+                ArtCollectiblePrices(
+                    priceInEUR = it.priceInEUR,
+                    priceInUSD = it.priceInUSD,
+                    priceInWei = priceInWei,
+                    priceInEth = priceInEth
+                )
+            }
+        }.getOrDefault(
+            ArtCollectiblePrices(
+                priceInWei = priceInWei,
+                priceInEth = priceInEth
+            )
+        )
+    }
 }

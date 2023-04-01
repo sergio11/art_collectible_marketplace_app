@@ -111,7 +111,7 @@ fun ArtCollectibleForSaleCard(
                 ArtCollectiblePrice(
                     iconSize = 15.dp,
                     textSize = 15.sp,
-                    price = price,
+                    priceData = price,
                     textColor = if (reverseStyle) {
                         BackgroundWhite
                     } else {

@@ -3,8 +3,7 @@ package com.dreamsoftware.artcollectibles.data.blockchain.mapper
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
-import org.web3j.utils.Convert
-import java.math.BigInteger
+import java.math.BigDecimal
 import java.util.*
 
 class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibleForSaleDTO> {
@@ -17,7 +16,8 @@ class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibl
             creator = creator,
             seller = seller,
             owner = owner,
-            price = convertFromWeiToEth(price),
+            priceInWei = price,
+            priceInEth = price.toBigDecimal().div(BigDecimal.valueOf(1000000000000000000L)),
             sold = sold,
             canceled = canceled,
             putForSaleAt = Date(putForSaleAt.toLong() * 1000),
@@ -36,8 +36,4 @@ class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibl
 
     override fun mapInListToOutList(input: Iterable<ArtCollectibleForSale>): Iterable<ArtCollectibleForSaleDTO> =
         input.map(::mapInToOut)
-
-    private fun convertFromWeiToEth(priceInWei: BigInteger) =
-        Convert.fromWei(priceInWei.toString(), Convert.Unit.WEI)
-            .toBigInteger()
 }

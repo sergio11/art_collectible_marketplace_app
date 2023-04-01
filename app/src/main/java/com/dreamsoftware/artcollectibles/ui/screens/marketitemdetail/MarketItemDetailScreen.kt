@@ -22,12 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -88,7 +91,7 @@ fun MarketItemDetailComponent(
     scrollState: ScrollState,
     density: Density,
     onConfirmBuyItemDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
-    onBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
+    onBuyItemCalled: (tokenId: BigInteger) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
@@ -124,12 +127,27 @@ fun MarketItemDetailComponent(
                         },
                     userInfo = artCollectibleForSale?.seller
                 )
-                MarketItemPriceRow(
+                ArtCollectiblePrice(
                     modifier = Modifier
+                        .padding(end = 4.dp)
                         .align(Alignment.CenterEnd),
-                    price = artCollectibleForSale?.price
+                    iconSize = 30.dp,
+                    textSize = 20.sp,
+                    textColor = DarkPurple,
+                    priceData = artCollectibleForSale?.price
                 )
             }
+            Text(
+                text = artCollectibleForSale?.putForSaleAt?.format()?.let {
+                    stringResource(id = R.string.market_item_detail_put_for_sale_at_label, it)
+                } ?: stringResource(id = R.string.no_text_value),
+                fontFamily = montserratFontFamily,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                color = DarkPurple,
+                style = MaterialTheme.typography.titleMedium
+            )
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -199,30 +217,6 @@ fun MarketItemDetailComponent(
 }
 
 @Composable
-private fun MarketItemPriceRow(modifier: Modifier = Modifier, price: BigInteger?) {
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .width(100.dp)
-            .then(modifier),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        MaticIconComponent(size = 35.dp)
-        Text(
-            text = price?.toString() ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-}
-
-@Composable
 private fun TokenWithdrawnFromSaleDialog(
     uiState: MarketUiState,
     onConfirmCalled: () -> Unit,
@@ -241,7 +235,7 @@ private fun TokenWithdrawnFromSaleDialog(
 @Composable
 private fun ConfirmBuyItemDialog(
     uiState: MarketUiState,
-    onConfirmBuyItemCalled: (tokenId: BigInteger, price: BigInteger) -> Unit,
+    onConfirmBuyItemCalled: (tokenId: BigInteger) -> Unit,
     onDialogCancelled: () -> Unit
 ) {
     with(uiState) {
@@ -253,7 +247,7 @@ private fun ConfirmBuyItemDialog(
             cancelRes = R.string.market_item_detail_token_buy_confirm_cancel_button_text,
             onAcceptClicked = {
                 artCollectibleForSale?.let {
-                    onConfirmBuyItemCalled(it.token.id, it.price)
+                    onConfirmBuyItemCalled(it.token.id)
                 }
             },
             onCancelClicked = onDialogCancelled

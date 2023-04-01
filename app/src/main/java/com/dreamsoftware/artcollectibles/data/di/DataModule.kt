@@ -175,6 +175,7 @@ class DataModule {
      * @param userCredentialsMapper
      * @param marketplaceStatisticsMapper
      * @param categoriesDataSource
+     * @param marketPricesBlockchainDataSource
      */
     @Provides
     @Singleton
@@ -185,7 +186,8 @@ class DataModule {
         walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper,
         marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
-        categoriesDataSource: ICategoriesDataSource
+        categoriesDataSource: ICategoriesDataSource,
+        marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource
     ): IArtMarketplaceRepository =
         ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource,
@@ -194,7 +196,8 @@ class DataModule {
             walletRepository,
             userCredentialsMapper,
             marketplaceStatisticsMapper,
-            categoriesDataSource
+            categoriesDataSource,
+            marketPricesBlockchainDataSource
         )
 
     /**

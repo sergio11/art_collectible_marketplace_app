@@ -10,3 +10,4 @@ class InstallWalletException(message: String? = null, cause: Throwable? = null):
 // Faucet DataSource
 class NotEnoughFundsException(message: String? = null, cause: Throwable? = null): BlockchainDataSourceException(message, cause)
 class RequestSeedFundsException(message: String? = null, cause: Throwable? = null): BlockchainDataSourceException(message, cause)
+class ItemNotAvailableForSale(message: String? = null, cause: Throwable? = null): BlockchainDataSourceException(message, cause)

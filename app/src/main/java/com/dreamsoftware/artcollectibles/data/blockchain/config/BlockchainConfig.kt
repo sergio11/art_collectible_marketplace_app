@@ -10,6 +10,9 @@ class BlockchainConfig {
     val alchemyUrl: String
         get() = BuildConfig.ALCHEMY_URL
 
+    val cryptoCompareUrl: String
+        get() = BuildConfig.CRYPTO_COMPARE_URL
+
     val artCollectibleContractAddress: String
         get() = BuildConfig.ART_COLLECTIBLE_CONTRACT_ADDRESS
 

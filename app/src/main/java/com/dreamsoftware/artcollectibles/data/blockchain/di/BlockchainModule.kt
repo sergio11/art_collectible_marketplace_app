@@ -3,10 +3,13 @@ package com.dreamsoftware.artcollectibles.data.blockchain.di
 import android.content.Context
 import com.dreamsoftware.artcollectibles.data.blockchain.alchemy.service.IAccountInformationService
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
+import com.dreamsoftware.artcollectibles.data.blockchain.crytocompare.service.ICryptoCompareService
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.*
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl.*
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyOkHttpClient
 import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.AlchemyRetrofit
+import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.CryptoCompareOkHttpClient
+import com.dreamsoftware.artcollectibles.data.blockchain.di.qualifier.CryptoCompareRetrofit
 import com.dreamsoftware.artcollectibles.data.blockchain.mapper.*
 import com.dreamsoftware.artcollectibles.data.core.di.NetworkModule
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
@@ -33,7 +36,7 @@ class BlockchainModule {
     @Provides
     @Singleton
     @AlchemyOkHttpClient
-    fun provideBlockchainOkHttpClient(
+    fun provideAlchemyOkHttpClient(
         httpClientBuilder: OkHttpClient.Builder,
     ): OkHttpClient = httpClientBuilder.apply {
         addInterceptor(HttpLoggingInterceptor().apply {
@@ -55,6 +58,38 @@ class BlockchainModule {
         Retrofit.Builder()
             .addConverterFactory(converterFactory)
             .baseUrl(blockchainConfig.alchemyUrl)
+            .client(httpClient)
+            .build()
+
+
+    /**
+     * Provide Crypto Compare OkHTTP Client
+     */
+    @Provides
+    @Singleton
+    @CryptoCompareOkHttpClient
+    fun provideCryptoCompareOkHttpClient(
+        httpClientBuilder: OkHttpClient.Builder,
+    ): OkHttpClient = httpClientBuilder.apply {
+        addInterceptor(HttpLoggingInterceptor().apply {
+            setLevel(HttpLoggingInterceptor.Level.BODY)
+        })
+    }.build()
+
+    /**
+     * Provide Crypto Compare Retrofit
+     */
+    @Provides
+    @Singleton
+    @CryptoCompareRetrofit
+    fun provideCryptoCompareRetrofit(
+        converterFactory: Converter.Factory,
+        @CryptoCompareOkHttpClient httpClient: OkHttpClient,
+        blockchainConfig: BlockchainConfig
+    ): Retrofit =
+        Retrofit.Builder()
+            .addConverterFactory(converterFactory)
+            .baseUrl(blockchainConfig.cryptoCompareUrl)
             .client(httpClient)
             .build()
 
@@ -200,11 +235,36 @@ class BlockchainModule {
         )
 
     /**
-     * Provide Pinata Query Files Service
+     * Provide market prices blockchain data source
+     * @param cryptoCompareService
+     * @param web3j
+     */
+    @Provides
+    @Singleton
+    fun provideMarketPricesBlockchainDataSource(
+        cryptoCompareService: ICryptoCompareService,
+        web3j: Web3j
+    ): IMarketPricesBlockchainDataSource =
+        MarketPricesBlockchainDataSourceImpl(cryptoCompareService, web3j)
+
+    /**
+     * Provide Account information service
+     * @param retrofit
      */
     @Provides
     @Singleton
     fun provideAccountInformationService(
         @AlchemyRetrofit retrofit: Retrofit
     ): IAccountInformationService = retrofit.create(IAccountInformationService::class.java)
+
+
+    /**
+     * Provide Crypto compare service
+     * @param retrofit
+     */
+    @Provides
+    @Singleton
+    fun provideCryptoCompareService(
+        @CryptoCompareRetrofit retrofit: Retrofit
+    ): ICryptoCompareService = retrofit.create(ICryptoCompareService::class.java)
 }

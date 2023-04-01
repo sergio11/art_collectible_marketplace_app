@@ -10,12 +10,11 @@ class BuyItemUseCase(
 
     override suspend fun onExecuted(params: Params) {
         with(params) {
-            artCollectibleMarketplaceRepository.buyItem(tokenId, price)
+            artCollectibleMarketplaceRepository.buyItem(tokenId)
         }
     }
 
     data class Params(
-        val tokenId: BigInteger,
-        val price: BigInteger
+        val tokenId: BigInteger
     )
 }

@@ -9,11 +9,11 @@ class PutItemForSaleUseCase(
 ): BaseUseCaseWithParams<PutItemForSaleUseCase.Params, Unit>() {
 
     override suspend fun onExecuted(params: Params): Unit = with(params) {
-        artMarketplaceRepository.putItemForSale(tokenId, price)
+        artMarketplaceRepository.putItemForSale(tokenId, priceInEth)
     }
 
     data class Params(
         val tokenId: BigInteger,
-        val price: Float
+        val priceInEth: Float
     )
 }

@@ -31,11 +31,11 @@ class MarketItemDetailViewModel @Inject constructor(
         loadAllDataForToken(tokenId)
     }
 
-    fun buyItem(tokenId: BigInteger, price: BigInteger) {
+    fun buyItem(tokenId: BigInteger) {
         onLoading()
         buyItemUseCase.invoke(
             scope = viewModelScope,
-            params = BuyItemUseCase.Params(tokenId, price),
+            params = BuyItemUseCase.Params(tokenId),
             onSuccess = { onBuyItemSuccess() },
             onError = ::onErrorOccurred
         )

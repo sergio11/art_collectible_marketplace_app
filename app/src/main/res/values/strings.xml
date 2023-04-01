@@ -169,6 +169,7 @@
     <string name="home_featured_artists_title">Featured artists</string>
     <string name="home_art_collectibles_featured_title">Art collectibles featured</string>
     <!-- Market Item Detail -->
+    <string name="market_item_detail_put_for_sale_at_label" formatted="false">Put for sale at %s</string>
     <string name="market_item_detail_buy_item_button_text">Buy Item</string>
     <string name="market_item_detail_open_item_button_text">Open Detail</string>
     <string name="market_item_detail_withdraw_from_sale_button_text">Withdraw from sale</string>

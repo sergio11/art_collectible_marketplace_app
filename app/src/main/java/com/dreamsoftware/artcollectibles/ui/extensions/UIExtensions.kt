@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.resume
@@ -79,5 +80,9 @@ fun Context.getMimeType(uri: Uri): String? =
 
 fun Date.format(): String =
     SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(this)
+
+
+fun Double.format(): String =
+    DecimalFormat("0.00").format(this)
 
 

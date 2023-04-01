@@ -82,7 +82,7 @@ class TokenDetailViewModel @Inject constructor(
 
     fun putItemForSale(tokenId: BigInteger) {
         with(uiState.value) {
-            tokenPrice?.toFloatOrNull()?.let { price ->
+            tokenPriceInEth?.toFloatOrNull()?.let { price ->
                 putItemForSaleUseCase.invoke(
                     scope = viewModelScope,
                     params = PutItemForSaleUseCase.Params(tokenId, price),
@@ -103,11 +103,11 @@ class TokenDetailViewModel @Inject constructor(
         }
     }
 
-    fun onTokenPriceChanged(newPrice: String) {
+    fun onTokenPriceChanged(newPriceInEth: String) {
         updateState {
             it.copy(
-                tokenPrice = newPrice,
-                isPutTokenForSaleConfirmButtonEnabled = newPrice.isNotBlank()
+                tokenPriceInEth = newPriceInEth,
+                isPutTokenForSaleConfirmButtonEnabled = newPriceInEth.isNotBlank()
             )
         }
     }
@@ -241,7 +241,7 @@ class TokenDetailViewModel @Inject constructor(
                 isTokenAddedForSale = true,
                 isConfirmPutForSaleDialogVisible = false,
                 isPutTokenForSaleConfirmButtonEnabled = false,
-                tokenPrice = null
+                tokenPriceInEth = null
             )
         }
     }
@@ -295,7 +295,7 @@ class TokenDetailViewModel @Inject constructor(
                 isConfirmWithDrawFromSaleDialogVisible = false,
                 isConfirmPutForSaleDialogVisible = false,
                 isPutTokenForSaleConfirmButtonEnabled = false,
-                tokenPrice = null
+                tokenPriceInEth = null
             )
         }
     }
@@ -375,7 +375,7 @@ data class TokenDetailUiState(
     val isBurned: Boolean = false,
     val isTokenOwner: Boolean = false,
     val isTokenAddedForSale: Boolean = false,
-    val tokenPrice: String? = null,
+    val tokenPriceInEth: String? = null,
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),
     val lastMarketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
