@@ -181,6 +181,8 @@
     <string name="market_item_detail_token_withdrawn_from_sale_accept_button_text">Accept</string>
     <string name="market_item_detail_token_bought_title_text">You have successfully acquired this collectible</string>
     <string name="market_item_detail_token_bought_description_text">You are now the owner of this collectible</string>
+    <string name="market_item_detail_token_unavailable_title_text">This collectible is not available</string>
+    <string name="market_item_detail_token_unavailable_description_text">It is not possible to purchase this collectible because it is not available for sale</string>
     <string name="market_item_detail_token_bought_accept_button_text">Accept</string>
     <string name="market_item_detail_token_buy_confirm_title_text">Are you sure to buy this collectible?</string>
     <string name="market_item_detail_token_buy_confirm_description_text">You are about to buy this art collectible, the operation is irreversible, are you sure?</string>
