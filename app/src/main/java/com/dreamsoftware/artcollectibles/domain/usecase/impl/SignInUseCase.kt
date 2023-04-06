@@ -29,7 +29,7 @@ class SignInUseCase(
         val authUser = userRepository.signIn(AuthRequest(email, password))
         applicationAware.setUserSecret(secretRepository.get(authUser.uid))
         preferenceRepository.saveAuthUserUid(uid = authUser.uid)
-        userRepository.get(uid = authUser.uid).also {
+        userRepository.get(uid = authUser.uid, fullDetail = false).also {
             appEventBus.invokeEvent(AppEventBus.AppEvent.SIGN_IN)
         }
     }

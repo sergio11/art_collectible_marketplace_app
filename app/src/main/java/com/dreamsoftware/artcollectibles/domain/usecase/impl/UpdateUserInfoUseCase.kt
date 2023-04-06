@@ -22,7 +22,7 @@ class UpdateUserInfoUseCase(
                 photoUrl
             }
             userRepository.save(copy(photoUrl = profilePhotoUrl))
-            userRepository.get(uid)
+            userRepository.get(uid = uid, fullDetail = false)
         }
     }
 

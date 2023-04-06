@@ -12,7 +12,7 @@ internal class ArtCollectibleMemoryCacheDataSourceImpl :
 
     companion object {
         private const val MAXIMUM_CACHE_SIZE = 20L
-        private val EXPIRE_AFTER_WRITE = 5L.minutes
+        private val EXPIRE_AFTER_WRITE = 4L.minutes
     }
 
     override fun buildCache(): Cache<Any, Iterable<ArtCollectible>> = Cache.Builder()

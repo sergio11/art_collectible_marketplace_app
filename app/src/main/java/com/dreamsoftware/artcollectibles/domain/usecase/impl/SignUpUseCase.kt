@@ -39,7 +39,7 @@ class SignUpUseCase(
                     walletAddress = wallet.address
                 )
             )
-            userRepository.get(uid)
+            userRepository.get(uid = uid, fullDetail = false)
         }
     }
 

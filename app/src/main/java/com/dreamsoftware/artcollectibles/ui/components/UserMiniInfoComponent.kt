@@ -34,6 +34,7 @@ fun UserMiniInfoComponent(
             verticalArrangement = Arrangement.SpaceAround
         ) {
             Text(
+                modifier = Modifier.padding(vertical = 2.dp),
                 text = userInfo?.name ?: stringResource(id = R.string.no_text_value),
                 fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.labelLarge,
@@ -43,6 +44,7 @@ fun UserMiniInfoComponent(
             )
             userInfo?.professionalTitle?.let {
                 Text(
+                    modifier = Modifier.padding(vertical = 2.dp),
                     text = it,
                     fontFamily = montserratFontFamily,
                     style = MaterialTheme.typography.labelMedium,
@@ -51,7 +53,11 @@ fun UserMiniInfoComponent(
                     color = Color.DarkGray,
                 )
             }
-            UserStatisticsComponent(itemSize = 15.dp, userInfo = userInfo)
+            UserStatisticsComponent(
+                modifier = Modifier.padding(vertical = 2.dp),
+                itemSize = 15.dp,
+                userInfo = userInfo
+            )
         }
     }
 }

@@ -11,6 +11,6 @@ class GetAuthUserProfileUseCase(
 ): BaseUseCase<UserInfo>() {
 
     override suspend fun onExecuted(): UserInfo =
-        userRepository.get(uid = preferencesRepository.getAuthUserUid())
+        userRepository.get(uid = preferencesRepository.getAuthUserUid(), false)
 
 }

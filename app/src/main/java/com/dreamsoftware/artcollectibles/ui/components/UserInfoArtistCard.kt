@@ -75,13 +75,16 @@ fun UserInfoArtistCard(
             // User Profile Detail
             UserMiniInfoComponent(
                 modifier = Modifier
-                    .padding(4.dp),
+                    .padding(horizontal = 4.dp),
                 userInfo = user,
                 showPicture = false
             )
             UserFollowersInfoComponent(
                 modifier = Modifier
-                    .padding(4.dp),
+                    .padding(
+                        horizontal = 4.dp,
+                        vertical = 2.dp
+                    ),
                 smallSize = true,
                 followersCount = user.followers,
                 followingCount = user.following

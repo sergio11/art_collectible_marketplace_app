@@ -82,7 +82,7 @@ internal class FavoritesRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 favoritesDataSource.getUserLikesByToken(tokenId).asSequence().map { userAddress ->
-                    async { runCatching { userRepository.getByAddress(userAddress) }.getOrNull() }
+                    async { runCatching { userRepository.getByAddress(userAddress, true) }.getOrNull() }
                 }.toList().awaitAll().filterNotNull()
             } catch (ex: Exception) {
                 throw GetUserLikesByTokenDataException("An error occurred when trying to get user likes by token", ex)

@@ -29,7 +29,7 @@ internal class CommentsRepositoryImpl(
                     commentMapper.mapInToOut(getCommentById(it.uid).let {
                         CommentMapper.InputData(
                             commentDTO = it,
-                            userInfoDTO = userRepository.get(it.userUid)
+                            userInfoDTO = userRepository.get(it.userUid, false)
                         )
                     })
                 }
@@ -65,7 +65,7 @@ internal class CommentsRepositoryImpl(
             commentMapper.mapInToOut(commentsDataSource.getCommentById(uid).let {
                 CommentMapper.InputData(
                     commentDTO = it,
-                    userInfoDTO = userRepository.get(it.userUid)
+                    userInfoDTO = userRepository.get(it.userUid, true)
                 )
             })
         } catch (ex: Exception) {
@@ -80,7 +80,7 @@ internal class CommentsRepositoryImpl(
                 async {
                     CommentMapper.InputData(
                         commentDTO = it,
-                        userInfoDTO = userRepository.get(it.userUid)
+                        userInfoDTO = userRepository.get(it.userUid, false)
                     )
                 }
             }.awaitAll())
@@ -96,7 +96,7 @@ internal class CommentsRepositoryImpl(
                 async {
                     CommentMapper.InputData(
                         commentDTO = it,
-                        userInfoDTO = userRepository.get(it.userUid)
+                        userInfoDTO = userRepository.get(it.userUid, false)
                     )
                 }
             }.awaitAll())

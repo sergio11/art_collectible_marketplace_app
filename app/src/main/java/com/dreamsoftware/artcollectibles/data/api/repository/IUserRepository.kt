@@ -18,10 +18,10 @@ interface IUserRepository {
     suspend fun signUp(email: String, password: String): AuthUser
 
     @Throws(GetDetailException::class)
-    suspend fun get(uid: String): UserInfo
+    suspend fun get(uid: String, fullDetail: Boolean): UserInfo
 
     @Throws(GetDetailException::class)
-    suspend fun getByAddress(userAddress: String): UserInfo
+    suspend fun getByAddress(userAddress: String, fullDetail: Boolean): UserInfo
 
     @Throws(SaveUserException::class)
     suspend fun save(userInfo: UserInfo)

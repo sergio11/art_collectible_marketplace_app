@@ -9,7 +9,7 @@ class GetUserProfileUseCase(
 ): BaseUseCaseWithParams<GetUserProfileUseCase.Params, UserInfo>() {
 
     override suspend fun onExecuted(params: Params): UserInfo =
-        userRepository.get(uid = params.uid)
+        userRepository.get(uid = params.uid, fullDetail = true)
 
     data class Params(
         val uid: String

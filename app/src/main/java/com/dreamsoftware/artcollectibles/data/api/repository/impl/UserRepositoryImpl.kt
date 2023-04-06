@@ -15,6 +15,8 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSo
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IUserMemoryDataSource
+import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.*
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +35,7 @@ import org.web3j.crypto.Credentials
  * @param artCollectibleDataSource
  * @param artMarketplaceBlockchainDataSource
  * @param walletRepository
+ * @param userMemoryDataSource
  * @param userCredentialsMapper
  * @param userInfoMapper
  * @param saveUserInfoMapper
@@ -47,6 +50,7 @@ internal class UserRepositoryImpl(
     private val artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
     private val walletRepository: IWalletRepository,
+    private val userMemoryDataSource: IUserMemoryDataSource,
     private val userCredentialsMapper: UserCredentialsMapper,
     private val userInfoMapper: UserInfoMapper,
     private val saveUserInfoMapper: SaveUserInfoMapper,
@@ -101,11 +105,21 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(GetDetailException::class)
-    override suspend fun get(uid: String): UserInfo = withContext(Dispatchers.Default) {
+    override suspend fun get(uid: String, fullDetail: Boolean): UserInfo = withContext(Dispatchers.Default) {
         try {
-            val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
-            val userInfo = userDataSource.getById(uid)
-            mapToUserInfo(userInfo, credentials)
+            if(fullDetail) {
+                with(userMemoryDataSource) {
+                    try {
+                        findByKey(uid)
+                    } catch (ex: CacheException) {
+                        fetchUserByUid(uid, true).also {
+                            save(uid, it)
+                        }
+                    }
+                }
+            } else {
+                fetchUserByUid(uid, false)
+            }
         } catch (ex: Exception) {
             ex.printStackTrace()
             throw GetDetailException("An error occurred when trying to get the user information", ex)
@@ -113,11 +127,21 @@ internal class UserRepositoryImpl(
     }
 
     @Throws(GetDetailException::class)
-    override suspend fun getByAddress(userAddress: String): UserInfo = withContext(Dispatchers.Default) {
+    override suspend fun getByAddress(userAddress: String, fullDetail: Boolean): UserInfo = withContext(Dispatchers.Default) {
         try {
-            val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
-            val userInfo = userDataSource.getByAddress(userAddress)
-            mapToUserInfo(userInfo, credentials)
+            if(fullDetail) {
+                with(userMemoryDataSource) {
+                    try {
+                        findByKey(userAddress)
+                    } catch (ex: CacheException) {
+                        fetchUserByAddress(userAddress, true).also {
+                            save(userAddress, it)
+                        }
+                    }
+                }
+            } else {
+                fetchUserByAddress(userAddress, false)
+            }
         } catch (ex: Exception) {
             ex.printStackTrace()
             throw GetDetailException("An error occurred when trying to get the user information", ex)
@@ -172,7 +196,7 @@ internal class UserRepositoryImpl(
             val users = term?.let {
                 userDataSource.findUsersByName(it)
             } ?: userDataSource.getAll()
-            users.map { mapToUserInfo(it, credentials) }
+            users.map { mapToUserInfo(it, credentials, true) }
         } catch (ex: Exception) {
             throw SearchUserException("An error occurred when trying to find users", ex)
         }
@@ -219,7 +243,7 @@ internal class UserRepositoryImpl(
             try {
                 val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
                 val followersUidList = followerDataSource.getFollowers(userId)
-                userDataSource.getById(followersUidList).map { mapToUserInfo(it, credentials) }
+                userDataSource.getById(followersUidList).map { mapToUserInfo(it, credentials, true) }
             } catch (ex: Exception) {
                 throw GetFollowersUserException("An error occurred when trying to get followers", ex)
             }
@@ -231,7 +255,7 @@ internal class UserRepositoryImpl(
             try {
                 val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
                 val followingUidList = followerDataSource.getFollowing(userId)
-                userDataSource.getById(followingUidList).map { mapToUserInfo(it, credentials) }
+                userDataSource.getById(followingUidList).map { mapToUserInfo(it, credentials, true) }
             } catch (ex: Exception) {
                 throw GetFollowingUserException("An error occurred when trying to get followers", ex)
             }
@@ -245,14 +269,14 @@ internal class UserRepositoryImpl(
                 followerDataSource.getMoreFollowedUsers(limit).map { uid ->
                     async { userDataSource.getById(uid) }
                 }.awaitAll().map {
-                    mapToUserInfo(it, credentials)
+                    mapToUserInfo(it, credentials, true)
                 }
             } catch (ex: Exception) {
                 throw GetMoreFollowedUsersException("An error occurred when trying to get more followed users", ex)
             }
         }
 
-    private suspend fun mapToUserInfo(userDTO: UserDTO, credentials: Credentials) = withContext(Dispatchers.IO) {
+    private suspend fun mapToUserInfo(userDTO: UserDTO, credentials: Credentials, fullDetail: Boolean) = withContext(Dispatchers.IO) {
         val countFollowersDeferred = async { followerDataSource.countFollowers(userDTO.uid) }
         val countFollowingDeferred = async { followerDataSource.countFollowing(userDTO.uid) }
         val tokensStatisticsByAddressDeferred = async { artCollectibleDataSource.fetchTokensStatisticsByAddress(credentials, userDTO.walletAddress) }
@@ -260,15 +284,33 @@ internal class UserRepositoryImpl(
         val tokensStatisticsByAddress = tokensStatisticsByAddressDeferred.await()
         val walletStatisticsByAddress = walletStatisticsByAddressDeferred.await()
         userInfoMapper.mapInToOut(
-            UserInfoMapper.InputData(
-                user = userDTO,
-                followers = countFollowersDeferred.await(),
-                following = countFollowingDeferred.await(),
-                tokensCreatedCount = tokensStatisticsByAddress.countTokensCreator,
-                tokensOwnedCount = tokensStatisticsByAddress.countTokensOwned,
-                tokensBoughtCount = walletStatisticsByAddress.countTokenBought,
-                tokensSoldCount = walletStatisticsByAddress.countTokenSold
-            )
+            if(fullDetail) {
+                UserInfoMapper.InputData(
+                    user = userDTO,
+                    followers = countFollowersDeferred.await(),
+                    following = countFollowingDeferred.await(),
+                    tokensCreatedCount = tokensStatisticsByAddress.countTokensCreator,
+                    tokensOwnedCount = tokensStatisticsByAddress.countTokensOwned,
+                    tokensBoughtCount = walletStatisticsByAddress.countTokenBought,
+                    tokensSoldCount = walletStatisticsByAddress.countTokenSold
+                )
+            } else {
+                UserInfoMapper.InputData(
+                    user = userDTO
+                )
+            }
         )
+    }
+
+    private suspend fun fetchUserByUid(uid: String, fullDetail: Boolean): UserInfo = withContext(Dispatchers.IO)  {
+        val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
+        val userInfo = userDataSource.getById(uid)
+        mapToUserInfo(userInfo, credentials, fullDetail)
+    }
+
+    private suspend fun fetchUserByAddress(userAddress: String, fullDetail: Boolean): UserInfo = withContext(Dispatchers.IO) {
+        val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
+        val userInfo = userDataSource.getByAddress(userAddress)
+        mapToUserInfo(userInfo, credentials, fullDetail)
     }
 }

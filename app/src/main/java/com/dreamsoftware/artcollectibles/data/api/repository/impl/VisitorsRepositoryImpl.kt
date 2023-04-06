@@ -36,7 +36,7 @@ internal class VisitorsRepositoryImpl(
     override suspend fun getByTokenId(tokenId: String): Iterable<UserInfo> =  withContext(Dispatchers.IO) {
         try {
             visitorsDataSource.getByTokenId(tokenId).asSequence().map { userAddress ->
-                async { runCatching { userRepository.getByAddress(userAddress) }.getOrNull() }
+                async { runCatching { userRepository.getByAddress(userAddress, true) }.getOrNull() }
             }.toList().awaitAll().filterNotNull()
         } catch (ex: Exception) {
             throw GetVisitorsByTokenDataException("An error occurred when trying to get visitors", ex)

@@ -79,7 +79,7 @@ class SocialSignInUseCase(
     }
 
     private suspend fun finishSignIn(uid: String): UserInfo =
-        userRepository.get(uid).also {
+        userRepository.get(uid = uid, fullDetail = false).also {
             appEventBus.invokeEvent(AppEventBus.AppEvent.SIGN_IN)
         }
 

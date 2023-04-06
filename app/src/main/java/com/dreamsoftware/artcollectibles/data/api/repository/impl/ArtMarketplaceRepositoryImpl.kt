@@ -162,7 +162,7 @@ internal class ArtMarketplaceRepositoryImpl(
                     tokenId,
                     userCredentialsMapper.mapOutToIn(credentials)
                 )
-                mapToArtCollectibleForSale(artCollectible)
+                mapToArtCollectibleForSale(artCollectible, true)
             } catch (ex: Exception) {
                 throw FetchItemForSaleException(
                     "An error occurred when trying to fetch item for sale",
@@ -280,7 +280,7 @@ internal class ArtMarketplaceRepositoryImpl(
         }
     }
 
-    private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO): ArtCollectibleForSale =
+    private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO, requireUserInfoFullDetail: Boolean): ArtCollectibleForSale =
         withContext(Dispatchers.Default) {
             with(item) {
                 val tokenDeferred = async {
@@ -288,10 +288,10 @@ internal class ArtMarketplaceRepositoryImpl(
                 }
                 val ownerDeferred = async {
                     runCatching {
-                        userRepository.getByAddress(owner)
+                        userRepository.getByAddress(owner, requireUserInfoFullDetail)
                     }.getOrNull()
                 }
-                val sellerDeferred = async { userRepository.getByAddress(seller) }
+                val sellerDeferred = async { userRepository.getByAddress(seller, requireUserInfoFullDetail) }
                 ArtCollectibleForSale(
                     marketItemId = marketItemId,
                     token = tokenDeferred.await(),
@@ -317,9 +317,9 @@ internal class ArtMarketplaceRepositoryImpl(
                     with(itemForSale) {
                         tokensData.find { it.id == tokenId }?.let { token ->
                             val owner = runCatching {
-                                userRepository.getByAddress(owner)
+                                userRepository.getByAddress(owner, false)
                             }.getOrNull()
-                            val seller = userRepository.getByAddress(seller)
+                            val seller = userRepository.getByAddress(seller, false)
                             ArtCollectibleForSale(
                                 marketItemId = marketItemId,
                                 token = token,

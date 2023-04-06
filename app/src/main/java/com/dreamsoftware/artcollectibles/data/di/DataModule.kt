@@ -12,6 +12,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IUserMemoryDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
 import com.dreamsoftware.artcollectibles.data.memory.di.MemoryModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
@@ -226,6 +227,7 @@ class DataModule {
         artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
         artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
         walletRepository: IWalletRepository,
+        userMemoryDataSource: IUserMemoryDataSource,
         userCredentialsMapper: UserCredentialsMapper,
         userInfoMapper: UserInfoMapper,
         saveUserInfoMapper: SaveUserInfoMapper,
@@ -240,6 +242,7 @@ class DataModule {
             artCollectibleDataSource,
             artMarketplaceBlockchainDataSource,
             walletRepository,
+            userMemoryDataSource,
             userCredentialsMapper,
             userInfoMapper,
             saveUserInfoMapper,

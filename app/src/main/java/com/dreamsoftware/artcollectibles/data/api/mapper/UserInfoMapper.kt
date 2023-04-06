@@ -39,11 +39,11 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
 
     data class InputData(
         val user: UserDTO,
-        val followers: Long,
-        val following: Long,
-        val tokensSoldCount: BigInteger,
-        val tokensBoughtCount: BigInteger,
-        val tokensOwnedCount: BigInteger,
-        val tokensCreatedCount: BigInteger
+        val followers: Long = 0L,
+        val following: Long = 0L,
+        val tokensSoldCount: BigInteger = BigInteger.ZERO,
+        val tokensBoughtCount: BigInteger = BigInteger.ZERO,
+        val tokensOwnedCount: BigInteger = BigInteger.ZERO,
+        val tokensCreatedCount: BigInteger = BigInteger.ZERO
     )
 }
