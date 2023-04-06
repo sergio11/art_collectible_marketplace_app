@@ -14,7 +14,8 @@ class CreateArtCollectibleMetadataMapper: IOneSideMapper<CreateArtCollectibleMet
             mediaType = mediaType,
             categoryUid = categoryUid,
             tags = tags,
-            authorAddress = authorAddress
+            authorAddress = authorAddress,
+            deviceName = deviceName
         )
     }
 

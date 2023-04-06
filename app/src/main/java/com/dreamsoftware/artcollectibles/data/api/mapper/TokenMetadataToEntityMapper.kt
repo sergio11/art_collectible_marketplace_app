@@ -15,7 +15,8 @@ class TokenMetadataToEntityMapper: IOneSideMapper<TokenMetadataDTO, TokenMetadat
             imageUrl = imageUrl,
             categoryUid = categoryUid,
             tags = tags,
-            authorAddress = authorAddress
+            authorAddress = authorAddress,
+            deviceName = deviceName
         )
     }
 

@@ -23,4 +23,6 @@ interface IApplicationAware {
     fun getUserSecret(): PBEData
 
     fun resolveContentAsByteArray(contentUri: Uri): ByteArray?
+
+    fun getDeviceName(): String
 }

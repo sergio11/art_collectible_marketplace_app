@@ -8,13 +8,15 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.CreateArtCollectibleUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetArtCollectibleCategoriesUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class AddNftViewModel @Inject constructor(
     private val createArtCollectibleUseCase: CreateArtCollectibleUseCase,
-    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase
+    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
+    private val applicationAware: IApplicationAware
 ) : SupportViewModel<AddNftUiState>() {
 
     companion object {
@@ -107,7 +109,8 @@ class AddNftViewModel @Inject constructor(
                     description = description,
                     royalty = royalty.toLong(),
                     tags = tags,
-                    categoryUid = categorySelected?.uid ?: categories.first().uid
+                    categoryUid = categorySelected?.uid ?: categories.first().uid,
+                    deviceName = applicationAware.getDeviceName()
                 ),
                 onSuccess = ::onCreateSuccess,
                 onError = ::onCreateError

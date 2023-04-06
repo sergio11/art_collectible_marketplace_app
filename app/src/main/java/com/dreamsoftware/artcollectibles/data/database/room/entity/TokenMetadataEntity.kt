@@ -23,5 +23,7 @@ data class TokenMetadataEntity(
     @ColumnInfo(name = "category")
     val categoryUid: String,
     @ColumnInfo(name = "author_address")
-    val authorAddress: String
+    val authorAddress: String,
+    @ColumnInfo(name = "device_name")
+    val deviceName: String? = null,
 )

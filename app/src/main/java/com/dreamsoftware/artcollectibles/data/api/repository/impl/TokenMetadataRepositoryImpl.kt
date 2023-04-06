@@ -50,12 +50,16 @@ internal class TokenMetadataRepositoryImpl(
                     }.let {
                         tokenMetadataMapper.mapInToOut(
                             TokenMetadataMapper.InputData(
-                            tokenMetadata = it,
-                            category = categoriesDataSource.getByUid(it.categoryUid)
-                        ))
+                                tokenMetadata = it,
+                                category = categoriesDataSource.getByUid(it.categoryUid)
+                            )
+                        )
                     }
             } catch (ex: Exception) {
-                throw CreateTokenMetadataDataException("An error occurred when trying to save token metadata", ex)
+                throw CreateTokenMetadataDataException(
+                    "An error occurred when trying to save token metadata",
+                    ex
+                )
             }
         }
 
@@ -71,7 +75,10 @@ internal class TokenMetadataRepositoryImpl(
                     }
                 }
             } catch (ex: Exception) {
-                throw DeleteTokenMetadataDataException("An error occurred when deleting token metadata", ex)
+                throw DeleteTokenMetadataDataException(
+                    "An error occurred when deleting token metadata",
+                    ex
+                )
             }
         }
     }
@@ -107,7 +114,10 @@ internal class TokenMetadataRepositoryImpl(
                         tokenMetadataMapper.mapInListToOutList(it)
                     }
                 } catch (ex: Exception) {
-                    throw FetchByAuthorAddressDataException("An error occurred when trying to fetch token metadata", ex)
+                    throw FetchByAuthorAddressDataException(
+                        "An error occurred when trying to fetch token metadata",
+                        ex
+                    )
                 }
             }
         }
@@ -127,15 +137,24 @@ internal class TokenMetadataRepositoryImpl(
             } catch (ex: Exception) {
                 try {
                     ipfsDataSource.fetchByCid(cid).also {
-                        tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInToOut(it))
+                        tokenMetadataDatabaseDataSource.save(
+                            tokenMetadataToEntityMapper.mapInToOut(
+                                it
+                            )
+                        )
                     }.let {
-                        tokenMetadataMapper.mapInToOut(TokenMetadataMapper.InputData(
-                            tokenMetadata = it,
-                            category = categoriesDataSource.getByUid(it.categoryUid)
-                        ))
+                        tokenMetadataMapper.mapInToOut(
+                            TokenMetadataMapper.InputData(
+                                tokenMetadata = it,
+                                category = categoriesDataSource.getByUid(it.categoryUid)
+                            )
+                        )
                     }
                 } catch (ex: Exception) {
-                    throw FetchByCidDataException("An error occurred when trying to fetch token metadata", ex)
+                    throw FetchByCidDataException(
+                        "An error occurred when trying to fetch token metadata",
+                        ex
+                    )
                 }
             }
         }
@@ -157,7 +176,11 @@ internal class TokenMetadataRepositoryImpl(
                     cidList.map { async { ipfsDataSource.fetchByCid(it) } }
                         .awaitAll()
                         .also {
-                            tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInListToOutList(it))
+                            tokenMetadataDatabaseDataSource.save(
+                                tokenMetadataToEntityMapper.mapInListToOutList(
+                                    it
+                                )
+                            )
                         }.map {
                             TokenMetadataMapper.InputData(
                                 tokenMetadata = it,
@@ -168,7 +191,10 @@ internal class TokenMetadataRepositoryImpl(
                             tokenMetadataMapper.mapInListToOutList(it)
                         }
                 } catch (ex: Exception) {
-                    throw FetchByCidDataException("An error occurred when trying to fetch token metadata", ex)
+                    throw FetchByCidDataException(
+                        "An error occurred when trying to fetch token metadata",
+                        ex
+                    )
                 }
             }
         }

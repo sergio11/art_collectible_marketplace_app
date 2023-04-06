@@ -138,6 +138,7 @@ internal class ArtCollectibleRepositoryImpl(
                         }
                 }
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw GetTokensOwnedException(
                     "An error occurred when trying to get tokens owned", ex
                 )
@@ -156,6 +157,7 @@ internal class ArtCollectibleRepositoryImpl(
                     )
                 )
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw GetTokensOwnedException(
                     "An error occurred when trying to get tokens owned", ex
                 )
@@ -207,6 +209,7 @@ internal class ArtCollectibleRepositoryImpl(
                     )
                 )
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw GetTokensOwnedException(
                     "An error occurred when trying to get tokens owned", ex
                 )

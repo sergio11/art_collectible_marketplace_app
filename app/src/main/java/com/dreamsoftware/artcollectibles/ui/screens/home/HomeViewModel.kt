@@ -38,7 +38,6 @@ class HomeViewModel @Inject constructor(
             onSuccess = { marketplaceStatistics ->
                 updateState {
                     it.copy(
-                        isLoading = false,
                         marketplaceStatistics = marketplaceStatistics
                     )
                 }
@@ -116,7 +115,12 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onCategoriesLoaded(categories: Iterable<ArtCollectibleCategory>) {
-        updateState { it.copy(categories = categories) }
+        updateState {
+            it.copy(
+                isLoading = false,
+                categories = categories
+            )
+        }
     }
 
     private fun onMoreFollowedUsers(moreFollowedUsers: Iterable<UserInfo>) {

@@ -13,5 +13,6 @@ class CreateArtCollectibleMetadata(
     val mediaType: String,
     val categoryUid: String,
     val tags: List<String>,
-    val authorAddress: String
+    val authorAddress: String,
+    val deviceName: String? = null
 )

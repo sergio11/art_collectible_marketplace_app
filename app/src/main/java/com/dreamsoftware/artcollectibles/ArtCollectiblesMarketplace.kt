@@ -18,11 +18,11 @@ package com.dreamsoftware.artcollectibles
 
 import android.app.Application
 import android.net.Uri
+import android.os.Build
 import com.dreamsoftware.artcollectibles.domain.models.PBEData
 import com.dreamsoftware.artcollectibles.secretsLib.SecretsVaultAPI
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.HiltAndroidApp
-import java.io.InputStream
 
 @HiltAndroidApp
 class ArtCollectiblesMarketplace : Application(), IApplicationAware {
@@ -50,4 +50,12 @@ class ArtCollectiblesMarketplace : Application(), IApplicationAware {
         contentResolver.openInputStream(contentUri)?.use {
             it.readBytes()
         }
+
+    override fun getDeviceName(): String {
+        val manufacturer: String = Build.MANUFACTURER
+        val model: String = Build.MODEL
+        return if (model.startsWith(manufacturer)) {
+            model
+        } else "$manufacturer $model"
+    }
 }

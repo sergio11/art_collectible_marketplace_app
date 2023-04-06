@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bd531986abbd914cc874a86100f091dc",
+    "identityHash": "18d567f767ff80495ccc7eac501a3c14",
     "entities": [
       {
         "tableName": "token_metadata",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cid` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `created_at` INTEGER NOT NULL, `image_url` TEXT NOT NULL, `tags` TEXT NOT NULL, `category` TEXT NOT NULL, `author_address` TEXT NOT NULL, PRIMARY KEY(`cid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cid` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `created_at` INTEGER NOT NULL, `image_url` TEXT NOT NULL, `tags` TEXT NOT NULL, `category` TEXT NOT NULL, `author_address` TEXT NOT NULL, `device_name` TEXT, PRIMARY KEY(`cid`))",
         "fields": [
           {
             "fieldPath": "cid",
@@ -55,6 +55,12 @@
             "columnName": "author_address",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "deviceName",
+            "columnName": "device_name",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -70,7 +76,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bd531986abbd914cc874a86100f091dc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '18d567f767ff80495ccc7eac501a3c14')"
     ]
   }
 }

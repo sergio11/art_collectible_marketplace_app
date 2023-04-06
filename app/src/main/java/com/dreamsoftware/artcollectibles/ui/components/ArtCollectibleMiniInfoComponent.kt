@@ -59,31 +59,38 @@ fun ArtCollectibleMiniInfoComponent(
         )
         Row {
             TextWithImage(
-                modifier = Modifier.padding(8.dp).clickable {
-                    artCollectible?.author?.let(onSeeCreatorDetail)
-                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        artCollectible?.author?.let(onSeeCreatorDetail)
+                    },
                 imageRes = R.drawable.token_creator_icon,
                 text = artCollectible?.author?.name ?: stringResource(id = R.string.no_text_value)
             )
             TextWithImage(
                 modifier = Modifier.padding(8.dp),
                 imageRes = R.drawable.token_royalty_icon,
-                text = artCollectible?.royalty?.let { "$it%" } ?: stringResource(id = R.string.no_text_value)
+                text = artCollectible?.royalty?.let { "$it%" }
+                    ?: stringResource(id = R.string.no_text_value)
             )
             FavoriteCountComponent(
-                modifier = Modifier.padding(8.dp).clickable {
-                    artCollectible?.let {
-                        onSeeLikesByToken(it.id)
-                    }
-                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        artCollectible?.let {
+                            onSeeLikesByToken(it.id)
+                        }
+                    },
                 artCollectible = artCollectible
             )
             TextWithIcon(
-                modifier = Modifier.padding(8.dp).clickable {
-                    artCollectible?.let {
-                        onSeeVisitorsByToken(it.id)
-                    }
-                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        artCollectible?.let {
+                            onSeeVisitorsByToken(it.id)
+                        }
+                    },
                 icon = if ((artCollectible?.visitorsCount ?: 0) > 0) {
                     Icons.Filled.Visibility
                 } else {
@@ -97,27 +104,42 @@ fun ArtCollectibleMiniInfoComponent(
             TextWithImage(
                 modifier = Modifier.padding(8.dp),
                 imageRes = R.drawable.token_category_icon,
-                text = artCollectible?.metadata?.category?.name ?: stringResource(id = R.string.no_text_value)
+                text = artCollectible?.metadata?.category?.name
+                    ?: stringResource(id = R.string.no_text_value)
             )
             TextWithImage(
-                modifier = Modifier.padding(8.dp).clickable {
-                    artCollectible?.let {
-                        if(it.commentsCount > 0) {
-                            onSeeAllComments(it.id)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        artCollectible?.let {
+                            if (it.commentsCount > 0) {
+                                onSeeAllComments(it.id)
+                            }
                         }
-                    }
-                },
+                    },
                 imageRes = R.drawable.comments_icon,
                 text = artCollectible?.commentsCount?.toString()
                     ?: stringResource(id = R.string.no_text_value_small)
             )
         }
-        if(showPreviewDescription) {
+        Row {
+            artCollectible?.metadata?.deviceName?.let { deviceName ->
+                if (deviceName.isNotBlank()) {
+                    TextWithImage(
+                        modifier = Modifier.padding(8.dp),
+                        imageRes = R.drawable.device_icon,
+                        text = deviceName
+                    )
+                }
+            }
+        }
+        if (showPreviewDescription) {
             ExpandableText(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                text = artCollectible?.metadata?.description ?: stringResource(id = R.string.no_text_value),
+                text = artCollectible?.metadata?.description
+                    ?: stringResource(id = R.string.no_text_value),
                 style = MaterialTheme.typography.bodyLarge,
                 fontFamily = montserratFontFamily
             )

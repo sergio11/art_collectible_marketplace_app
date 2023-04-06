@@ -19,7 +19,8 @@ class TokenMetadataEntityMapper(
                 tags = tags,
                 createdAt = createdAt,
                 authorAddress = authorAddress,
-                category = artCollectibleCategoryMapper.mapInToOut(category)
+                category = artCollectibleCategoryMapper.mapInToOut(category),
+                deviceName = deviceName.orEmpty()
             )
         }
     }
