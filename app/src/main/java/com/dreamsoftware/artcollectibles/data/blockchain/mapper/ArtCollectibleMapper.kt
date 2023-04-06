@@ -11,6 +11,7 @@ class ArtCollectibleMapper : IOneSideMapper<ArtCollectible, ArtCollectibleBlockc
             ArtCollectibleBlockchainDTO(
                 tokenId = tokenId,
                 creator = creator,
+                owner = owner,
                 royalty = royalty,
                 metadataCID = metadataCID,
                 isExist = isExist

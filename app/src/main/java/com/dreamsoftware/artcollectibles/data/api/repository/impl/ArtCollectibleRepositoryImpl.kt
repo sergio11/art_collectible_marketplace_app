@@ -134,8 +134,8 @@ internal class ArtCollectibleRepositoryImpl(
                                 mapToArtCollectible(credentials, tokenMetadata, token)
                             }
                         }.also {
-                        artCollectibleMemoryCacheDataSource.save(TOKENS_OWNED_KEY, it)
-                    }
+                            artCollectibleMemoryCacheDataSource.save(TOKENS_OWNED_KEY, it)
+                        }
                 }
             } catch (ex: Exception) {
                 throw GetTokensOwnedException(
@@ -188,6 +188,7 @@ internal class ArtCollectibleRepositoryImpl(
                     }
                 }
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw GetTokensCreatedException(
                     "An error occurred when trying to get tokens created", ex
                 )
@@ -279,9 +280,9 @@ internal class ArtCollectibleRepositoryImpl(
                 val tokenMetadata = tokenMetadataRepository.fetchByCid(tokenCid)
                 val tokenList = categoriesDataSource.getTokensByUid(tokenMetadata.category.uid)
                     .filter { it != tokenCid }.toMutableList().apply {
-                    shuffle()
-                    take(count)
-                }
+                        shuffle()
+                        take(count)
+                    }
                 mapToArtCollectible(
                     credentials, artCollectibleDataSource.getTokensByCID(
                         tokenList,
@@ -319,7 +320,11 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.IO) {
             val tokenId = token.tokenId.toString()
             val tokenAuthorDeferred = async { userRepository.getByAddress(token.creator) }
-            val tokenOwnerDeferred = async { userRepository.getByAddress(token.creator) }
+            val tokenOwnerDeferred = async {
+                runCatching { userRepository.getByAddress(token.owner) }.getOrElse {
+                    userRepository.getByAddress(token.creator)
+                }
+            }
             val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
             val favoritesCountDeferred = async { favoritesDataSource.tokenCount(tokenId) }
             val commentsCountDeferred = async { commentsDataSource.count(tokenId) }
