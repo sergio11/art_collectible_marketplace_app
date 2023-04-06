@@ -3,18 +3,25 @@ package com.dreamsoftware.artcollectibles.data.api.repository.impl
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
+import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserInfoMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtCollectibleBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IAuthDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFollowersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IUsersDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveUserDTO
+import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.domain.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import org.web3j.crypto.Credentials
 
 /**
  * User Repository Impl
@@ -23,6 +30,10 @@ import kotlinx.coroutines.withContext
  * @param storageDataSource
  * @param followerDataSource
  * @param preferencesDataSource
+ * @param artCollectibleDataSource
+ * @param artMarketplaceBlockchainDataSource
+ * @param walletRepository
+ * @param userCredentialsMapper
  * @param userInfoMapper
  * @param saveUserInfoMapper
  * @param authUserMapper
@@ -33,6 +44,10 @@ internal class UserRepositoryImpl(
     private val storageDataSource: IStorageDataSource,
     private val followerDataSource: IFollowersDataSource,
     private val preferencesDataSource: IPreferencesDataSource,
+    private val artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
+    private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
+    private val walletRepository: IWalletRepository,
+    private val userCredentialsMapper: UserCredentialsMapper,
     private val userInfoMapper: UserInfoMapper,
     private val saveUserInfoMapper: SaveUserInfoMapper,
     private val authUserMapper: AuthUserMapper
@@ -88,16 +103,9 @@ internal class UserRepositoryImpl(
     @Throws(GetDetailException::class)
     override suspend fun get(uid: String): UserInfo = withContext(Dispatchers.Default) {
         try {
-            val userInfoDeferred = async { userDataSource.getById(uid) }
-            val countFollowersDeferred = async { followerDataSource.countFollowers(uid) }
-            val countFollowingDeferred = async { followerDataSource.countFollowing(uid) }
-            userInfoMapper.mapInToOut(
-                UserInfoMapper.InputData(
-                    user = userInfoDeferred.await(),
-                    followers = countFollowersDeferred.await(),
-                    following = countFollowingDeferred.await()
-                )
-            )
+            val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
+            val userInfo = userDataSource.getById(uid)
+            mapToUserInfo(userInfo, credentials)
         } catch (ex: Exception) {
             ex.printStackTrace()
             throw GetDetailException("An error occurred when trying to get the user information", ex)
@@ -107,16 +115,9 @@ internal class UserRepositoryImpl(
     @Throws(GetDetailException::class)
     override suspend fun getByAddress(userAddress: String): UserInfo = withContext(Dispatchers.Default) {
         try {
+            val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
             val userInfo = userDataSource.getByAddress(userAddress)
-            val countFollowersDeferred = async { followerDataSource.countFollowers(userInfo.uid) }
-            val countFollowingDeferred = async { followerDataSource.countFollowing(userInfo.uid) }
-            userInfoMapper.mapInToOut(
-                UserInfoMapper.InputData(
-                    user = userInfo,
-                    followers = countFollowersDeferred.await(),
-                    following = countFollowingDeferred.await()
-                )
-            )
+            mapToUserInfo(userInfo, credentials)
         } catch (ex: Exception) {
             ex.printStackTrace()
             throw GetDetailException("An error occurred when trying to get the user information", ex)
@@ -167,18 +168,11 @@ internal class UserRepositoryImpl(
     @Throws(SearchUserException::class)
     override suspend fun search(term: String?): Iterable<UserInfo> = withContext(Dispatchers.IO) {
         try {
+            val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
             val users = term?.let {
                 userDataSource.findUsersByName(it)
             } ?: userDataSource.getAll()
-            users.map {
-                val countFollowersDeferred = async { followerDataSource.countFollowers(it.uid) }
-                val countFollowingDeferred = async { followerDataSource.countFollowing(it.uid) }
-                userInfoMapper.mapInToOut(UserInfoMapper.InputData(
-                    user = it,
-                    followers = countFollowersDeferred.await(),
-                    following = countFollowingDeferred.await()
-                ))
-            }
+            users.map { mapToUserInfo(it, credentials) }
         } catch (ex: Exception) {
             throw SearchUserException("An error occurred when trying to find users", ex)
         }
@@ -223,18 +217,9 @@ internal class UserRepositoryImpl(
     override suspend fun getFollowers(userId: String): Iterable<UserInfo> =
         withContext(Dispatchers.IO) {
             try {
+                val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
                 val followersUidList = followerDataSource.getFollowers(userId)
-                userDataSource.getById(followersUidList).map {
-                    val countFollowersDeferred = async { followerDataSource.countFollowers(it.uid) }
-                    val countFollowingDeferred = async { followerDataSource.countFollowing(it.uid) }
-                    userInfoMapper.mapInToOut(
-                        UserInfoMapper.InputData(
-                            user = it,
-                            followers = countFollowersDeferred.await(),
-                            following = countFollowingDeferred.await()
-                        )
-                    )
-                }
+                userDataSource.getById(followersUidList).map { mapToUserInfo(it, credentials) }
             } catch (ex: Exception) {
                 throw GetFollowersUserException("An error occurred when trying to get followers", ex)
             }
@@ -244,18 +229,9 @@ internal class UserRepositoryImpl(
     override suspend fun getFollowing(userId: String): Iterable<UserInfo> =
         withContext(Dispatchers.IO) {
             try {
+                val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
                 val followingUidList = followerDataSource.getFollowing(userId)
-                userDataSource.getById(followingUidList).map {
-                    val countFollowersDeferred = async { followerDataSource.countFollowers(it.uid) }
-                    val countFollowingDeferred = async { followerDataSource.countFollowing(it.uid) }
-                    userInfoMapper.mapInToOut(
-                        UserInfoMapper.InputData(
-                            user = it,
-                            followers = countFollowersDeferred.await(),
-                            following = countFollowingDeferred.await()
-                        )
-                    )
-                }
+                userDataSource.getById(followingUidList).map { mapToUserInfo(it, credentials) }
             } catch (ex: Exception) {
                 throw GetFollowingUserException("An error occurred when trying to get followers", ex)
             }
@@ -265,20 +241,34 @@ internal class UserRepositoryImpl(
     override suspend fun getMoreFollowedUsers(limit: Long): Iterable<UserInfo> =
         withContext(Dispatchers.IO) {
             try {
+                val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
                 followerDataSource.getMoreFollowedUsers(limit).map { uid ->
-                    val userInfo = async { userDataSource.getById(uid) }
-                    val countFollowersDeferred = async { followerDataSource.countFollowers(uid) }
-                    val countFollowingDeferred = async { followerDataSource.countFollowing(uid) }
-                    userInfoMapper.mapInToOut(
-                        UserInfoMapper.InputData(
-                            user = userInfo.await(),
-                            followers = countFollowersDeferred.await(),
-                            following = countFollowingDeferred.await()
-                        )
-                    )
+                    async { userDataSource.getById(uid) }
+                }.awaitAll().map {
+                    mapToUserInfo(it, credentials)
                 }
             } catch (ex: Exception) {
                 throw GetMoreFollowedUsersException("An error occurred when trying to get more followed users", ex)
             }
         }
+
+    private suspend fun mapToUserInfo(userDTO: UserDTO, credentials: Credentials) = withContext(Dispatchers.IO) {
+        val countFollowersDeferred = async { followerDataSource.countFollowers(userDTO.uid) }
+        val countFollowingDeferred = async { followerDataSource.countFollowing(userDTO.uid) }
+        val tokensStatisticsByAddressDeferred = async { artCollectibleDataSource.fetchTokensStatisticsByAddress(credentials, userDTO.walletAddress) }
+        val walletStatisticsByAddressDeferred = async { artMarketplaceBlockchainDataSource.fetchWalletStatistics(credentials, userDTO.walletAddress) }
+        val tokensStatisticsByAddress = tokensStatisticsByAddressDeferred.await()
+        val walletStatisticsByAddress = walletStatisticsByAddressDeferred.await()
+        userInfoMapper.mapInToOut(
+            UserInfoMapper.InputData(
+                user = userDTO,
+                followers = countFollowersDeferred.await(),
+                following = countFollowingDeferred.await(),
+                tokensCreatedCount = tokensStatisticsByAddress.countTokensCreator,
+                tokensOwnedCount = tokensStatisticsByAddress.countTokensOwned,
+                tokensBoughtCount = walletStatisticsByAddress.countTokenBought,
+                tokensSoldCount = walletStatisticsByAddress.countTokenSold
+            )
+        )
+    }
 }

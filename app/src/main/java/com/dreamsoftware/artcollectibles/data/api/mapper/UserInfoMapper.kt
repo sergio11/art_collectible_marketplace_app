@@ -4,6 +4,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
+import java.math.BigInteger
 
 class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
 
@@ -24,7 +25,11 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
                 tags = tags,
                 location = location,
                 followers = followers,
-                following = following
+                following = following,
+                tokensSoldCount = tokensSoldCount,
+                tokensBoughtCount = tokensBoughtCount,
+                tokensOwnedCount = tokensOwnedCount,
+                tokensCreatedCount = tokensCreatedCount
             )
         }
     }
@@ -35,6 +40,10 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
     data class InputData(
         val user: UserDTO,
         val followers: Long,
-        val following: Long
+        val following: Long,
+        val tokensSoldCount: BigInteger,
+        val tokensBoughtCount: BigInteger,
+        val tokensOwnedCount: BigInteger,
+        val tokensCreatedCount: BigInteger
     )
 }

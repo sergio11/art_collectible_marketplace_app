@@ -66,6 +66,8 @@ interface IArtCollectibleBlockchainDataSource {
 
     /**
      * Fetch Tokens Statistics
+     * @param credentials
+     * @param targetAddress
      */
-    suspend fun fetchTokensStatisticsByAddress(credentials: Credentials): TokenStatisticsDTO
+    suspend fun fetchTokensStatisticsByAddress(credentials: Credentials, targetAddress: String): TokenStatisticsDTO
 }

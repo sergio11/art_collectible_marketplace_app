@@ -151,12 +151,11 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
         })
     }
 
-    override suspend fun fetchTokensStatisticsByAddress(credentials: Credentials): TokenStatisticsDTO = withContext(Dispatchers.IO) {
+    override suspend fun fetchTokensStatisticsByAddress(credentials: Credentials, targetAddress: String): TokenStatisticsDTO = withContext(Dispatchers.IO) {
         val tokensStatistics = loadContract(credentials, readOnlyMode = true)
-            .fetchTokensStatisticsByAddress(credentials.address).send()
+            .fetchTokensStatisticsByAddress(targetAddress).send()
         tokenStatisticsMapper.mapInToOut(tokensStatistics)
     }
-
 
     private fun loadContract(
         credentials: Credentials,

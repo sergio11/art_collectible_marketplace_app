@@ -17,7 +17,8 @@ class MarketItemDetailViewModel @Inject constructor(
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val buyItemUseCase: BuyItemUseCase,
     private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
-    private val getSimilarMarketItemsUseCase: GetSimilarMarketItemsUseCase
+    private val getSimilarMarketItemsUseCase: GetSimilarMarketItemsUseCase,
+    private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
 ) : SupportViewModel<MarketUiState>() {
 
     companion object {
@@ -71,12 +72,14 @@ class MarketItemDetailViewModel @Inject constructor(
             runCatching {
                 val marketItem = fetchItemForSale(tokenId)
                 val authUser = loadAuthUserDetail()
+                val currentBalance = fetchCurrentBalance()
                 updateState {
                     it.copy(
                         isLoading = false,
                         artCollectibleForSale = marketItem,
                         isTokenSeller = marketItem.seller.uid == authUser.uid,
-                        isTokenAuthor = marketItem.token.author.uid == authUser.uid
+                        isTokenAuthor = marketItem.token.author.uid == authUser.uid,
+                        enoughFunds = currentBalance.balanceInWei >= marketItem.price.priceInWei
                     )
                 }
                 getSimilarMarketItemsUseCase(tokenId)
@@ -97,7 +100,8 @@ class MarketItemDetailViewModel @Inject constructor(
         updateState {
             it.copy(
                 isLoading = false,
-                isConfirmBuyItemDialogVisible = false
+                isConfirmBuyItemDialogVisible = false,
+                error = ex
             )
         }
     }
@@ -150,6 +154,10 @@ class MarketItemDetailViewModel @Inject constructor(
     private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
         scope = viewModelScope
     )
+
+    private suspend fun fetchCurrentBalance() = getCurrentBalanceUseCase.invoke(
+        scope = viewModelScope
+    )
 }
 
 data class MarketUiState(
@@ -160,5 +168,7 @@ data class MarketUiState(
     val isConfirmBuyItemDialogVisible: Boolean = false,
     val isTokenAuthor: Boolean = false,
     val artCollectibleForSale: ArtCollectibleForSale? = null,
-    val similarMarketItems: Iterable<ArtCollectibleForSale> = emptyList()
+    val similarMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
+    val enoughFunds: Boolean = false,
+    val error: Throwable? = null
 )

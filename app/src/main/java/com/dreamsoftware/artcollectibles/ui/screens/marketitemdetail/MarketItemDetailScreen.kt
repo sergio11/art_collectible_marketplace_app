@@ -174,6 +174,17 @@ fun MarketItemDetailComponent(
             Spacer(modifier = Modifier.height(50.dp))
             if (!isLoading) {
                 if (!isTokenSeller) {
+                    if(!enoughFunds) {
+                        Text(
+                            text = stringResource(id = R.string.market_item_detail_not_enough_funds_text),
+                            fontFamily = montserratFontFamily,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            color = DarkPurple,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
                     CommonButton(
                         modifier = Modifier
                             .padding(horizontal = 10.dp, vertical = 8.dp)
@@ -182,6 +193,7 @@ fun MarketItemDetailComponent(
                             containerColor = Purple200,
                             contentColor = Color.White
                         ),
+                        enabled = enoughFunds,
                         text = R.string.market_item_detail_buy_item_button_text,
                         onClick = {
                             onConfirmBuyItemDialogVisibilityChanged(true)

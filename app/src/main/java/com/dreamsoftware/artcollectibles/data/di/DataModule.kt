@@ -206,6 +206,11 @@ class DataModule {
      * @param userDataSource
      * @param storageDataSource
      * @param followerDataSource
+     * @param preferencesDataSource
+     * @param artCollectibleDataSource
+     * @param artMarketplaceBlockchainDataSource
+     * @param walletRepository
+     * @param userCredentialsMapper
      * @param userInfoMapper
      * @param saveUserInfoMapper
      * @param authUserMapper
@@ -218,6 +223,10 @@ class DataModule {
         storageDataSource: IStorageDataSource,
         followerDataSource: IFollowersDataSource,
         preferencesDataSource: IPreferencesDataSource,
+        artCollectibleDataSource: IArtCollectibleBlockchainDataSource,
+        artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
+        walletRepository: IWalletRepository,
+        userCredentialsMapper: UserCredentialsMapper,
         userInfoMapper: UserInfoMapper,
         saveUserInfoMapper: SaveUserInfoMapper,
         authUserMapper: AuthUserMapper
@@ -228,6 +237,10 @@ class DataModule {
             storageDataSource,
             followerDataSource,
             preferencesDataSource,
+            artCollectibleDataSource,
+            artMarketplaceBlockchainDataSource,
+            walletRepository,
+            userCredentialsMapper,
             userInfoMapper,
             saveUserInfoMapper,
             authUserMapper
