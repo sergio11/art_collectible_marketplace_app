@@ -155,6 +155,8 @@
     <string name="token_detail_tags_title_text">Related topics</string>
     <string name="token_detail_last_transactions_title_text">Last transactions</string>
     <string name="token_detail_last_transactions_cancelled_text" formatted="false">%s withdraws from the sale</string>
+    <string name="token_detail_last_transactions_sold_text" formatted="false">%s has acquired this work from %s</string>
+    <string name="token_detail_last_transactions_put_for_sale_text" formatted="false">The work has been put up for sale by %s</string>
     <string name="token_detail_similar_row_title_text">Other collectibles that might interest you</string>
     <!-- Home Marketplace -->
     <string name="home_market_statistics_available_items_title">Available Items</string>
@@ -202,6 +204,6 @@
     <string name="comment_detail_delete_button_text">Delete comment</string>
 
     <!-- Token history -->
-    <string name="token_history_title_default">Token History</string>
-    <string name="token_history_title_count" formatted="false">Token History (%d)</string>
+    <string name="token_history_title_default">NFT History</string>
+    <string name="token_history_title_count" formatted="false">NFT History (%d)</string>
 </resources>

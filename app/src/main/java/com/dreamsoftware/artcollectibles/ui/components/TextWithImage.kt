@@ -15,15 +15,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+
+private val DEFAULT_ICON_SIZE = 20.dp
 
 @Composable
 fun TextWithImage(
     modifier: Modifier = Modifier,
     @DrawableRes imageRes: Int,
     tintColor: Color = Color.Black,
-    text: String
+    text: String,
+    iconSize: Dp = DEFAULT_ICON_SIZE
 ) {
     Row(
         modifier = modifier,
@@ -34,7 +38,7 @@ fun TextWithImage(
             painter = painterResource(imageRes),
             contentDescription = "Image",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(iconSize),
             colorFilter = ColorFilter.tint(tintColor)
         )
         Text(

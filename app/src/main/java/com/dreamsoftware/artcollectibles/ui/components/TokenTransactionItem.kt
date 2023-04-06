@@ -45,20 +45,24 @@ fun TokenTransactionItem(
                     modifier = Modifier
                         .size(60.dp)
                         .padding(10.dp),
-                    painter = painterResource(id = if(sold) {
-                        R.drawable.sold_market_items
-                    } else if (canceled) {
-                        R.drawable.cancelled_market_items
-                    } else {
-                        R.drawable.available_market_items
-                    }),
-                    colorFilter = ColorFilter.tint(if(sold) {
-                        Color.Green
-                    } else if (canceled) {
-                        Color.Red
-                    } else {
-                        Color.Yellow
-                    }),
+                    painter = painterResource(
+                        id = if (sold) {
+                            R.drawable.sold_market_items
+                        } else if (canceled) {
+                            R.drawable.cancelled_market_items
+                        } else {
+                            R.drawable.available_market_items
+                        }
+                    ),
+                    colorFilter = ColorFilter.tint(
+                        if (sold) {
+                            Color.Green
+                        } else if (canceled) {
+                            Color.Red
+                        } else {
+                            Color.Yellow
+                        }
+                    ),
                     contentDescription = "Token Image"
                 )
                 Column(
@@ -67,8 +71,25 @@ fun TokenTransactionItem(
                 ) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        text = stringResource(id = R.string.token_detail_last_transactions_cancelled_text, seller.name),
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        text = if (sold) {
+                            stringResource(
+                                id = R.string.token_detail_last_transactions_sold_text,
+                                owner?.name.orEmpty(),
+                                seller.name
+                            )
+                        } else if (canceled) {
+                            stringResource(
+                                id = R.string.token_detail_last_transactions_cancelled_text,
+                                seller.name
+                            )
+                        } else {
+                            stringResource(
+                                id = R.string.token_detail_last_transactions_put_for_sale_text,
+                                seller.name
+                            )
+                        },
                         fontFamily = montserratFontFamily,
                         color = Color.Black,
                         style = MaterialTheme.typography.bodyMedium,
@@ -76,7 +97,11 @@ fun TokenTransactionItem(
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Left
                     )
-                    Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
                         ArtCollectiblePrice(
                             modifier = Modifier
                                 .align(Alignment.CenterStart),
@@ -85,10 +110,18 @@ fun TokenTransactionItem(
                             textSize = 14.sp,
                             priceData = price
                         )
-                        (canceledAt ?: soldAt)?.let {
+                        val date = if (sold) {
+                            soldAt
+                        } else if (canceled) {
+                            canceledAt
+                        } else {
+                            putForSaleAt
+                        }
+                        date?.let {
                             Text(
                                 modifier = Modifier
-                                    .align(Alignment.CenterEnd),
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 10.dp),
                                 text = it.format(),
                                 fontFamily = montserratFontFamily,
                                 color = Color.Gray,

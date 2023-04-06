@@ -148,21 +148,21 @@ fun MarketItemDetailComponent(
                 color = DarkPurple,
                 style = MaterialTheme.typography.titleMedium
             )
+            ArtCollectiblePrice(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                iconSize = 20.dp,
+                textSize = 20.sp,
+                textColor = DarkPurple,
+                fullMode = true,
+                priceData = artCollectibleForSale?.price
+            )
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
                 artCollectible = artCollectibleForSale?.token
-            )
-            ArtCollectiblePrice(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                iconSize = 30.dp,
-                textSize = 20.sp,
-                textColor = DarkPurple,
-                fullMode = true,
-                priceData = artCollectibleForSale?.price
             )
             ArtCollectibleForSaleRow(
                 context = context,

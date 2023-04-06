@@ -232,6 +232,7 @@ internal class ArtMarketplaceRepositoryImpl(
                     userCredentialsMapper.mapOutToIn(credentials)
                 )
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw BuyItemException("An error occurred when trying to buy an item", ex)
             }
         }

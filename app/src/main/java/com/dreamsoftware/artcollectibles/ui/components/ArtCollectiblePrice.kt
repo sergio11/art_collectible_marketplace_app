@@ -1,7 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -32,7 +31,11 @@ fun ArtCollectiblePrice(
     fullMode: Boolean = false,
     priceData: ArtCollectiblePrices?
 ){
-    Column(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Row(
             modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -51,14 +54,16 @@ fun ArtCollectiblePrice(
                 TextWithImage(
                     modifier = Modifier.padding(8.dp),
                     imageRes = R.drawable.euro_icon,
-                    text = it.format()
+                    text = it.format(),
+                    iconSize = iconSize
                 )
             }
             priceData?.priceInUSD?.let {
                 TextWithImage(
                     modifier = Modifier.padding(8.dp),
                     imageRes = R.drawable.usd_icon,
-                    text = it.format()
+                    text = it.format(),
+                    iconSize = iconSize
                 )
             }
         }
