@@ -8,6 +8,9 @@ interface IUserRepository {
     @Throws(CheckAuthenticatedException::class)
     suspend fun isAuthenticated(): Boolean
 
+    @Throws(CheckAuthenticatedException::class)
+    suspend fun getUserAuthenticatedUid(): String
+
     @Throws(SignInException::class)
     suspend fun signIn(authRequest: AuthRequest): AuthUser
 

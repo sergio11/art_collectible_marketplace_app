@@ -72,6 +72,16 @@ internal class UserRepositoryImpl(
         )
     }
 
+    @Throws(CheckAuthenticatedException::class)
+    override suspend fun getUserAuthenticatedUid(): String = try {
+        authDataSource.getUserAuthenticatedUid()
+    } catch (ex: Exception) {
+        throw CheckAuthenticatedException(
+            "An error occurred when trying to check if user is already authenticated",
+            ex
+        )
+    }
+
     @Throws(SignInException::class)
     override suspend fun signIn(authRequest: AuthRequest): AuthUser = try {
         with(authRequest) {

@@ -11,6 +11,9 @@ interface IAuthDataSource {
     @Throws(AuthException::class)
     suspend fun isAuthenticated(): Boolean
 
+    @Throws(AuthException::class)
+    suspend fun getUserAuthenticatedUid(): String
+
     /**
      * Sign In With External Provider
      * @param accessToken

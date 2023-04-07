@@ -56,7 +56,7 @@ fun OnBoardingScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
         Log.d("ONBOARDING", "viewModel.verifyUserSession() CALLED!")
-        viewModel.verifyUserSession()
+        viewModel.restoreUserSession()
     }
     OnBoardingComponent(
         modifier = modifier,

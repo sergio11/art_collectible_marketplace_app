@@ -1,19 +1,20 @@
 package com.dreamsoftware.artcollectibles.ui.screens.account.onboarding
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.dreamsoftware.artcollectibles.domain.usecase.impl.VerifyUserAuthenticatedUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.RestoreUserAuthenticatedSessionUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class OnBoardingViewModel @Inject constructor(
-    private val verifyUserAuthenticatedUseCase: VerifyUserAuthenticatedUseCase
+    private val restoreUserAuthenticatedSessionUseCase: RestoreUserAuthenticatedSessionUseCase
 ) : SupportViewModel<OnBoardingUiState>() {
 
-    fun verifyUserSession() {
+    fun restoreUserSession() {
         updateState { OnBoardingUiState.VerificationInProgress }
-        verifyUserAuthenticatedUseCase.invoke(
+        restoreUserAuthenticatedSessionUseCase.invoke(
             scope = viewModelScope,
             onSuccess = { isAuthenticated ->
                 updateState {
@@ -25,6 +26,7 @@ class OnBoardingViewModel @Inject constructor(
                 }
             },
             onError = {
+                it.printStackTrace()
                 updateState { OnBoardingUiState.NoAuthenticated }
             }
         )

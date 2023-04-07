@@ -37,6 +37,11 @@ internal class AuthDataSourceImpl(
 
     }
 
+    @Throws(AuthException::class)
+    override suspend fun getUserAuthenticatedUid(): String = withContext(Dispatchers.IO) {
+        firebaseAuth.currentUser?.uid ?: throw AuthException("An error occurred when trying to check auth state")
+    }
+
     @Throws(SignInException::class)
     override suspend fun signInWithExternalProvider(
         accessToken: String,

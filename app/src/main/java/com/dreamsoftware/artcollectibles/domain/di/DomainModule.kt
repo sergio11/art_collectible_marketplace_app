@@ -193,8 +193,17 @@ class DomainModule {
     @ViewModelScoped
     fun provideVerifyUserAuthenticatedUseCase(
         userRepository: IUserRepository,
-        preferenceRepository: IPreferenceRepository
-    ) = VerifyUserAuthenticatedUseCase(userRepository, preferenceRepository)
+        preferenceRepository: IPreferenceRepository,
+        secretRepository: ISecretRepository,
+        applicationAware: IApplicationAware,
+        appEventBus: AppEventBus
+    ) = RestoreUserAuthenticatedSessionUseCase(
+        userRepository,
+        preferenceRepository,
+        secretRepository,
+        applicationAware,
+        appEventBus
+    )
 
     /**
      * Provide Get Current Balance Use case
@@ -480,8 +489,8 @@ class DomainModule {
      */
     @Provides
     @ViewModelScoped
-    fun provideSaveCommentUseCase(commentsRepository: ICommentsRepository)
-        = SaveCommentUseCase(commentsRepository)
+    fun provideSaveCommentUseCase(commentsRepository: ICommentsRepository) =
+        SaveCommentUseCase(commentsRepository)
 
     /**
      * Provide Get Comments by token use case
