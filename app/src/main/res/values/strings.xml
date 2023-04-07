@@ -205,8 +205,9 @@
     <string name="visitors_detail_title_count" formatted="false">Visitors (%d)</string>
     <!-- Comment Detail -->
     <string name="comment_detail_delete_button_text">Delete comment</string>
-
     <!-- Token history -->
     <string name="token_history_title_default">NFT History</string>
     <string name="token_history_title_count" formatted="false">NFT History (%d)</string>
+    <!-- Category Detail -->
+    <string name="category_detail_tokens_title">Collectibles available for this category</string>
 </resources>

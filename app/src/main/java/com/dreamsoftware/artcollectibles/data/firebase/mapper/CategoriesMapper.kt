@@ -9,6 +9,7 @@ class CategoriesMapper: ISimpleOneSideMapper<Map<String, Any?>, Iterable<Categor
         const val NAME_KEY = "name"
         const val IMAGE_KEY = "image"
         const val DATA_KEY = "data"
+        const val DESCRIPTION_KEY = "description"
     }
 
     override fun mapInToOut(input: Map<String, Any?>): Iterable<CategoryDTO> = with(input) {
@@ -16,7 +17,8 @@ class CategoriesMapper: ISimpleOneSideMapper<Map<String, Any?>, Iterable<Categor
             CategoryDTO(
                 uid = it.key,
                 name = it.value[NAME_KEY] as String,
-                imageUrl = it.value[IMAGE_KEY] as String
+                imageUrl = it.value[IMAGE_KEY] as String,
+                description = it.value[DESCRIPTION_KEY] as String
             )
         }.orEmpty()
     }

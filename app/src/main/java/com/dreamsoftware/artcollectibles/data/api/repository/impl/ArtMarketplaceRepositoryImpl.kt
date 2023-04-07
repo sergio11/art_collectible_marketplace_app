@@ -19,7 +19,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 import java.math.BigInteger
 
 /**
@@ -59,6 +58,37 @@ internal class ArtMarketplaceRepositoryImpl(
                     "An error occurred when fetching available market items",
                     ex
                 )
+            }
+        }
+
+    @Throws(FetchAvailableMarketItemsByCategoryException::class)
+    override suspend fun fetchAvailableMarketItemsByCategory(categoryUid: String): Iterable<ArtCollectibleForSale> =
+        withContext(Dispatchers.IO) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                with(artMarketplaceBlockchainDataSource) {
+                    categoriesDataSource.getTokensByUid(categoryUid)
+                        .toMutableList()
+                        .asFlow()
+                        .filter { cid ->
+                            isTokenCIDAddedForSale(
+                                cid,
+                                userCredentialsMapper.mapOutToIn(credentials)
+                            )
+                        }
+                        .map { cid ->
+                            fetchItemForSaleByMetadataCID(
+                                cid,
+                                userCredentialsMapper.mapOutToIn(credentials)
+                            )
+                        }
+                        .toList()
+                        .let {
+                            mapToArtCollectibleForSaleList(it)
+                        }
+                }
+            } catch (ex: Exception) {
+                throw FetchAvailableMarketItemsByCategoryException("An error occurred when fetching available market items", ex)
             }
         }
 

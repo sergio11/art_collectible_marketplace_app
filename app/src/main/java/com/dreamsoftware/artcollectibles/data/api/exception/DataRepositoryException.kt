@@ -37,6 +37,7 @@ class GetTokensException(message: String? = null, cause: Throwable? = null): Art
 class GetTokensByCategoryException(message: String? = null, cause: Throwable? = null): ArtCollectibleDataException(message, cause)
 // ArtMarketplace Repository Exception
 abstract class ArtMarketplaceDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+class FetchAvailableMarketItemsByCategoryException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class FetchAvailableMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class FetchSellingMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class FetchOwnedMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)

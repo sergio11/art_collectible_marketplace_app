@@ -4,26 +4,30 @@ import android.content.Context
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
 import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
@@ -88,8 +92,34 @@ fun CategoryDetailComponent(
                 stringResource(id = R.string.no_text_value)
             } ?: stringResource(id = R.string.no_text_value)
         ) {
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                text = uiState.category?.description?.ifBlank {
+                    stringResource(id = R.string.no_text_value)
+                } ?: stringResource(id = R.string.no_text_value),
+                color = Color.Black,
+                fontFamily = montserratFontFamily,
+                textAlign = TextAlign.Left,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            if(!Iterables.isEmpty(tokensForSale)) {
+                Text(
+                    text = stringResource(id = R.string.category_detail_tokens_title),
+                    color = Color.Black,
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    fontFamily = montserratFontFamily,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
             FlowRow(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp, horizontal = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp, horizontal = 4.dp),
                 crossAxisAlignment = FlowCrossAxisAlignment.Center,
                 mainAxisAlignment = MainAxisAlignment.Center,
                 mainAxisSpacing = 8.dp,
@@ -97,7 +127,11 @@ fun CategoryDetailComponent(
             ) {
                 repeat(Iterables.size(tokensForSale)) {
                     with(Iterables.get(tokensForSale, it)) {
-                        ArtCollectibleForSaleCard(context = context, reverseStyle = true, artCollectibleForSale = this) {
+                        ArtCollectibleForSaleCard(
+                            context = context,
+                            reverseStyle = true,
+                            artCollectibleForSale = this
+                        ) {
                             onTokenForSaleClicked(token.id)
                         }
                     }

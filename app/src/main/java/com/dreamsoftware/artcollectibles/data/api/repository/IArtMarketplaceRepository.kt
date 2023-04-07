@@ -14,6 +14,13 @@ interface IArtMarketplaceRepository {
     suspend fun fetchAvailableMarketItems(): Iterable<ArtCollectibleForSale>
 
     /**
+     * Fetch non sold and non canceled market items by category
+     * @param categoryUid
+     */
+    @Throws(FetchAvailableMarketItemsByCategoryException::class)
+    suspend fun fetchAvailableMarketItemsByCategory(categoryUid: String): Iterable<ArtCollectibleForSale>
+
+    /**
      * Fetch market items that are being listed by the current authenticated user
      */
     @Throws(FetchSellingMarketItemsException::class)

@@ -9,7 +9,7 @@ class GetAvailableMarketItemsByCategoryUseCase(
 ): BaseUseCaseWithParams<GetAvailableMarketItemsByCategoryUseCase.Params, Iterable<ArtCollectibleForSale>>() {
 
     override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> {
-        return artMarketplaceRepository.fetchSellingMarketItems()
+        return artMarketplaceRepository.fetchAvailableMarketItemsByCategory(categoryUid = params.categoryUid)
     }
 
     data class Params(

@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.data.api.exception.FetchItemForSaleException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
@@ -301,7 +302,7 @@ private fun TokenNotAvailableForSaleDialog(
 ) {
     with(uiState) {
         CommonDialog(
-            isVisible = error?.cause is ItemNotAvailableForSale,
+            isVisible = error is FetchItemForSaleException || error?.cause is ItemNotAvailableForSale,
             titleRes = R.string.market_item_detail_token_unavailable_title_text,
             descriptionRes = R.string.market_item_detail_token_unavailable_description_text,
             acceptRes = R.string.market_item_detail_token_bought_accept_button_text,

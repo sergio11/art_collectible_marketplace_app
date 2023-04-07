@@ -8,7 +8,10 @@ class ArtCollectibleCategoryMapper: IOneSideMapper<CategoryDTO, ArtCollectibleCa
 
     override fun mapInToOut(input: CategoryDTO): ArtCollectibleCategory = with(input) {
         ArtCollectibleCategory(
-            uid, name, imageUrl
+            uid = uid,
+            name = name,
+            imageUrl = imageUrl,
+            description = description
         )
     }
 
