@@ -1,9 +1,11 @@
 package com.dreamsoftware.artcollectibles.ui.screens.commentdetail
 
 import androidx.lifecycle.viewModelScope
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.DeleteCommentUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCommentDetailUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetTokensCreatedByUserUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -11,7 +13,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CommentDetailViewModel @Inject constructor(
     private val getCommentDetailUseCase: GetCommentDetailUseCase,
-    private val deleteCommentUseCase: DeleteCommentUseCase
+    private val deleteCommentUseCase: DeleteCommentUseCase,
+    private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase
 ) : SupportViewModel<CommentDetailUiState>() {
 
     override fun onGetDefaultState(): CommentDetailUiState = CommentDetailUiState()
@@ -58,6 +61,7 @@ class CommentDetailViewModel @Inject constructor(
                 comment = comment
             )
         }
+        loadTokensCreatedByUser(userAddress = comment.user.walletAddress)
     }
 
     private fun onCommentDeleted() {
@@ -69,10 +73,24 @@ class CommentDetailViewModel @Inject constructor(
             )
         }
     }
+
+    private fun onLoadTokensCreatedCompleted(tokensCreated: Iterable<ArtCollectible>) {
+        updateState { it.copy(tokensCreated = tokensCreated) }
+    }
+
+    private fun loadTokensCreatedByUser(userAddress: String) {
+        getTokensCreatedByUserUseCase.invoke(
+            scope = viewModelScope,
+            params = GetTokensCreatedByUserUseCase.Params(userAddress),
+            onSuccess = ::onLoadTokensCreatedCompleted,
+            onError = ::onErrorOccurred
+        )
+    }
 }
 
 data class CommentDetailUiState(
     val isLoading: Boolean = false,
     val commentDeleted: Boolean = false,
-    val comment: Comment? = null
+    val comment: Comment? = null,
+    val tokensCreated: Iterable<ArtCollectible> = emptyList()
 )

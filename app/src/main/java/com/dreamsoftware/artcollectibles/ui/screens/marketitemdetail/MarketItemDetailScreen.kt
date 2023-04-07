@@ -31,6 +31,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvaila
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailUiState
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -76,6 +77,7 @@ fun MarketItemDetailScreen(
             density = density,
             onBuyItemCalled = ::buyItem,
             onConfirmBuyItemDialogVisibilityChanged = ::onConfirmBuyItemDialogVisibilityChanged,
+            onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
             onWithdrawFromSaleCalled = ::withDrawFromSale,
             onOpenArtistDetailCalled = onOpenArtistDetailCalled,
             onExitCalled = onExitCalled,
@@ -92,6 +94,7 @@ fun MarketItemDetailComponent(
     scrollState: ScrollState,
     density: Density,
     onConfirmBuyItemDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onBuyItemCalled: (tokenId: BigInteger) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -105,6 +108,9 @@ fun MarketItemDetailComponent(
         TokenBoughtDialog(uiState, onExitCalled)
         ConfirmBuyItemDialog(uiState, onBuyItemCalled, onExitCalled)
         TokenNotAvailableForSaleDialog(uiState, onExitCalled)
+        ConfirmWithdrawFromSaleDialog(uiState, onWithdrawFromSaleCalled) {
+            onConfirmWithDrawFromSaleDialogVisibilityChanged(false)
+        }
         // ========================
         CommonDetailScreen(
             context = context,
@@ -228,9 +234,7 @@ fun MarketItemDetailComponent(
                             contentColor = Color.White
                         ),
                         onClick = {
-                            artCollectibleForSale?.let {
-                                onWithdrawFromSaleCalled(it.token.id)
-                            }
+                            onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
                         }
                     )
                 }
@@ -273,6 +277,27 @@ private fun ConfirmBuyItemDialog(
                 artCollectibleForSale?.let {
                     onConfirmBuyItemCalled(it.token.id)
                 }
+            },
+            onCancelClicked = onDialogCancelled
+        )
+    }
+}
+
+@Composable
+private fun ConfirmWithdrawFromSaleDialog(
+    uiState: MarketUiState,
+    onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
+    onDialogCancelled: () -> Unit
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = isConfirmWithDrawFromSaleDialogVisible,
+            titleRes = R.string.token_detail_with_draw_from_sale_dialog_title_text,
+            descriptionRes = R.string.token_detail_with_draw_from_sale_dialog_description_text,
+            acceptRes = R.string.token_detail_with_draw_from_sale_dialog_accept_button_text,
+            cancelRes = R.string.token_detail_with_draw_from_sale_dialog_cancel_button_text,
+            onAcceptClicked = {
+                artCollectibleForSale?.token?.id?.let(onWithDrawFromSaleCalled)
             },
             onCancelClicked = onDialogCancelled
         )

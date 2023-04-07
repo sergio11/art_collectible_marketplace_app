@@ -2,10 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.commentdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -27,9 +24,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import java.math.BigInteger
 
 data class CommentDetailScreenArgs(
     val uid: String
@@ -38,8 +37,11 @@ data class CommentDetailScreenArgs(
 @Composable
 fun CommentDetailScreen(
     args: CommentDetailScreenArgs,
-    onCommentDeleted: () -> Unit,
     viewModel: CommentDetailViewModel = hiltViewModel(),
+    onCommentDeleted: () -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -69,7 +71,10 @@ fun CommentDetailScreen(
             uiState = uiState,
             scrollState = scrollState,
             density = density,
-            onDeleteComment = ::deleteComment
+            onDeleteComment = ::deleteComment,
+            onGoToTokenDetail = onGoToTokenDetail,
+            onShowTokensCreatedBy = onShowTokensCreatedBy,
+            onOpenArtistDetailCalled = onOpenArtistDetailCalled
         )
     }
 }
@@ -80,7 +85,10 @@ fun CommentDetailComponent(
     uiState: CommentDetailUiState,
     scrollState: ScrollState,
     density: Density,
-    onDeleteComment: (comment: Comment) -> Unit
+    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
+    onDeleteComment: (comment: Comment) -> Unit,
+    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -96,13 +104,62 @@ fun CommentDetailComponent(
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
                 .fillMaxWidth()
+            comment?.user?.let { userInfo ->
+                userInfo.professionalTitle?.let {
+                    Text(
+                        modifier = defaultModifier,
+                        text = it,
+                        fontFamily = montserratFontFamily,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+                UserFollowersInfoComponent(
+                    modifier = defaultModifier,
+                    followersCount = userInfo.followers,
+                    followingCount = userInfo.following
+                )
+                UserStatisticsComponent(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    itemSize = 30.dp,
+                    userInfo = userInfo
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 modifier = defaultModifier,
                 text = comment?.text ?: stringResource(id = R.string.no_text_value),
                 style = MaterialTheme.typography.bodyLarge,
                 fontFamily = montserratFontFamily
             )
+            Spacer(modifier = Modifier.height(30.dp))
+            ArtCollectiblesRow(
+                modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
+                context = context,
+                reverseStyle = true,
+                titleRes = R.string.comment_detail_tokens_created_by_user_text,
+                items = tokensCreated,
+                onShowAllItems = {
+                    comment?.user?.let(onShowTokensCreatedBy)
+                },
+                onItemSelected = {
+                    onGoToTokenDetail(it.id)
+                }
+            )
             Spacer(modifier = Modifier.height(20.dp))
+            CommonButton(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+                text = R.string.comment_detail_artist_detail_button_text,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Purple700,
+                    contentColor = Color.White
+                ),
+                onClick = {
+                    comment?.user?.let(onOpenArtistDetailCalled)
+                }
+            )
             CommonButton(
                 modifier = Modifier
                     .padding(horizontal = 10.dp, vertical = 8.dp)
@@ -116,6 +173,7 @@ fun CommentDetailComponent(
                     comment?.let(onDeleteComment)
                 }
             )
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

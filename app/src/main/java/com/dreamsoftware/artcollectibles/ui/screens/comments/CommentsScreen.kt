@@ -149,6 +149,17 @@ private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Left
                     )
+                    user.professionalTitle?.let {
+                        Text(
+                            modifier = Modifier.padding(vertical = 2.dp),
+                            text = it,
+                            fontFamily = montserratFontFamily,
+                            style = MaterialTheme.typography.labelMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color.DarkGray,
+                        )
+                    }
                     Text(
                         modifier = Modifier.padding(top = 4.dp),
                         text = text,

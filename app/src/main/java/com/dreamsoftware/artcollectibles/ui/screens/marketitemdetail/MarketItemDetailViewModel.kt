@@ -64,6 +64,10 @@ class MarketItemDetailViewModel @Inject constructor(
         )
     }
 
+    fun onConfirmWithDrawFromSaleDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isConfirmWithDrawFromSaleDialogVisible = isVisible) }
+    }
+
     /**
      * Private Methods
      */
@@ -170,5 +174,6 @@ data class MarketUiState(
     val artCollectibleForSale: ArtCollectibleForSale? = null,
     val similarMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val enoughFunds: Boolean = false,
+    val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,
     val error: Throwable? = null
 )

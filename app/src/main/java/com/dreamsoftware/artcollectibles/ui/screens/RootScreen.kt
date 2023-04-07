@@ -154,9 +154,17 @@ fun RootScreen(
         composable(DestinationItem.CommentDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.CommentDetail.parseArgs(args)?.let { screenArgs ->
-                    CommentDetailScreen(args = screenArgs, onCommentDeleted = {
-                        navigationController.popBackStack()
-                    })
+                    with(navigationController) {
+                        CommentDetailScreen(args = screenArgs, onCommentDeleted = {
+                            popBackStack()
+                        }, onOpenArtistDetailCalled = {
+                            navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                        }, onShowTokensCreatedBy = {
+                            navigate(DestinationItem.UserTokens.buildShowTokensCreatedRoute(it))
+                        }, onGoToTokenDetail = {
+                            navigate(DestinationItem.TokenDetail.buildRoute(it))
+                        })
+                    }
                 }
             }
         }
