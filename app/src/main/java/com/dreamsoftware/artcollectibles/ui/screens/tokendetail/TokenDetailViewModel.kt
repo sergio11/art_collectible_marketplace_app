@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
@@ -82,7 +83,8 @@ class TokenDetailViewModel @Inject constructor(
 
     fun putItemForSale(tokenId: BigInteger) {
         with(uiState.value) {
-            tokenPriceInEth?.toFloatOrNull()?.let { price ->
+            Log.d("ART_COLL", "tokenPriceInEth -> $tokenPriceInEth")
+            tokenPriceInEth?.let { price ->
                 putItemForSaleUseCase.invoke(
                     scope = viewModelScope,
                     params = PutItemForSaleUseCase.Params(tokenId, price),
@@ -103,11 +105,11 @@ class TokenDetailViewModel @Inject constructor(
         }
     }
 
-    fun onTokenPriceChanged(newPriceInEth: String) {
+    fun onTokenPriceChanged(newPriceInEth: Float) {
         updateState {
             it.copy(
                 tokenPriceInEth = newPriceInEth,
-                isPutTokenForSaleConfirmButtonEnabled = newPriceInEth.isNotBlank()
+                isPutTokenForSaleConfirmButtonEnabled = newPriceInEth > 0
             )
         }
     }
@@ -375,7 +377,7 @@ data class TokenDetailUiState(
     val isBurned: Boolean = false,
     val isTokenOwner: Boolean = false,
     val isTokenAddedForSale: Boolean = false,
-    val tokenPriceInEth: String? = null,
+    val tokenPriceInEth: Float? = null,
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),
     val lastMarketHistory: Iterable<ArtCollectibleForSale> = emptyList(),

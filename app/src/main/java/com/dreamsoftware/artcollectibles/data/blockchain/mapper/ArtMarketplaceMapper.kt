@@ -17,7 +17,7 @@ class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibl
             seller = seller,
             owner = owner,
             priceInWei = price,
-            priceInEth = price.toBigDecimal().div(BigDecimal.valueOf(1000000000000000000L)),
+            priceInEth = price.toBigDecimal().divide(BigDecimal.valueOf(1000000000000000000L)),
             sold = sold,
             canceled = canceled,
             putForSaleAt = Date(putForSaleAt.toLong() * 1000),

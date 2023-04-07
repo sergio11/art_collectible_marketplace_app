@@ -29,17 +29,17 @@ fun CommonDefaultDecimalField(
     modifier: Modifier = CommonDefaultDecimalFieldModifier,
     isEnabled: Boolean = true,
     isReadOnly: Boolean = false,
-    value: String? = null,
+    value: Float? = null,
     @StringRes labelRes: Int,
     @StringRes placeHolderRes: Int,
     numberOfDecimals: Int = DEFAULT_NUMBER_OF_DECIMALS,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    onValueChanged: (newValue: String) -> Unit = {}
+    onValueChanged: (newValue: Float) -> Unit = {}
 ) {
     TextField(
         modifier = modifier,
-        value = value.orEmpty(),
+        value = value?.toString()?.replace(".", "").orEmpty(),
         enabled = isEnabled,
         readOnly = isReadOnly,
         leadingIcon = leadingIcon,
@@ -62,13 +62,13 @@ fun CommonDefaultDecimalField(
         singleLine = true,
         maxLines = 1,
         onValueChange = {
-            onValueChanged(
-                if (it.startsWith("0")) {
-                    ""
-                } else {
-                    it
-                }
-            )
+            if(it.length <= numberOfDecimals) {
+                "0.".padEnd(numberOfDecimals - it.length, '0') + it
+            } else {
+                it.toMutableList().apply {
+                    add(it.length - numberOfDecimals, '.')
+                }.joinToString("")
+            }.toFloatOrNull()?.let(onValueChanged)
         }
     )
 }

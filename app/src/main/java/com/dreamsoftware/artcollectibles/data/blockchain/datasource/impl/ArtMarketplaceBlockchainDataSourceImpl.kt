@@ -66,7 +66,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
                 val defaultCostOfPuttingForSale =
                     Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER)
                         .toBigInteger()
-                Log.d("ART_COLL", "putItemForSale - priceInEth - $priceInEth")
+                Log.d("ART_COLL", "putItemForSale - priceInEth - $priceInEth - tokenId $tokenId")
                 val putItemForSalePriceInWei =
                     Convert.toWei(priceInEth.toString(), Convert.Unit.ETHER).toBigInteger()
                 Log.d("ART_COLL", "putItemForSalePriceInWei - $putItemForSalePriceInWei")
@@ -76,6 +76,7 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     override suspend fun withdrawFromSale(tokenId: BigInteger, credentials: Credentials) {
         withContext(Dispatchers.IO) {
+            Log.d("ART_COLL", "withdrawFromSale - tokenId -> $tokenId")
             loadContract(credentials).withdrawFromSale(tokenId).send()
         }
     }

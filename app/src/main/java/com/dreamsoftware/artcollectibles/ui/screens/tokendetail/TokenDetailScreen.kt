@@ -122,7 +122,7 @@ fun TokenDetailComponent(
     onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
-    onItemPriceChanged: (price: String) -> Unit,
+    onItemPriceChanged: (price: Float) -> Unit,
     onPublishComment: (comment: String) -> Unit,
     onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
@@ -176,7 +176,7 @@ private fun TokenDetailBody(
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
-    onItemPriceChanged: (price: String) -> Unit,
+    onItemPriceChanged: (price: Float) -> Unit,
     onTokenAddedToFavorites: (tokenId: BigInteger) -> Unit,
     onTokenRemovedFromFavorites: (tokenId: BigInteger) -> Unit,
     onConfirmBurnTokenDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
@@ -414,7 +414,7 @@ private fun ConfirmBurnTokenDialog(
 private fun ConfirmPutItemForSaleDialog(
     uiState: TokenDetailUiState,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
-    onItemPriceChanged: (priceInEth: String) -> Unit,
+    onItemPriceChanged: (priceInEth: Float) -> Unit,
     onDialogCancelled: () -> Unit
 ) {
     with(uiState) {
