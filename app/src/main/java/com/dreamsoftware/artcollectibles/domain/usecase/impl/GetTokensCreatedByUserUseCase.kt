@@ -8,11 +8,14 @@ class GetTokensCreatedByUserUseCase(
     private val artCollectibleRepository: IArtCollectibleRepository
 ): BaseUseCaseWithParams<GetTokensCreatedByUserUseCase.Params, Iterable<ArtCollectible>>() {
 
-    override suspend fun onExecuted(params: Params): Iterable<ArtCollectible> {
-        return artCollectibleRepository.getTokensCreatedBy(params.userAddress)
+    override suspend fun onExecuted(params: Params): Iterable<ArtCollectible> = with(params) {
+        with(artCollectibleRepository) {
+            limit?.let { getTokensCreatedBy(userAddress, it) } ?: getTokensCreatedBy(userAddress)
+        }
     }
 
     data class Params(
-        val userAddress: String
+        val userAddress: String,
+        val limit: Long? = null
     )
 }

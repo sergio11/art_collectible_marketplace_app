@@ -21,6 +21,11 @@ class ArtistDetailViewModel @Inject constructor(
     private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase
 ) : SupportViewModel<ArtistDetailUiState>() {
 
+    private companion object {
+        const val TOKENS_OWNED_BY_USER_LIMIT = 4L
+        const val TOKENS_CREATED_BY_USER_LIMIT = 4L
+    }
+
     override fun onGetDefaultState(): ArtistDetailUiState = ArtistDetailUiState()
 
     fun loadDetail(uid: String) {
@@ -102,7 +107,10 @@ class ArtistDetailViewModel @Inject constructor(
     private fun loadTokensOwnedByUser(userAddress: String) {
         getTokensOwnedByUserUseCase.invoke(
             scope = viewModelScope,
-            params = GetTokensOwnedByUserUseCase.Params(userAddress),
+            params = GetTokensOwnedByUserUseCase.Params(
+                userAddress,
+                TOKENS_OWNED_BY_USER_LIMIT
+            ),
             onSuccess = ::onLoadTokensOwnedCompleted,
             onError =  ::onErrorOccurred
         )
@@ -111,7 +119,10 @@ class ArtistDetailViewModel @Inject constructor(
     private fun loadTokensCreatedByUser(userAddress: String) {
         getTokensCreatedByUserUseCase.invoke(
             scope = viewModelScope,
-            params = GetTokensCreatedByUserUseCase.Params(userAddress),
+            params = GetTokensCreatedByUserUseCase.Params(
+                userAddress,
+                TOKENS_CREATED_BY_USER_LIMIT
+            ),
             onSuccess = ::onLoadTokensCreatedCompleted,
             onError = ::onErrorOccurred
         )

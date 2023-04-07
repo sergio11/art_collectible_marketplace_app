@@ -95,6 +95,17 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
         artCollectibleMapper.mapInListToOutList(collectibles)
     }
 
+    override suspend fun getTokensCreatedBy(
+        credentials: Credentials,
+        creatorAddress: String,
+        limit: Long
+    ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
+        val collectibles =
+            loadContract(credentials, readOnlyMode = true).getPaginatedTokensCreatedBy(creatorAddress, BigInteger.valueOf(limit)).send()
+                .filterIsInstance<ArtCollectible>()
+        artCollectibleMapper.mapInListToOutList(collectibles)
+    }
+
     override suspend fun getTokensOwned(credentials: Credentials): Iterable<ArtCollectibleBlockchainDTO> =
         withContext(Dispatchers.IO) {
             val collectibles =
@@ -109,6 +120,17 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
     ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
         val collectibles =
             loadContract(credentials, readOnlyMode = true).getTokensOwnedBy(ownerAddress).send()
+                .filterIsInstance<ArtCollectible>()
+        artCollectibleMapper.mapInListToOutList(collectibles)
+    }
+
+    override suspend fun getTokensOwnedBy(
+        credentials: Credentials,
+        ownerAddress: String,
+        limit: Long
+    ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
+        val collectibles =
+            loadContract(credentials, readOnlyMode = true).getPaginatedTokensOwnedBy(ownerAddress, BigInteger.valueOf(limit)).send()
                 .filterIsInstance<ArtCollectible>()
         artCollectibleMapper.mapInListToOutList(collectibles)
     }

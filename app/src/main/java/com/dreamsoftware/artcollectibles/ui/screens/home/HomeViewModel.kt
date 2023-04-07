@@ -19,6 +19,12 @@ class HomeViewModel @Inject constructor(
     private val getMoreLikedTokensUseCase: GetMoreLikedTokensUseCase
 ) : SupportViewModel<HomeUiState>() {
 
+    companion object {
+        const val AVAILABLE_MARKET_ITEMS_LIMIT = 6
+        const val SELLING_MARKET_ITEMS_LIMIT = 6
+        const val MARKET_HISTORY_ITEMS_LIMIT = 6
+    }
+
     override fun onGetDefaultState(): HomeUiState = HomeUiState()
 
     fun loadData() {

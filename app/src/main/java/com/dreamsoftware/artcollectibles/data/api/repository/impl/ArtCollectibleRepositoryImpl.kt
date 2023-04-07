@@ -164,6 +164,28 @@ internal class ArtCollectibleRepositoryImpl(
             }
         }
 
+    @Throws(GetTokensOwnedException::class)
+    override suspend fun getTokensOwnedBy(
+        ownerAddress: String,
+        limit: Long
+    ): Iterable<ArtCollectible> = withContext(Dispatchers.Default) {
+        try {
+            val credentials = walletRepository.loadCredentials()
+            mapToArtCollectible(
+                credentials, artCollectibleDataSource.getTokensOwnedBy(
+                    userCredentialsMapper.mapOutToIn(credentials),
+                    ownerAddress,
+                    limit
+                )
+            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            throw GetTokensOwnedException(
+                "An error occurred when trying to get tokens owned", ex
+            )
+        }
+    }
+
     @Throws(GetTokensCreatedException::class)
     override suspend fun getTokensCreated(): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
@@ -215,6 +237,28 @@ internal class ArtCollectibleRepositoryImpl(
                 )
             }
         }
+
+    @Throws(GetTokensCreatedException::class)
+    override suspend fun getTokensCreatedBy(
+        creatorAddress: String,
+        limit: Long
+    ): Iterable<ArtCollectible> = withContext(Dispatchers.Default) {
+        try {
+            val credentials = walletRepository.loadCredentials()
+            mapToArtCollectible(
+                credentials, artCollectibleDataSource.getTokensCreatedBy(
+                    userCredentialsMapper.mapOutToIn(credentials),
+                    creatorAddress,
+                    limit
+                )
+            )
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            throw GetTokensOwnedException(
+                "An error occurred when trying to get tokens owned", ex
+            )
+        }
+    }
 
     @Throws(GetTokenByIdException::class)
     override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible =
