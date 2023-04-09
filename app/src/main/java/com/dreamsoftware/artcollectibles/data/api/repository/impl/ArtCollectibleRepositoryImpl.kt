@@ -16,9 +16,9 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataS
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.domain.models.*
+import com.google.common.collect.Iterables
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -37,11 +37,6 @@ internal class ArtCollectibleRepositoryImpl(
     private val commentsDataSource: ICommentsDataSource,
     private val categoriesDataSource: ICategoriesDataSource
 ) : IArtCollectibleRepository {
-
-    private companion object {
-        const val TOKENS_OWNED_KEY = "TOKENS_OWNED_KEY"
-        const val TOKENS_CREATED_KEY = "TOKENS_CREATED_KEY"
-    }
 
     @Throws(ObserveArtCollectibleMintedEventsException::class)
     override suspend fun observeArtCollectibleMintedEvents(): Flow<ArtCollectibleMintedEvent> =
@@ -78,10 +73,6 @@ internal class ArtCollectibleRepositoryImpl(
                         tokenId,
                         userCredentialsMapper.mapOutToIn(credentials)
                     )
-                    with(artCollectibleMemoryCacheDataSource) {
-                        delete(TOKENS_CREATED_KEY)
-                        delete(TOKENS_OWNED_KEY)
-                    }
                     mapToArtCollectible(credentials, tokenMetadata, tokenMinted, false)
                 }
             } catch (ex: Exception) {
@@ -103,11 +94,7 @@ internal class ArtCollectibleRepositoryImpl(
             // Delete token
             artCollectibleDataSource.burnToken(tokenId, credentials)
             // Delete memory cache entry
-            with(artCollectibleMemoryCacheDataSource) {
-                delete(tokenId)
-                delete(TOKENS_CREATED_KEY)
-                delete(TOKENS_OWNED_KEY)
-            }
+            artCollectibleMemoryCacheDataSource.delete(tokenId)
         } catch (ex: Exception) {
             throw DeleteArtCollectibleException(
                 "An error occurred when trying to delete a new token", ex
@@ -120,21 +107,9 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                try {
-                    artCollectibleMemoryCacheDataSource.findByKey(TOKENS_OWNED_KEY)
-                } catch (ex: CacheException) {
-                    val tokens = artCollectibleDataSource.getTokensOwned(
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                    tokenMetadataRepository.fetchByCid(tokens.map { it.metadataCID })
-                        .mapNotNull { tokenMetadata ->
-                            tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
-                                mapToArtCollectible(credentials, tokenMetadata, token, false)
-                            }
-                        }.also {
-                            artCollectibleMemoryCacheDataSource.save(TOKENS_OWNED_KEY, it)
-                        }
-                }
+                mapToArtCollectible(credentials, artCollectibleDataSource.getTokensOwned(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ))
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw GetTokensOwnedException(
@@ -189,26 +164,9 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                try {
-                    artCollectibleMemoryCacheDataSource.findByKey(TOKENS_CREATED_KEY)
-                } catch (ex: CacheException) {
-                    val fetchTokenFilesDeferred =
-                        async { tokenMetadataRepository.fetchByAuthorAddress(credentials.address) }
-                    val getTokensCreatedDeferred = async {
-                        artCollectibleDataSource.getTokensCreated(
-                            userCredentialsMapper.mapOutToIn(credentials)
-                        )
-                    }
-                    val tokenFiles = fetchTokenFilesDeferred.await()
-                    val tokens = getTokensCreatedDeferred.await()
-                    tokenFiles.mapNotNull { tokenMetadata ->
-                        tokens.find { it.metadataCID == tokenMetadata.cid }?.let { token ->
-                            mapToArtCollectible(credentials, tokenMetadata, token, false)
-                        }
-                    }.also {
-                        artCollectibleMemoryCacheDataSource.save(TOKENS_CREATED_KEY, it)
-                    }
-                }
+                mapToArtCollectible(credentials, artCollectibleDataSource.getTokensCreated(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ))
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw GetTokensCreatedException(
@@ -263,15 +221,17 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                try {
-                    artCollectibleMemoryCacheDataSource.findByKey(tokenId).first()
-                } catch (ex: CacheException) {
-                    val token = artCollectibleDataSource.getTokenById(
-                        tokenId, userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                    val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
-                    mapToArtCollectible(credentials, tokenMetadata, token, true).also {
-                        artCollectibleMemoryCacheDataSource.save(tokenId, listOf(it))
+                with(artCollectibleMemoryCacheDataSource) {
+                    try {
+                        findByKey(tokenId)
+                    } catch (ex: CacheException) {
+                        val token = artCollectibleDataSource.getTokenById(
+                            tokenId, userCredentialsMapper.mapOutToIn(credentials)
+                        )
+                        val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
+                        mapToArtCollectible(credentials, tokenMetadata, token, true).also {
+                            save(tokenId, it)
+                        }
                     }
                 }
             } catch (ex: Exception) {
@@ -284,12 +244,30 @@ internal class ArtCollectibleRepositoryImpl(
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                mapToArtCollectible(
-                    credentials, artCollectibleDataSource.getTokens(
-                        tokenList,
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                )
+                with(artCollectibleMemoryCacheDataSource) {
+                    buildList {
+                        findByKeys(
+                            keys = tokenList, strictMode = false
+                        ).let { tokensCached ->
+                            if (Iterables.size(tokensCached) != Iterables.size(tokenList)) {
+                                val tokenIdListCached = tokensCached.map { it.id }
+                                artCollectibleDataSource.getTokens(
+                                    tokenList.filterNot { tokenIdListCached.contains(it) },
+                                    userCredentialsMapper.mapOutToIn(credentials)
+                                ).let { tokensNotCached ->
+                                    fetchTokenMetadata(credentials, tokensNotCached)
+                                }.let { tokensNotCached ->
+                                    tokensNotCached.forEach {
+                                        save(it.id, it)
+                                    }
+                                    addAll(tokensCached + tokensNotCached)
+                                }
+                            } else {
+                                addAll(tokensCached)
+                            }
+                        }
+                    }
+                }
             } catch (ex: Exception) {
                 throw GetTokensException("An error occurred when trying to get tokens", ex)
             }
@@ -341,20 +319,28 @@ internal class ArtCollectibleRepositoryImpl(
 
     private suspend fun mapToArtCollectible(
         credentials: UserWalletCredentials,
-        tokenList: Iterable<ArtCollectibleBlockchainDTO>
+        tokensList: Iterable<ArtCollectibleBlockchainDTO>
     ) = withContext(Dispatchers.Default) {
-        tokenList.asSequence().map { token ->
-            async {
-                try {
-                    artCollectibleMemoryCacheDataSource.findByKey(token.tokenId).first()
-                } catch (ex: CacheException) {
-                    val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
-                    mapToArtCollectible(credentials, tokenMetadata, token, false).also {
-                        artCollectibleMemoryCacheDataSource.save(token.tokenId, listOf(it))
+        with(artCollectibleMemoryCacheDataSource) {
+            val tokensIdList = tokensList.map { it.tokenId }
+            buildList {
+                findByKeys(
+                    keys = tokensIdList, strictMode = false
+                ).let { tokensCached ->
+                    if (Iterables.size(tokensCached) != Iterables.size(tokensIdList)) {
+                        val tokenIdListCached = tokensCached.map { it.id }
+                        val tokensNotCached = fetchTokenMetadata(credentials,
+                            tokensList.filterNot { tokenIdListCached.contains(it.tokenId) })
+                        tokensNotCached.forEach {
+                            save(it.id, it)
+                        }
+                        addAll(tokensCached + tokensNotCached)
+                    } else {
+                        addAll(tokensCached)
                     }
                 }
             }
-        }.toList().awaitAll()
+        }
     }
 
     private suspend fun mapToArtCollectible(
@@ -365,9 +351,15 @@ internal class ArtCollectibleRepositoryImpl(
     ): ArtCollectible =
         withContext(Dispatchers.IO) {
             val tokenId = token.tokenId.toString()
-            val tokenAuthorDeferred = async { userRepository.getByAddress(token.creator, requireUserInfoFullDetail) }
+            val tokenAuthorDeferred =
+                async { userRepository.getByAddress(token.creator, requireUserInfoFullDetail) }
             val tokenOwnerDeferred = async {
-                runCatching { userRepository.getByAddress(token.owner, requireUserInfoFullDetail) }.getOrElse {
+                runCatching {
+                    userRepository.getByAddress(
+                        token.owner,
+                        requireUserInfoFullDetail
+                    )
+                }.getOrElse {
                     userRepository.getByAddress(token.creator, requireUserInfoFullDetail)
                 }
             }
@@ -389,4 +381,21 @@ internal class ArtCollectibleRepositoryImpl(
                 )
             )
         }
+
+    private suspend fun fetchTokenMetadata(
+        credentials: UserWalletCredentials,
+        tokensList: Iterable<ArtCollectibleBlockchainDTO> ) = withContext(Dispatchers.IO) {
+        tokenMetadataRepository.fetchByCid(tokensList.map { it.metadataCID }
+        ).mapNotNull { tokenMetadata ->
+            tokensList.find { it.metadataCID == tokenMetadata.cid }
+                ?.let { token ->
+                    mapToArtCollectible(
+                        credentials,
+                        tokenMetadata,
+                        token,
+                        false
+                    )
+                }
+        }
+    }
 }

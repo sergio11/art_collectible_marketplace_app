@@ -4,4 +4,4 @@ import com.dreamsoftware.artcollectibles.data.memory.datasource.core.IMemoryCach
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 
 interface IArtCollectibleMemoryCacheDataSource:
-    IMemoryCacheDataSource<Any, Iterable<ArtCollectible>>
+    IMemoryCacheDataSource<Any, ArtCollectible>

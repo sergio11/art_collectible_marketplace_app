@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -68,11 +69,15 @@ class HomeViewModel @Inject constructor(
         fetchSellingMarketItemsUseCase.invoke(
             scope = viewModelScope,
             onSuccess = { sellingItems ->
+                Log.d("ART_COLL", "fetchSellingMarketItems onSuccess -> ${Iterables.size(sellingItems)}")
                 updateState {
                     it.copy(sellingMarketItems = sellingItems)
                 }
             },
-            onError = {}
+            onError = {
+                it.printStackTrace()
+                Log.d("ART_COLL", "fetchSellingMarketItems err -> ${it.message}")
+            }
         )
     }
 

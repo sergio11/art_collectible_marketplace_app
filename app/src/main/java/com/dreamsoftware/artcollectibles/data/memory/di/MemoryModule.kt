@@ -1,9 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.memory.di
 
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IUserMemoryDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletCredentialsMemoryDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.*
+import com.dreamsoftware.artcollectibles.data.memory.datasource.impl.*
 import com.dreamsoftware.artcollectibles.data.memory.datasource.impl.ArtCollectibleMemoryCacheDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.memory.datasource.impl.UserMemoryDataSourceImpl
 import com.dreamsoftware.artcollectibles.data.memory.datasource.impl.WalletCredentialsMemoryDataSourceImpl
@@ -21,6 +19,10 @@ class MemoryModule {
     @Provides
     @Singleton
     fun provideArtCollectibleMemoryCacheDataSource(): IArtCollectibleMemoryCacheDataSource = ArtCollectibleMemoryCacheDataSourceImpl()
+
+    @Provides
+    @Singleton
+    fun provideArtMarketItemMemoryCacheDataSource(): IArtMarketItemMemoryCacheDataSource = ArtMarketItemMemoryCacheDataSourceImpl()
 
     @Provides
     @Singleton

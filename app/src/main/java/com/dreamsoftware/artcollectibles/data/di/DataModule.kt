@@ -11,10 +11,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.*
 import com.dreamsoftware.artcollectibles.data.firebase.di.FirebaseModule
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IUserMemoryDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletCredentialsMemoryDataSource
-import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.*
 import com.dreamsoftware.artcollectibles.data.memory.di.MemoryModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
 import com.dreamsoftware.artcollectibles.data.preferences.di.PreferencesModule
@@ -178,6 +175,7 @@ class DataModule {
      * @param marketplaceStatisticsMapper
      * @param categoriesDataSource
      * @param marketPricesBlockchainDataSource
+     * @param artMarketItemMemoryCacheDataSource
      */
     @Provides
     @Singleton
@@ -189,7 +187,8 @@ class DataModule {
         userCredentialsMapper: UserCredentialsMapper,
         marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
         categoriesDataSource: ICategoriesDataSource,
-        marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource
+        marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource,
+        artMarketItemMemoryCacheDataSource: IArtMarketItemMemoryCacheDataSource
     ): IArtMarketplaceRepository =
         ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource,
@@ -199,7 +198,8 @@ class DataModule {
             userCredentialsMapper,
             marketplaceStatisticsMapper,
             categoriesDataSource,
-            marketPricesBlockchainDataSource
+            marketPricesBlockchainDataSource,
+            artMarketItemMemoryCacheDataSource
         )
 
     /**

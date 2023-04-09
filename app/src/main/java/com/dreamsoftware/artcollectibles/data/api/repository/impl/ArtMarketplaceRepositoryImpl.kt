@@ -11,9 +11,12 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketpl
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IMarketPricesBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtMarketItemMemoryCacheDataSource
+import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectiblePrices
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
+import com.google.common.collect.Iterables
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -31,6 +34,7 @@ import java.math.BigInteger
  * @param marketplaceStatisticsMapper
  * @param categoriesDataSource
  * @param marketPricesBlockchainDataSource
+ * @param artMarketItemMemoryCacheDataSource
  */
 internal class ArtMarketplaceRepositoryImpl(
     private val artMarketplaceBlockchainDataSource: IArtMarketplaceBlockchainDataSource,
@@ -40,7 +44,8 @@ internal class ArtMarketplaceRepositoryImpl(
     private val userCredentialsMapper: UserCredentialsMapper,
     private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
     private val categoriesDataSource: ICategoriesDataSource,
-    private val marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource
+    private val marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource,
+    private val artMarketItemMemoryCacheDataSource: IArtMarketItemMemoryCacheDataSource
 ) : IArtMarketplaceRepository {
 
     @Throws(FetchAvailableMarketItemsException::class)
@@ -48,11 +53,9 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectibleForSaleList =
-                    artMarketplaceBlockchainDataSource.fetchAvailableMarketItems(
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                mapToArtCollectibleForSaleList(artCollectibleForSaleList)
+                mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchAvailableMarketItems(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ))
             } catch (ex: Exception) {
                 throw FetchAvailableMarketItemsException(
                     "An error occurred when fetching available market items",
@@ -97,11 +100,10 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectibleForSaleList =
-                    artMarketplaceBlockchainDataSource.fetchSellingMarketItems(
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                mapToArtCollectibleForSaleList(artCollectibleForSaleList)
+                val sellingMarketItems = artMarketplaceBlockchainDataSource.fetchSellingMarketItems(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                )
+                mapToArtCollectibleForSaleList(sellingMarketItems)
             } catch (ex: Exception) {
                 throw FetchSellingMarketItemsException(
                     "An error occurred when fetching selling market items",
@@ -115,11 +117,9 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectibleForSaleList =
-                    artMarketplaceBlockchainDataSource.fetchOwnedMarketItems(
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                mapToArtCollectibleForSaleList(artCollectibleForSaleList)
+                mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchOwnedMarketItems(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ))
             } catch (ex: Exception) {
                 throw FetchOwnedMarketItemsException(
                     "An error occurred when fetching owned market items",
@@ -133,11 +133,9 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectibleForSaleList =
-                    artMarketplaceBlockchainDataSource.fetchMarketHistory(
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                mapToArtCollectibleForSaleList(artCollectibleForSaleList)
+                mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchMarketHistory(
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ))
             } catch (ex: Exception) {
                 throw FetchMarketHistoryException(
                     "An error occurred when fetching market history",
@@ -151,12 +149,10 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectibleForSaleList =
-                    artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(
-                        tokenId,
-                        userCredentialsMapper.mapOutToIn(credentials)
-                    )
-                mapToArtCollectibleForSaleList(artCollectibleForSaleList)
+                mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(
+                    tokenId,
+                    userCredentialsMapper.mapOutToIn(credentials)
+                ))
             } catch (ex: Exception) {
                 throw FetchMarketHistoryException(
                     "An error occurred when fetching the token market history",
@@ -188,11 +184,20 @@ internal class ArtMarketplaceRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
-                val artCollectible = artMarketplaceBlockchainDataSource.fetchItemForSale(
-                    tokenId,
-                    userCredentialsMapper.mapOutToIn(credentials)
-                )
-                mapToArtCollectibleForSale(artCollectible, true)
+                with(artMarketItemMemoryCacheDataSource) {
+                    try {
+                        findByKey(tokenId)
+                    } catch (ex: CacheException) {
+                        val artCollectible = artMarketplaceBlockchainDataSource.fetchItemForSale(
+                            tokenId,
+                            userCredentialsMapper.mapOutToIn(credentials)
+                        )
+                        mapToArtCollectibleForSale(artCollectible, true).also {
+                            save(it.token.id, it)
+                        }
+                    }
+                }
+
             } catch (ex: Exception) {
                 throw FetchItemForSaleException(
                     "An error occurred when trying to fetch item for sale",
