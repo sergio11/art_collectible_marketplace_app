@@ -10,7 +10,7 @@ internal class UserMemoryDataSourceImpl:
     SupportMemoryCacheDataSourceImpl<String, UserInfo>(), IUserMemoryDataSource{
 
     companion object {
-        private const val MAXIMUM_CACHE_SIZE = 1L
+        private const val MAXIMUM_CACHE_SIZE = 20L
         private val EXPIRE_AFTER_WRITE = 3L.minutes
     }
 

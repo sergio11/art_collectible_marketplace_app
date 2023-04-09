@@ -13,6 +13,7 @@ import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.di.IPFSModule
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IUserMemoryDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletCredentialsMemoryDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
 import com.dreamsoftware.artcollectibles.data.memory.di.MemoryModule
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
@@ -260,6 +261,7 @@ class DataModule {
      * @param walletDataSource
      * @param faucetBlockchainDataSource
      * @param walletMetadataMemoryCache
+     * @param walletCredentialsMemoryDataSource
      */
     @Provides
     @Singleton
@@ -273,7 +275,8 @@ class DataModule {
         passwordUtils: PasswordUtils,
         walletDataSource: IWalletDataSource,
         faucetBlockchainDataSource: IFaucetBlockchainDataSource,
-        walletMetadataMemoryCache: IWalletMetadataMemoryDataSource
+        walletMetadataMemoryCache: IWalletMetadataMemoryDataSource,
+        walletCredentialsMemoryDataSource: IWalletCredentialsMemoryDataSource
     ): IWalletRepository =
         WalletRepositoryImpl(
             accountBalanceMapper,
@@ -285,7 +288,8 @@ class DataModule {
             passwordUtils,
             walletDataSource,
             faucetBlockchainDataSource,
-            walletMetadataMemoryCache
+            walletMetadataMemoryCache,
+            walletCredentialsMemoryDataSource
         )
 
     /**

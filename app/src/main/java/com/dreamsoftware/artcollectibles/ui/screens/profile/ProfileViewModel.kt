@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.UpdateUserInfoUseCa
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import com.dreamsoftware.artcollectibles.utils.IApplicationAware
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -152,8 +153,10 @@ class ProfileViewModel @Inject constructor(
     private fun loadProfileData() {
         viewModelScope.launch {
             try {
-                val userProfile = getAuthUserProfileUseCase.invoke(scope = viewModelScope)
-                val currentBalance = getCurrentBalanceUseCase.invoke(scope = viewModelScope)
+                val fetchAuthUserDeferred = async { fetchAuthUser() }
+                val fetchCurrentBalanceDeferred = async { fetchCurrentBalance() }
+                val userProfile = fetchAuthUserDeferred.await()
+                val currentBalance = fetchCurrentBalanceDeferred.await()
                 onLoadProfileDataCompleted(userProfile, currentBalance)
             } catch (ex: Exception) {
                 ex.printStackTrace()
@@ -194,6 +197,12 @@ class ProfileViewModel @Inject constructor(
     private fun onSessionClosed() {
         updateState { it.copy(isLoading = false, isSessionClosed = true) }
     }
+
+    private suspend fun fetchAuthUser() =
+        getAuthUserProfileUseCase.invoke(scope = viewModelScope)
+
+    private suspend fun fetchCurrentBalance() =
+        getCurrentBalanceUseCase.invoke(scope = viewModelScope)
 }
 
 data class ProfileUiState(

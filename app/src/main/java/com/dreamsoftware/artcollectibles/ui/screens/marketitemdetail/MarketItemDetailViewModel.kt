@@ -7,6 +7,7 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
@@ -74,18 +75,19 @@ class MarketItemDetailViewModel @Inject constructor(
     private fun loadAllDataForToken(tokenId: BigInteger) {
         viewModelScope.launch {
             runCatching {
-                val marketItem = fetchItemForSale(tokenId)
-                val authUser = loadAuthUserDetail()
-                val currentBalance = fetchCurrentBalance()
+                val fetchItemForSaleDeferred = async { fetchItemForSale(tokenId) }
+                val loadAuthUserDetailDeferred = async { loadAuthUserDetail() }
+                val marketItem = fetchItemForSaleDeferred.await()
+                val authUser = loadAuthUserDetailDeferred.await()
                 updateState {
                     it.copy(
                         isLoading = false,
                         artCollectibleForSale = marketItem,
                         isTokenSeller = marketItem.seller.uid == authUser.uid,
-                        isTokenAuthor = marketItem.token.author.uid == authUser.uid,
-                        enoughFunds = currentBalance.balanceInWei >= marketItem.price.priceInWei
+                        isTokenAuthor = marketItem.token.author.uid == authUser.uid
                     )
                 }
+                fetchCurrentBalance()
                 getSimilarMarketItemsUseCase(tokenId)
             }.onFailure(::onErrorOccurred)
         }
@@ -159,8 +161,18 @@ class MarketItemDetailViewModel @Inject constructor(
         scope = viewModelScope
     )
 
-    private suspend fun fetchCurrentBalance() = getCurrentBalanceUseCase.invoke(
-        scope = viewModelScope
+    private fun fetchCurrentBalance() = getCurrentBalanceUseCase.invoke(
+        scope = viewModelScope,
+        onSuccess = { currentBalance ->
+            updateState {
+                it.copy(enoughFunds = it.artCollectibleForSale?.price?.priceInWei?.let { marketItemPrice ->
+                    currentBalance.balanceInWei >= marketItemPrice
+                } ?: false)
+            }
+        },
+        onError = {
+            // ignore error
+        }
     )
 }
 

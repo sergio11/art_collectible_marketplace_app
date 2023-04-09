@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.GenerateWalletException
 import com.dreamsoftware.artcollectibles.data.api.exception.GetCurrentBalanceException
 import com.dreamsoftware.artcollectibles.data.api.exception.LoadWalletCredentialsException
@@ -13,6 +12,7 @@ import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataS
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletMetadataDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.model.WalletMetadataDTO
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletCredentialsMemoryDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IWalletMetadataMemoryDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.data.preferences.datasource.IPreferencesDataSource
@@ -34,6 +34,7 @@ import java.net.URL
  * @param walletDataSource
  * @param faucetDataSource
  * @param walletMetadataMemoryCache
+ * @param walletCredentialsMemoryDataSource
  */
 internal class WalletRepositoryImpl(
     private val accountBalanceMapper: AccountBalanceMapper,
@@ -45,7 +46,8 @@ internal class WalletRepositoryImpl(
     private val passwordUtils: PasswordUtils,
     private val walletDataSource: IWalletDataSource,
     private val faucetDataSource: IFaucetBlockchainDataSource,
-    private val walletMetadataMemoryCache: IWalletMetadataMemoryDataSource
+    private val walletMetadataMemoryCache: IWalletMetadataMemoryDataSource,
+    private val walletCredentialsMemoryDataSource: IWalletCredentialsMemoryDataSource
 ): IWalletRepository {
 
     private companion object {
@@ -102,11 +104,9 @@ internal class WalletRepositoryImpl(
      */
 
     private suspend fun tryToRequestSeedFunds(credentials: Credentials) {
-        Log.d("FAUCET", "tryToRequestSeedFunds CALLED!")
         try {
             faucetDataSource.requestSeedFunds(credentials)
         } catch (ex: Exception) {
-            Log.d("FAUCET", "ex message ${ex.message} CALLED!")
             ex.printStackTrace()
         }
     }
@@ -120,11 +120,19 @@ internal class WalletRepositoryImpl(
             }
         }
         with(walletDataSource) {
-            with(walletMetadata) {
-                if (!hasWallet(name)) {
-                    install(name, URL(walletUri))
+            with(walletCredentialsMemoryDataSource) {
+                with(walletMetadata) {
+                    try {
+                        findByKey(name)
+                    } catch (ex: CacheException) {
+                        if (!hasWallet(name)) {
+                            install(name, URL(walletUri))
+                        }
+                        loadCredentials(name, password).also {
+                            save(name, it)
+                        }
+                    }
                 }
-                loadCredentials(name, password)
             }
         }
     }

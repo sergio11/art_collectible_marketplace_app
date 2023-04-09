@@ -66,22 +66,20 @@ class ArtistDetailViewModel @Inject constructor(
     private fun loadAllDataForUser(uid: String) {
         viewModelScope.launch {
             try {
-                val authUserDeferred =  async { loadAuthUserDetail() }
+                val authUserDeferred = async { loadAuthUserDetail() }
                 val loadProfileUseCaseDeferred = async { loadUserProfile(uid) }
-                val checkAuthUserIsFollowingToDeferred = async { checkAuthUserIsFollowingTo(uid) }
                 val authUser = authUserDeferred.await()
                 val userInfo = loadProfileUseCaseDeferred.await()
-                val isFollowingTo = checkAuthUserIsFollowingToDeferred.await()
                 updateState {
                     it.copy(
                         isLoading = false,
                         isAuthUser = userInfo.uid == authUser.uid,
                         followersCount = userInfo.followers,
                         followingCount = userInfo.following,
-                        userInfo = userInfo,
-                        isFollowing = isFollowingTo
+                        userInfo = userInfo
                     )
                 }
+                checkAuthUserIsFollowingTo(uid)
                 loadTokensOwnedByUser(userAddress = userInfo.walletAddress)
                 loadTokensCreatedByUser(userAddress = userInfo.walletAddress)
             } catch (ex: Exception) {
@@ -99,10 +97,19 @@ class ArtistDetailViewModel @Inject constructor(
         params = GetUserProfileUseCase.Params(userUid)
     )
 
-    private suspend fun checkAuthUserIsFollowingTo(userUid: String) = checkAuthUserIsFollowingToUseCase.invoke(
-        scope = viewModelScope,
-        params = CheckAuthUserIsFollowingToUseCase.Params(userUid)
-    )
+    private fun checkAuthUserIsFollowingTo(userUid: String) =
+        checkAuthUserIsFollowingToUseCase.invoke(
+            scope = viewModelScope,
+            params = CheckAuthUserIsFollowingToUseCase.Params(userUid),
+            onSuccess = { isFollowingTo ->
+                updateState {
+                    it.copy(isFollowing = isFollowingTo)
+                }
+            },
+            onError = {
+                // ignore error
+            }
+        )
 
     private fun loadTokensOwnedByUser(userAddress: String) {
         getTokensOwnedByUserUseCase.invoke(
@@ -112,7 +119,7 @@ class ArtistDetailViewModel @Inject constructor(
                 TOKENS_OWNED_BY_USER_LIMIT
             ),
             onSuccess = ::onLoadTokensOwnedCompleted,
-            onError =  ::onErrorOccurred
+            onError = ::onErrorOccurred
         )
     }
 

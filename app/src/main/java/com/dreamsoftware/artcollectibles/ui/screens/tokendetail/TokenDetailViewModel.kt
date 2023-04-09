@@ -9,6 +9,7 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
@@ -188,29 +189,26 @@ class TokenDetailViewModel @Inject constructor(
     private fun loadAllDataForToken(tokenId: BigInteger) {
         viewModelScope.launch {
             try {
-                val artCollectible = loadTokenDetail(tokenId)
-                val isTokenAddedForSale = isTokenAddedForSale(tokenId)
-                val authUser = loadAuthUserDetail()
+                val loadArtCollectibleDeferred = async { loadTokenDetail(tokenId) }
+                val loadAuthUserDeferred = async { loadAuthUserDetail() }
+                val artCollectible = loadArtCollectibleDeferred.await()
+                val authUser = loadAuthUserDeferred.await()
                 val isTokenOwner = artCollectible.owner.uid == authUser.uid
                 val isTokenCreator = artCollectible.author.uid == authUser.uid
-                val lastComments = if (artCollectible.commentsCount > 0) {
-                    getLastCommentsByToken(tokenId, COMMENTS_BY_TOKEN_LIMIT)
-                } else {
-                    emptyList()
-                }
-                val lastMarketHistory = getLastTokenMarketTransactions(tokenId, HISTORY_BY_TOKEN_LIMIT)
                 updateState {
                     it.copy(
                         artCollectible = artCollectible,
                         authUserInfo = authUser,
                         isLoading = false,
                         isTokenOwner = isTokenOwner,
-                        isTokenAddedForSale = isTokenAddedForSale,
-                        tokenAddedToFavorites = artCollectible.hasAddedToFav,
-                        lastComments = lastComments,
-                        lastMarketHistory = lastMarketHistory
+                        tokenAddedToFavorites = artCollectible.hasAddedToFav
                     )
                 }
+                checkIfTokenAddedForSale(tokenId)
+                if (artCollectible.commentsCount > 0) {
+                    loadLastCommentsByToken(artCollectible.id)
+                }
+                loadLastTokenMarketTransactions(tokenId)
                 loadSimilarTokens(artCollectible.metadata.cid)
                 if (!isTokenOwner && !isTokenCreator) {
                     registerVisitor(tokenId, authUser.walletAddress)
@@ -260,15 +258,14 @@ class TokenDetailViewModel @Inject constructor(
 
     private fun onCommentPublished(comment: Comment) {
         viewModelScope.launch {
-            val lastComments = getLastCommentsByToken(comment.tokenId, COMMENTS_BY_TOKEN_LIMIT)
             updateState {
                 it.copy(
                     artCollectible = it.artCollectible?.let { token ->
                         token.copy(commentsCount = token.commentsCount + 1)
-                    },
-                    lastComments = lastComments
+                    }
                 )
             }
+            loadLastCommentsByToken(comment.tokenId)
         }
     }
 
@@ -306,33 +303,57 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
     )
 
-    private suspend fun getLastTokenMarketTransactions(tokenId: BigInteger, limit: Int) =  runCatching {
+    private fun loadLastTokenMarketTransactions(tokenId: BigInteger) =
         getLastTokenMarketTransactionsUseCase.invoke(
             scope = viewModelScope,
             params = GetLastTokenMarketTransactionsUseCase.Params(
                 tokenId = tokenId,
-                limit = limit
-            )
+                limit = HISTORY_BY_TOKEN_LIMIT
+            ),
+            onSuccess = { lastMarketHistory ->
+                updateState {
+                    it.copy(lastMarketHistory = lastMarketHistory)
+                }
+            },
+            onError = {
+                // ignore error
+            }
         )
-    }.getOrDefault(emptyList())
 
 
-    private suspend fun getLastCommentsByToken(tokenId: BigInteger, limit: Int) =
+    private fun loadLastCommentsByToken(tokenId: BigInteger) =
         getLastCommentsByTokenUseCase.invoke(
             scope = viewModelScope,
             params = GetLastCommentsByTokenUseCase.Params(
                 tokenId = tokenId.toString(),
-                limit = limit
-            )
+                limit = COMMENTS_BY_TOKEN_LIMIT
+            ),
+            onSuccess = { lastComments ->
+                updateState {
+                    it.copy(lastComments = lastComments)
+                }
+            },
+            onError = {
+                // ignore error
+            }
         )
 
     private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
         scope = viewModelScope
     )
 
-    private suspend fun isTokenAddedForSale(tokenId: BigInteger) =
+    private fun checkIfTokenAddedForSale(tokenId: BigInteger) =
         isTokenAddedForSaleUseCase.invoke(
-            scope = viewModelScope, params = IsTokenAddedForSaleUseCase.Params(tokenId)
+            scope = viewModelScope,
+            params = IsTokenAddedForSaleUseCase.Params(tokenId),
+            onSuccess = { isTokenAddedForSale ->
+                updateState {
+                    it.copy(isTokenAddedForSale = isTokenAddedForSale)
+                }
+            },
+            onError = {
+                // ignore error
+            }
         )
 
     private fun loadSimilarTokens(tokenCid: String) {
@@ -343,9 +364,9 @@ class TokenDetailViewModel @Inject constructor(
                 count = SIMILAR_TOKENS_LIMIT
             ),
             onSuccess = { similarTokens ->
-                 updateState {
-                     it.copy(similarTokens = similarTokens)
-                 }
+                updateState {
+                    it.copy(similarTokens = similarTokens)
+                }
             },
             onError = {
                 // ignore error

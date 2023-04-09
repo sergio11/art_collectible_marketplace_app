@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
@@ -54,7 +53,6 @@ internal class ArtCollectibleRepositoryImpl(
                     .map { getTokenById(it.tokenId) }.map { ArtCollectibleMintedEvent(it) }
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                Log.d("ART_COLL", "observeArtCollectibleMintedEvents - ${ex.message} ERROR!")
                 throw ObserveArtCollectibleMintedEventsException(
                     "An error occurred when trying to observe minted events", ex
                 )
