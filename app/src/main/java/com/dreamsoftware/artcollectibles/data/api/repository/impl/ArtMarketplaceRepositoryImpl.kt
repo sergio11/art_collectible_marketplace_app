@@ -345,32 +345,49 @@ internal class ArtMarketplaceRepositoryImpl(
 
     private suspend fun mapToArtCollectibleForSaleList(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.Default) {
-            val tokensData =
-                artCollectibleRepository.getTokens(items.map(ArtCollectibleForSaleDTO::tokenId))
-            items.asSequence().map { itemForSale ->
-                async {
-                    with(itemForSale) {
-                        tokensData.find { it.id == tokenId }?.let { token ->
-                            val owner = runCatching {
-                                userRepository.getByAddress(owner, false)
-                            }.getOrNull()
-                            val seller = userRepository.getByAddress(seller, false)
-                            ArtCollectibleForSale(
-                                marketItemId = marketItemId,
-                                token = token,
-                                seller = seller,
-                                owner = owner,
-                                price = getArtCollectiblePrices(this),
-                                sold = sold,
-                                canceled = canceled,
-                                putForSaleAt = putForSaleAt,
-                                soldAt = soldAt,
-                                canceledAt = canceledAt
-                            )
+            with(artMarketItemMemoryCacheDataSource) {
+                val marketItemsCached = runCatching {
+                    findByKeys(
+                        keys = items.map { it.marketItemId },
+                        strictMode = false
+                    )
+                }.getOrDefault(emptyList())
+                if(Iterables.size(marketItemsCached) != Iterables.size(items)) {
+                    val marketItemIdsCached = marketItemsCached.map { it.marketItemId }
+                    val itemsNotCached = items.filterNot { marketItemIdsCached.contains(it.marketItemId) }
+                    val tokensData = artCollectibleRepository.getTokens(itemsNotCached.map(ArtCollectibleForSaleDTO::tokenId))
+                    itemsNotCached.asSequence().map { itemForSale ->
+                        async {
+                            with(itemForSale) {
+                                tokensData.find { it.id == tokenId }?.let { token ->
+                                    val owner = runCatching {
+                                        userRepository.getByAddress(owner, false)
+                                    }.getOrNull()
+                                    val seller = userRepository.getByAddress(seller, false)
+                                    ArtCollectibleForSale(
+                                        marketItemId = marketItemId,
+                                        token = token,
+                                        seller = seller,
+                                        owner = owner,
+                                        price = getArtCollectiblePrices(this),
+                                        sold = sold,
+                                        canceled = canceled,
+                                        putForSaleAt = putForSaleAt,
+                                        soldAt = soldAt,
+                                        canceledAt = canceledAt
+                                    )
+                                }
+                            }
                         }
+                    }.toList().awaitAll().filterNotNull().onEach {
+                        save(it.marketItemId, it)
+                    }.let {
+                        marketItemsCached + it
                     }
+                } else {
+                    marketItemsCached
                 }
-            }.toList().awaitAll().filterNotNull()
+            }
         }
 
 

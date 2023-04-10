@@ -35,16 +35,16 @@ class CategoryDetailViewModel @Inject constructor(
 
     private fun onCategoryDetailLoaded(category: ArtCollectibleCategory) {
         updateState {
-            it.copy(
-                isLoading = false,
-                category = category
-            )
+            it.copy(category = category)
         }
     }
 
     private fun onAvailableMarketItemsByCategoryLoaded(tokenList: Iterable<ArtCollectibleForSale>) {
         updateState {
-            it.copy(tokensForSale = tokenList)
+            it.copy(
+                isLoading = false,
+                tokensForSale = tokenList
+            )
         }
     }
 

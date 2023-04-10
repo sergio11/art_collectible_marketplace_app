@@ -7,6 +7,8 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,123 +32,78 @@ class HomeViewModel @Inject constructor(
 
     fun loadData() {
         onLoading()
-        fetchMarketplaceStatistics()
-        fetchAvailableMarketItems()
-        fetchSellingMarketItems()
-        fetchMarketHistory()
-        fetchArtCollectibleCategories()
-        getMoreFollowedUsers()
-        getMoreLikedTokensUseCase()
+        loadBasicData()
     }
 
-    private fun fetchMarketplaceStatistics() {
-        fetchMarketplaceStatisticsUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = { marketplaceStatistics ->
-                updateState {
-                    it.copy(
-                        marketplaceStatistics = marketplaceStatistics
-                    )
-                }
-            },
-            onError = {}
-        )
-    }
-
-    private fun fetchAvailableMarketItems() {
-        fetchAvailableMarketItemsUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = { availableMarketItems ->
-                updateState {
-                    it.copy(availableMarketItems = availableMarketItems)
-                }
-            },
-            onError = {}
-        )
-    }
-
-    private fun fetchSellingMarketItems() {
-        fetchSellingMarketItemsUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = { sellingItems ->
-                Log.d("ART_COLL", "fetchSellingMarketItems onSuccess -> ${Iterables.size(sellingItems)}")
-                updateState {
-                    it.copy(sellingMarketItems = sellingItems)
-                }
-            },
-            onError = {
-                it.printStackTrace()
-                Log.d("ART_COLL", "fetchSellingMarketItems err -> ${it.message}")
+    private fun loadBasicData() = viewModelScope.launch {
+        runCatching {
+            val fetchArtCollectibleCategoriesDeferred = async { fetchArtCollectibleCategories() }
+            val fetchMoreFollowedUsersDeferred = async { fetchMoreFollowedUsers() }
+            val fetchMoreLikedTokensDeferred = async { fetchMoreLikedTokensUseCase() }
+            val categories = fetchArtCollectibleCategoriesDeferred.await()
+            val moreFollowedUsers = fetchMoreFollowedUsersDeferred.await()
+            val moreLikedTokens = fetchMoreLikedTokensDeferred.await()
+            updateState {
+                it.copy(
+                    isLoading = false,
+                    categories = categories,
+                    moreFollowedUsers = moreFollowedUsers,
+                    moreLikedTokens = moreLikedTokens
+                )
             }
-        )
+            loadMarketData()
+        }.onFailure(::onErrorOccurred)
     }
 
-    private fun fetchMarketHistory() {
-        fetchMarketHistoryUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = { marketHistory ->
-                updateState {
-                    it.copy(marketHistory = marketHistory)
-                }
-            },
-            onError = {})
-    }
-
-    private fun fetchArtCollectibleCategories() {
-        getArtCollectibleCategoriesUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = ::onCategoriesLoaded,
-            onError = {
-                it.printStackTrace()
-                Log.d("ART_COLL", "it.message -> ${it.message}")
-            }
-        )
-    }
-
-    private fun getMoreFollowedUsers() {
-        getMoreFollowedUsersUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = ::onMoreFollowedUsers,
-            onError = {
-                it.printStackTrace()
-                Log.d("ART_COLL", "it.message -> ${it.message}")
-            }
-        )
-    }
-
-    private fun getMoreLikedTokensUseCase() {
-        getMoreLikedTokensUseCase.invoke(
-            scope = viewModelScope,
-            onSuccess = ::onMoreLikedTokens,
-            onError = {
-                it.printStackTrace()
-                Log.d("ART_COLL", "it.message -> ${it.message}")
-            }
-        )
-    }
-
-    private fun onCategoriesLoaded(categories: Iterable<ArtCollectibleCategory>) {
+    private fun loadMarketData() = viewModelScope.launch  {
+        val fetchMarketplaceStatisticsDeferred = async { fetchMarketplaceStatistics() }
+        val fetchAvailableMarketItemsDeferred = async { fetchAvailableMarketItems() }
+        val fetchSellingMarketItemsDeferred = async { fetchSellingMarketItems() }
+        val fetchMarketHistoryDeferred = async { fetchMarketHistory() }
+        val availableMarketItems = fetchAvailableMarketItemsDeferred.await()
+        val sellingMarketItems = fetchSellingMarketItemsDeferred.await()
+        val marketHistory = fetchMarketHistoryDeferred.await()
+        val marketplaceStatistics = fetchMarketplaceStatisticsDeferred.await()
         updateState {
             it.copy(
-                isLoading = false,
-                categories = categories
+                availableMarketItems = availableMarketItems,
+                sellingMarketItems = sellingMarketItems,
+                marketHistory = marketHistory,
+                marketplaceStatistics = marketplaceStatistics
             )
         }
     }
 
-    private fun onMoreFollowedUsers(moreFollowedUsers: Iterable<UserInfo>) {
-        updateState { it.copy(moreFollowedUsers = moreFollowedUsers) }
-    }
+    private suspend fun fetchMarketplaceStatistics() = runCatching {
+        fetchMarketplaceStatisticsUseCase.invoke(scope = viewModelScope)
+    }.getOrNull()
 
-    private fun onMoreLikedTokens(moreLikedTokens: Iterable<ArtCollectible>) {
-        updateState { it.copy(moreLikedTokens = moreLikedTokens) }
-    }
+    private suspend fun fetchAvailableMarketItems() = runCatching {
+        fetchAvailableMarketItemsUseCase.invoke(scope = viewModelScope)
+    }.getOrDefault(emptyList())
+
+    private suspend fun fetchSellingMarketItems() = runCatching {
+        fetchSellingMarketItemsUseCase.invoke(scope = viewModelScope)
+    }.getOrDefault(emptyList())
+
+    private suspend fun fetchMarketHistory() = runCatching {
+        fetchMarketHistoryUseCase.invoke(scope = viewModelScope)
+    }.getOrDefault(emptyList())
+
+    private suspend fun fetchArtCollectibleCategories() =
+        getArtCollectibleCategoriesUseCase.invoke(scope = viewModelScope)
+
+    private suspend fun fetchMoreFollowedUsers() =
+        getMoreFollowedUsersUseCase.invoke(scope = viewModelScope)
+
+    private suspend fun fetchMoreLikedTokensUseCase() =
+        getMoreLikedTokensUseCase.invoke(scope = viewModelScope)
 
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
 
-    private fun onErrorOccurred(ex: Exception) {
+    private fun onErrorOccurred(ex: Throwable) {
         ex.printStackTrace()
         Log.d("ART_COLL", "onErrorOccurred ${ex.message} CALLED!")
         updateState { it.copy(isLoading = false) }
