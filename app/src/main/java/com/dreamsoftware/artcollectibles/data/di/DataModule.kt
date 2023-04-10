@@ -358,6 +358,7 @@ class DataModule {
      * @param artCollectibleRepository
      * @param walletRepository
      * @param userRepository
+     * @param artCollectibleMemoryCacheDataSource
      */
     @Provides
     @Singleton
@@ -365,8 +366,15 @@ class DataModule {
         favoritesDataSource: IFavoritesDataSource,
         artCollectibleRepository: IArtCollectibleRepository,
         walletRepository: IWalletRepository,
-        userRepository: IUserRepository
-    ): IFavoritesRepository = FavoritesRepositoryImpl(favoritesDataSource, artCollectibleRepository, walletRepository, userRepository)
+        userRepository: IUserRepository,
+        artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
+    ): IFavoritesRepository = FavoritesRepositoryImpl(
+        favoritesDataSource,
+        artCollectibleRepository,
+        walletRepository,
+        userRepository,
+        artCollectibleMemoryCacheDataSource
+    )
 
     /**
      * Provide Visitors Repository
@@ -398,6 +406,7 @@ class DataModule {
      * @param commentMapper
      * @param userRepository
      * @param saveCommentMapper
+     * @param artCollectibleMemoryCacheDataSource
      */
     @Provides
     @Singleton
@@ -405,6 +414,13 @@ class DataModule {
         commentsDataSource: ICommentsDataSource,
         commentMapper: CommentMapper,
         userRepository: IUserRepository,
-        saveCommentMapper: SaveCommentMapper
-    ): ICommentsRepository = CommentsRepositoryImpl(commentsDataSource, commentMapper, userRepository, saveCommentMapper)
+        saveCommentMapper: SaveCommentMapper,
+        artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
+    ): ICommentsRepository = CommentsRepositoryImpl(
+        commentsDataSource,
+        commentMapper,
+        userRepository,
+        saveCommentMapper,
+        artCollectibleMemoryCacheDataSource
+    )
 }

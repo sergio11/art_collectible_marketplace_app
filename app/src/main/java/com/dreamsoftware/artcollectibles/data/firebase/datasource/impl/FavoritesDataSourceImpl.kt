@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.internal.toLongOrDefault
+import java.math.BigInteger
 
 internal class FavoritesDataSourceImpl(
     private val firebaseStore: FirebaseFirestore
@@ -24,10 +25,10 @@ internal class FavoritesDataSourceImpl(
     }
 
     @Throws(GetFavoritesException::class)
-    override suspend fun hasAdded(tokenId: String, userAddress: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun hasAdded(tokenId: BigInteger, userAddress: String): Boolean = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .whereArrayContains(IDS_FIELD_NAME, tokenId)
+                .whereArrayContains(IDS_FIELD_NAME, tokenId.toString())
                 .get()
                 .await()
                 .documents.mapNotNull { it.id }
@@ -54,10 +55,10 @@ internal class FavoritesDataSourceImpl(
     }
 
     @Throws(GetFavoritesException::class)
-    override suspend fun tokenCount(tokenId: String): Long = withContext(Dispatchers.IO) {
+    override suspend fun tokenCount(tokenId: BigInteger): Long = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .document(tokenId + TOKEN_KEY_COUNT_SUFFIX)
+                .document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX)
                 .get()
                 .await()?.data?.get(COUNT_FIELD_NAME)
                 .toString()
@@ -70,13 +71,13 @@ internal class FavoritesDataSourceImpl(
     }
 
     @Throws(AddToFavoritesException::class)
-    override suspend fun add(tokenId: String, userAddress: String) {
+    override suspend fun add(tokenId: BigInteger, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
-                    document(tokenId + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
-                    document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
+                    document(tokenId.toString()).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
+                    document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId.toString())), SetOptions.merge()).await()
                     document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
@@ -88,13 +89,13 @@ internal class FavoritesDataSourceImpl(
     }
 
     @Throws(RemoveFromFavoritesException::class)
-    override suspend fun remove(tokenId: String, userAddress: String) {
+    override suspend fun remove(tokenId: BigInteger, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userAddress)), SetOptions.merge()).await()
-                    document(tokenId + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
-                    document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
+                    document(tokenId.toString()).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userAddress)), SetOptions.merge()).await()
+                    document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId.toString())), SetOptions.merge()).await()
                     document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
@@ -123,11 +124,11 @@ internal class FavoritesDataSourceImpl(
         }
 
     @Throws(GetUserLikesByTokenException::class)
-    override suspend fun getUserLikesByToken(tokenId: String): List<String> =
+    override suspend fun getUserLikesByToken(tokenId: BigInteger): List<String> =
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME)
-                    .document(tokenId)
+                    .document(tokenId.toString())
                     .get()
                     .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
             } catch (ex: FirebaseException) {

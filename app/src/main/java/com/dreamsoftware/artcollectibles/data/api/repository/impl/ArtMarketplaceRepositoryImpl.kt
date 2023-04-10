@@ -213,7 +213,9 @@ internal class ArtMarketplaceRepositoryImpl(
             artMarketplaceBlockchainDataSource.withdrawFromSale(
                 tokenId,
                 userCredentialsMapper.mapOutToIn(credentials)
-            )
+            ).also {
+                artMarketItemMemoryCacheDataSource.delete(tokenId)
+            }
         } catch (ex: Exception) {
             throw WithdrawFromSaleException(
                 "An error occurred when trying to withdraw item from sale",
@@ -265,7 +267,9 @@ internal class ArtMarketplaceRepositoryImpl(
                 artMarketplaceBlockchainDataSource.buyItem(
                     tokenId,
                     userCredentialsMapper.mapOutToIn(credentials)
-                )
+                ).also {
+                    artMarketItemMemoryCacheDataSource.delete(tokenId)
+                }
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw BuyItemException("An error occurred when trying to buy an item", ex)

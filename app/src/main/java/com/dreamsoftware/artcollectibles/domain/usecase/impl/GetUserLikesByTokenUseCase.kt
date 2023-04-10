@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.domain.usecase.impl
 import com.dreamsoftware.artcollectibles.data.api.repository.IFavoritesRepository
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
+import java.math.BigInteger
 
 class GetUserLikesByTokenUseCase(
     private val favoritesRepository: IFavoritesRepository
@@ -12,6 +13,6 @@ class GetUserLikesByTokenUseCase(
         favoritesRepository.getUserLikesByToken(params.tokenId)
 
     data class Params(
-        val tokenId: String
+        val tokenId: BigInteger
     )
 }

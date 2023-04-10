@@ -1,27 +1,28 @@
 package com.dreamsoftware.artcollectibles.data.firebase.datasource
 
 import com.dreamsoftware.artcollectibles.data.firebase.exception.*
+import java.math.BigInteger
 
 interface IFavoritesDataSource {
 
     @Throws(GetFavoritesException::class)
-    suspend fun hasAdded(tokenId: String, userAddress: String): Boolean
+    suspend fun hasAdded(tokenId: BigInteger, userAddress: String): Boolean
 
     @Throws(GetFavoritesException::class)
     suspend fun getList(userAddress: String): List<String>
 
     @Throws(GetFavoritesException::class)
-    suspend fun tokenCount(tokenId: String): Long
+    suspend fun tokenCount(tokenId: BigInteger): Long
 
     @Throws(AddToFavoritesException::class)
-    suspend fun add(tokenId: String, userAddress: String)
+    suspend fun add(tokenId: BigInteger, userAddress: String)
 
     @Throws(RemoveFromFavoritesException::class)
-    suspend fun remove(tokenId: String, userAddress: String)
+    suspend fun remove(tokenId: BigInteger, userAddress: String)
 
     @Throws(GetMoreLikedTokensException::class)
     suspend fun getMoreLikedTokens(limit: Long): List<String>
 
     @Throws(GetUserLikesByTokenException::class)
-    suspend fun getUserLikesByToken(tokenId: String): List<String>
+    suspend fun getUserLikesByToken(tokenId: BigInteger): List<String>
 }

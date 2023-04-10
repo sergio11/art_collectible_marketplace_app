@@ -19,6 +19,12 @@ interface IMemoryCacheDataSource<in K, T> {
     fun findByKey(key: K): T
 
     /**
+     * Check if key exists
+     * @param key
+     */
+    fun hasKey(key: K): Boolean
+
+    /**
      * Find by keys
      * @param keys
      * @param strictMode

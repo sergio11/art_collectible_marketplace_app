@@ -40,6 +40,10 @@ abstract class SupportMemoryCacheDataSourceImpl<in K: Any, T: Any>: IMemoryCache
         throw CacheErrorException("Failed to get from cache", ex)
     }
 
+    override fun hasKey(key: K): Boolean = runCatching {
+        cache.get(key) != null
+    }.getOrDefault(false)
+
     @Throws(CacheNoResultException::class, CacheErrorException::class)
     override fun findByKey(key: K): T = try {
         cache.get(key) ?: throw CacheNoResultException()

@@ -28,9 +28,10 @@ import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 data class FavoritesScreenArgs(
-    val tokenId: String
+    val tokenId: BigInteger
 )
 
 @Composable

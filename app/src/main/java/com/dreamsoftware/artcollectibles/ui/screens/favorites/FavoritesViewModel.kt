@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetUserLikesByTokenUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.math.BigInteger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,7 +15,7 @@ class FavoritesViewModel @Inject constructor(
 
     override fun onGetDefaultState(): FavoritesUiState = FavoritesUiState()
 
-    fun load(tokenId: String) {
+    fun load(tokenId: BigInteger) {
         onLoading()
         getUserLikesByTokenUseCase.invoke(
             scope = viewModelScope,

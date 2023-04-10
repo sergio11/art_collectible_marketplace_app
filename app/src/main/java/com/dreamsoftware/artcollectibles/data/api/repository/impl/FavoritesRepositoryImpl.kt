@@ -6,6 +6,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IFavoritesRepositor
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IFavoritesDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import kotlinx.coroutines.Dispatchers
@@ -20,19 +21,31 @@ import java.math.BigInteger
  * @param artCollectibleRepository
  * @param walletRepository
  * @param userRepository
+ * @param artCollectibleMemoryCacheDataSource
  */
 internal class FavoritesRepositoryImpl(
     private val favoritesDataSource: IFavoritesDataSource,
     private val artCollectibleRepository: IArtCollectibleRepository,
     private val walletRepository: IWalletRepository,
-    private val userRepository: IUserRepository
+    private val userRepository: IUserRepository,
+    private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
 ): IFavoritesRepository {
 
     @Throws(AddToFavoritesDataException::class)
-    override suspend fun add(tokenId: String, userAddress: String) {
+    override suspend fun add(tokenId: BigInteger, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
-                favoritesDataSource.add(tokenId, userAddress)
+                favoritesDataSource.add(tokenId, userAddress).also {
+                    with(artCollectibleMemoryCacheDataSource) {
+                        if(hasKey(tokenId)) {
+                            findByKey(tokenId).let {
+                                it.copy(favoritesCount = it.favoritesCount + 1)
+                            }.let {
+                                save(it.id, it)
+                            }
+                        }
+                    }
+                }
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw AddToFavoritesDataException("An error occurred when trying to add to favorites", ex)
@@ -41,10 +54,20 @@ internal class FavoritesRepositoryImpl(
     }
 
     @Throws(RemoveFromFavoritesDataException::class)
-    override suspend fun remove(tokenId: String, userAddress: String) {
+    override suspend fun remove(tokenId: BigInteger, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
-                favoritesDataSource.remove(tokenId, userAddress)
+                favoritesDataSource.remove(tokenId, userAddress).also {
+                    with(artCollectibleMemoryCacheDataSource) {
+                        if(hasKey(tokenId)) {
+                            findByKey(tokenId).let {
+                                it.copy(favoritesCount = it.favoritesCount - 1)
+                            }.let {
+                                save(it.id, it)
+                            }
+                        }
+                    }
+                }
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 throw RemoveFromFavoritesDataException("An error occurred when trying to remove from favorites", ex)
@@ -78,7 +101,7 @@ internal class FavoritesRepositoryImpl(
         }
 
     @Throws(GetUserLikesByTokenDataException::class)
-    override suspend fun getUserLikesByToken(tokenId: String): Iterable<UserInfo> =
+    override suspend fun getUserLikesByToken(tokenId: BigInteger): Iterable<UserInfo> =
         withContext(Dispatchers.IO) {
             try {
                 favoritesDataSource.getUserLikesByToken(tokenId).asSequence().map { userAddress ->

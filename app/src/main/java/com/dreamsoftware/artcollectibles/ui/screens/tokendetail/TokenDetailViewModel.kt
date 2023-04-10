@@ -121,7 +121,7 @@ class TokenDetailViewModel @Inject constructor(
                 addTokenTokenToFavoritesUseCase.invoke(
                     scope = viewModelScope,
                     params = AddTokenToFavoritesUseCase.Params(
-                        tokenId = tokenId.toString(),
+                        tokenId = tokenId,
                         userAddress = it.walletAddress
                     ),
                     onSuccess = {
@@ -139,7 +139,7 @@ class TokenDetailViewModel @Inject constructor(
                 removeTokenFromFavoritesUseCase.invoke(
                     scope = viewModelScope,
                     params = RemoveTokenFromFavoritesUseCase.Params(
-                        tokenId = tokenId.toString(),
+                        tokenId = tokenId,
                         userAddress = it.walletAddress
                     ),
                     onSuccess = {
@@ -272,7 +272,10 @@ class TokenDetailViewModel @Inject constructor(
     private fun onTokenAddedToFavorites() {
         updateState {
             it.copy(
-                tokenAddedToFavorites = true
+                tokenAddedToFavorites = true,
+                artCollectible = it.artCollectible?.let { token ->
+                    token.copy(favoritesCount = token.favoritesCount + 1)
+                }
             )
         }
     }
@@ -280,7 +283,10 @@ class TokenDetailViewModel @Inject constructor(
     private fun onTokenRemovedFromFavorites() {
         updateState {
             it.copy(
-                tokenAddedToFavorites = false
+                tokenAddedToFavorites = false,
+                artCollectible = it.artCollectible?.let { token ->
+                    token.copy(favoritesCount = token.favoritesCount - 1)
+                }
             )
         }
     }

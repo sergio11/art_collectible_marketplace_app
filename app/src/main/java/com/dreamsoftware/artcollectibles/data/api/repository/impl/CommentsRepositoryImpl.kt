@@ -6,6 +6,7 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.SaveCommentMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.ICommentsRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICommentsDataSource
+import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtCollectibleMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.CreateComment
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,8 @@ internal class CommentsRepositoryImpl(
     private val commentsDataSource: ICommentsDataSource,
     private val commentMapper: CommentMapper,
     private val userRepository: IUserRepository,
-    private val saveCommentMapper: SaveCommentMapper
+    private val saveCommentMapper: SaveCommentMapper,
+    private val artCollectibleMemoryCacheDataSource: IArtCollectibleMemoryCacheDataSource
 ): ICommentsRepository {
 
     @Throws(SaveCommentDataException::class)
@@ -31,7 +33,17 @@ internal class CommentsRepositoryImpl(
                             commentDTO = it,
                             userInfoDTO = userRepository.get(it.userUid, false)
                         )
-                    })
+                    }).also {
+                        with(artCollectibleMemoryCacheDataSource) {
+                            if(hasKey(it.tokenId)) {
+                                findByKey(it.tokenId).let {
+                                    it.copy(commentsCount = it.commentsCount + 1)
+                                }.let {
+                                    save(it.id, it)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } catch (ex: Exception) {
@@ -43,7 +55,17 @@ internal class CommentsRepositoryImpl(
     override suspend fun delete(tokenId: String, uid: String) {
         withContext(Dispatchers.IO) {
             try {
-                commentsDataSource.delete(tokenId, uid)
+                commentsDataSource.delete(tokenId, uid).also {
+                    with(artCollectibleMemoryCacheDataSource) {
+                        if(hasKey(tokenId)) {
+                            findByKey(tokenId).let {
+                                it.copy(commentsCount = it.commentsCount - 1)
+                            }.let {
+                                save(it.id, it)
+                            }
+                        }
+                    }
+                }
             } catch (ex: Exception) {
                 throw DeleteCommentDataException("An error occurred when trying to delete comment", ex)
             }

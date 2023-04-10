@@ -350,7 +350,7 @@ internal class ArtCollectibleRepositoryImpl(
         requireUserInfoFullDetail: Boolean
     ): ArtCollectible =
         withContext(Dispatchers.IO) {
-            val tokenId = token.tokenId.toString()
+            val tokenId = token.tokenId
             val tokenAuthorDeferred =
                 async { userRepository.getByAddress(token.creator, requireUserInfoFullDetail) }
             val tokenOwnerDeferred = async {
@@ -363,9 +363,9 @@ internal class ArtCollectibleRepositoryImpl(
                     userRepository.getByAddress(token.creator, requireUserInfoFullDetail)
                 }
             }
-            val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
+            val visitorsCountDeferred = async { visitorsDataSource.count(tokenId.toString()) }
             val favoritesCountDeferred = async { favoritesDataSource.tokenCount(tokenId) }
-            val commentsCountDeferred = async { commentsDataSource.count(tokenId) }
+            val commentsCountDeferred = async { commentsDataSource.count(tokenId.toString()) }
             val hasAddedToFavDeferred =
                 async { favoritesDataSource.hasAdded(tokenId, credentials.address) }
             artCollectibleMapper.mapInToOut(
