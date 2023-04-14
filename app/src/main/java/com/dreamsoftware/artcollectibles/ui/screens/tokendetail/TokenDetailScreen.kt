@@ -292,7 +292,6 @@ private fun TokenDetailBody(
                 }
             )
             ArtCollectiblesRow(
-                modifier = Modifier.padding(8.dp),
                 context = context,
                 reverseStyle = true,
                 titleRes = R.string.token_detail_similar_row_title_text,

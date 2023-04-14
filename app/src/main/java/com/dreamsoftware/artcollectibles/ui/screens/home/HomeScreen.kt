@@ -120,7 +120,6 @@ private fun HomeComponent(
                 }
                 ArtCollectiblesRow(
                     context = context,
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                     titleRes = R.string.home_art_collectibles_featured_title,
                     items = moreLikedTokens,
                     onItemSelected = {

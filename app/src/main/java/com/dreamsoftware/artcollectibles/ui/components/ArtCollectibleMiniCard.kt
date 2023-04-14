@@ -37,7 +37,7 @@ fun ArtCollectibleMiniCard(
     context: Context,
     artCollectible: ArtCollectible,
     reverseStyle: Boolean = false,
-    onClicked: () -> Unit
+    onClicked: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier

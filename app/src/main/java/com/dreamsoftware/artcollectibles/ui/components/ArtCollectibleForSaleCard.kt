@@ -35,7 +35,7 @@ fun ArtCollectibleForSaleCard(
     context: Context,
     artCollectibleForSale: ArtCollectibleForSale,
     reverseStyle: Boolean = false,
-    onClicked: () -> Unit
+    onClicked: () -> Unit = {}
 ) {
     with(artCollectibleForSale) {
         Column(

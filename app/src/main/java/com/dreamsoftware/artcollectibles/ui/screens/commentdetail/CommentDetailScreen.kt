@@ -134,7 +134,6 @@ fun CommentDetailComponent(
             )
             Spacer(modifier = Modifier.height(30.dp))
             ArtCollectiblesRow(
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                 context = context,
                 reverseStyle = true,
                 titleRes = R.string.comment_detail_tokens_created_by_user_text,

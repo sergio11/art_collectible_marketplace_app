@@ -252,7 +252,6 @@ fun ArtistDetailComponent(
                 )
             }
             ArtCollectiblesRow(
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                 context = context,
                 reverseStyle = true,
                 titleRes = R.string.profile_tokens_owned_by_user_text,
@@ -265,7 +264,6 @@ fun ArtistDetailComponent(
                 }
             )
             ArtCollectiblesRow(
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                 context = context,
                 reverseStyle = true,
                 titleRes = R.string.profile_tokens_created_by_user_text,
@@ -298,7 +296,7 @@ fun ArtistDetailComponent(
                         )
                     }
                 )
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(30.dp))
             }
 
         }
