@@ -32,9 +32,10 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 data class CommentsScreenArgs(
-    val tokenId: String
+    val tokenId: BigInteger
 )
 
 @Composable

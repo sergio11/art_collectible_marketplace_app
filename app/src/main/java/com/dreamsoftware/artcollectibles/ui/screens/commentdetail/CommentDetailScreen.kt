@@ -26,6 +26,8 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.math.BigInteger
@@ -74,7 +76,8 @@ fun CommentDetailScreen(
             onDeleteComment = ::deleteComment,
             onGoToTokenDetail = onGoToTokenDetail,
             onShowTokensCreatedBy = onShowTokensCreatedBy,
-            onOpenArtistDetailCalled = onOpenArtistDetailCalled
+            onOpenArtistDetailCalled = onOpenArtistDetailCalled,
+            onConfirmDeleteCommentDialogVisibilityChanged = ::onConfirmDeleteCommentDialogVisibilityChanged
         )
     }
 }
@@ -88,7 +91,8 @@ fun CommentDetailComponent(
     onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
     onDeleteComment: (comment: Comment) -> Unit,
     onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
-    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onConfirmDeleteCommentDialogVisibilityChanged: (isVisible: Boolean)  -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -104,6 +108,12 @@ fun CommentDetailComponent(
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
                 .fillMaxWidth()
+            ConfirmDeleteTokenDialog(
+                uiState = uiState,
+                onDeleteCommentCalled = onDeleteComment
+            ) {
+                onConfirmDeleteCommentDialogVisibilityChanged(false)
+            }
             comment?.user?.let { userInfo ->
                 userInfo.professionalTitle?.let {
                     Text(
@@ -126,6 +136,15 @@ fun CommentDetailComponent(
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = comment?.createdAt?.format()?.let {
+                    stringResource(id = R.string.comment_detail_created_at_label, it)
+                } ?: stringResource(id = R.string.no_text_value),
+                fontFamily = montserratFontFamily,
+                modifier = defaultModifier,
+                color = DarkPurple,
+                style = MaterialTheme.typography.titleMedium
+            )
             Text(
                 modifier = defaultModifier,
                 text = comment?.text ?: stringResource(id = R.string.no_text_value),
@@ -159,20 +178,43 @@ fun CommentDetailComponent(
                     comment?.user?.let(onOpenArtistDetailCalled)
                 }
             )
-            CommonButton(
-                modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                text = R.string.comment_detail_delete_button_text,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red,
-                    contentColor = Color.White
-                ),
-                onClick = {
-                    comment?.let(onDeleteComment)
-                }
-            )
+            if(isDeleteCommentEnabled) {
+                CommonButton(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    text = R.string.comment_detail_delete_button_text,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    onClick = {
+                        onConfirmDeleteCommentDialogVisibilityChanged(true)
+                    }
+                )
+            }
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+@Composable
+private fun ConfirmDeleteTokenDialog(
+    uiState: CommentDetailUiState,
+    onDeleteCommentCalled: (comment: Comment) -> Unit,
+    onDialogCancelled: () -> Unit
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = isConfirmDeleteCommentDialogVisible,
+            titleRes = R.string.comment_detail_delete_comment_confirm_title_text,
+            descriptionRes = R.string.comment_detail_delete_comment_confirm_description_text,
+            acceptRes = R.string.comment_detail_delete_comment_confirm_accept_button_text,
+            cancelRes = R.string.comment_detail_delete_comment_confirm_cancel_button_text,
+            onAcceptClicked = {
+                comment?.let(onDeleteCommentCalled)
+            },
+            onCancelClicked = onDialogCancelled
+        )
     }
 }

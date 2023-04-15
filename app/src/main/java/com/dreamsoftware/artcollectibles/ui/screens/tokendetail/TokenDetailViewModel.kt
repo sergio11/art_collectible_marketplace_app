@@ -331,7 +331,7 @@ class TokenDetailViewModel @Inject constructor(
         getLastCommentsByTokenUseCase.invoke(
             scope = viewModelScope,
             params = GetLastCommentsByTokenUseCase.Params(
-                tokenId = tokenId.toString(),
+                tokenId = tokenId,
                 limit = COMMENTS_BY_TOKEN_LIMIT
             ),
             onSuccess = { lastComments ->

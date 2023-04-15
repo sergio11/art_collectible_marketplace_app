@@ -3,7 +3,9 @@ package com.dreamsoftware.artcollectibles.ui.screens.commentdetail
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.Comment
+import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.DeleteCommentUseCase
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAuthUserProfileUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCommentDetailUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetTokensCreatedByUserUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
@@ -14,7 +16,8 @@ import javax.inject.Inject
 class CommentDetailViewModel @Inject constructor(
     private val getCommentDetailUseCase: GetCommentDetailUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
-    private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase
+    private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase,
+    private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase
 ) : SupportViewModel<CommentDetailUiState>() {
 
     override fun onGetDefaultState(): CommentDetailUiState = CommentDetailUiState()
@@ -44,6 +47,32 @@ class CommentDetailViewModel @Inject constructor(
         }
     }
 
+    fun onConfirmDeleteCommentDialogVisibilityChanged(isVisible: Boolean) {
+        updateState {
+            it.copy(isConfirmDeleteCommentDialogVisible = isVisible)
+        }
+    }
+
+    private fun loadTokensCreatedByUser(userAddress: String) {
+        getTokensCreatedByUserUseCase.invoke(
+            scope = viewModelScope,
+            params = GetTokensCreatedByUserUseCase.Params(userAddress),
+            onSuccess = ::onLoadTokensCreatedCompleted,
+            onError = ::onErrorOccurred
+        )
+    }
+
+    private fun loadAuthUserDetail() {
+        getAuthUserProfileUseCase.invoke(
+            scope = viewModelScope,
+            onSuccess = ::onLoadAuthUserDetailCompleted,
+            onError = {
+                it.printStackTrace()
+                // ignore error
+            }
+        )
+    }
+
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
@@ -62,6 +91,7 @@ class CommentDetailViewModel @Inject constructor(
             )
         }
         loadTokensCreatedByUser(userAddress = comment.user.walletAddress)
+        loadAuthUserDetail()
     }
 
     private fun onCommentDeleted() {
@@ -78,13 +108,10 @@ class CommentDetailViewModel @Inject constructor(
         updateState { it.copy(tokensCreated = tokensCreated) }
     }
 
-    private fun loadTokensCreatedByUser(userAddress: String) {
-        getTokensCreatedByUserUseCase.invoke(
-            scope = viewModelScope,
-            params = GetTokensCreatedByUserUseCase.Params(userAddress),
-            onSuccess = ::onLoadTokensCreatedCompleted,
-            onError = ::onErrorOccurred
-        )
+    private fun onLoadAuthUserDetailCompleted(authUser: UserInfo) {
+        updateState {
+            it.copy(isDeleteCommentEnabled = it.comment?.user?.uid == authUser.uid)
+        }
     }
 }
 
@@ -92,5 +119,7 @@ data class CommentDetailUiState(
     val isLoading: Boolean = false,
     val commentDeleted: Boolean = false,
     val comment: Comment? = null,
-    val tokensCreated: Iterable<ArtCollectible> = emptyList()
+    val tokensCreated: Iterable<ArtCollectible> = emptyList(),
+    val isDeleteCommentEnabled: Boolean = false,
+    val isConfirmDeleteCommentDialogVisible: Boolean = false
 )

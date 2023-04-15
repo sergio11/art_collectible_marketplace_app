@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.internal.toLongOrDefault
+import java.math.BigInteger
 
 internal class CommentsDataSourceImpl(
     private val firebaseStore: FirebaseFirestore,
@@ -55,20 +56,20 @@ internal class CommentsDataSourceImpl(
     }
 
     @Throws(DeleteCommentException::class)
-    override suspend fun delete(tokenId: String, uid: String) {
+    override suspend fun delete(tokenId: BigInteger, uid: String) {
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(uid)
                         .delete()
                         .await()
-                    document(tokenId)
+                    document(tokenId.toString())
                         .set(
                             hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayRemove(uid)),
                             SetOptions.merge()
                         )
                         .await()
-                    document(tokenId + COMMENTS_COUNT_SUFFIX).set(
+                    document(tokenId.toString() + COMMENTS_COUNT_SUFFIX).set(
                         hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)),
                         SetOptions.merge()
                     ).await()
@@ -83,10 +84,10 @@ internal class CommentsDataSourceImpl(
     }
 
     @Throws(CountCommentsException::class)
-    override suspend fun count(tokenId: String): Long = withContext(Dispatchers.IO) {
+    override suspend fun count(tokenId: BigInteger): Long = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .document(tokenId + COMMENTS_COUNT_SUFFIX)
+                .document(tokenId.toString() + COMMENTS_COUNT_SUFFIX)
                 .get()
                 .await()?.data?.get(COUNT_FIELD_NAME)
                 .toString()
@@ -118,11 +119,11 @@ internal class CommentsDataSourceImpl(
     }
 
     @Throws(GetCommentsByTokenIdException::class)
-    override suspend fun getByTokenId(tokenId: String): Iterable<CommentDTO> =
+    override suspend fun getByTokenId(tokenId: BigInteger): Iterable<CommentDTO> =
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME)
-                    .document(tokenId)
+                    .document(tokenId.toString())
                     .get()
                     .await()?.data?.let { it[COMMENTS_FIELD_NAME] as? Iterable<String> }
                     ?.let { getCommentsByIds(it) }
@@ -139,12 +140,12 @@ internal class CommentsDataSourceImpl(
 
     @Throws(GetCommentsByTokenIdException::class)
     override suspend fun getLastCommentsByToken(
-        tokenId: String,
+        tokenId: BigInteger,
         limit: Int
     ): Iterable<CommentDTO> = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .document(tokenId)
+                .document(tokenId.toString())
                 .get()
                 .await()?.data?.let { it[COMMENTS_FIELD_NAME] as? Iterable<String> }
                 ?.let { getCommentsByIds(it).take(limit) }

@@ -9,7 +9,7 @@ class DeleteCommentUseCase(
 ): BaseUseCaseWithParams<DeleteCommentUseCase.Params, Unit>() {
 
     override suspend fun onExecuted(params: Params) = with(params) {
-        commentsRepository.delete(tokenId.toString(), commentUid)
+        commentsRepository.delete(tokenId, commentUid)
     }
 
     data class Params(

@@ -206,7 +206,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             )
 
         fun parseArgs(args: Bundle): CommentsScreenArgs? = with(args) {
-            getString("id")?.let {
+            getString("id")?.toBigInteger()?.let {
                 CommentsScreenArgs(
                     tokenId = it
                 )

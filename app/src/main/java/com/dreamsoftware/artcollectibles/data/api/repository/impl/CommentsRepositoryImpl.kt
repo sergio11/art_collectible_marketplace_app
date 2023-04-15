@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 internal class CommentsRepositoryImpl(
     private val commentsDataSource: ICommentsDataSource,
@@ -52,7 +53,7 @@ internal class CommentsRepositoryImpl(
     }
 
     @Throws(DeleteCommentDataException::class)
-    override suspend fun delete(tokenId: String, uid: String) {
+    override suspend fun delete(tokenId: BigInteger, uid: String) {
         withContext(Dispatchers.IO) {
             try {
                 commentsDataSource.delete(tokenId, uid).also {
@@ -73,7 +74,7 @@ internal class CommentsRepositoryImpl(
     }
 
     @Throws(CountCommentsByTokenDataException::class)
-    override suspend fun count(tokenId: String): Long = withContext(Dispatchers.IO) {
+    override suspend fun count(tokenId: BigInteger): Long = withContext(Dispatchers.IO) {
         try {
             commentsDataSource.count(tokenId)
         } catch (ex: Exception) {
@@ -96,7 +97,7 @@ internal class CommentsRepositoryImpl(
     }
 
     @Throws(GetCommentsByTokenDataException::class)
-    override suspend fun getByTokenId(tokenId: String): Iterable<Comment> = withContext(Dispatchers.IO) {
+    override suspend fun getByTokenId(tokenId: BigInteger): Iterable<Comment> = withContext(Dispatchers.IO) {
         try {
             commentMapper.mapInListToOutList(commentsDataSource.getByTokenId(tokenId).map {
                 async {
@@ -112,7 +113,7 @@ internal class CommentsRepositoryImpl(
     }
 
     @Throws(GetCommentsByTokenDataException::class)
-    override suspend fun getLastCommentsByToken(tokenId: String, limit: Int): Iterable<Comment> = withContext(Dispatchers.IO) {
+    override suspend fun getLastCommentsByToken(tokenId: BigInteger, limit: Int): Iterable<Comment> = withContext(Dispatchers.IO) {
         try {
             commentMapper.mapInListToOutList(commentsDataSource.getLastCommentsByToken(tokenId, limit).map {
                 async {

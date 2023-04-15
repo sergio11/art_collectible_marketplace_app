@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.domain.usecase.impl
 import com.dreamsoftware.artcollectibles.data.api.repository.ICommentsRepository
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
+import java.math.BigInteger
 
 class GetCommentsByTokenUseCase(
     private val commentsRepository: ICommentsRepository
@@ -13,6 +14,6 @@ class GetCommentsByTokenUseCase(
     }
 
     data class Params(
-        val tokenId: String
+        val tokenId: BigInteger
     )
 }

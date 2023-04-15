@@ -210,6 +210,11 @@
     <string name="comment_detail_tokens_created_by_user_text">Collectibles created by this user</string>
     <string name="comment_detail_artist_detail_button_text">Open Artist detail</string>
     <string name="comment_detail_delete_button_text">Delete comment</string>
+    <string name="comment_detail_created_at_label" formatted="false">Created at %s</string>
+    <string name="comment_detail_delete_comment_confirm_title_text">Are you sure to delete this comment?</string>
+    <string name="comment_detail_delete_comment_confirm_description_text">The operation is irreversible, the comment will no longer be available</string>
+    <string name="comment_detail_delete_comment_confirm_accept_button_text">Accept</string>
+    <string name="comment_detail_delete_comment_confirm_cancel_button_text">Cancel</string>
     <!-- Token history -->
     <string name="token_history_title_default">NFT History</string>
     <string name="token_history_title_count" formatted="false">NFT History (%d)</string>

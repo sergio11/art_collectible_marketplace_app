@@ -5,6 +5,7 @@ import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCommentsByTokenUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.math.BigInteger
 import javax.inject.Inject
 
 /**
@@ -17,7 +18,7 @@ class CommentsViewModel @Inject constructor(
 
     override fun onGetDefaultState(): CommentsUiState = CommentsUiState()
 
-    fun load(tokenId: String) {
+    fun load(tokenId: BigInteger) {
         onLoading()
         getCommentsByTokenUseCase.invoke(
             scope = viewModelScope,

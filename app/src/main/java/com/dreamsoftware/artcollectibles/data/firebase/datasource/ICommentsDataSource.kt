@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.datasource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 import com.dreamsoftware.artcollectibles.data.firebase.model.CommentDTO
 import com.dreamsoftware.artcollectibles.data.firebase.model.SaveCommentDTO
+import java.math.BigInteger
 
 interface ICommentsDataSource {
 
@@ -19,14 +20,14 @@ interface ICommentsDataSource {
      * @param uid
      */
     @Throws(DeleteCommentException::class)
-    suspend fun delete(tokenId: String, uid: String)
+    suspend fun delete(tokenId: BigInteger, uid: String)
 
     /**
      * Count comments
      * @param tokenId
      */
     @Throws(CountCommentsException::class)
-    suspend fun count(tokenId: String): Long
+    suspend fun count(tokenId: BigInteger): Long
 
     /**
      * Get Comment By id Exception
@@ -39,7 +40,7 @@ interface ICommentsDataSource {
      * @param tokenId
      */
     @Throws(GetCommentsByTokenIdException::class)
-    suspend fun getByTokenId(tokenId: String): Iterable<CommentDTO>
+    suspend fun getByTokenId(tokenId: BigInteger): Iterable<CommentDTO>
 
     /**
      * Get last comments by token
@@ -47,5 +48,5 @@ interface ICommentsDataSource {
      * @param limit
      */
     @Throws(GetCommentsByTokenIdException::class)
-    suspend fun getLastCommentsByToken(tokenId: String, limit: Int): Iterable<CommentDTO>
+    suspend fun getLastCommentsByToken(tokenId: BigInteger, limit: Int): Iterable<CommentDTO>
 }

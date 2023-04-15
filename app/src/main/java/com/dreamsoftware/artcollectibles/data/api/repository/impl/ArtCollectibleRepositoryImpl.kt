@@ -365,7 +365,7 @@ internal class ArtCollectibleRepositoryImpl(
             }
             val visitorsCountDeferred = async { visitorsDataSource.count(tokenId.toString()) }
             val favoritesCountDeferred = async { favoritesDataSource.tokenCount(tokenId) }
-            val commentsCountDeferred = async { commentsDataSource.count(tokenId.toString()) }
+            val commentsCountDeferred = async { commentsDataSource.count(tokenId) }
             val hasAddedToFavDeferred =
                 async { favoritesDataSource.hasAdded(tokenId, credentials.address) }
             artCollectibleMapper.mapInToOut(
