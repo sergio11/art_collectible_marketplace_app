@@ -30,7 +30,7 @@ fun ArtCollectibleImage(
             .data(artCollectible.metadata.imageUrl)
             .crossfade(true)
             .build(),
-        placeholder = painterResource(R.drawable.user_placeholder),
+        placeholder = painterResource(R.drawable.default_image_placeholder),
         contentDescription = stringResource(R.string.image_content_description),
         contentScale = ContentScale.Crop,
         modifier = Modifier

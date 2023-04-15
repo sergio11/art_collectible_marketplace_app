@@ -13,18 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
-import com.dreamsoftware.artcollectibles.ui.theme.whiteTranslucent
 
 @Composable
 fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, title: String, imageUrl: String) {
@@ -40,23 +35,18 @@ fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, 
             .width(280.dp)
             .then(modifier)
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(R.drawable.user_placeholder),
-            contentDescription = stringResource(R.string.image_content_description),
-            contentScale = ContentScale.Crop,
+        CommonAsyncImage(
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            imageUrl = imageUrl,
+            context = context
         )
         Text(
             title,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .background(color = whiteTranslucent, shape = RectangleShape)
+                .background(color = Purple40.copy(0.6f), shape = RectangleShape)
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
             color = Color.White,

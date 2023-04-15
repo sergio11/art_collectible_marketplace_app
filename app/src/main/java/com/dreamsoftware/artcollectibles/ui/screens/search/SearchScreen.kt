@@ -83,7 +83,10 @@ internal fun SearchComponent(
             BottomBar(navController)
         },
         topBar = {
-            CommonTopAppBar(R.string.search_main_title_text)
+            CommonTopAppBar(
+                titleRes = R.string.search_main_title_text,
+                centerTitle = true
+            )
         },
         containerColor = Purple40
     ) { paddingValues ->

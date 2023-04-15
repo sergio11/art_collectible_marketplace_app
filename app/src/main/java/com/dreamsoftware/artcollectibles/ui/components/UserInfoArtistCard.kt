@@ -37,7 +37,7 @@ fun UserInfoArtistCard(
 ) {
     Card(
         modifier = Modifier
-            .height(300.dp)
+            .height(285.dp)
             .width(190.dp)
             .then(modifier),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -107,14 +107,14 @@ private fun UserProfileImage(
                         .data(it)
                         .crossfade(true)
                         .build(),
-                    placeholder = painterResource(R.drawable.user_placeholder),
+                    placeholder = painterResource(R.drawable.default_image_placeholder),
                     contentDescription = stringResource(R.string.image_content_description),
                     contentScale = ContentScale.Crop,
                     modifier = modifier
                 )
             } ?: run {
                 Image(
-                    painter = painterResource(R.drawable.user_placeholder),
+                    painter = painterResource(R.drawable.default_image_placeholder),
                     contentDescription = "User Placeholder",
                     contentScale = ContentScale.Crop,
                     modifier = modifier

@@ -35,6 +35,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.theme.*
@@ -111,7 +112,14 @@ internal fun ProfileComponent(
             BottomBar(navController)
         },
         topBar = {
-            CommonTopAppBar(titleRes = R.string.profile_main_title_text)
+            CommonTopAppBar(titleRes = R.string.profile_main_title_text, menuActions = listOf(
+                TopBarAction(
+                    iconRes = R.drawable.settings_icon,
+                    onActionClicked = {
+
+                    }
+                )
+            ))
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {

@@ -35,6 +35,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.getCacheSubDir
 import com.dreamsoftware.artcollectibles.ui.extensions.getMimeType
@@ -144,7 +145,12 @@ internal fun AddNftComponent(
 ) {
     Scaffold(
         topBar = {
-            CommonTopAppBar(titleRes = R.string.add_nft_main_title_text)
+            CommonTopAppBar(titleRes = R.string.add_nft_main_title_text, menuActions = listOf(
+                TopBarAction(
+                    iconRes = R.drawable.help_icon,
+                    onActionClicked = {}
+                )
+            ))
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -249,7 +255,7 @@ private fun AddNftForm(
                                     .data(imageUri)
                                     .crossfade(true)
                                     .build(),
-                                placeholder = painterResource(R.drawable.user_placeholder),
+                                placeholder = painterResource(R.drawable.default_image_placeholder),
                                 contentDescription = stringResource(R.string.image_content_description),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

@@ -39,14 +39,14 @@ fun UserAccountProfilePicture(size: Dp, userInfo: UserInfo? = null, onPictureCli
                     .data(it)
                     .crossfade(true)
                     .build(),
-                placeholder = painterResource(R.drawable.user_placeholder),
+                placeholder = painterResource(R.drawable.default_image_placeholder),
                 contentDescription = stringResource(R.string.image_content_description),
                 contentScale = ContentScale.Crop,
                 modifier = profilePictureModifier
             )
         } ?: run {
             Image(
-                painter = painterResource(R.drawable.user_placeholder),
+                painter = painterResource(R.drawable.default_image_placeholder),
                 contentDescription = "User Placeholder",
                 contentScale = ContentScale.Crop,
                 modifier = profilePictureModifier

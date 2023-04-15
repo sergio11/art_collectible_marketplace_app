@@ -29,6 +29,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
 import java.math.BigInteger
@@ -89,7 +90,17 @@ private fun HomeComponent(
                 BottomBar(navController)
             },
             topBar = {
-                CommonTopAppBar(R.string.home_main_title)
+                CommonTopAppBar(
+                    titleRes = R.string.home_main_title,
+                    menuActions = listOf(
+                        TopBarAction(
+                            iconRes = R.drawable.notification_icon,
+                            onActionClicked = {
+
+                            }
+                        )
+                    )
+                )
             },
             containerColor = Purple40
         ) { paddingValues ->
