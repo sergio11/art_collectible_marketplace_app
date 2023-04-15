@@ -4,7 +4,8 @@ import java.math.BigDecimal
 import java.math.BigInteger
 
 data class AccountBalance(
-    val erc20: BigInteger,
     val balanceInWei: BigInteger,
-    val balanceInEth: BigDecimal
+    val balanceInEth: BigDecimal,
+    val balanceInEUR: Double? = null,
+    val balanceInUSD: Double? = null,
 )

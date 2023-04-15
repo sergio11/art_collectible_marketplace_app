@@ -262,6 +262,7 @@ class DataModule {
      * @param faucetBlockchainDataSource
      * @param walletMetadataMemoryCache
      * @param walletCredentialsMemoryDataSource
+     * @param marketPricesBlockchainDataSource
      */
     @Provides
     @Singleton
@@ -276,7 +277,8 @@ class DataModule {
         walletDataSource: IWalletDataSource,
         faucetBlockchainDataSource: IFaucetBlockchainDataSource,
         walletMetadataMemoryCache: IWalletMetadataMemoryDataSource,
-        walletCredentialsMemoryDataSource: IWalletCredentialsMemoryDataSource
+        walletCredentialsMemoryDataSource: IWalletCredentialsMemoryDataSource,
+        marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource
     ): IWalletRepository =
         WalletRepositoryImpl(
             accountBalanceMapper,
@@ -289,7 +291,8 @@ class DataModule {
             walletDataSource,
             faucetBlockchainDataSource,
             walletMetadataMemoryCache,
-            walletCredentialsMemoryDataSource
+            walletCredentialsMemoryDataSource,
+            marketPricesBlockchainDataSource
         )
 
     /**

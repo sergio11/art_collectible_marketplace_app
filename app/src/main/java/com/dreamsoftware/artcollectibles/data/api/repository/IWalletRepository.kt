@@ -26,4 +26,11 @@ interface IWalletRepository {
      */
     @Throws(GetCurrentBalanceException::class)
     suspend fun getCurrentBalance(): AccountBalance
+
+    /**
+     * Get balance of
+     * @param targetAddress
+     */
+    @Throws(GetCurrentBalanceException::class)
+    suspend fun getBalanceOf(targetAddress: String): AccountBalance
 }

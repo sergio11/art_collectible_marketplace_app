@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -137,14 +138,13 @@ internal fun ProfileComponent(
                             }
                         }
                         state.accountBalance?.let {
-                            CurrentAccountBalance(accountBalance = it) {
-                                context.startActivity(
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
-                                    )
-                                )
-                            }
+                            CurrentAccountBalance(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                iconSize = 30.dp,
+                                textSize = 20.sp,
+                                textColor = DarkPurple,
+                                accountBalance = it
+                            )
                         }
                         CommonDefaultTextField(
                             labelRes = R.string.profile_input_name_label,
@@ -229,48 +229,6 @@ internal fun ProfileComponent(
                 onImageSelected = onPictureChanged
             ) { isProfilePicturePicker = false }
         }
-    }
-}
-
-@Composable
-internal fun CurrentAccountBalance(
-    accountBalance: AccountBalance,
-    onGetMoreMaticClicked: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 30.dp, bottom = 10.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.matic_icon),
-            contentDescription = "Matic Icon",
-            modifier = Modifier
-                .width(40.dp)
-                .height(40.dp)
-        )
-        Text(
-            text = stringResource(
-                id = R.string.profile_current_matic,
-                accountBalance.balanceInEth
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(horizontal = 8.dp),
-            style = MaterialTheme.typography.titleMedium
-        )
-        CommonButton(
-            modifier = Modifier.padding(horizontal = 4.dp),
-            text = R.string.profile_get_more_matic,
-            widthDp = 150.dp,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Purple40,
-                contentColor = Color.White
-            ),
-            buttonShape = elevatedShape,
-            onClick = onGetMoreMaticClicked
-        )
     }
 }
 

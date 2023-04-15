@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -13,19 +15,25 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
+import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -166,17 +174,6 @@ fun ArtistDetailComponent(
                 itemSize = 30.dp,
                 userInfo = userInfo
             )
-            userInfo?.tags?.let { tags ->
-                if (tags.isNotEmpty()) {
-                    TagsRow(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp, vertical = 8.dp)
-                            .fillMaxWidth(),
-                        tagList = tags,
-                        isReadOnly = true
-                    )
-                }
-            }
             Row(
                 modifier = defaultModifier,
                 verticalAlignment = Alignment.CenterVertically,
@@ -215,6 +212,45 @@ fun ArtistDetailComponent(
                 fontFamily = montserratFontFamily,
                 style = MaterialTheme.typography.bodyLarge
             )
+            userInfo?.tags?.let { tags ->
+                if (tags.isNotEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.profile_tokens_artist_interested_in),
+                        color = DarkPurple,
+                        modifier = defaultModifier,
+                        fontFamily = montserratFontFamily,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Left,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                    TagsRow(
+                        modifier = defaultModifier,
+                        tagList = tags,
+                        isReadOnly = true
+                    )
+                }
+            }
+            currentBalance?.let {
+                Text(
+                    text = stringResource(id = R.string.profile_tokens_artist_account_balance),
+                    color = DarkPurple,
+                    modifier = defaultModifier,
+                    fontFamily = montserratFontFamily,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Left,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                CurrentAccountBalance(
+                    modifier = defaultModifier,
+                    iconSize = 25.dp,
+                    textSize = 20.sp,
+                    textColor = DarkPurple,
+                    accountBalance = it,
+                    fullMode = true
+                )
+            }
             ArtCollectiblesRow(
                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                 context = context,
@@ -241,6 +277,30 @@ fun ArtistDetailComponent(
                     onGoToTokenDetail(it.id)
                 }
             )
+            Spacer(modifier = Modifier.height(50.dp))
+            if(isAuthUser) {
+                CommonButton(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    text = R.string.profile_get_more_matic,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Purple40,
+                        contentColor = Color.White
+                    ),
+                    buttonShape = ButtonDefaults.elevatedShape,
+                    onClick = {
+                        context.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                            )
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(50.dp))
+            }
+
         }
     }
 }

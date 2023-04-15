@@ -160,7 +160,12 @@ internal class UserRepositoryImpl(
 
     @Throws(SaveUserException::class)
     override suspend fun save(userInfo: UserInfo) = try {
-        userDataSource.save(saveUserInfoMapper.mapInToOut(userInfo))
+        userDataSource.save(saveUserInfoMapper.mapInToOut(userInfo).also {
+            with(userMemoryDataSource) {
+                delete(it.uid)
+                delete(it.walletAddress)
+            }
+        })
     } catch (ex: Exception) {
         ex.printStackTrace()
         throw SaveUserException("An error occurred when trying to create the user", ex)
@@ -182,7 +187,12 @@ internal class UserRepositoryImpl(
                         walletAddress = walletAddress,
                         photoUrl = it
                     )
-                )
+                ).also {
+                    with(userMemoryDataSource) {
+                        delete(uid)
+                        delete(walletAddress)
+                    }
+                }
             }
         }
     } catch (ex: Exception) {
@@ -193,6 +203,7 @@ internal class UserRepositoryImpl(
     @Throws(CloseSessionException::class)
     override suspend fun closeSession() {
         try {
+            userMemoryDataSource.delete()
             authDataSource.closeSession()
         } catch (ex: Exception) {
             throw CloseSessionException("An error occurred when trying to close user session", ex)
@@ -217,7 +228,12 @@ internal class UserRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val authUserUid = preferencesDataSource.getAuthUserUid()
-                followerDataSource.follow(authUserUid, userUid)
+                followerDataSource.follow(authUserUid, userUid).also {
+                    with(userMemoryDataSource) {
+                        delete(authUserUid)
+                        delete(userUid)
+                    }
+                }
             }  catch (ex: Exception) {
                 throw FollowUserException("An error occurred when trying to follow to user", ex)
             }
@@ -229,7 +245,12 @@ internal class UserRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val authUserUid = preferencesDataSource.getAuthUserUid()
-                followerDataSource.unfollow(authUserUid, userUid)
+                followerDataSource.unfollow(authUserUid, userUid).also {
+                    with(userMemoryDataSource) {
+                        delete(authUserUid)
+                        delete(userUid)
+                    }
+                }
             } catch (ex: Exception) {
                 throw UnFollowUserException("An error occurred when trying to unfollow to user", ex)
             }

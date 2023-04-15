@@ -8,6 +8,7 @@ import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IFaucetBlockchainDataSource
+import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IMarketPricesBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IWalletDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStorageDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IWalletMetadataDataSource
@@ -35,6 +36,7 @@ import java.net.URL
  * @param faucetDataSource
  * @param walletMetadataMemoryCache
  * @param walletCredentialsMemoryDataSource
+ * @param marketPricesBlockchainDataSource
  */
 internal class WalletRepositoryImpl(
     private val accountBalanceMapper: AccountBalanceMapper,
@@ -47,7 +49,8 @@ internal class WalletRepositoryImpl(
     private val walletDataSource: IWalletDataSource,
     private val faucetDataSource: IFaucetBlockchainDataSource,
     private val walletMetadataMemoryCache: IWalletMetadataMemoryDataSource,
-    private val walletCredentialsMemoryDataSource: IWalletCredentialsMemoryDataSource
+    private val walletCredentialsMemoryDataSource: IWalletCredentialsMemoryDataSource,
+    private val marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource
 ): IWalletRepository {
 
     private companion object {
@@ -93,7 +96,18 @@ internal class WalletRepositoryImpl(
         val userUid = preferencesDataSource.getAuthUserUid()
         val credentials = loadCredentials(userUid)
         val balance = accountBlockchainDataSource.getCurrentBalance(credentials)
-        accountBalanceMapper.mapInToOut(balance)
+        val marketPrices = marketPricesBlockchainDataSource.getPricesOf(priceInEth = balance.balanceInEth)
+        accountBalanceMapper.mapInToOut(AccountBalanceMapper.InputData(balance, marketPrices))
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        throw GetCurrentBalanceException("An error occurred when trying to get current balance", ex)
+    }
+
+    @Throws(GetCurrentBalanceException::class)
+    override suspend fun getBalanceOf(targetAddress: String): AccountBalance = try {
+        val balance = accountBlockchainDataSource.getBalanceOf(targetAddress)
+        val marketPrices = marketPricesBlockchainDataSource.getPricesOf(priceInEth = balance.balanceInEth)
+        accountBalanceMapper.mapInToOut(AccountBalanceMapper.InputData(balance, marketPrices))
     } catch (ex: Exception) {
         ex.printStackTrace()
         throw GetCurrentBalanceException("An error occurred when trying to get current balance", ex)

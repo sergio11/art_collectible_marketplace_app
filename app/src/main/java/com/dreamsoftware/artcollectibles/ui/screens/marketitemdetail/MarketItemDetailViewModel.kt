@@ -163,6 +163,7 @@ class MarketItemDetailViewModel @Inject constructor(
 
     private fun fetchCurrentBalance() = getCurrentBalanceUseCase.invoke(
         scope = viewModelScope,
+        params = GetCurrentBalanceUseCase.Params(),
         onSuccess = { currentBalance ->
             updateState {
                 it.copy(enoughFunds = it.artCollectibleForSale?.price?.priceInWei?.let { marketItemPrice ->

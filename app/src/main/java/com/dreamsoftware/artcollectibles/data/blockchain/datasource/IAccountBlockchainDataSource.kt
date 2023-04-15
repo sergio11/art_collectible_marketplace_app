@@ -8,4 +8,6 @@ interface IAccountBlockchainDataSource {
 
     suspend fun getCurrentBalance(credentials: Credentials): AccountBalanceDTO
 
+    suspend fun getBalanceOf(targetAddress: String): AccountBalanceDTO
+
 }

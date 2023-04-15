@@ -202,7 +202,7 @@ class ProfileViewModel @Inject constructor(
         getAuthUserProfileUseCase.invoke(scope = viewModelScope)
 
     private suspend fun fetchCurrentBalance() =
-        getCurrentBalanceUseCase.invoke(scope = viewModelScope)
+        getCurrentBalanceUseCase.invoke(scope = viewModelScope, params = GetCurrentBalanceUseCase.Params())
 }
 
 data class ProfileUiState(

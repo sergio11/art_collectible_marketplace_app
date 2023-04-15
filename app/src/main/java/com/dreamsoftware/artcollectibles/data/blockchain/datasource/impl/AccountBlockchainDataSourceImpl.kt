@@ -5,6 +5,8 @@ import com.dreamsoftware.artcollectibles.data.blockchain.alchemy.service.IAccoun
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IAccountBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.AccountBalanceDTO
 import com.dreamsoftware.artcollectibles.data.core.network.SupportNetworkDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
@@ -22,20 +24,27 @@ internal class AccountBlockchainDataSourceImpl(
 ): SupportNetworkDataSource(),  IAccountBlockchainDataSource {
 
     override suspend fun getCurrentBalance(credentials: Credentials): AccountBalanceDTO =
-        safeNetworkCall {
-            val response = accountInformationService.getNativeBalance(AlchemyRequestDTO(
-                id = 1,
-                jsonRpc = "2.0",
-                params = listOf(credentials.address, "latest"),
-                method = "eth_getBalance"
-            ))
+        withContext(Dispatchers.IO) {
             val ethGetBalance = web3j
                 .ethGetBalance(credentials.address, DefaultBlockParameterName.LATEST)
                 .send()
             AccountBalanceDTO(
-                erc20 = BigInteger(response.result.removePrefix("0x"), 16),
                 balanceInWei = ethGetBalance.balance,
                 balanceInEth = Convert.fromWei(ethGetBalance.balance.toString(), Convert.Unit.ETHER)
             )
         }
+
+    override suspend fun getBalanceOf(targetAddress: String): AccountBalanceDTO = safeNetworkCall {
+        val response = accountInformationService.getNativeBalance(AlchemyRequestDTO(
+            id = 1,
+            jsonRpc = "2.0",
+            params = listOf(targetAddress, "latest"),
+            method = "eth_getBalance"
+        ))
+        val balanceInWei = BigInteger(response.result.removePrefix("0x"), 16)
+        AccountBalanceDTO(
+            balanceInWei = balanceInWei,
+            balanceInEth = Convert.fromWei(balanceInWei.toString(), Convert.Unit.ETHER)
+        )
+    }
 }

@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.artistdetail
 
 import androidx.lifecycle.viewModelScope
+import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
@@ -18,7 +19,8 @@ class ArtistDetailViewModel @Inject constructor(
     private val unfollowUserUseCase: UnfollowUserUseCase,
     private val checkAuthUserIsFollowingToUseCase: CheckAuthUserIsFollowingToUseCase,
     private val getTokensOwnedByUserUseCase: GetTokensOwnedByUserUseCase,
-    private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase
+    private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase,
+    private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase
 ) : SupportViewModel<ArtistDetailUiState>() {
 
     private companion object {
@@ -82,6 +84,7 @@ class ArtistDetailViewModel @Inject constructor(
                 checkAuthUserIsFollowingTo(uid)
                 loadTokensOwnedByUser(userAddress = userInfo.walletAddress)
                 loadTokensCreatedByUser(userAddress = userInfo.walletAddress)
+                loadCurrentBalance(userAddress = userInfo.walletAddress)
             } catch (ex: Exception) {
                 onErrorOccurred(ex)
             }
@@ -135,6 +138,17 @@ class ArtistDetailViewModel @Inject constructor(
         )
     }
 
+    private fun loadCurrentBalance(userAddress: String) {
+        getCurrentBalanceUseCase.invoke(
+            scope = viewModelScope,
+            params = GetCurrentBalanceUseCase.Params(
+                targetAddress = userAddress
+            ),
+            onSuccess = ::onLoadCurrentBalanceCompleted,
+            onError = ::onErrorOccurred
+        )
+    }
+
     private fun onFollowCompleted() {
         updateState {
             it.copy(
@@ -161,6 +175,10 @@ class ArtistDetailViewModel @Inject constructor(
         updateState { it.copy(tokensCreated = tokensCreated) }
     }
 
+    private fun onLoadCurrentBalanceCompleted(currentBalance: AccountBalance) {
+        updateState { it.copy(currentBalance = currentBalance) }
+    }
+
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
@@ -179,6 +197,7 @@ data class ArtistDetailUiState(
     val isFollowing: Boolean = false,
     val followersCount: Long = 0L,
     val followingCount: Long = 0L,
+    val currentBalance: AccountBalance? = null,
     val tokensOwned: Iterable<ArtCollectible> = emptyList(),
     val tokensCreated: Iterable<ArtCollectible> = emptyList()
 )
