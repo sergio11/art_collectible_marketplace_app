@@ -49,6 +49,9 @@ class CheckTokenAddedForSaleException(message: String? = null, cause: Throwable?
 class FetchMarketplaceStatisticsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class BuyItemException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class GetMarketItemsByCategoryException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
+class GetSimilarMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
+class GetSimilarAuthorMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
+
 // Secrets Repository Exception
 abstract class SecretDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class GenerateSecretException(message: String? = null, cause: Throwable? = null): SecretDataException(message, cause)

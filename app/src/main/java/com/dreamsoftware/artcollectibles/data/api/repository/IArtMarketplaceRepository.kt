@@ -92,6 +92,14 @@ interface IArtMarketplaceRepository {
      * @param tokenId
      * @param count
      */
-    @Throws(GetMarketItemsByCategoryException::class)
+    @Throws(GetSimilarMarketItemsException::class)
     suspend fun getSimilarMarketItems(tokenId: BigInteger, count: Int): Iterable<ArtCollectibleForSale>
+
+    /**
+     * Get similar author market items
+     * @param tokenId
+     * @param count
+     */
+    @Throws(GetSimilarAuthorMarketItemsException::class)
+    suspend fun getSimilarAuthorMarketItems(tokenId: BigInteger, count: Int): Iterable<ArtCollectibleForSale>
 }

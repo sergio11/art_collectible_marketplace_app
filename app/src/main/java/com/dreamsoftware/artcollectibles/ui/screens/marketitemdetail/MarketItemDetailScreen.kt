@@ -179,6 +179,13 @@ fun MarketItemDetailComponent(
                 reverseStyle = true,
                 onMarketItemSelected = onOpenMarketItemDetail
             )
+            ArtCollectibleForSaleRow(
+                context = context,
+                titleRes = R.string.market_item_detail_similar_author_row_title_text,
+                items = similarAuthorMarketItems,
+                reverseStyle = true,
+                onMarketItemSelected = onOpenMarketItemDetail
+            )
             Spacer(modifier = Modifier.height(50.dp))
             if (!isLoading) {
                 if (!isTokenSeller) {

@@ -582,4 +582,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetSimilarMarketItemsUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
         GetSimilarMarketItemsUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide get similar author market items
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetSimilarAuthorMarketItemsUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
+        GetSimilarAuthorMarketItemsUseCase(artMarketplaceRepository)
 }

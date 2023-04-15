@@ -191,6 +191,7 @@
     <string name="market_item_detail_token_buy_confirm_accept_button_text">Accept</string>
     <string name="market_item_detail_token_buy_confirm_cancel_button_text">Cancel</string>
     <string name="market_item_detail_similar_row_title_text">Other collectibles that might interest you</string>
+    <string name="market_item_detail_similar_author_row_title_text">Other collectibles available from the same author</string>
     <!-- Followers -->
     <string name="followers_detail_title_default">Followers</string>
     <string name="followers_detail_title_count" formatted="false">Followers (%d)</string>

@@ -277,7 +277,7 @@ internal class ArtMarketplaceRepositoryImpl(
         }
     }
 
-    @Throws(GetMarketItemsByCategoryException::class)
+    @Throws(GetSimilarMarketItemsException::class)
     override suspend fun getSimilarMarketItems(
         tokenId: BigInteger,
         count: Int
@@ -314,6 +314,26 @@ internal class ArtMarketplaceRepositoryImpl(
         } catch (ex: Exception) {
             throw GetMarketItemsByCategoryException(
                 "An error occurred when trying to get similar market items",
+                ex
+            )
+        }
+    }
+
+    @Throws(GetSimilarAuthorMarketItemsException::class)
+    override suspend fun getSimilarAuthorMarketItems(
+        tokenId: BigInteger,
+        count: Int
+    ): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
+        try {
+            val artCollectible = artCollectibleRepository.getTokenById(tokenId)
+            val credentials = walletRepository.loadCredentials()
+            artMarketplaceBlockchainDataSource.fetchAvailableMarketItems(userCredentialsMapper.mapOutToIn(credentials))
+                .filter { it.creator == artCollectible.author.walletAddress && it.tokenId != artCollectible.id }
+                .take(count)
+                .let { mapToArtCollectibleForSaleList(it) }
+        } catch (ex: Exception) {
+            throw GetMarketItemsByCategoryException(
+                "An error occurred when trying to get similar author market items",
                 ex
             )
         }
