@@ -18,18 +18,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.*
 import com.dreamsoftware.artcollectibles.ui.theme.*
 
@@ -105,15 +98,10 @@ private fun CommonDetailHeader(
             alpha = (-1f / headerHeightPx) * scrollState.value + 1
         }
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(R.drawable.default_image_placeholder),
-            contentDescription = stringResource(R.string.image_content_description),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+        CommonAsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            context = context,
+            imageUrl = imageUrl
         )
         Box(
             Modifier
@@ -156,17 +144,12 @@ private fun CommonDetailToolbar(
                 )
             ),
             navigationIcon = {
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    placeholder = painterResource(R.drawable.default_image_placeholder),
-                    contentDescription = stringResource(R.string.image_content_description),
-                    contentScale = ContentScale.Crop,
+                CommonAsyncImage(
                     modifier = Modifier
                         .size(55.dp)
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+                    context = context,
+                    imageUrl = imageUrl
                 )
             },
             title = {},

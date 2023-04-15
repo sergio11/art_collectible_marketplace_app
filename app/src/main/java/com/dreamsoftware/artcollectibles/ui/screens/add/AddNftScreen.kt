@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -29,10 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
+import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
@@ -40,7 +38,6 @@ import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.getCacheSubDir
 import com.dreamsoftware.artcollectibles.ui.extensions.getMimeType
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
-import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.io.File
@@ -204,7 +201,7 @@ private fun AddNftForm(
     with(state) {
         var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
         LoadingDialog(isShowingDialog = isLoading)
-        BackHandler(enabled = true){
+        BackHandler(enabled = true) {
             confirmCancelAddNftState = true
         }
         CommonDialog(
@@ -250,18 +247,13 @@ private fun AddNftForm(
                             .padding(vertical = 15.dp)
                             .width(300.dp)
                         Box {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(imageUri)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(R.drawable.default_image_placeholder),
-                                contentDescription = stringResource(R.string.image_content_description),
-                                contentScale = ContentScale.Crop,
+                            CommonAsyncImage(
                                 modifier = Modifier
                                     .size(200.dp)
                                     .clip(CircleShape)
-                                    .border(2.dp, Color.White, CircleShape)
+                                    .border(2.dp, Color.White, CircleShape),
+                                context = LocalContext.current,
+                                imageUrl = imageUri?.path
                             )
                             Image(
                                 modifier = Modifier

@@ -11,28 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
 
 @Composable
 fun ArtCollectibleImage(
     context: Context,
     artCollectible: ArtCollectible
 ) {
-    AsyncImage(
-        model = ImageRequest.Builder(context)
-            .data(artCollectible.metadata.imageUrl)
-            .crossfade(true)
-            .build(),
-        placeholder = painterResource(R.drawable.default_image_placeholder),
-        contentDescription = stringResource(R.string.image_content_description),
-        contentScale = ContentScale.Crop,
+    CommonAsyncImage(
         modifier = Modifier
             .height(155.dp)
             .fillMaxWidth()
@@ -43,6 +31,8 @@ fun ArtCollectibleImage(
                 shape = RoundedCornerShape(27.dp)
             )
             .fillMaxSize()
-            .clip(RoundedCornerShape(27.dp))
+            .clip(RoundedCornerShape(27.dp)),
+        context = context,
+        imageUrl = artCollectible.metadata.imageUrl
     )
 }
