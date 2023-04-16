@@ -384,7 +384,7 @@ class TokenDetailViewModel @Inject constructor(
         registerVisitorUseCase.invoke(
             scope = viewModelScope,
             params = RegisterVisitorUseCase.Params(
-                tokenId = tokenId.toString(),
+                tokenId = tokenId,
                 userAddress = userAddress
             ),
             onSuccess = {

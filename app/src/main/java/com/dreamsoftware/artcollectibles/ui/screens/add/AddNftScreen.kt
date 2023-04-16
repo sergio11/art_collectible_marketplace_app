@@ -30,7 +30,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
-import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
@@ -115,7 +115,8 @@ fun AddNftScreen(
             onAddNewTag = ::onAddNewTag,
             onDeleteTag = ::onDeleteTag,
             onCategoryChanged = ::onCategoryChanged,
-            onResetImage = ::onResetImage
+            onResetImage = ::onResetImage,
+            onConfirmCancelMintNftVisibilityChanged = ::onConfirmCancelMintNftVisibilityChanged
         )
     }
 }
@@ -138,16 +139,42 @@ internal fun AddNftComponent(
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit,
     onCategoryChanged: (ArtCollectibleCategory) -> Unit,
-    onResetImage: () -> Unit
+    onResetImage: () -> Unit,
+    onConfirmCancelMintNftVisibilityChanged: (isVisible: Boolean) -> Unit
 ) {
+    BackHandler(enabled = true) {
+        onConfirmCancelMintNftVisibilityChanged(true)
+    }
+    CommonDialog(
+        isVisible = state.isConfirmCancelMintNftVisible,
+        titleRes = R.string.add_nft_cancel_confirm_title_text,
+        descriptionRes = R.string.add_nft_cancel_confirm_description_text,
+        acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
+        cancelRes = R.string.add_nft_cancel_cancel_button_text,
+        onAcceptClicked = {
+            onExitClicked()
+            onConfirmCancelMintNftVisibilityChanged(false)
+        },
+        onCancelClicked = { onConfirmCancelMintNftVisibilityChanged(false) }
+    )
     Scaffold(
         topBar = {
-            CommonTopAppBar(titleRes = R.string.add_nft_main_title_text, menuActions = listOf(
-                TopBarAction(
-                    iconRes = R.drawable.help_icon,
-                    onActionClicked = {}
+            CommonTopAppBar(
+                titleRes = R.string.add_nft_main_title_text,
+                centerTitle = true,
+                navigationAction =  TopBarAction(
+                    iconRes = R.drawable.back_icon,
+                    onActionClicked = {
+                        onConfirmCancelMintNftVisibilityChanged(true)
+                    }
+                ),
+                menuActions = listOf(
+                    TopBarAction(
+                        iconRes = R.drawable.help_icon,
+                        onActionClicked = {}
+                    )
                 )
-            ))
+            )
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
@@ -174,7 +201,8 @@ internal fun AddNftComponent(
                         onAddNewTag = onAddNewTag,
                         onDeleteTag = onDeleteTag,
                         onCategoryChanged = onCategoryChanged,
-                        onResetImage = onResetImage
+                        onResetImage = onResetImage,
+                        onConfirmCancelMintNftVisibilityChanged = onConfirmCancelMintNftVisibilityChanged
                     )
                 }
             } else {
@@ -196,26 +224,11 @@ private fun AddNftForm(
     onResetImage: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit,
-    onCategoryChanged: (ArtCollectibleCategory) -> Unit
+    onCategoryChanged: (ArtCollectibleCategory) -> Unit,
+    onConfirmCancelMintNftVisibilityChanged: (isVisible: Boolean) -> Unit
 ) {
     with(state) {
-        var confirmCancelAddNftState by rememberSaveable { mutableStateOf(false) }
         LoadingDialog(isShowingDialog = isLoading)
-        BackHandler(enabled = true) {
-            confirmCancelAddNftState = true
-        }
-        CommonDialog(
-            isVisible = confirmCancelAddNftState,
-            titleRes = R.string.add_nft_cancel_confirm_title_text,
-            descriptionRes = R.string.add_nft_cancel_confirm_description_text,
-            acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
-            cancelRes = R.string.add_nft_cancel_cancel_button_text,
-            onAcceptClicked = {
-                onExitClicked()
-                confirmCancelAddNftState = false
-            },
-            onCancelClicked = { confirmCancelAddNftState = false }
-        )
         CommonDialog(
             isVisible = isTokenMinted,
             titleRes = R.string.add_nft_token_minted_confirm_title_text,
@@ -339,7 +352,7 @@ private fun AddNftForm(
                                 contentColor = Color.White
                             ),
                             onClick = {
-                                confirmCancelAddNftState = true
+                                onConfirmCancelMintNftVisibilityChanged(true)
                             }
                         )
                     }

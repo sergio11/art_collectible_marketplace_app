@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -24,6 +25,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 fun CommonTopAppBar(
     @StringRes titleRes: Int,
     centerTitle: Boolean = false,
+    navigationAction: TopBarAction? = null,
     menuActions: List<TopBarAction> = emptyList()
 ) {
     TopAppBar(
@@ -41,6 +43,19 @@ fun CommonTopAppBar(
                 style = MaterialTheme.typography.headlineSmall,
                 color = Color.White
             )
+        },
+        navigationIcon = {
+            navigationAction?.let {
+                IconButton(onClick = it.onActionClicked) {
+                    Image(
+                        painter = painterResource(it.iconRes),
+                        contentDescription = "Icon",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.size(42.dp),
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+                }
+            }
         },
         actions = {
             menuActions.map {
@@ -62,5 +77,5 @@ fun CommonTopAppBar(
 
 data class TopBarAction(
     @DrawableRes val iconRes: Int,
-    val onActionClicked: () -> Unit
+    val onActionClicked: () -> Unit = {}
 )

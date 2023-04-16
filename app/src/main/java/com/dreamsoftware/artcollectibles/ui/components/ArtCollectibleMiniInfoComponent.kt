@@ -83,22 +83,6 @@ fun ArtCollectibleMiniInfoComponent(
                     },
                 artCollectible = artCollectible
             )
-            TextWithIcon(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clickable {
-                        artCollectible?.let {
-                            onSeeVisitorsByToken(it.id)
-                        }
-                    },
-                icon = if ((artCollectible?.visitorsCount ?: 0) > 0) {
-                    Icons.Filled.Visibility
-                } else {
-                    Icons.Filled.VisibilityOff
-                },
-                text = artCollectible?.visitorsCount?.toString()
-                    ?: stringResource(id = R.string.no_text_value_small)
-            )
         }
         Row {
             TextWithImage(
@@ -119,6 +103,22 @@ fun ArtCollectibleMiniInfoComponent(
                     },
                 imageRes = R.drawable.comments_icon,
                 text = artCollectible?.commentsCount?.toString()
+                    ?: stringResource(id = R.string.no_text_value_small)
+            )
+            TextWithIcon(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable {
+                        artCollectible?.let {
+                            onSeeVisitorsByToken(it.id)
+                        }
+                    },
+                icon = if ((artCollectible?.visitorsCount ?: 0) > 0) {
+                    Icons.Filled.Visibility
+                } else {
+                    Icons.Filled.VisibilityOff
+                },
+                text = artCollectible?.visitorsCount?.toString()
                     ?: stringResource(id = R.string.no_text_value_small)
             )
         }

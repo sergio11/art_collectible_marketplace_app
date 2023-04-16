@@ -118,6 +118,10 @@ class AddNftViewModel @Inject constructor(
         }
     }
 
+    fun onConfirmCancelMintNftVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isConfirmCancelMintNftVisible = isVisible) }
+    }
+
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
@@ -175,5 +179,6 @@ data class AddNftUiState(
     val categorySelected: ArtCollectibleCategory? = null,
     val isCreateButtonEnabled: Boolean = false,
     val isTokenMinted: Boolean = false,
-    val categories: Iterable<ArtCollectibleCategory> = emptyList()
+    val categories: Iterable<ArtCollectibleCategory> = emptyList(),
+    val isConfirmCancelMintNftVisible: Boolean = false
 )

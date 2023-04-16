@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
 
 @Composable
 fun ArtCollectibleImage(

@@ -363,7 +363,7 @@ internal class ArtCollectibleRepositoryImpl(
                     userRepository.getByAddress(token.creator, requireUserInfoFullDetail)
                 }
             }
-            val visitorsCountDeferred = async { visitorsDataSource.count(tokenId.toString()) }
+            val visitorsCountDeferred = async { visitorsDataSource.count(tokenId) }
             val favoritesCountDeferred = async { favoritesDataSource.tokenCount(tokenId) }
             val commentsCountDeferred = async { commentsDataSource.count(tokenId) }
             val hasAddedToFavDeferred =

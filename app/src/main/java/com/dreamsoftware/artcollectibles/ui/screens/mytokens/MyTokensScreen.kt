@@ -85,7 +85,10 @@ internal fun MyTokensComponent(
                 BottomBar(navController)
             },
             topBar = {
-                CommonTopAppBar(state.tabSelectedTitle ?: R.string.my_tokens_main_title)
+                CommonTopAppBar(
+                    titleRes = state.tabSelectedTitle ?: R.string.my_tokens_main_title,
+                    centerTitle = true
+                )
             },
             containerColor = Purple40
         ) { paddingValues ->

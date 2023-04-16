@@ -22,11 +22,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.dreamsoftware.artcollectibles.ui.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.*
 import com.dreamsoftware.artcollectibles.ui.theme.*
 
-private val HEADER_HEIGHT = 250.dp
+private val HEADER_HEIGHT = 320.dp
 private val TOOLBAR_HEIGHT = 56.dp
 private val PADDING_MEDIUM = 16.dp
 private val TITLE_PADDING_START = 16.dp
@@ -101,7 +101,8 @@ private fun CommonDetailHeader(
         CommonAsyncImage(
             modifier = Modifier.fillMaxSize(),
             context = context,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            reverseStyle = true,
         )
         Box(
             Modifier
@@ -149,6 +150,7 @@ private fun CommonDetailToolbar(
                         .size(55.dp)
                         .clip(CircleShape),
                     context = context,
+                    reverseStyle = true,
                     imageUrl = imageUrl
                 )
             },

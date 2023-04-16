@@ -24,9 +24,10 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalGridScreen
 import com.google.common.collect.Iterables
+import java.math.BigInteger
 
 data class VisitorsScreenArgs(
-    val tokenId: String
+    val tokenId: BigInteger
 )
 
 @Composable

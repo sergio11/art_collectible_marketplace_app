@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 /**
  * Visitors Repository Impl
@@ -22,7 +23,7 @@ internal class VisitorsRepositoryImpl(
 ): IVisitorsRepository {
 
     @Throws(RegisterVisitorDataException::class)
-    override suspend fun register(tokenId: String, userAddress: String) {
+    override suspend fun register(tokenId: BigInteger, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
                 visitorsDataSource.addVisitor(tokenId, userAddress)
@@ -33,7 +34,7 @@ internal class VisitorsRepositoryImpl(
     }
 
     @Throws(GetVisitorsByTokenDataException::class)
-    override suspend fun getByTokenId(tokenId: String): Iterable<UserInfo> =  withContext(Dispatchers.IO) {
+    override suspend fun getByTokenId(tokenId: BigInteger): Iterable<UserInfo> =  withContext(Dispatchers.IO) {
         try {
             visitorsDataSource.getByTokenId(tokenId).asSequence().map { userAddress ->
                 async { runCatching { userRepository.getByAddress(userAddress, true) }.getOrNull() }

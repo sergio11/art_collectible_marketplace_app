@@ -92,6 +92,7 @@ private fun HomeComponent(
             topBar = {
                 CommonTopAppBar(
                     titleRes = R.string.home_main_title,
+                    navigationAction = TopBarAction(iconRes = R.drawable.splash_app_icon),
                     menuActions = listOf(
                         TopBarAction(
                             iconRes = R.drawable.notification_icon,

@@ -274,7 +274,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             )
 
         fun parseArgs(args: Bundle): VisitorsScreenArgs? = with(args) {
-            getString("id")?.let {
+            getString("id")?.toBigInteger()?.let {
                 VisitorsScreenArgs(
                     tokenId = it
                 )

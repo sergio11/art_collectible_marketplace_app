@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.internal.toLongOrDefault
+import java.math.BigInteger
 
 /**
  * Visitors Data Source
@@ -26,12 +27,12 @@ internal class VisitorsDataSourceImpl(
     }
 
     @Throws(AddVisitorException::class)
-    override suspend fun addVisitor(tokenId: String, userAddress: String) {
+    override suspend fun addVisitor(tokenId: BigInteger, userAddress: String) {
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(tokenId).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
-                    document(tokenId + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(tokenId.toString()).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
+                    document(tokenId.toString() + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
                 throw ex
@@ -42,10 +43,10 @@ internal class VisitorsDataSourceImpl(
     }
 
     @Throws(GetVisitorException::class)
-    override suspend fun count(tokenId: String) = withContext(Dispatchers.IO) {
+    override suspend fun count(tokenId: BigInteger) = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .document(tokenId + KEY_COUNT_SUFFIX)
+                .document(tokenId.toString() + KEY_COUNT_SUFFIX)
                 .get()
                 .await()?.data?.get(COUNT_FIELD_NAME)
                 .toString()
@@ -58,10 +59,10 @@ internal class VisitorsDataSourceImpl(
     }
 
     @Throws(GetVisitorsByTokenException::class)
-    override suspend fun getByTokenId(tokenId: String): List<String> = withContext(Dispatchers.IO) {
+    override suspend fun getByTokenId(tokenId: BigInteger): List<String> = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
-                .document(tokenId)
+                .document(tokenId.toString())
                 .get()
                 .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
         } catch (ex: FirebaseException) {
