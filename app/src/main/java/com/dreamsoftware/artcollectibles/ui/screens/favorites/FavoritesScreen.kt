@@ -3,30 +3,26 @@ package com.dreamsoftware.artcollectibles.ui.screens.favorites
 
 import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalGridScreen
 import com.google.common.collect.Iterables
 import java.math.BigInteger
 
@@ -67,7 +63,6 @@ fun FavoritesScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FavoritesComponent(
     context: Context,
@@ -76,52 +71,22 @@ internal fun FavoritesComponent(
     onGoToArtistDetail: (artist: UserInfo) -> Unit
 ) {
     with(state) {
-        LoadingDialog(isShowingDialog = isLoading)
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            getTopAppBarTitle(userResult),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = montserratFontFamily,
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White
-                        )
+        CommonVerticalGridScreen(
+            lazyGridState = lazyGridState,
+            isLoading = isLoading,
+            items = userResult,
+            appBarTitle = getTopAppBarTitle(userResult)
+        ) { artist ->
+            UserInfoArtistCard(
+                modifier = Modifier
+                    .height(262.dp)
+                    .width(150.dp)
+                    .clickable {
+                        onGoToArtistDetail(artist)
                     },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
-                )
-            },
-            containerColor = Purple40
-        ) { paddingValues ->
-            Box(modifier = Modifier.padding(paddingValues)) {
-                Column {
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(8.dp),
-                        columns = GridCells.Adaptive(minSize = 150.dp),
-                        state = lazyGridState,
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(Iterables.size(userResult)) { index ->
-                            val artist = Iterables.get(userResult, index)
-                            UserInfoArtistCard(
-                                modifier = Modifier
-                                    .height(262.dp)
-                                    .width(150.dp)
-                                    .clickable {
-                                        onGoToArtistDetail(artist)
-                                    },
-                                context = context,
-                                user = artist
-                            )
-                        }
-
-                    }
-                }
-            }
+                context = context,
+                user = artist
+            )
         }
     }
 }

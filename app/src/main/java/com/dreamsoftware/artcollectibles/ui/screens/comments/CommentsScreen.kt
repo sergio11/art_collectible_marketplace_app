@@ -5,12 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +28,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.UserAccountProfilePicture
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalColumnScreen
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 import java.math.BigInteger
@@ -69,8 +71,6 @@ fun CommentsScreen(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CommentsComponent(
     state: CommentsUiState,
@@ -78,45 +78,18 @@ internal fun CommentsComponent(
     onSeeCommentDetail: (comment: Comment) -> Unit
 ) {
     with(state) {
-        LoadingDialog(isShowingDialog = isLoading)
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            getTopAppBarTitle(comments),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = montserratFontFamily,
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White
-                        )
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
-                )
-            },
-            containerColor = Purple40
-        ) { paddingValues ->
-            Box(modifier = Modifier.padding(paddingValues)) {
-                Column {
-                    LazyColumn(
-                        modifier = Modifier.padding(8.dp),
-                        state = lazyListState,
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(Iterables.size(comments)) { index ->
-                            val comment = Iterables.get(comments, index)
-                            CommentItemDetail(
-                                modifier = Modifier.clickable {
-                                    onSeeCommentDetail(comment)
-                                },
-                                comment = comment
-                            )
-                        }
-                    }
-                }
-            }
+        CommonVerticalColumnScreen(
+            lazyListState = lazyListState,
+            isLoading = isLoading,
+            items = comments,
+            appBarTitle = getTopAppBarTitle(comments)
+        ) { comment ->
+            CommentItemDetail(
+                modifier = Modifier.clickable {
+                    onSeeCommentDetail(comment)
+                },
+                comment = comment
+            )
         }
     }
 }
