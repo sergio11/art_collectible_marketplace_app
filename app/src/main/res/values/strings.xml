@@ -114,6 +114,9 @@
     <string name="add_nft_cancel_confirm_description_text">Information related to the NFT will be discarded</string>
     <string name="add_nft_cancel_confirm_accept_button_text">Accept</string>
     <string name="add_nft_cancel_cancel_button_text">Cancel</string>
+    <string name="add_nft_help_info_title_text">Mint your Art Collectible</string>
+    <string name="add_nft_help_info_description_text">Take a photo or upload your assets after that fill in the information requested to be able to publish your Art collectible as NFT.</string>
+    <string name="add_nft_help_info_accept_button_text">Accept</string>
     <string name="add_nft_token_minted_confirm_title_text">Token has been minted successfully!</string>
     <string name="add_nft_token_minted_confirm_description_text">Check the detail of your tokens for more details</string>
     <string name="add_nft_token_minted_confirm_accept_button_text">Accept</string>

@@ -116,7 +116,8 @@ fun AddNftScreen(
             onDeleteTag = ::onDeleteTag,
             onCategoryChanged = ::onCategoryChanged,
             onResetImage = ::onResetImage,
-            onConfirmCancelMintNftVisibilityChanged = ::onConfirmCancelMintNftVisibilityChanged
+            onConfirmCancelMintNftVisibilityChanged = ::onConfirmCancelMintNftVisibilityChanged,
+            onHelpDialogVisibilityChanged = ::onHelpDialogVisibilityChanged
         )
     }
 }
@@ -140,7 +141,8 @@ internal fun AddNftComponent(
     onDeleteTag: (tag: String) -> Unit,
     onCategoryChanged: (ArtCollectibleCategory) -> Unit,
     onResetImage: () -> Unit,
-    onConfirmCancelMintNftVisibilityChanged: (isVisible: Boolean) -> Unit
+    onConfirmCancelMintNftVisibilityChanged: (isVisible: Boolean) -> Unit,
+    onHelpDialogVisibilityChanged: (isVisible: Boolean) -> Unit
 ) {
     BackHandler(enabled = true) {
         onConfirmCancelMintNftVisibilityChanged(true)
@@ -157,6 +159,15 @@ internal fun AddNftComponent(
         },
         onCancelClicked = { onConfirmCancelMintNftVisibilityChanged(false) }
     )
+    CommonDialog(
+        isVisible = state.isHelpDialogVisible,
+        titleRes = R.string.add_nft_help_info_title_text,
+        descriptionRes = R.string.add_nft_help_info_description_text,
+        acceptRes = R.string.add_nft_help_info_accept_button_text,
+        onAcceptClicked = {
+            onHelpDialogVisibilityChanged(false)
+        }
+    )
     Scaffold(
         topBar = {
             CommonTopAppBar(
@@ -171,7 +182,9 @@ internal fun AddNftComponent(
                 menuActions = listOf(
                     TopBarAction(
                         iconRes = R.drawable.help_icon,
-                        onActionClicked = {}
+                        onActionClicked = {
+                            onHelpDialogVisibilityChanged(true)
+                        }
                     )
                 )
             )

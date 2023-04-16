@@ -122,6 +122,10 @@ class AddNftViewModel @Inject constructor(
         updateState { it.copy(isConfirmCancelMintNftVisible = isVisible) }
     }
 
+    fun onHelpDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isHelpDialogVisible = isVisible) }
+    }
+
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
     }
@@ -180,5 +184,6 @@ data class AddNftUiState(
     val isCreateButtonEnabled: Boolean = false,
     val isTokenMinted: Boolean = false,
     val categories: Iterable<ArtCollectibleCategory> = emptyList(),
-    val isConfirmCancelMintNftVisible: Boolean = false
+    val isConfirmCancelMintNftVisible: Boolean = false,
+    val isHelpDialogVisible: Boolean = false
 )
