@@ -26,17 +26,17 @@ fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, 
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(27.dp))
-            .border(
-                width = 1.dp,
-                color = Color.White.copy(0.5f),
-                shape = RoundedCornerShape(27.dp)
-            )
             .height(186.dp)
             .width(280.dp)
             .then(modifier)
     ) {
         CommonAsyncImage(
             modifier = Modifier
+                .border(
+                    width = 3.dp,
+                    color = Color.White,
+                    shape = RoundedCornerShape(27.dp)
+                )
                 .fillMaxHeight()
                 .fillMaxWidth(),
             imageUrl = imageUrl,

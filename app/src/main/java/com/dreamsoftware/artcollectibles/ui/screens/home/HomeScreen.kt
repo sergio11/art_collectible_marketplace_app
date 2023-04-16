@@ -150,7 +150,7 @@ private fun HomeComponent(
                     items = sellingMarketItems,
                     onMarketItemSelected = onGoToMarketItemDetail
                 )
-                ArtCollectibleForSaleRow(
+                LastMarketHistoryRow(
                     context = context,
                     titleRes = R.string.home_last_market_history_title,
                     items = marketHistory,

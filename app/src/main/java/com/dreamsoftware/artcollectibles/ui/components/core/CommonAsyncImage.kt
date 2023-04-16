@@ -24,7 +24,8 @@ fun CommonAsyncImage(
     modifier: Modifier,
     context: Context,
     reverseStyle: Boolean = false,
-    imageUrl: String?
+    imageUrl: String?,
+    colorFilter: ColorFilter? = null
 ) {
     imageUrl?.let {
         SubcomposeAsyncImage(
@@ -34,7 +35,8 @@ fun CommonAsyncImage(
                 .crossfade(true)
                 .build(),
             contentDescription = stringResource(R.string.image_content_description),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillBounds,
+            colorFilter = colorFilter
         ) {
             val state = painter.state
             if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {

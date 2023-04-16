@@ -20,13 +20,13 @@
     <style name="Theme.ArtCollectiblesMarketplace" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="SplashScreenTheme" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/purple_200</item>
+        <item name="windowSplashScreenBackground">@color/purple_40</item>
         <item name="windowSplashScreenAnimationDuration">800</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_app_icon_inset</item>
         <item name="postSplashScreenTheme">@style/Theme.ArtCollectiblesMarketplace</item>
         <!-- Status bar and Nav bar configs -->
-        <item name="android:statusBarColor">@color/purple_200</item>
-        <item name="android:navigationBarColor">@color/purple_200</item>
+        <item name="android:statusBarColor">@color/purple_40</item>
+        <item name="android:navigationBarColor">@color/purple_40</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
 

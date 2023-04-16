@@ -4,10 +4,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -69,16 +72,17 @@ internal fun CommonDialogUI(
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column(
-            modifier.background(Color.White)
+            modifier = modifier.background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(id = R.drawable.app_icon),
                 contentDescription = null, // decorative
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Inside,
                 modifier = Modifier
                     .padding(top = 35.dp)
-                    .height(70.dp)
-                    .fillMaxWidth(),
+                    .size(70.dp)
+                    .clip(CircleShape),
                 )
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
