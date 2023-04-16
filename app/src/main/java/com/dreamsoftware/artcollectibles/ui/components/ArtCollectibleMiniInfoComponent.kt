@@ -22,6 +22,8 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import java.math.BigInteger
 
 @Composable
@@ -57,7 +59,9 @@ fun ArtCollectibleMiniInfoComponent(
             color = Color.Black,
             style = MaterialTheme.typography.titleSmall
         )
-        Row {
+        FlowRow(
+            crossAxisAlignment = FlowCrossAxisAlignment.Center
+        ) {
             TextWithImage(
                 modifier = Modifier
                     .padding(8.dp)
@@ -83,8 +87,6 @@ fun ArtCollectibleMiniInfoComponent(
                     },
                 artCollectible = artCollectible
             )
-        }
-        Row {
             TextWithImage(
                 modifier = Modifier.padding(8.dp),
                 imageRes = R.drawable.token_category_icon,
@@ -121,8 +123,6 @@ fun ArtCollectibleMiniInfoComponent(
                 text = artCollectible?.visitorsCount?.toString()
                     ?: stringResource(id = R.string.no_text_value_small)
             )
-        }
-        Row {
             artCollectible?.metadata?.deviceName?.let { deviceName ->
                 if (deviceName.isNotBlank()) {
                     TextWithImage(
