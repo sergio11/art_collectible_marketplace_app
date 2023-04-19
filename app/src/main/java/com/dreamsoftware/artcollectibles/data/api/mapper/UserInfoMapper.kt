@@ -24,6 +24,7 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
                 },
                 tags = tags,
                 location = location,
+                country = country,
                 followers = followers,
                 following = following,
                 tokensSoldCount = tokensSoldCount,

@@ -87,6 +87,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onCountryChanged(newCountry: String) {
+        if (isProfileLoaded()) {
+            updateState {
+                it.copy(userInfo = it.userInfo?.copy(country = newCountry))
+            }
+        }
+    }
+
     fun onAddNewTag(newTag: String) {
         if (isProfileLoaded()) {
             updateState {

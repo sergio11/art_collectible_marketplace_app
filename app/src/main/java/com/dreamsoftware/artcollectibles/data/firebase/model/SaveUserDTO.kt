@@ -11,5 +11,6 @@ data class SaveUserDTO(
     val photoUrl: String? = null,
     val birthdate: String? = null,
     val externalAuthProvider: String? = null,
-    val location: String? = null
+    val location: String? = null,
+    val country: String? = null
 )

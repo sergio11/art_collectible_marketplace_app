@@ -11,5 +11,6 @@ data class UserDTO(
     val walletAddress: String,
     val birthdate: String? = null,
     val externalProviderAuth: String? = null,
-    val location: String? = null
+    val location: String? = null,
+    val country: String? = null
 )

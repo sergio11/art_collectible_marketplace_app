@@ -2,7 +2,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.profile
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.webkit.*
 import android.widget.Toast
@@ -20,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,12 +28,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
+import com.dreamsoftware.artcollectibles.ui.components.countrypicker.CountryCodeField
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.theme.*
@@ -79,6 +76,7 @@ fun ProfileScreen(
             onInfoChanged = ::onInfoChanged,
             onPictureChanged = ::onPictureChanged,
             onBirthdateChanged = ::onBirthdateChanged,
+            onCountryChanged = ::onCountryChanged,
             onSaveClicked = ::saveUserInfo,
             onCloseSessionClicked = ::closeSession,
             onAddNewTag = ::onAddNewTag,
@@ -97,6 +95,7 @@ internal fun ProfileComponent(
     onNameChanged: (String) -> Unit,
     onProfessionalTitleChanged: (String) -> Unit,
     onLocationChanged: (String) -> Unit,
+    onCountryChanged: (String) -> Unit,
     onInfoChanged: (String) -> Unit,
     onBirthdateChanged: (String) -> Unit,
     onPictureChanged: (Uri) -> Unit,
@@ -166,6 +165,12 @@ internal fun ProfileComponent(
                             value = state.userInfo?.professionalTitle,
                             onValueChanged = onProfessionalTitleChanged
                         )
+                        CountryCodeField(
+                            labelRes = R.string.profile_input_country_label,
+                            placeHolderRes = R.string.profile_input_country_placeholder,
+                            selectedCountry = state.userInfo?.country,
+                            pickedCountry = onCountryChanged
+                        )
                         CommonDefaultTextField(
                             labelRes = R.string.profile_input_location_label,
                             placeHolderRes = R.string.profile_input_location_placeholder,
@@ -197,6 +202,7 @@ internal fun ProfileComponent(
                             onAddNewTag = onAddNewTag,
                             onDeleteTag = onDeleteTag
                         )
+
                         CommonDefaultTextField(
                             modifier = CommonDefaultTextFieldModifier.height(150.dp),
                             labelRes = R.string.profile_input_info_label,

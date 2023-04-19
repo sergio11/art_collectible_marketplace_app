@@ -185,6 +185,12 @@ fun ArtistDetailComponent(
                         text = it
                     )
                 }
+                userInfo?.country?.let {
+                    TextWithImage(
+                        imageRes = R.drawable.country_icon,
+                        text = it
+                    )
+                }
             }
             Row(
                 modifier = defaultModifier,

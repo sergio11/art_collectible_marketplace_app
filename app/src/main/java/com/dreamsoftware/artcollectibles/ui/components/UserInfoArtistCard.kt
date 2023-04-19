@@ -7,20 +7,26 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun UserInfoArtistCard(
@@ -31,7 +37,7 @@ fun UserInfoArtistCard(
 ) {
     Card(
         modifier = Modifier
-            .height(285.dp)
+            .height(290.dp)
             .width(190.dp)
             .then(modifier),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -83,6 +89,17 @@ fun UserInfoArtistCard(
                 followersCount = user.followers,
                 followingCount = user.following
             )
+            user.country?.let {
+                Text(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    text = it,
+                    fontFamily = montserratFontFamily,
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Black
+                )
+            }
         }
     }
 }

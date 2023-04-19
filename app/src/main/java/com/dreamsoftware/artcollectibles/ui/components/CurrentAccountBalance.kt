@@ -29,8 +29,7 @@ fun CurrentAccountBalance(
     textSize: TextUnit = DEFAULT_TEXT_SIZE,
     textColor: Color = DEFAULT_TEXT_COLOR,
     fullMode: Boolean = false,
-    accountBalance: AccountBalance,
-    onGetMoreMaticClicked: () -> Unit = {}
+    accountBalance: AccountBalance
 ) {
     Row(
         modifier = modifier,
@@ -72,16 +71,5 @@ fun CurrentAccountBalance(
                 )
             }
         }
-        /*CommonButton(
-            modifier = Modifier.padding(horizontal = 4.dp),
-            text = R.string.profile_get_more_matic,
-            widthDp = 150.dp,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Purple40,
-                contentColor = Color.White
-            ),
-            buttonShape = ButtonDefaults.elevatedShape,
-            onClick = onGetMoreMaticClicked
-        )*/
     }
 }

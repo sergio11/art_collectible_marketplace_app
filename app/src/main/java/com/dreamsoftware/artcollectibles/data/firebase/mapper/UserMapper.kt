@@ -17,6 +17,7 @@ class UserMapper: IOneSideMapper<Map<String, Any?>, UserDTO> {
         const val EXTERNAL_AUTH_PROVIDER_KEY = "externalProviderAuth"
         const val LOCATION_KEY = "location"
         const val TAGS_KEY = "tags"
+        const val COUNTRY_KEY = "country"
     }
 
     override fun mapInToOut(input: Map<String, Any?>): UserDTO = with(input) {
@@ -31,6 +32,7 @@ class UserMapper: IOneSideMapper<Map<String, Any?>, UserDTO> {
             birthdate = get(BIRTHDATE_KEY) as? String,
             externalProviderAuth = get(EXTERNAL_AUTH_PROVIDER_KEY) as? String,
             location = get(LOCATION_KEY) as? String,
+            country = get(COUNTRY_KEY) as? String,
             tags = (get(TAGS_KEY) as? String)?.split(","),
         )
     }

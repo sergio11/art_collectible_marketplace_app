@@ -11,18 +11,17 @@ class UpdateUserInfoUseCase(
 
     override suspend fun onExecuted(params: Params): UserInfo = with(params) {
         with(userInfo) {
-            val profilePhotoUrl = if(isProfilePictureUpdated) {
-                photoUrl?.let {
-                    userRepository.updateProfilePicture(
-                        uid = uid,
-                        fileUri = it
-                    )
+            with(userRepository) {
+                val profilePhotoUrl = if(isProfilePictureUpdated) {
+                    photoUrl?.let {
+                        updateProfilePicture(uid = uid, fileUri = it)
+                    }
+                } else {
+                    photoUrl
                 }
-            } else {
-                photoUrl
+                save(copy(photoUrl = profilePhotoUrl))
+                get(uid = uid, fullDetail = false)
             }
-            userRepository.save(copy(photoUrl = profilePhotoUrl))
-            userRepository.get(uid = uid, fullDetail = false)
         }
     }
 
