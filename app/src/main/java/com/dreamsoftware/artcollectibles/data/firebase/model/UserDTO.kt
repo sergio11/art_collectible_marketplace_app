@@ -12,5 +12,6 @@ data class UserDTO(
     val birthdate: String? = null,
     val externalProviderAuth: String? = null,
     val location: String? = null,
-    val country: String? = null
+    val country: String? = null,
+    val instagramNick: String? = null
 )

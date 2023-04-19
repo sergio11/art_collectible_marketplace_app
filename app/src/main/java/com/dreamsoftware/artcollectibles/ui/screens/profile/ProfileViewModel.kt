@@ -95,6 +95,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onInstagramNickChanged(newInstagramNick: String) {
+        if (isProfileLoaded()) {
+            updateState {
+                it.copy(userInfo = it.userInfo?.copy(instagramNick = newInstagramNick))
+            }
+        }
+    }
+
     fun onAddNewTag(newTag: String) {
         if (isProfileLoaded()) {
             updateState {

@@ -15,6 +15,7 @@ data class UserInfo(
     val externalProviderAuthType: ExternalProviderAuthTypeEnum? = null,
     val location: String? = null,
     val country: String? = null,
+    val instagramNick: String? = null,
     val tokensSoldCount: BigInteger = BigInteger.ZERO,
     val tokensBoughtCount: BigInteger = BigInteger.ZERO,
     val tokensOwnedCount: BigInteger = BigInteger.ZERO,

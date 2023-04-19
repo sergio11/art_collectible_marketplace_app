@@ -32,7 +32,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
-import com.dreamsoftware.artcollectibles.ui.components.countrypicker.CountryCodeField
+import com.dreamsoftware.artcollectibles.ui.components.countrypicker.CountryPickerField
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.createTempImageFile
 import com.dreamsoftware.artcollectibles.ui.theme.*
@@ -78,6 +78,7 @@ fun ProfileScreen(
             onBirthdateChanged = ::onBirthdateChanged,
             onCountryChanged = ::onCountryChanged,
             onSaveClicked = ::saveUserInfo,
+            onInstagramNickChanged = ::onInstagramNickChanged,
             onCloseSessionClicked = ::closeSession,
             onAddNewTag = ::onAddNewTag,
             onDeleteTag = ::onDeleteTag
@@ -99,6 +100,7 @@ internal fun ProfileComponent(
     onInfoChanged: (String) -> Unit,
     onBirthdateChanged: (String) -> Unit,
     onPictureChanged: (Uri) -> Unit,
+    onInstagramNickChanged: (String) -> Unit,
     onSaveClicked: () -> Unit,
     onCloseSessionClicked: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
@@ -165,7 +167,7 @@ internal fun ProfileComponent(
                             value = state.userInfo?.professionalTitle,
                             onValueChanged = onProfessionalTitleChanged
                         )
-                        CountryCodeField(
+                        CountryPickerField(
                             labelRes = R.string.profile_input_country_label,
                             placeHolderRes = R.string.profile_input_country_placeholder,
                             selectedCountry = state.userInfo?.country,
@@ -202,9 +204,14 @@ internal fun ProfileComponent(
                             onAddNewTag = onAddNewTag,
                             onDeleteTag = onDeleteTag
                         )
-
+                        SocialNetworkField(
+                            labelRes = R.string.profile_input_instagram_label,
+                            placeHolderRes = R.string.profile_input_instagram_placeholder,
+                            value = state.userInfo?.instagramNick,
+                            onValueChanged = onInstagramNickChanged
+                        )
                         CommonDefaultTextField(
-                            modifier = CommonDefaultTextFieldModifier.height(150.dp),
+                            modifier = CommonDefaultTextFieldModifier.height(200.dp),
                             labelRes = R.string.profile_input_info_label,
                             placeHolderRes = R.string.profile_input_info_placeholder,
                             value = state.userInfo?.info,

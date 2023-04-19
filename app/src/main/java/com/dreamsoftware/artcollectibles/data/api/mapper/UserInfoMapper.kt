@@ -27,6 +27,7 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
                 country = country,
                 followers = followers,
                 following = following,
+                instagramNick = instagramNick,
                 tokensSoldCount = tokensSoldCount,
                 tokensBoughtCount = tokensBoughtCount,
                 tokensOwnedCount = tokensOwnedCount,

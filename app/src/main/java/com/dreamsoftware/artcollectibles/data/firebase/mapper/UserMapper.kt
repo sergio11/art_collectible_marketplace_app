@@ -18,6 +18,7 @@ class UserMapper: IOneSideMapper<Map<String, Any?>, UserDTO> {
         const val LOCATION_KEY = "location"
         const val TAGS_KEY = "tags"
         const val COUNTRY_KEY = "country"
+        const val INSTAGRAM_NICK_KEY = "instagramNick"
     }
 
     override fun mapInToOut(input: Map<String, Any?>): UserDTO = with(input) {
@@ -34,6 +35,7 @@ class UserMapper: IOneSideMapper<Map<String, Any?>, UserDTO> {
             location = get(LOCATION_KEY) as? String,
             country = get(COUNTRY_KEY) as? String,
             tags = (get(TAGS_KEY) as? String)?.split(","),
+            instagramNick = get(INSTAGRAM_NICK_KEY) as? String
         )
     }
 

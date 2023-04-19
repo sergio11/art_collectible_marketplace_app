@@ -18,7 +18,7 @@ import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
 import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextFieldModifier
 
 @Composable
-fun CountryCodeField(
+fun CountryPickerField(
     modifier: Modifier = CommonDefaultTextFieldModifier,
     @StringRes labelRes: Int,
     @StringRes placeHolderRes: Int,
@@ -47,7 +47,7 @@ fun CountryCodeField(
                 )
             }
         )
-        CountryCodeDialog(
+        CountryPickerDialog(
             textSearchedState = textSearchedState,
             isOpenedState = isOpenState,
             pickedCountry = {

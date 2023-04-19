@@ -19,7 +19,8 @@ class SaveUserInfoMapper: IOneSideMapper<UserInfo, SaveUserDTO> {
             birthdate = birthdate,
             externalAuthProvider = externalProviderAuthType?.name,
             location = location,
-            country = country
+            country = country,
+            instagramNick = instagramNick
         )
     }
 

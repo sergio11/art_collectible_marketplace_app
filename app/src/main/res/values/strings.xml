@@ -100,6 +100,8 @@
     <string name="profile_tokens_artist_account_balance">Account Balance</string>
     <string name="profile_input_country_label">Country</string>
     <string name="profile_input_country_placeholder">Your Country</string>
+    <string name="profile_input_instagram_label">Instagram</string>
+    <string name="profile_input_instagram_placeholder">Your Instagram Account</string>
     <!-- Add NFT -->
     <string name="add_nft_main_title_text">Mint new NFT</string>
     <string name="add_nft_create_button_text">Create</string>

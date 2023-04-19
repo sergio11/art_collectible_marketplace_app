@@ -16,7 +16,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @Composable
-internal fun CountryCodeDialog(
+internal fun CountryPickerDialog(
     textSearchedState: MutableState<TextFieldValue>,
     isOpenedState: MutableState<Boolean>,
     pickedCountry: (String) -> Unit

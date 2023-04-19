@@ -18,6 +18,7 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
         const val LOCATION_KEY = "location"
         const val COUNTRY_KEY = "country"
         const val TAGS_KEY = "tags"
+        const val INSTAGRAM_NICK_KEY = "instagramNick"
     }
 
     override fun mapInToOut(input: SaveUserDTO): Map<String, Any?> = with(input) {
@@ -35,6 +36,7 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
             location?.let { put(LOCATION_KEY, it) }
             country?.let { put(COUNTRY_KEY, it) }
             tags?.let { put(TAGS_KEY, it.joinToString(",")) }
+            instagramNick?.let { put(INSTAGRAM_NICK_KEY, it) }
         }
     }
 
