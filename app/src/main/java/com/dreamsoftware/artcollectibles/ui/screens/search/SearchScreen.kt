@@ -20,12 +20,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
-import com.dreamsoftware.artcollectibles.ui.components.SearchView
-import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
-import com.dreamsoftware.artcollectibles.ui.components.BottomBar
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.google.common.collect.Iterables
@@ -34,7 +29,7 @@ import com.google.common.collect.Iterables
 fun SearchScreen(
     navController: NavController,
     viewModel: SearchViewModel = hiltViewModel(),
-    onGoToArtistDetail: (artist: UserInfo) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -75,7 +70,7 @@ internal fun SearchComponent(
     navController: NavController,
     onTermChanged: (String) -> Unit,
     onResetSearch: () -> Unit,
-    onGoToArtistDetail: (artist: UserInfo) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
     Scaffold(
@@ -114,7 +109,7 @@ internal fun SearchComponent(
                                     .height(262.dp)
                                     .width(150.dp)
                                     .clickable {
-                                        onGoToArtistDetail(artist)
+                                        onGoToArtistDetail(artist.uid)
                                     },
                                 context = context,
                                 user = artist

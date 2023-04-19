@@ -31,7 +31,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
@@ -48,11 +47,11 @@ fun ArtistDetailScreen(
     navController: NavController,
     args: ArtistDetailScreenArgs,
     viewModel: ArtistDetailViewModel = hiltViewModel(),
-    onShowFollowers: (userInfo: UserInfo) -> Unit,
-    onShowFollowing: (userInfo: UserInfo) -> Unit,
+    onShowFollowers: (userUid: String) -> Unit,
+    onShowFollowing: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowTokensOwnedBy: (userInfo: UserInfo) -> Unit,
-    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
+    onShowTokensOwnedBy: (userUid: String) -> Unit,
+    onShowTokensCreatedBy: (userUid: String) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -97,11 +96,11 @@ fun ArtistDetailComponent(
     density: Density,
     onFollowUser: (userUid: String) -> Unit,
     onUnfollowUser: (userUid: String) -> Unit,
-    onShowFollowers: (userInfo: UserInfo) -> Unit,
-    onShowFollowing: (userInfo: UserInfo) -> Unit,
+    onShowFollowers: (userUid: String) -> Unit,
+    onShowFollowing: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowTokensOwnedBy: (userInfo: UserInfo) -> Unit,
-    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit
+    onShowTokensOwnedBy: (userUid: String) -> Unit,
+    onShowTokensCreatedBy: (userUid: String) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -162,10 +161,10 @@ fun ArtistDetailComponent(
                 followersCount = followersCount,
                 followingCount = followingCount,
                 onShowFollowers = {
-                    userInfo?.let(onShowFollowers)
+                    userInfo?.uid?.let(onShowFollowers)
                 },
                 onShowFollowing = {
-                    userInfo?.let(onShowFollowing)
+                    userInfo?.uid?.let(onShowFollowing)
                 }
             )
             UserStatisticsComponent(
@@ -263,7 +262,7 @@ fun ArtistDetailComponent(
                 titleRes = R.string.profile_tokens_owned_by_user_text,
                 items = tokensOwned,
                 onShowAllItems = {
-                    userInfo?.let(onShowTokensOwnedBy)
+                    userInfo?.uid?.let(onShowTokensOwnedBy)
                 },
                 onItemSelected = {
                     onGoToTokenDetail(it.id)
@@ -275,7 +274,7 @@ fun ArtistDetailComponent(
                 titleRes = R.string.profile_tokens_created_by_user_text,
                 items = tokensCreated,
                 onShowAllItems = {
-                    userInfo?.let(onShowTokensCreatedBy)
+                    userInfo?.uid?.let(onShowTokensCreatedBy)
                 },
                 onItemSelected = {
                     onGoToTokenDetail(it.id)

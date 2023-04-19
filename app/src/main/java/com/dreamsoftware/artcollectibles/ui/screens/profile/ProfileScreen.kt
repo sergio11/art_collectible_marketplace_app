@@ -41,7 +41,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.*
 fun ProfileScreen(
     navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel(),
-    onSessionClosed: () -> Unit
+    onSessionClosed: () -> Unit,
+    onOpenProfile: (userUid: String) -> Unit,
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val state by produceState(
@@ -80,6 +81,7 @@ fun ProfileScreen(
             onSaveClicked = ::saveUserInfo,
             onInstagramNickChanged = ::onInstagramNickChanged,
             onCloseSessionClicked = ::closeSession,
+            onOpenProfileClicked = onOpenProfile,
             onAddNewTag = ::onAddNewTag,
             onDeleteTag = ::onDeleteTag
         )
@@ -103,6 +105,7 @@ internal fun ProfileComponent(
     onInstagramNickChanged: (String) -> Unit,
     onSaveClicked: () -> Unit,
     onCloseSessionClicked: () -> Unit,
+    onOpenProfileClicked: (userUid: String) -> Unit,
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit
 ) {
@@ -118,6 +121,12 @@ internal fun ProfileComponent(
                     iconRes = R.drawable.settings_icon,
                     onActionClicked = {
 
+                    }
+                ),
+                TopBarAction(
+                    iconRes = R.drawable.close_session_icon,
+                    onActionClicked = {
+                        onCloseSessionClicked()
                     }
                 )
             ))
@@ -233,8 +242,10 @@ internal fun ProfileComponent(
                             modifier = Modifier
                                 .padding(bottom = 8.dp)
                                 .width(300.dp),
-                            text = R.string.profile_sign_off_button_text,
-                            onClick = onCloseSessionClicked
+                            text = R.string.profile_open_profile_button_text,
+                            onClick = {
+                                state.userInfo?.uid?.let(onOpenProfileClicked)
+                            }
                         )
                     }
                 }

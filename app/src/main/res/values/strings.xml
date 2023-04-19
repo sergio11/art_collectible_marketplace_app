@@ -56,7 +56,7 @@
     <string name="signup_success_dialog_accept_button_text">Accept</string>
     <!-- Profile -->
     <string name="profile_save_button_text">Save</string>
-    <string name="profile_sign_off_button_text">Close Session</string>
+    <string name="profile_open_profile_button_text">Open profile</string>
     <string name="profile_main_title_text">Your Profile</string>
     <string name="profile_input_name_label">Name</string>
     <string name="profile_input_name_placeholder">Your name</string>

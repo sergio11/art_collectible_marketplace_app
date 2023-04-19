@@ -2,7 +2,6 @@ package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -18,7 +17,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -34,7 +32,7 @@ fun ArtCollectibleMiniInfoComponent(
     onSeeAllComments: (tokenId: BigInteger) -> Unit = {},
     onSeeLikesByToken: (tokenId: BigInteger) -> Unit = {},
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit = {},
-    onSeeCreatorDetail: (userInfo: UserInfo) -> Unit = {}
+    onSeeCreatorDetail: (userUid: String) -> Unit = {}
 ) {
     Column(modifier = modifier) {
         Text(
@@ -66,7 +64,7 @@ fun ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .padding(8.dp)
                     .clickable {
-                        artCollectible?.author?.let(onSeeCreatorDetail)
+                        artCollectible?.author?.uid?.let(onSeeCreatorDetail)
                     },
                 imageRes = R.drawable.token_creator_icon,
                 text = artCollectible?.author?.name ?: stringResource(id = R.string.no_text_value)

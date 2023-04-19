@@ -56,10 +56,10 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         }
     )) {
 
-        fun buildRoute(userInfo: UserInfo): String =
+        fun buildRoute(userUid: String): String =
             route.replace(
                 oldValue = "{uid}",
-                newValue = userInfo.uid
+                newValue = userUid
             )
 
         fun parseArgs(args: Bundle): ArtistDetailScreenArgs? = with(args) {
@@ -100,11 +100,11 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         private const val SHOW_FOLLOWERS = "FOLLOWERS"
         private const val SHOW_FOLLOWING = "FOLLOWING"
 
-        fun buildFollowersRoute(userInfo: UserInfo): String =
-            buildRoute(userInfo, SHOW_FOLLOWERS)
+        fun buildFollowersRoute(userUid: String): String =
+            buildRoute(userUid, SHOW_FOLLOWERS)
 
-        fun buildFollowingRoute(userInfo: UserInfo): String =
-            buildRoute(userInfo, SHOW_FOLLOWING)
+        fun buildFollowingRoute(userUid: String): String =
+            buildRoute(userUid, SHOW_FOLLOWING)
 
         fun parseArgs(args: Bundle): FollowersScreenArgs? = with(args) {
             getString("id")?.let { userUid ->
@@ -121,10 +121,10 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
 
-        private fun buildRoute(userInfo: UserInfo, type: String): String =
+        private fun buildRoute(userUid: String, type: String): String =
             route.replace(
                 oldValue = "{id}",
-                newValue = userInfo.uid
+                newValue = userUid
             ).replace(
                 oldValue = "{type}",
                 newValue = type
@@ -143,11 +143,11 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         private const val SHOW_TOKENS_OWNED = "TOKENS_OWNED"
         private const val SHOW_TOKENS_CREATED = "TOKENS_CREATED"
 
-        fun buildShowTokensOwnedRoute(userInfo: UserInfo): String =
-            buildRoute(userInfo, SHOW_TOKENS_OWNED)
+        fun buildShowTokensOwnedRoute(userUid: String): String =
+            buildRoute(userUid, SHOW_TOKENS_OWNED)
 
-        fun buildShowTokensCreatedRoute(userInfo: UserInfo): String =
-            buildRoute(userInfo, SHOW_TOKENS_CREATED)
+        fun buildShowTokensCreatedRoute(userUid: String): String =
+            buildRoute(userUid, SHOW_TOKENS_CREATED)
 
         fun parseArgs(args: Bundle): TokensScreenArgs? = with(args) {
             getString("id")?.let { userAddress ->
@@ -164,10 +164,10 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
 
-        private fun buildRoute(userInfo: UserInfo, type: String): String =
+        private fun buildRoute(userUid: String, type: String): String =
             route.replace(
                 oldValue = "{id}",
-                newValue = userInfo.uid
+                newValue = userUid
             ).replace(
                 oldValue = "{type}",
                 newValue = type

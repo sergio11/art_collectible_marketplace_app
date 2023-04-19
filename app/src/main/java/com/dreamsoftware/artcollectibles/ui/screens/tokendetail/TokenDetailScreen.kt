@@ -31,7 +31,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -47,7 +46,7 @@ data class TokenDetailScreenArgs(
 fun TokenDetailScreen(
     args: TokenDetailScreenArgs,
     viewModel: TokenDetailViewModel = hiltViewModel(),
-    onSeeArtistDetail: (userInfo: UserInfo) -> Unit,
+    onSeeArtistDetail: (userUid: String) -> Unit,
     onTokenBurned: () -> Unit,
     onSeeCommentDetail: (comment: Comment) -> Unit,
     onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
@@ -113,7 +112,7 @@ fun TokenDetailComponent(
     uiState: TokenDetailUiState,
     scrollState: ScrollState,
     density: Density,
-    onSeeArtistDetail: (userInfo: UserInfo) -> Unit,
+    onSeeArtistDetail: (userUid: String) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -172,7 +171,7 @@ fun TokenDetailComponent(
 private fun TokenDetailBody(
     context: Context,
     uiState: TokenDetailUiState,
-    onSeeArtistDetail: (userInfo: UserInfo) -> Unit,
+    onSeeArtistDetail: (userUid: String) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -213,7 +212,7 @@ private fun TokenDetailBody(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .clickable {
-                            onSeeArtistDetail(artCollectible.owner)
+                            onSeeArtistDetail(artCollectible.owner.uid)
                         },
                     userInfo = artCollectible.owner
                 )

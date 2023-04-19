@@ -24,7 +24,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
@@ -42,8 +41,8 @@ fun CommentDetailScreen(
     viewModel: CommentDetailViewModel = hiltViewModel(),
     onCommentDeleted: () -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
-    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit
+    onShowTokensCreatedBy: (userUid: String) -> Unit,
+    onOpenArtistDetailCalled: (userUid: String) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -88,9 +87,9 @@ fun CommentDetailComponent(
     uiState: CommentDetailUiState,
     scrollState: ScrollState,
     density: Density,
-    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
+    onOpenArtistDetailCalled: (userUid: String) -> Unit,
     onDeleteComment: (comment: Comment) -> Unit,
-    onShowTokensCreatedBy: (userInfo: UserInfo) -> Unit,
+    onShowTokensCreatedBy: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onConfirmDeleteCommentDialogVisibilityChanged: (isVisible: Boolean)  -> Unit
 ) {
@@ -158,7 +157,7 @@ fun CommentDetailComponent(
                 titleRes = R.string.comment_detail_tokens_created_by_user_text,
                 items = tokensCreated,
                 onShowAllItems = {
-                    comment?.user?.let(onShowTokensCreatedBy)
+                    comment?.user?.uid?.let(onShowTokensCreatedBy)
                 },
                 onItemSelected = {
                     onGoToTokenDetail(it.id)
@@ -175,7 +174,7 @@ fun CommentDetailComponent(
                     contentColor = Color.White
                 ),
                 onClick = {
-                    comment?.user?.let(onOpenArtistDetailCalled)
+                    comment?.user?.uid?.let(onOpenArtistDetailCalled)
                 }
             )
             if(isDeleteCommentEnabled) {

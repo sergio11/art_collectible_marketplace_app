@@ -38,7 +38,7 @@ data class FollowersScreenArgs(
 fun FollowersScreen(
     args: FollowersScreenArgs,
     viewModel: FollowersViewModel = hiltViewModel(),
-    onGoToArtistDetail: (artist: UserInfo) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -80,7 +80,7 @@ internal fun FollowersComponent(
     state: FollowersUiState,
     args: FollowersScreenArgs,
     lazyGridState: LazyGridState,
-    onGoToArtistDetail: (artist: UserInfo) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
@@ -94,7 +94,7 @@ internal fun FollowersComponent(
                     .height(262.dp)
                     .width(150.dp)
                     .clickable {
-                        onGoToArtistDetail(artist)
+                        onGoToArtistDetail(artist.uid)
                     },
                 context = context,
                 user = artist

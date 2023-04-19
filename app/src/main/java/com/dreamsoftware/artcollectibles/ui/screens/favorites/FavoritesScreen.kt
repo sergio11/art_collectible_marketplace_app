@@ -34,7 +34,7 @@ data class FavoritesScreenArgs(
 fun FavoritesScreen(
     args: FavoritesScreenArgs,
     viewModel: FavoritesViewModel = hiltViewModel(),
-    onGoToArtistDetail: (artist: UserInfo) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -68,7 +68,7 @@ internal fun FavoritesComponent(
     context: Context,
     state: FavoritesUiState,
     lazyGridState: LazyGridState,
-    onGoToArtistDetail: (artist: UserInfo) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
@@ -82,7 +82,7 @@ internal fun FavoritesComponent(
                     .height(262.dp)
                     .width(150.dp)
                     .clickable {
-                        onGoToArtistDetail(artist)
+                        onGoToArtistDetail(artist.uid)
                     },
                 context = context,
                 user = artist

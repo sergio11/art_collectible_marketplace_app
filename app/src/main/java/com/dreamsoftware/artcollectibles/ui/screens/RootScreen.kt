@@ -109,10 +109,14 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Profile.route) {
-            ProfileScreen(navigationController) {
-                navigationController.navigate(DestinationItem.OnBoarding.route) {
-                    popUpTo(DestinationItem.OnBoarding.route)
-                }
+            with(navigationController) {
+                ProfileScreen(navigationController, onSessionClosed = {
+                    navigate(DestinationItem.OnBoarding.route) {
+                        popUpTo(DestinationItem.OnBoarding.route)
+                    }
+                }, onOpenProfile = {
+                    navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                })
             }
         }
         composable(DestinationItem.TokenDetail.route) { navBackStackEntry ->

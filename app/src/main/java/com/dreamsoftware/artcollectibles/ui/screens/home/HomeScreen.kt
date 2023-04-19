@@ -40,7 +40,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
-    onGoToUserDetail: (userInfo: UserInfo) -> Unit,
+    onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     val context = LocalContext.current
@@ -80,7 +80,7 @@ private fun HomeComponent(
     uiState: HomeUiState,
     onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
-    onGoToUserDetail: (userInfo: UserInfo) -> Unit,
+    onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(uiState) {

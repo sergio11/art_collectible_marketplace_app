@@ -28,10 +28,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.data.api.exception.FetchItemForSaleException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
-import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailUiState
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -46,7 +44,7 @@ data class MarketItemDetailScreenArgs(
 fun MarketItemDetailScreen(
     args: MarketItemDetailScreenArgs,
     viewModel: MarketItemDetailViewModel = hiltViewModel(),
-    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
+    onOpenArtistDetailCalled: (userUid: String) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onOpenMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onExitCalled: () -> Unit
@@ -98,7 +96,7 @@ fun MarketItemDetailComponent(
     onBuyItemCalled: (tokenId: BigInteger) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
-    onOpenArtistDetailCalled: (userInfo: UserInfo) -> Unit,
+    onOpenArtistDetailCalled: (userUid: String) -> Unit,
     onOpenMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onExitCalled: () -> Unit
 ) {
@@ -129,7 +127,7 @@ fun MarketItemDetailComponent(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .clickable {
-                            artCollectibleForSale?.seller?.let {
+                            artCollectibleForSale?.seller?.uid?.let {
                                 onOpenArtistDetailCalled(it)
                             }
                         },

@@ -14,7 +14,7 @@ fun UserInfoArtistList(
     context: Context,
     @StringRes titleRes: Int,
     userList: Iterable<UserInfo>,
-    onUserClicked: (userInfo: UserInfo) -> Unit) {
+    onUserClicked: (userUid: String) -> Unit) {
     CollectionRow(
         modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 10.dp),
@@ -27,6 +27,8 @@ fun UserInfoArtistList(
                 item
             )
         },
-        onItemSelected = onUserClicked
+        onItemSelected = {
+            onUserClicked(it.uid)
+        }
     )
 }
