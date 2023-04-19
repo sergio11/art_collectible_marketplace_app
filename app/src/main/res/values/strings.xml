@@ -102,6 +102,8 @@
     <string name="profile_input_country_placeholder">Your Country</string>
     <string name="profile_input_instagram_label">Instagram</string>
     <string name="profile_input_instagram_placeholder">Your Instagram Account</string>
+    <string name="profile_close_session_title">Do you want to log out?</string>
+    <string name="profile_close_session_description">Your session will be closed, your session data will be deleted</string>
     <!-- Add NFT -->
     <string name="add_nft_main_title_text">Mint new NFT</string>
     <string name="add_nft_create_button_text">Create</string>

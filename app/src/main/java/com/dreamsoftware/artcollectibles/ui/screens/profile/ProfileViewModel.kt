@@ -162,6 +162,10 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    fun onCloseSessionDialogVisibilityChanged(isVisible: Boolean) {
+        updateState { it.copy(isCloseSessionDialogVisible = isVisible) }
+    }
+
     /**
      * Private Methods
      */
@@ -227,4 +231,5 @@ data class ProfileUiState(
     val isProfilePictureUpdated: Boolean = false,
     val isLoading: Boolean = false,
     val isSessionClosed: Boolean = false,
+    val isCloseSessionDialogVisible: Boolean = false
 )

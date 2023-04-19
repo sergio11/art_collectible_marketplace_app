@@ -83,7 +83,8 @@ fun ProfileScreen(
             onCloseSessionClicked = ::closeSession,
             onOpenProfileClicked = onOpenProfile,
             onAddNewTag = ::onAddNewTag,
-            onDeleteTag = ::onDeleteTag
+            onDeleteTag = ::onDeleteTag,
+            onCloseSessionDialogVisibilityChanged = ::onCloseSessionDialogVisibilityChanged
         )
     }
 }
@@ -107,10 +108,14 @@ internal fun ProfileComponent(
     onCloseSessionClicked: () -> Unit,
     onOpenProfileClicked: (userUid: String) -> Unit,
     onAddNewTag: (tag: String) -> Unit,
-    onDeleteTag: (tag: String) -> Unit
+    onDeleteTag: (tag: String) -> Unit,
+    onCloseSessionDialogVisibilityChanged: (Boolean) -> Unit
 ) {
     var isProfilePicturePicker by rememberSaveable { mutableStateOf(false) }
     LoadingDialog(isShowingDialog = state.isLoading)
+    ConfirmCloseSessionDialog(state, onAcceptClicked = onCloseSessionClicked, onDialogCancelled = {
+        onCloseSessionDialogVisibilityChanged(false)
+    })
     Scaffold(
         bottomBar = {
             BottomBar(navController)
@@ -126,7 +131,7 @@ internal fun ProfileComponent(
                 TopBarAction(
                     iconRes = R.drawable.close_session_icon,
                     onActionClicked = {
-                        onCloseSessionClicked()
+                        onCloseSessionDialogVisibilityChanged(true)
                     }
                 )
             ))
@@ -352,5 +357,24 @@ internal fun ProfilePicturePicker(
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun ConfirmCloseSessionDialog(
+    uiState: ProfileUiState,
+    onAcceptClicked: () -> Unit,
+    onDialogCancelled: () -> Unit
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = isCloseSessionDialogVisible,
+            titleRes = R.string.profile_close_session_title,
+            descriptionRes = R.string.profile_close_session_description,
+            acceptRes = R.string.token_detail_burn_token_confirm_accept_button_text,
+            cancelRes = R.string.token_detail_burn_token_confirm_cancel_button_text,
+            onAcceptClicked = onAcceptClicked,
+            onCancelClicked = onDialogCancelled
+        )
     }
 }
