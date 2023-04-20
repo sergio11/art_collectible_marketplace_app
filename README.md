@@ -1,1 +1,1 @@
-# art_collectible_marketplace_app
+# ArtNiche - An art collectible NFT marketplace for digital artists
