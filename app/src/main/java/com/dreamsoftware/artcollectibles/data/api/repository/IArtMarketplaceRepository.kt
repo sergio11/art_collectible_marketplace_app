@@ -2,6 +2,7 @@ package com.dreamsoftware.artcollectibles.data.api.repository
 
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectiblePrices
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import java.math.BigInteger
 
@@ -44,6 +45,21 @@ interface IArtMarketplaceRepository {
      */
     @Throws(FetchMarketHistoryException::class)
     suspend fun fetchTokenMarketHistory(tokenId: BigInteger): Iterable<ArtCollectibleForSale>
+
+    /**
+     * Allow us to fetch token market history
+     * @param tokenId
+     * @param limit
+     */
+    @Throws(FetchMarketHistoryException::class)
+    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, limit: Long): Iterable<ArtCollectibleForSale>
+
+    /**
+     * Allow us to fetch token current princes
+     * @param tokenId
+     */
+    @Throws(FetchTokenCurrentPriceException::class)
+    suspend fun fetchTokenCurrentPrice(tokenId: BigInteger): ArtCollectiblePrices
 
     /**
      * Put item for Sale

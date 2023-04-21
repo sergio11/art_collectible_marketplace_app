@@ -2,10 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.models.Comment
-import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +25,8 @@ class TokenDetailViewModel @Inject constructor(
     private val saveCommentUseCase: SaveCommentUseCase,
     private val getLastCommentsByTokenUseCase: GetLastCommentsByTokenUseCase,
     private val getLastTokenMarketTransactionsUseCase: GetLastTokenMarketTransactionsUseCase,
-    private val getSimilarTokensUseCase: GetSimilarTokensUseCase
+    private val getSimilarTokensUseCase: GetSimilarTokensUseCase,
+    private val fetchTokenCurrentPriceUseCase: FetchTokenCurrentPriceUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     private companion object {
@@ -356,6 +354,7 @@ class TokenDetailViewModel @Inject constructor(
                 updateState {
                     it.copy(isTokenAddedForSale = isTokenAddedForSale)
                 }
+                fetchTokenCurrentPrice(tokenId)
             },
             onError = {
                 // ignore error
@@ -395,6 +394,23 @@ class TokenDetailViewModel @Inject constructor(
             }
         )
     }
+
+    private fun fetchTokenCurrentPrice(tokenId: BigInteger) {
+        fetchTokenCurrentPriceUseCase.invoke(
+            scope = viewModelScope,
+            params = FetchTokenCurrentPriceUseCase.Params(
+                tokenId = tokenId
+            ),
+            onSuccess = { tokenCurrentPrices ->
+                updateState {
+                    it.copy(tokenCurrentPrices = tokenCurrentPrices)
+                }
+            },
+            onError = {
+                // ignore error
+            }
+        )
+    }
 }
 
 data class TokenDetailUiState(
@@ -404,6 +420,7 @@ data class TokenDetailUiState(
     val isBurned: Boolean = false,
     val isTokenOwner: Boolean = false,
     val isTokenAddedForSale: Boolean = false,
+    val tokenCurrentPrices: ArtCollectiblePrices? = null,
     val tokenPriceInEth: Float? = null,
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),

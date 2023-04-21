@@ -15,7 +15,7 @@
   -->
 
 <resources>
-    <string name="app_name">ArtCollectiblesMarketplace</string>
+    <string name="app_name">ArtNiche</string>
     <string name="image_content_description">Image can not be loaded</string>
     <string name="loading_dialog_title_text">Operation in progress</string>
     <string name="loading_dialog_description_text">Please wait, it could take a while…</string>
@@ -24,7 +24,7 @@
     <string name="no_text_value">----</string>
     <string name="no_text_value_small">--</string>
     <!-- Onboarding -->
-    <string name="onboarding_main_title_text">Welcome to Art Collectible Marketplace</string>
+    <string name="onboarding_main_title_text">Welcome to the art collectible NFT marketplace for digital artists</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
     <string name="onboarding_description_text">You can buy and sell the NFTs of the best artists in the world.</string>
     <string name="onboarding_login_button_text">Login</string>
@@ -178,7 +178,7 @@
     <string name="home_available_items_for_sale_title">Available items for sale</string>
     <string name="home_your_items_for_sale_title">Your items for sale</string>
     <string name="home_last_market_history_title">Last Market History</string>
-    <string name="home_main_title">NFT Marketplace</string>
+    <string name="home_main_title">ArtNiche</string>
     <string name="home_featured_artists_title">Featured artists</string>
     <string name="home_art_collectibles_featured_title">Art collectibles featured</string>
     <!-- Market Item Detail -->

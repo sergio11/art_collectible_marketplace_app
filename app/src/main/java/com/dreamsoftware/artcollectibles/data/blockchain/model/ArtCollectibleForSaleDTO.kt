@@ -11,11 +11,15 @@ data class ArtCollectibleForSaleDTO(
     val creator: String,
     val seller: String,
     val owner: String,
-    val priceInWei: BigInteger,
-    val priceInEth: BigDecimal,
+    val prices: ArtCollectibleForSalePricesDTO,
     val sold: Boolean,
     val canceled: Boolean,
     val putForSaleAt: Date,
     val soldAt: Date?,
     val canceledAt: Date?
+)
+
+data class ArtCollectibleForSalePricesDTO(
+    val priceInWei: BigInteger,
+    val priceInEth: BigDecimal
 )

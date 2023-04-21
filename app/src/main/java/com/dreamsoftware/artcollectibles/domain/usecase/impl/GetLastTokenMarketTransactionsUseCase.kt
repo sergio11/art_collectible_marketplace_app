@@ -9,11 +9,12 @@ class GetLastTokenMarketTransactionsUseCase(
     private val artMarketplaceRepository: IArtMarketplaceRepository
 ): BaseUseCaseWithParams<GetLastTokenMarketTransactionsUseCase.Params, Iterable<ArtCollectibleForSale>>() {
 
-    override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> =
-        artMarketplaceRepository.fetchTokenMarketHistory(params.tokenId)
+    override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> = with(params) {
+        artMarketplaceRepository.fetchTokenMarketHistory(tokenId, limit)
+    }
 
     data class Params(
         val tokenId: BigInteger,
-        val limit: Int
+        val limit: Long
     )
 }

@@ -10,6 +10,7 @@ import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IMarketPricesBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSalePricesDTO
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtMarketItemMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
@@ -160,6 +161,40 @@ internal class ArtMarketplaceRepositoryImpl(
                 )
             }
         }
+
+    @Throws(FetchMarketHistoryException::class)
+    override suspend fun fetchTokenMarketHistory(
+        tokenId: BigInteger,
+        limit: Long
+    ): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
+        try {
+            val credentials = walletRepository.loadCredentials()
+            mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(
+                tokenId,
+                limit,
+                userCredentialsMapper.mapOutToIn(credentials)
+            ))
+        } catch (ex: Exception) {
+            throw FetchMarketHistoryException(
+                "An error occurred when fetching the token market history",
+                ex
+            )
+        }
+    }
+
+    @Throws(FetchTokenCurrentPriceException::class)
+    override suspend fun fetchTokenCurrentPrice(tokenId: BigInteger): ArtCollectiblePrices = withContext(Dispatchers.IO) {
+        try {
+            val credentials = walletRepository.loadCredentials()
+            getArtCollectiblePrices(artMarketplaceBlockchainDataSource.fetchCurrentItemPrice(tokenId,
+                userCredentialsMapper.mapOutToIn(credentials)))
+        } catch (ex: Exception) {
+            throw FetchMarketHistoryException(
+                "An error occurred when fetching the token current price",
+                ex
+            )
+        }
+    }
 
     @Throws(PutItemForSaleException::class)
     override suspend fun putItemForSale(tokenId: BigInteger, priceInEth: Float) =
@@ -356,7 +391,7 @@ internal class ArtMarketplaceRepositoryImpl(
                     token = tokenDeferred.await(),
                     seller = sellerDeferred.await(),
                     owner = ownerDeferred.await(),
-                    price = getArtCollectiblePrices(this),
+                    price = getArtCollectiblePrices(prices),
                     sold = sold,
                     canceled = canceled,
                     putForSaleAt = putForSaleAt,
@@ -393,7 +428,7 @@ internal class ArtMarketplaceRepositoryImpl(
                                         token = token,
                                         seller = seller,
                                         owner = owner,
-                                        price = getArtCollectiblePrices(this),
+                                        price = getArtCollectiblePrices(prices),
                                         sold = sold,
                                         canceled = canceled,
                                         putForSaleAt = putForSaleAt,
@@ -415,7 +450,7 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
 
-    private suspend fun getArtCollectiblePrices(itemForSale: ArtCollectibleForSaleDTO) =  with(itemForSale) {
+    private suspend fun getArtCollectiblePrices(artCollectiblePrices: ArtCollectibleForSalePricesDTO) =  with(artCollectiblePrices) {
         runCatching {
             marketPricesBlockchainDataSource.getPricesOf(priceInEth).let {
                 ArtCollectiblePrices(

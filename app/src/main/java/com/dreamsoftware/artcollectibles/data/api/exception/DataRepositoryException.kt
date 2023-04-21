@@ -42,6 +42,7 @@ class FetchAvailableMarketItemsException(message: String? = null, cause: Throwab
 class FetchSellingMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class FetchOwnedMarketItemsException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class FetchMarketHistoryException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
+class FetchTokenCurrentPriceException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class PutItemForSaleException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class FetchItemForSaleException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)
 class WithdrawFromSaleException(message: String? = null, cause: Throwable? = null): ArtMarketplaceDataException(message, cause)

@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,6 +33,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -240,21 +242,33 @@ private fun TokenDetailBody(
                 ) {
                     Image(
                         modifier = Modifier
-                            .size(60.dp)
+                            .size(70.dp)
                             .padding(10.dp),
                         painter = painterResource(id = R.drawable.available_for_sale),
                         contentDescription = "Token Image"
                     )
-                    Text(
-                        text = stringResource(id = R.string.token_detail_available_for_sale_text),
-                        fontFamily = montserratFontFamily,
-                        color = Color.Black,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Left
-                    )
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.token_detail_available_for_sale_text),
+                            fontFamily = montserratFontFamily,
+                            color = Color.Black,
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Left
+                        )
+                        tokenCurrentPrices?.let {
+                            ArtCollectiblePrice(
+                                iconSize = 20.dp,
+                                textSize = 20.sp,
+                                textColor = DarkPurple,
+                                fullMode = true,
+                                priceData = it
+                            )
+                        }
+                    }
                 }
+
             }
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
