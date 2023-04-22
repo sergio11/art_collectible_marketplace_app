@@ -16,8 +16,8 @@ interface IFavoritesRepository {
     @Throws(GetMyFavoriteTokensDataException::class)
     suspend fun getMyFavoriteTokens(): Iterable<ArtCollectible>
 
-    @Throws(GetMoreLikedTokensDataException::class)
-    suspend fun getMoreLikedTokens(limit: Long): Iterable<ArtCollectible>
+    @Throws(GetMostLikedTokensDataException::class)
+    suspend fun getMostLikedTokens(limit: Int): Iterable<ArtCollectible>
 
     @Throws(GetUserLikesByTokenDataException::class)
     suspend fun getUserLikesByToken(tokenId: BigInteger): Iterable<UserInfo>

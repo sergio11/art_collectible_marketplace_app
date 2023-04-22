@@ -201,20 +201,20 @@ internal class FollowersDataSourceImpl(
         }
     }
 
-    @Throws(GetMoreFollowedUsersException::class)
-    override suspend fun getMoreFollowedUsers(limit: Long): List<String> =
+    @Throws(GetMostFollowedUsersException::class)
+    override suspend fun getMostFollowedUsers(limit: Int): List<String> =
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME)
                     .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
-                    .limit(limit).get()
+                    .limit(limit.toLong()).get()
                     .await()?.documents?.mapNotNull { it.id }
                     ?.filter { it.contains(FOLLOWERS_COUNT_SUFFIX) }
                     ?.map { it.removeSuffix(FOLLOWERS_COUNT_SUFFIX) }.orEmpty()
             } catch (ex: FirebaseException) {
                 throw ex
             } catch (ex: Exception) {
-                throw GetMoreFollowedUsersException("An error occurred when trying to get more followed users")
+                throw GetMostFollowedUsersException("An error occurred when trying to get most followed users")
             }
         }
 }

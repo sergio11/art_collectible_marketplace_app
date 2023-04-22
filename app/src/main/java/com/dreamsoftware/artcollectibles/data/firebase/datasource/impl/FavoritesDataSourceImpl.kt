@@ -106,20 +106,20 @@ internal class FavoritesDataSourceImpl(
         }
     }
 
-    @Throws(GetMoreLikedTokensException::class)
-    override suspend fun getMoreLikedTokens(limit: Long): List<String> =
+    @Throws(GetMostLikedTokensException::class)
+    override suspend fun getMostLikedTokens(limit: Int): List<String> =
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME)
                     .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
-                    .limit(limit).get()
+                    .limit(limit.toLong()).get()
                     .await()?.documents?.mapNotNull { it.id }
                     ?.filter { it.contains(TOKEN_KEY_COUNT_SUFFIX) }
                     ?.map { it.removeSuffix(TOKEN_KEY_COUNT_SUFFIX) }.orEmpty()
             } catch (ex: FirebaseException) {
                 throw ex
             } catch (ex: Exception) {
-                throw GetMoreLikedTokensException("An error occurred when trying to get more liked tokens")
+                throw GetMostLikedTokensException("An error occurred when trying to get more liked tokens")
             }
         }
 

@@ -292,18 +292,18 @@ internal class UserRepositoryImpl(
             }
         }
 
-    @Throws(GetMoreFollowedUsersException::class)
-    override suspend fun getMoreFollowedUsers(limit: Long): Iterable<UserInfo> =
+    @Throws(GetMostFollowedUsersException::class)
+    override suspend fun getMostFollowedUsers(limit: Int): Iterable<UserInfo> =
         withContext(Dispatchers.IO) {
             try {
                 val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
-                followerDataSource.getMoreFollowedUsers(limit).map { uid ->
+                followerDataSource.getMostFollowedUsers(limit).map { uid ->
                     async { userDataSource.getById(uid) }
                 }.awaitAll().map {
                     mapToUserInfo(it, credentials, true)
                 }
             } catch (ex: Exception) {
-                throw GetMoreFollowedUsersException("An error occurred when trying to get more followed users", ex)
+                throw GetMostFollowedUsersException("An error occurred when trying to get most followed users", ex)
             }
         }
 

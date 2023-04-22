@@ -1,10 +1,13 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import com.dreamsoftware.artcollectibles.data.api.exception.GetMostVisitedTokensDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.GetVisitorsByTokenDataException
 import com.dreamsoftware.artcollectibles.data.api.exception.RegisterVisitorDataException
+import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IUserRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IVisitorsRepository
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataSource
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -16,10 +19,12 @@ import java.math.BigInteger
  * Visitors Repository Impl
  * @param visitorsDataSource
  * @param userRepository
+ * @param artCollectibleRepository
  */
 internal class VisitorsRepositoryImpl(
     private val visitorsDataSource: IVisitorsDataSource,
-    private val userRepository: IUserRepository
+    private val userRepository: IUserRepository,
+    private val artCollectibleRepository: IArtCollectibleRepository
 ): IVisitorsRepository {
 
     @Throws(RegisterVisitorDataException::class)
@@ -41,6 +46,17 @@ internal class VisitorsRepositoryImpl(
             }.toList().awaitAll().filterNotNull()
         } catch (ex: Exception) {
             throw GetVisitorsByTokenDataException("An error occurred when trying to get visitors", ex)
+        }
+    }
+
+    @Throws(GetMostVisitedTokensDataException::class)
+    override suspend fun getMostVisitedTokens(limit: Int): Iterable<ArtCollectible> =  withContext(Dispatchers.IO) {
+        try {
+            visitorsDataSource.getMostVisitedTokens(limit)
+                .mapNotNull { runCatching { it.toBigInteger() }.getOrNull() }
+                .let { artCollectibleRepository.getTokens(it) }
+        } catch (ex: Exception) {
+            throw GetMostVisitedTokensDataException("An error occurred when trying to get most visited tokens", ex)
         }
     }
 }

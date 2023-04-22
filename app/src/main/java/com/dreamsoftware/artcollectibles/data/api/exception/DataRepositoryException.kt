@@ -18,7 +18,7 @@ class CheckFollowersUserException(message: String? = null, cause: Throwable? = n
 class GetFollowersUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 class GetFollowingUserException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 
-class GetMoreFollowedUsersException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
+class GetMostFollowedUsersException(message: String? = null, cause: Throwable? = null): UserDataException(message, cause)
 
 // Wallet Repository Exception
 abstract class WalletDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
@@ -62,13 +62,14 @@ class GetSecretException(message: String? = null, cause: Throwable? = null): Sec
 abstract class FavoritesDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class AddToFavoritesDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 class RemoveFromFavoritesDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
-class GetMoreLikedTokensDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
+class GetMostLikedTokensDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 class GetMyFavoriteTokensDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 class GetUserLikesByTokenDataException(message: String? = null, cause: Throwable? = null): FavoritesDataException(message, cause)
 // Visitors Repository Exception
 abstract class VisitorsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class RegisterVisitorDataException(message: String? = null, cause: Throwable? = null): VisitorsDataException(message, cause)
 class GetVisitorsByTokenDataException(message: String? = null, cause: Throwable? = null): VisitorsDataException(message, cause)
+class GetMostVisitedTokensDataException(message: String? = null, cause: Throwable? = null): VisitorsDataException(message, cause)
 // Token Metadata Repository Exception
 abstract class TokenMetadataDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class CreateTokenMetadataDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)

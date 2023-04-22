@@ -17,14 +17,18 @@ class HomeViewModel @Inject constructor(
     private val fetchMarketplaceStatisticsUseCase: FetchMarketplaceStatisticsUseCase,
     private val fetchMarketHistoryUseCase: FetchMarketHistoryUseCase,
     private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
-    private val getMoreFollowedUsersUseCase: GetMoreFollowedUsersUseCase,
-    private val getMoreLikedTokensUseCase: GetMoreLikedTokensUseCase
+    private val getMostFollowedUsersUseCase: GetMostFollowedUsersUseCase,
+    private val getMostLikedTokensUseCase: GetMostLikedTokensUseCase,
+    private val getMostVisitedTokensUseCase: GetMostVisitedTokensUseCase
 ) : SupportViewModel<HomeUiState>() {
 
     companion object {
         const val AVAILABLE_MARKET_ITEMS_LIMIT = 6
         const val SELLING_MARKET_ITEMS_LIMIT = 6
         const val MARKET_HISTORY_ITEMS_LIMIT = 6
+        const val MOST_LIKED_TOKENS_LIMIT = 5
+        const val MOST_FOLLOWED_USERS_LIMIT = 5
+        const val MOST_VISITED_TOKENS_LIMIT = 5
     }
 
     override fun onGetDefaultState(): HomeUiState = HomeUiState()
@@ -39,15 +43,17 @@ class HomeViewModel @Inject constructor(
             val fetchArtCollectibleCategoriesDeferred = async { fetchArtCollectibleCategories() }
             val fetchMoreFollowedUsersDeferred = async { fetchMoreFollowedUsers() }
             val fetchMoreLikedTokensDeferred = async { fetchMoreLikedTokensUseCase() }
+            val fetchMoreVisitedTokensUseCaseDeferred = async { fetchMoreVisitedTokensUseCase() }
             val categories = fetchArtCollectibleCategoriesDeferred.await()
-            val moreFollowedUsers = fetchMoreFollowedUsersDeferred.await()
-            val moreLikedTokens = fetchMoreLikedTokensDeferred.await()
+            val mostFollowedUsers = fetchMoreFollowedUsersDeferred.await()
+            val mostLikedTokens = fetchMoreLikedTokensDeferred.await()
+            val mostVisitedTokens = fetchMoreVisitedTokensUseCaseDeferred.await()
             updateState {
                 it.copy(
                     isLoading = false,
                     categories = categories,
-                    moreFollowedUsers = moreFollowedUsers,
-                    moreLikedTokens = moreLikedTokens
+                    mostFollowedUsers = mostFollowedUsers,
+                    mostLikedTokens = mostLikedTokens
                 )
             }
             loadMarketData()
@@ -102,10 +108,22 @@ class HomeViewModel @Inject constructor(
         getArtCollectibleCategoriesUseCase.invoke(scope = viewModelScope)
 
     private suspend fun fetchMoreFollowedUsers() =
-        getMoreFollowedUsersUseCase.invoke(scope = viewModelScope)
+        getMostFollowedUsersUseCase.invoke(
+            scope = viewModelScope,
+            params = GetMostFollowedUsersUseCase.Params(limit = MOST_FOLLOWED_USERS_LIMIT)
+        )
 
     private suspend fun fetchMoreLikedTokensUseCase() =
-        getMoreLikedTokensUseCase.invoke(scope = viewModelScope)
+        getMostLikedTokensUseCase.invoke(
+            scope = viewModelScope,
+            params = GetMostLikedTokensUseCase.Params(limit = MOST_LIKED_TOKENS_LIMIT)
+        )
+
+    private suspend fun fetchMoreVisitedTokensUseCase() =
+        getMostVisitedTokensUseCase.invoke(
+            scope = viewModelScope,
+            params = GetMostVisitedTokensUseCase.Params(limit = MOST_VISITED_TOKENS_LIMIT)
+        )
 
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }
@@ -125,6 +143,7 @@ data class HomeUiState(
     val availableMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val sellingMarketItems: Iterable<ArtCollectibleForSale> = emptyList(),
     val marketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
-    val moreFollowedUsers: Iterable<UserInfo> = emptyList(),
-    val moreLikedTokens: Iterable<ArtCollectible> = emptyList()
+    val mostFollowedUsers: Iterable<UserInfo> = emptyList(),
+    val mostLikedTokens: Iterable<ArtCollectible> = emptyList(),
+    val mostVisitedTokens: Iterable<ArtCollectible> = emptyList()
 )

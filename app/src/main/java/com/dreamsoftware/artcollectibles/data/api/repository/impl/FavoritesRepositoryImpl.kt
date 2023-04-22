@@ -88,15 +88,15 @@ internal class FavoritesRepositoryImpl(
             }
         }
 
-    @Throws(GetMoreLikedTokensDataException::class)
-    override suspend fun getMoreLikedTokens(limit: Long): Iterable<ArtCollectible> =
+    @Throws(GetMostLikedTokensDataException::class)
+    override suspend fun getMostLikedTokens(limit: Int): Iterable<ArtCollectible> =
         withContext(Dispatchers.IO) {
             try {
-                favoritesDataSource.getMoreLikedTokens(limit).map {
+                favoritesDataSource.getMostLikedTokens(limit).map {
                     async { artCollectibleRepository.getTokenById(BigInteger(it)) }
                 }.awaitAll()
             } catch (ex: Exception) {
-                throw GetMoreLikedTokensDataException("An error occurred when trying to get more liked tokens", ex)
+                throw GetMostLikedTokensDataException("An error occurred when trying to get more liked tokens", ex)
             }
         }
 

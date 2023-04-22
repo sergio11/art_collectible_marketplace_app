@@ -463,7 +463,7 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetMoreFollowedUsersUseCase(
         userRepository: IUserRepository
-    ) = GetMoreFollowedUsersUseCase(userRepository)
+    ) = GetMostFollowedUsersUseCase(userRepository)
 
     /**
      * Provide Get More liked tokens
@@ -472,7 +472,7 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetMoreLikedTokensUseCase(
         favoritesRepository: IFavoritesRepository
-    ) = GetMoreLikedTokensUseCase(favoritesRepository)
+    ) = GetMostLikedTokensUseCase(favoritesRepository)
 
     /**
      * Provide Get my favorite tokens use case
@@ -609,4 +609,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideFetchMarketHistoryItemUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
         FetchMarketHistoryItemUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide get most visited tokens use case
+     * @param visitorsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetMostVisitedTokensUseCase(visitorsRepository: IVisitorsRepository) =
+        GetMostVisitedTokensUseCase(visitorsRepository)
 }

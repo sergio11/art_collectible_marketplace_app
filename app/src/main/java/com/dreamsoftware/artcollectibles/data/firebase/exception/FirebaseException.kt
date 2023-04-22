@@ -29,14 +29,13 @@ class SaveSecretException(message: String? = null, cause: Throwable? = null): Fi
 class GetFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class AddToFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class RemoveFromFavoritesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
-class GetMoreLikedTokensException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetMostLikedTokensException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetUserLikesByTokenException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 // Visitors Data Source
 class AddVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
-
 class GetVisitorsByTokenException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
-
+class GetMostVisitedTokensException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 // Followers Data Source
 class AddFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class RemoveFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
@@ -46,7 +45,7 @@ class CountFollowersException(message: String? = null, cause: Throwable? = null)
 class CountFollowingException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class CheckFollowerException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 
-class GetMoreFollowedUsersException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetMostFollowedUsersException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 
 // Categories Data Source
 class GetCategoriesException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)

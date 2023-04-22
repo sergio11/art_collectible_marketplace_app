@@ -4,6 +4,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.IVisitorsDataS
 import com.dreamsoftware.artcollectibles.data.firebase.exception.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -69,6 +70,22 @@ internal class VisitorsDataSourceImpl(
             throw ex
         } catch (ex: Exception) {
             throw GetVisitorsByTokenException("An error occurred when trying to get visitors", ex)
+        }
+    }
+
+    @Throws(GetMostVisitedTokensException::class)
+    override suspend fun getMostVisitedTokens(limit: Int): List<String> = withContext(Dispatchers.IO) {
+        try {
+            firebaseStore.collection(COLLECTION_NAME)
+                .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
+                .limit(limit.toLong()).get()
+                .await()?.documents?.mapNotNull { it.id }
+                ?.filter { it.contains(KEY_COUNT_SUFFIX) }
+                ?.map { it.removeSuffix(KEY_COUNT_SUFFIX) }.orEmpty()
+        } catch (ex: FirebaseException) {
+            throw ex
+        } catch (ex: Exception) {
+            throw GetMostVisitedTokensException("An error occurred when trying to get most visited tokens", ex)
         }
     }
 }

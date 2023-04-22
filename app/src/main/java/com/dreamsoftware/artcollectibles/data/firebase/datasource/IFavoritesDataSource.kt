@@ -20,8 +20,8 @@ interface IFavoritesDataSource {
     @Throws(RemoveFromFavoritesException::class)
     suspend fun remove(tokenId: BigInteger, userAddress: String)
 
-    @Throws(GetMoreLikedTokensException::class)
-    suspend fun getMoreLikedTokens(limit: Long): List<String>
+    @Throws(GetMostLikedTokensException::class)
+    suspend fun getMostLikedTokens(limit: Int): List<String>
 
     @Throws(GetUserLikesByTokenException::class)
     suspend fun getUserLikesByToken(tokenId: BigInteger): List<String>

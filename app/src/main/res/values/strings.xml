@@ -181,6 +181,7 @@
     <string name="home_main_title">ArtNiche</string>
     <string name="home_featured_artists_title">Featured artists</string>
     <string name="home_art_collectibles_featured_title">Art collectibles featured</string>
+    <string name="home_most_visited_art_collectibles_title">Most visited art collectibles</string>
     <!-- Market Item Detail -->
     <string name="market_item_detail_put_for_sale_at_label" formatted="false">Put for sale at %s</string>
     <string name="market_item_detail_sold_at_label" formatted="false">Sold at %s</string>

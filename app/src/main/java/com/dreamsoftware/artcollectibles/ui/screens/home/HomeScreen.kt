@@ -125,27 +125,35 @@ private fun HomeComponent(
                         onCategoryClicked = onGoToCategoryDetail
                     )
                 }
-                if(!Iterables.isEmpty(moreFollowedUsers)) {
+                if(!Iterables.isEmpty(mostFollowedUsers)) {
                     UserInfoArtistList(
                         context = context,
                         titleRes = R.string.home_featured_artists_title,
-                        userList = moreFollowedUsers,
+                        userList = mostFollowedUsers,
                         onUserClicked = onGoToUserDetail
                     )
                 }
-                ArtCollectiblesRow(
-                    context = context,
-                    titleRes = R.string.home_art_collectibles_featured_title,
-                    items = moreLikedTokens,
-                    onItemSelected = {
-                        onGoToTokenDetail(it.id)
-                    }
-                )
                 ArtCollectibleForSaleRow(
                     context = context,
                     titleRes = R.string.home_available_items_for_sale_title,
                     items = availableMarketItems,
                     onMarketItemSelected = onGoToMarketItemDetail
+                )
+                ArtCollectiblesRow(
+                    context = context,
+                    titleRes = R.string.home_art_collectibles_featured_title,
+                    items = mostLikedTokens,
+                    onItemSelected = {
+                        onGoToTokenDetail(it.id)
+                    }
+                )
+                ArtCollectiblesRow(
+                    context = context,
+                    titleRes = R.string.home_most_visited_art_collectibles_title,
+                    items = mostVisitedTokens,
+                    onItemSelected = {
+                        onGoToTokenDetail(it.id)
+                    }
                 )
                 ArtCollectibleForSaleRow(
                     context = context,
