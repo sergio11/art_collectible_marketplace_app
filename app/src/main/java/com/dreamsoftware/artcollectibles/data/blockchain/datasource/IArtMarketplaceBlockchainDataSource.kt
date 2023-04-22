@@ -12,54 +12,30 @@ interface IArtMarketplaceBlockchainDataSource {
     /**
      * Fetch non sold and non canceled market items
      * @param credentials
-     */
-    suspend fun fetchAvailableMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
-
-    /**
-     * Fetch non sold and non canceled market items
      * @param limit
-     * @param credentials
      */
-    suspend fun fetchAvailableMarketItems(limit: Long, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
-
-    /**
-     * Fetch market items that are being listed by the current authenticated user
-     * @param limit
-     * @param credentials
-     */
-    suspend fun fetchSellingMarketItems(limit: Long, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
+    suspend fun fetchAvailableMarketItems(credentials: Credentials, limit: Int? = null): Iterable<ArtCollectibleForSaleDTO>
 
     /**
      * Fetch market items that are being listed by the current authenticated user
      * @param credentials
+     * @param limit
      */
-    suspend fun fetchSellingMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
-
-    /**
-     * Fetch market items that are owned by the current authenticated user
-     * @param credentials
-     */
-    suspend fun fetchOwnedMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
+    suspend fun fetchSellingMarketItems(credentials: Credentials, limit: Int? = null): Iterable<ArtCollectibleForSaleDTO>
 
     /**
      * Fetch market items that are owned by the current authenticated user
      * @param credentials
      * @param limit
      */
-    suspend fun fetchOwnedMarketItems(limit: Long, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
+    suspend fun fetchOwnedMarketItems(credentials: Credentials, limit: Int? = null): Iterable<ArtCollectibleForSaleDTO>
 
     /**
      * Allow us to fetch market history
      * @param credentials
-     */
-    suspend fun fetchMarketHistory(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
-
-    /**
-     * Allow us to fetch market history
      * @param limit
-     * @param credentials
      */
-    suspend fun fetchMarketHistory(limit: Long, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
+    suspend fun fetchMarketHistory(credentials: Credentials, limit: Int? = null): Iterable<ArtCollectibleForSaleDTO>
 
     /**
      * list an item with a `tokenId` for a `priceInEth`
@@ -134,17 +110,10 @@ interface IArtMarketplaceBlockchainDataSource {
     /**
      * Fetch token market history
      * @param tokenId
-     * @param credentials
-     */
-    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
-
-    /**
-     * Fetch token market history
-     * @param tokenId
      * @param limit
      * @param credentials
      */
-    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, limit: Long, credentials: Credentials): Iterable<ArtCollectibleForSaleDTO>
+    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, credentials: Credentials, limit: Int? = null): Iterable<ArtCollectibleForSaleDTO>
 
     /**
      * Fetch current item price

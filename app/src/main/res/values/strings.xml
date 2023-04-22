@@ -183,6 +183,8 @@
     <string name="home_art_collectibles_featured_title">Art collectibles featured</string>
     <!-- Market Item Detail -->
     <string name="market_item_detail_put_for_sale_at_label" formatted="false">Put for sale at %s</string>
+    <string name="market_item_detail_sold_at_label" formatted="false">Sold at %s</string>
+    <string name="market_item_detail_canceled_at_label" formatted="false">Canceled at %s</string>
     <string name="market_item_detail_buy_item_button_text">Buy Item</string>
     <string name="market_item_detail_not_enough_funds_text">You do not have enough funds to purchase this collectible</string>
     <string name="market_item_detail_open_item_button_text">Open Detail</string>

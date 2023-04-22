@@ -69,23 +69,47 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         }
     }
 
-    object MarketItemDetail : DestinationItem(route = "market/detail/{id}", arguments = listOf(
+    object MarketItemDetail : DestinationItem(route = "market/detail/{type}/{id}", arguments = listOf(
         navArgument("id") {
+            type = NavType.StringType
+        },
+        navArgument("type") {
             type = NavType.StringType
         }
     )) {
 
-        fun buildRoute(tokenId: BigInteger): String =
-            route.replace(
-                oldValue = "{id}",
-                newValue = "$tokenId"
-            )
+        private const val SHOW_HISTORY_MARKET_ITEM = "HISTORY"
+        private const val SHOW_FOR_SALE_MARKET_ITEM = "FOR_SALE"
+
+        fun buildHistoryMarketItemRoute(marketItemId: BigInteger): String =
+            buildRoute(marketItemId, SHOW_HISTORY_MARKET_ITEM)
+
+        fun buildForSaleMarketItemRoute(tokenId: BigInteger): String =
+            buildRoute(tokenId, SHOW_FOR_SALE_MARKET_ITEM)
 
         fun parseArgs(args: Bundle): MarketItemDetailScreenArgs? = with(args) {
-            getString("id")?.toLongOrNull()?.let {
-                MarketItemDetailScreenArgs(tokenId = BigInteger.valueOf(it))
+            getString("id")?.toBigInteger()?.let { id ->
+                getString("type")?.let { type ->
+                    MarketItemDetailScreenArgs(
+                        id = id,
+                        viewType = if (type == SHOW_HISTORY_MARKET_ITEM) {
+                            MarketItemDetailScreenArgs.ViewTypeEnum.HISTORY
+                        } else {
+                            MarketItemDetailScreenArgs.ViewTypeEnum.FOR_SALE
+                        }
+                    )
+                }
             }
         }
+
+        private fun buildRoute(id: BigInteger, type: String): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = "$id"
+            ).replace(
+                oldValue = "{type}",
+                newValue = type
+            )
     }
 
     object UserFollowers : DestinationItem(route = "users/{id}/{type}", arguments = listOf(

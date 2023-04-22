@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail
 
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,9 +16,11 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -30,15 +33,17 @@ import com.dreamsoftware.artcollectibles.data.api.exception.FetchItemForSaleExce
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
-import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
-import com.dreamsoftware.artcollectibles.ui.theme.Purple200
-import com.dreamsoftware.artcollectibles.ui.theme.Purple700
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.*
 import java.math.BigInteger
 
 data class MarketItemDetailScreenArgs(
-    val tokenId: BigInteger
-)
+    val id: BigInteger,
+    val viewType: ViewTypeEnum
+) {
+    enum class ViewTypeEnum {
+        HISTORY, FOR_SALE
+    }
+}
 
 @Composable
 fun MarketItemDetailScreen(
@@ -66,7 +71,13 @@ fun MarketItemDetailScreen(
     val scrollState: ScrollState = rememberScrollState(0)
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-            loadDetail(tokenId = args.tokenId)
+            with(args) {
+                if(viewType == MarketItemDetailScreenArgs.ViewTypeEnum.HISTORY) {
+                    loadMarketHistoryItemDetail(id)
+                } else {
+                    loadForSaleMarketItemDetail(id)
+                }
+            }
         }
         MarketItemDetailComponent(
             context = context,
@@ -143,27 +154,66 @@ fun MarketItemDetailComponent(
                     priceData = artCollectibleForSale?.price
                 )
             }
-            Text(
-                text = artCollectibleForSale?.putForSaleAt?.format()?.let {
-                    stringResource(id = R.string.market_item_detail_put_for_sale_at_label, it)
-                } ?: stringResource(id = R.string.no_text_value),
-                fontFamily = montserratFontFamily,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                color = DarkPurple,
-                style = MaterialTheme.typography.titleMedium
-            )
-            ArtCollectiblePrice(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                iconSize = 20.dp,
-                textSize = 20.sp,
-                textColor = DarkPurple,
-                fullMode = true,
-                priceData = artCollectibleForSale?.price
-            )
+            artCollectibleForSale?.let {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(70.dp)
+                            .padding(10.dp),
+                        painter = painterResource(
+                            id = if (it.sold) {
+                                R.drawable.sold_market_items
+                            } else if (it.canceled) {
+                                R.drawable.cancelled_market_items
+                            } else {
+                                R.drawable.available_market_items
+                            }
+                        ),
+                        colorFilter = ColorFilter.tint(
+                            if (it.sold) {
+                                Color.Green
+                            } else if (it.canceled) {
+                                Color.Red
+                            } else {
+                                Purple500
+                            }
+                        ),
+                        contentDescription = "Token Image"
+                    )
+                    Column {
+                        Text(
+                            text = if (it.sold) {
+                                stringResource(id = R.string.market_item_detail_sold_at_label, it.soldAt?.format().orEmpty())
+                            } else if (it.canceled) {
+                                stringResource(id = R.string.market_item_detail_canceled_at_label, it.canceledAt?.format().orEmpty())
+                            } else {
+                                stringResource(id = R.string.market_item_detail_put_for_sale_at_label, it.putForSaleAt.format())
+                            },
+                            fontFamily = montserratFontFamily,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            color = DarkPurple,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        ArtCollectiblePrice(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp),
+                            iconSize = 20.dp,
+                            textSize = 20.sp,
+                            textColor = DarkPurple,
+                            fullMode = true,
+                            priceData = it.price
+                        )
+                    }
+                }
+            }
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -186,7 +236,7 @@ fun MarketItemDetailComponent(
             )
             Spacer(modifier = Modifier.height(50.dp))
             if (!isLoading) {
-                if (!isTokenSeller) {
+                if (!isMarketHistoryItem && !isTokenSeller) {
                     if(!enoughFunds) {
                         Text(
                             text = stringResource(id = R.string.market_item_detail_not_enough_funds_text),
@@ -228,7 +278,7 @@ fun MarketItemDetailComponent(
                         }
                     }
                 )
-                if (isTokenAuthor) {
+                if (!isMarketHistoryItem && isTokenAuthor) {
                     CommonButton(
                         modifier = Modifier
                             .padding(horizontal = 10.dp, vertical = 8.dp)

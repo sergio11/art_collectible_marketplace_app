@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
-import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -79,15 +78,24 @@ class HomeViewModel @Inject constructor(
     }.getOrNull()
 
     private suspend fun fetchAvailableMarketItems() = runCatching {
-        fetchAvailableMarketItemsUseCase.invoke(scope = viewModelScope)
+        fetchAvailableMarketItemsUseCase.invoke(
+            scope = viewModelScope,
+            params = FetchAvailableMarketItemsUseCase.Params(limit = AVAILABLE_MARKET_ITEMS_LIMIT)
+        )
     }.getOrDefault(emptyList())
 
     private suspend fun fetchSellingMarketItems() = runCatching {
-        fetchSellingMarketItemsUseCase.invoke(scope = viewModelScope)
+        fetchSellingMarketItemsUseCase.invoke(
+            scope = viewModelScope,
+            params = FetchSellingMarketItemsUseCase.Params(limit = SELLING_MARKET_ITEMS_LIMIT)
+        )
     }.getOrDefault(emptyList())
 
     private suspend fun fetchMarketHistory() = runCatching {
-        fetchMarketHistoryUseCase.invoke(scope = viewModelScope)
+        fetchMarketHistoryUseCase.invoke(
+            scope = viewModelScope,
+            params = FetchMarketHistoryUseCase.Params(limit = MARKET_HISTORY_ITEMS_LIMIT)
+        )
     }.getOrDefault(emptyList())
 
     private suspend fun fetchArtCollectibleCategories() =

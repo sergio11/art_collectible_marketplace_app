@@ -23,15 +23,17 @@ interface IArtMarketplaceRepository {
 
     /**
      * Fetch market items that are being listed by the current authenticated user
+     * @param limit
      */
     @Throws(FetchSellingMarketItemsException::class)
-    suspend fun fetchSellingMarketItems(): Iterable<ArtCollectibleForSale>
+    suspend fun fetchSellingMarketItems(limit: Int? = null): Iterable<ArtCollectibleForSale>
 
     /**
      * Fetch market items that are owned by the current authenticated user
+     * @param limit
      */
     @Throws(FetchOwnedMarketItemsException::class)
-    suspend fun fetchOwnedMarketItems(): Iterable<ArtCollectibleForSale>
+    suspend fun fetchOwnedMarketItems(limit: Int? = null): Iterable<ArtCollectibleForSale>
 
     /**
      * Allow us to fetch market history
@@ -42,17 +44,10 @@ interface IArtMarketplaceRepository {
     /**
      * Allow us to fetch token market history
      * @param tokenId
-     */
-    @Throws(FetchMarketHistoryException::class)
-    suspend fun fetchTokenMarketHistory(tokenId: BigInteger): Iterable<ArtCollectibleForSale>
-
-    /**
-     * Allow us to fetch token market history
-     * @param tokenId
      * @param limit
      */
     @Throws(FetchMarketHistoryException::class)
-    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, limit: Long): Iterable<ArtCollectibleForSale>
+    suspend fun fetchTokenMarketHistory(tokenId: BigInteger, limit: Int? = null): Iterable<ArtCollectibleForSale>
 
     /**
      * Allow us to fetch token current princes
@@ -75,6 +70,13 @@ interface IArtMarketplaceRepository {
      */
     @Throws(FetchItemForSaleException::class)
     suspend fun fetchItemForSale(tokenId: BigInteger): ArtCollectibleForSale
+
+    /**
+     * Fetch market history item
+     * @param marketItemId
+     */
+    @Throws(FetchMarketHistoryItemException::class)
+    suspend fun fetchMarketHistoryItem(marketItemId: BigInteger): ArtCollectibleForSale
 
     /**
      * Withdraw from sale

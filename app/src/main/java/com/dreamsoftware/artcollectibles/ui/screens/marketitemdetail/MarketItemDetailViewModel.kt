@@ -19,7 +19,8 @@ class MarketItemDetailViewModel @Inject constructor(
     private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
     private val getSimilarMarketItemsUseCase: GetSimilarMarketItemsUseCase,
     private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
-    private val getSimilarAuthorMarketItemsUseCase: GetSimilarAuthorMarketItemsUseCase
+    private val getSimilarAuthorMarketItemsUseCase: GetSimilarAuthorMarketItemsUseCase,
+    private val fetchMarketHistoryItemUseCase: FetchMarketHistoryItemUseCase
 ) : SupportViewModel<MarketUiState>() {
 
     companion object {
@@ -28,9 +29,18 @@ class MarketItemDetailViewModel @Inject constructor(
 
     override fun onGetDefaultState(): MarketUiState = MarketUiState()
 
-    fun loadDetail(tokenId: BigInteger) {
-        onLoading()
-        loadAllDataForToken(tokenId)
+    fun loadMarketHistoryItemDetail(marketItemDetail: BigInteger) {
+        loadDetail(
+            id = marketItemDetail,
+            isMarketHistoryItem = true
+        )
+    }
+
+    fun loadForSaleMarketItemDetail(tokenId: BigInteger) {
+        loadDetail(
+            id = tokenId,
+            isMarketHistoryItem = false
+        )
     }
 
     fun buyItem(tokenId: BigInteger) {
@@ -72,24 +82,34 @@ class MarketItemDetailViewModel @Inject constructor(
     /**
      * Private Methods
      */
-    private fun loadAllDataForToken(tokenId: BigInteger) {
+    private fun loadDetail(id: BigInteger, isMarketHistoryItem: Boolean) {
+        onLoading()
         viewModelScope.launch {
             runCatching {
-                val fetchItemForSaleDeferred = async { fetchItemForSale(tokenId) }
+                val fetchMarketItemDeferred = async {
+                    if(isMarketHistoryItem) {
+                        fetchMarketHistoryItem(id)
+                    } else {
+                        fetchItemForSale(id)
+                    }
+                }
                 val loadAuthUserDetailDeferred = async { loadAuthUserDetail() }
-                val marketItem = fetchItemForSaleDeferred.await()
+                val marketItem = fetchMarketItemDeferred.await()
                 val authUser = loadAuthUserDetailDeferred.await()
                 updateState {
                     it.copy(
                         isLoading = false,
+                        isMarketHistoryItem = isMarketHistoryItem,
                         artCollectibleForSale = marketItem,
                         isTokenSeller = marketItem.seller.uid == authUser.uid,
                         isTokenAuthor = marketItem.token.author.uid == authUser.uid
                     )
                 }
-                fetchCurrentBalance()
-                fetchSimilarMarketItemsUseCase(tokenId)
-                fetchSimilarAuthorMarketItemsUseCase(tokenId)
+                if(!isMarketHistoryItem) {
+                    fetchCurrentBalance()
+                }
+                fetchSimilarMarketItemsUseCase(marketItem.token.id)
+                fetchSimilarAuthorMarketItemsUseCase(marketItem.token.id)
             }.onFailure(::onErrorOccurred)
         }
     }
@@ -175,6 +195,11 @@ class MarketItemDetailViewModel @Inject constructor(
         params = FetchItemForSaleUseCase.Params(tokenId)
     )
 
+    private suspend fun fetchMarketHistoryItem(marketItemId: BigInteger) = fetchMarketHistoryItemUseCase.invoke(
+        scope = viewModelScope,
+        params = FetchMarketHistoryItemUseCase.Params(marketItemId)
+    )
+
     private suspend fun loadAuthUserDetail() = getAuthUserProfileUseCase.invoke(
         scope = viewModelScope
     )
@@ -200,6 +225,7 @@ data class MarketUiState(
     val isLoading: Boolean = false,
     val isTokenSeller: Boolean = false,
     val itemBought: Boolean = false,
+    val isMarketHistoryItem: Boolean = false,
     val itemWithdrawnFromSale: Boolean = false,
     val isConfirmBuyItemDialogVisible: Boolean = false,
     val isTokenAuthor: Boolean = false,

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -242,6 +243,9 @@ class TokenDetailViewModel @Inject constructor(
                 tokenPriceInEth = null
             )
         }
+        uiState.value.artCollectible?.id?.let {
+            fetchTokenCurrentPrice(it)
+        }
     }
 
     private fun onTokenWithdrawnFromSale() {
@@ -315,11 +319,14 @@ class TokenDetailViewModel @Inject constructor(
                 limit = HISTORY_BY_TOKEN_LIMIT
             ),
             onSuccess = { lastMarketHistory ->
+                Log.d("ART_COLL", "lastMarketHistory -> ${Iterables.size(lastMarketHistory)}")
                 updateState {
                     it.copy(lastMarketHistory = lastMarketHistory)
                 }
             },
             onError = {
+                Log.d("ART_COLL", "onError -> ${it.message}")
+                it.printStackTrace()
                 // ignore error
             }
         )

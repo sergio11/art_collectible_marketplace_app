@@ -4,22 +4,24 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -72,6 +74,41 @@ fun MarketHistoryMiniCard(
                     overflow = TextOverflow.Ellipsis,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Left
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    text = if (sold) {
+                        stringResource(
+                            id = R.string.token_detail_last_transactions_sold_text,
+                            owner?.name.orEmpty(),
+                            seller.name
+                        )
+                    } else if (canceled) {
+                        stringResource(
+                            id = R.string.token_detail_last_transactions_cancelled_text,
+                            seller.name
+                        )
+                    } else {
+                        stringResource(
+                            id = R.string.token_detail_last_transactions_put_for_sale_text,
+                            seller.name
+                        )
+                    },
+                    fontFamily = montserratFontFamily,
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Left
+                )
+                ArtCollectiblePrice(
+                    modifier = Modifier,
+                    textColor = Color.Black,
+                    iconSize = 20.dp,
+                    textSize = 14.sp,
+                    priceData = price
                 )
             }
         }

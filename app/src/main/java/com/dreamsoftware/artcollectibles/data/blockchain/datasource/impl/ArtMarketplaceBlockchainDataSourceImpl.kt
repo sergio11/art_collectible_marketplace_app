@@ -37,53 +37,26 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     private enum class MarketItemType { AVAILABLE, SELLING, OWNED, HISTORY }
 
-    override suspend fun fetchAvailableMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
+    override suspend fun fetchAvailableMarketItems(credentials: Credentials, limit: Int?): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.AVAILABLE, credentials = credentials)
+            fetchMarketItemsBy(type = MarketItemType.AVAILABLE, credentials = credentials, limit = limit)
         }
 
-    override suspend fun fetchAvailableMarketItems(
-        limit: Long,
-        credentials: Credentials
-    ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
-        fetchMarketItemsBy(type = MarketItemType.AVAILABLE, credentials = credentials, limit = limit)
-    }
-
-    override suspend fun fetchSellingMarketItems(
-        limit: Long,
-        credentials: Credentials
-    ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
-        fetchMarketItemsBy(type = MarketItemType.SELLING, credentials = credentials, limit = limit)
-    }
-
-    override suspend fun fetchSellingMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
+    override suspend fun fetchSellingMarketItems(credentials: Credentials, limit: Int?): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.SELLING, credentials = credentials)
+            fetchMarketItemsBy(type = MarketItemType.SELLING, credentials = credentials, limit = limit)
         }
 
-    override suspend fun fetchOwnedMarketItems(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
+    override suspend fun fetchOwnedMarketItems(credentials: Credentials, limit: Int?): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.OWNED, credentials = credentials)
+            fetchMarketItemsBy(type = MarketItemType.OWNED, credentials = credentials, limit = limit)
         }
 
-    override suspend fun fetchOwnedMarketItems(
-        limit: Long,
-        credentials: Credentials
-    ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
-        fetchMarketItemsBy(type = MarketItemType.OWNED, credentials = credentials)
-    }
 
-    override suspend fun fetchMarketHistory(credentials: Credentials): Iterable<ArtCollectibleForSaleDTO> =
+    override suspend fun fetchMarketHistory(credentials: Credentials, limit: Int?): Iterable<ArtCollectibleForSaleDTO> =
         withContext(Dispatchers.IO) {
-            fetchMarketItemsBy(type = MarketItemType.HISTORY, credentials = credentials)
+            fetchMarketItemsBy(type = MarketItemType.HISTORY, credentials = credentials, limit = limit)
         }
-
-    override suspend fun fetchMarketHistory(
-        limit: Long,
-        credentials: Credentials
-    ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
-        fetchMarketItemsBy(type = MarketItemType.HISTORY, credentials = credentials)
-    }
 
     override suspend fun putItemForSale(
         tokenId: BigInteger,
@@ -180,23 +153,18 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     override suspend fun fetchTokenMarketHistory(
         tokenId: BigInteger,
-        credentials: Credentials
+        credentials: Credentials,
+        limit: Int?
     ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
-        val marketItems = loadContract(credentials).fetchTokenMarketHistory(tokenId)
-            .send()
-            .filterIsInstance<ArtCollectibleForSale>()
-        artMarketplaceMapper.mapInListToOutList(marketItems)
-    }
-
-    override suspend fun fetchTokenMarketHistory(
-        tokenId: BigInteger,
-        limit: Long,
-        credentials: Credentials
-    ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
-        val marketItems = loadContract(credentials).fetchPaginatedTokenMarketHistory(tokenId, BigInteger.valueOf(limit))
-            .send()
-            .filterIsInstance<ArtCollectibleForSale>()
-        artMarketplaceMapper.mapInListToOutList(marketItems)
+        with(loadContract(credentials)) {
+            val contractCall = limit?.let {
+                fetchPaginatedTokenMarketHistory(tokenId, BigInteger.valueOf(it.toLong()))
+            } ?: fetchTokenMarketHistory(tokenId)
+            val marketItems = contractCall
+                .send()
+                .filterIsInstance<ArtCollectibleForSale>()
+            artMarketplaceMapper.mapInListToOutList(marketItems)
+        }
     }
 
     override suspend fun fetchCurrentItemPrice(tokenId: BigInteger, credentials: Credentials): ArtCollectibleForSalePricesDTO = withContext(Dispatchers.IO) {
@@ -207,14 +175,14 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         )
     }
 
-    private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials, limit: Long? = null) =
+    private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials, limit: Int? = null) =
         with(loadContract(credentials)) {
             val marketItems = when (type) {
                 MarketItemType.AVAILABLE -> fetchAvailableMarketItems()
-                MarketItemType.SELLING -> limit?.let {
+                MarketItemType.SELLING -> limit?.toLong()?.let {
                     fetchPaginatedSellingMarketItems(BigInteger.valueOf(it))
                 } ?: fetchSellingMarketItems()
-                MarketItemType.OWNED -> limit?.let {
+                MarketItemType.OWNED -> limit?.toLong()?.let {
                     fetchPaginatedOwnedMarketItems(BigInteger.valueOf(it))
                 } ?:  fetchOwnedMarketItems()
                 MarketItemType.HISTORY -> fetchMarketHistory()

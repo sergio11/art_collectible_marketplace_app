@@ -39,6 +39,7 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel(),
     onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
@@ -65,6 +66,7 @@ fun HomeScreen(
             context = context,
             uiState = uiState,
             onGoToMarketItemDetail = onGoToMarketItemDetail,
+            onGoToMarketHistoryItemDetail = onGoToMarketHistoryItemDetail,
             onGoToCategoryDetail = onGoToCategoryDetail,
             onGoToUserDetail = onGoToUserDetail,
             onGoToTokenDetail = onGoToTokenDetail
@@ -79,6 +81,7 @@ private fun HomeComponent(
     context: Context,
     uiState: HomeUiState,
     onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
@@ -154,7 +157,7 @@ private fun HomeComponent(
                     context = context,
                     titleRes = R.string.home_last_market_history_title,
                     items = marketHistory,
-                    onMarketItemSelected = onGoToMarketItemDetail
+                    onMarketItemSelected = onGoToMarketHistoryItemDetail
                 )
             }
         }

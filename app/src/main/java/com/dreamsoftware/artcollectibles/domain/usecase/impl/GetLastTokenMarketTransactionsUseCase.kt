@@ -15,6 +15,6 @@ class GetLastTokenMarketTransactionsUseCase(
 
     data class Params(
         val tokenId: BigInteger,
-        val limit: Long
+        val limit: Int? = null
     )
 }

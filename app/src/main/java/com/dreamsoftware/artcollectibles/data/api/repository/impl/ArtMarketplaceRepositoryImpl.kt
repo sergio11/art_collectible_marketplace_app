@@ -97,7 +97,7 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
     @Throws(FetchSellingMarketItemsException::class)
-    override suspend fun fetchSellingMarketItems(): Iterable<ArtCollectibleForSale> =
+    override suspend fun fetchSellingMarketItems(limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
@@ -114,7 +114,7 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
     @Throws(FetchOwnedMarketItemsException::class)
-    override suspend fun fetchOwnedMarketItems(): Iterable<ArtCollectibleForSale> =
+    override suspend fun fetchOwnedMarketItems(limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
@@ -146,13 +146,14 @@ internal class ArtMarketplaceRepositoryImpl(
         }
 
     @Throws(FetchMarketHistoryException::class)
-    override suspend fun fetchTokenMarketHistory(tokenId: BigInteger): Iterable<ArtCollectibleForSale> =
+    override suspend fun fetchTokenMarketHistory(tokenId: BigInteger, limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
                 val credentials = walletRepository.loadCredentials()
                 mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(
                     tokenId,
-                    userCredentialsMapper.mapOutToIn(credentials)
+                    userCredentialsMapper.mapOutToIn(credentials),
+                    limit
                 ))
             } catch (ex: Exception) {
                 throw FetchMarketHistoryException(
@@ -161,26 +162,6 @@ internal class ArtMarketplaceRepositoryImpl(
                 )
             }
         }
-
-    @Throws(FetchMarketHistoryException::class)
-    override suspend fun fetchTokenMarketHistory(
-        tokenId: BigInteger,
-        limit: Long
-    ): Iterable<ArtCollectibleForSale> = withContext(Dispatchers.IO) {
-        try {
-            val credentials = walletRepository.loadCredentials()
-            mapToArtCollectibleForSaleList(artMarketplaceBlockchainDataSource.fetchTokenMarketHistory(
-                tokenId,
-                limit,
-                userCredentialsMapper.mapOutToIn(credentials)
-            ))
-        } catch (ex: Exception) {
-            throw FetchMarketHistoryException(
-                "An error occurred when fetching the token market history",
-                ex
-            )
-        }
-    }
 
     @Throws(FetchTokenCurrentPriceException::class)
     override suspend fun fetchTokenCurrentPrice(tokenId: BigInteger): ArtCollectiblePrices = withContext(Dispatchers.IO) {
@@ -221,18 +202,17 @@ internal class ArtMarketplaceRepositoryImpl(
                 val credentials = walletRepository.loadCredentials()
                 with(artMarketItemMemoryCacheDataSource) {
                     try {
-                        findByKey(tokenId)
+                        findByKey("token_id_$tokenId")
                     } catch (ex: CacheException) {
                         val artCollectible = artMarketplaceBlockchainDataSource.fetchItemForSale(
                             tokenId,
                             userCredentialsMapper.mapOutToIn(credentials)
                         )
                         mapToArtCollectibleForSale(artCollectible, true).also {
-                            save(it.token.id, it)
+                            save("token_id_${it.token.id}", it)
                         }
                     }
                 }
-
             } catch (ex: Exception) {
                 throw FetchItemForSaleException(
                     "An error occurred when trying to fetch item for sale",
@@ -240,6 +220,31 @@ internal class ArtMarketplaceRepositoryImpl(
                 )
             }
         }
+
+    @Throws(FetchMarketHistoryItemException::class)
+    override suspend fun fetchMarketHistoryItem(marketItemId: BigInteger): ArtCollectibleForSale = withContext(Dispatchers.IO) {
+        try {
+            val credentials = walletRepository.loadCredentials()
+            with(artMarketItemMemoryCacheDataSource) {
+                try {
+                    findByKey(marketItemId)
+                } catch (ex: CacheException) {
+                    val artCollectible = artMarketplaceBlockchainDataSource.fetchMarketHistoryItem(
+                        marketItemId,
+                        userCredentialsMapper.mapOutToIn(credentials)
+                    )
+                    mapToArtCollectibleForSale(artCollectible, true).also {
+                        save(marketItemId, it)
+                    }
+                }
+            }
+        } catch (ex: Exception) {
+            throw FetchMarketHistoryItemException(
+                "An error occurred when trying to fetch market history item",
+                ex
+            )
+        }
+    }
 
     @Throws(WithdrawFromSaleException::class)
     override suspend fun withdrawFromSale(tokenId: BigInteger) = withContext(Dispatchers.IO) {
@@ -249,7 +254,7 @@ internal class ArtMarketplaceRepositoryImpl(
                 tokenId,
                 userCredentialsMapper.mapOutToIn(credentials)
             ).also {
-                artMarketItemMemoryCacheDataSource.delete(tokenId)
+                artMarketItemMemoryCacheDataSource.delete("token_id_$tokenId")
             }
         } catch (ex: Exception) {
             throw WithdrawFromSaleException(
@@ -303,7 +308,7 @@ internal class ArtMarketplaceRepositoryImpl(
                     tokenId,
                     userCredentialsMapper.mapOutToIn(credentials)
                 ).also {
-                    artMarketItemMemoryCacheDataSource.delete(tokenId)
+                    artMarketItemMemoryCacheDataSource.delete("token_id_$tokenId")
                 }
             } catch (ex: Exception) {
                 ex.printStackTrace()

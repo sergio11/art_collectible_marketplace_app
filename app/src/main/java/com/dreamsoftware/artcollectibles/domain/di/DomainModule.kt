@@ -600,4 +600,13 @@ class DomainModule {
     @ViewModelScoped
     fun provideFetchTokenCurrentPriceUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
         FetchTokenCurrentPriceUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide fetch market history item use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchMarketHistoryItemUseCase(artMarketplaceRepository: IArtMarketplaceRepository) =
+        FetchMarketHistoryItemUseCase(artMarketplaceRepository)
 }

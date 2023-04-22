@@ -65,13 +65,15 @@ fun RootScreen(
         composable(DestinationItem.Home.route) {
             with(navigationController) {
                 HomeScreen(this, onGoToMarketItemDetail = {
-                    navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                    navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                 }, onGoToCategoryDetail = {
                     navigate(DestinationItem.CategoryDetail.buildRoute(it))
                 }, onGoToUserDetail = {
                     navigate(DestinationItem.ArtistDetail.buildRoute(it))
                 }, onGoToTokenDetail = {
                     navigate(DestinationItem.TokenDetail.buildRoute(it))
+                }, onGoToMarketHistoryItemDetail = {
+                    navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
                 })
             }
         }
@@ -138,7 +140,7 @@ fun RootScreen(
                         }, onSeeTokenHistory = {
                             navigate(DestinationItem.TokenHistoryList.buildRoute(it))
                         }, onSeeMarketItemDetail = {
-                            navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                            navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                         }, onSeeTokenDetail = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
                         })
@@ -201,7 +203,7 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.CategoryDetail.parseArgs(args)?.let { screenArgs ->
                     CategoryDetailScreen(screenArgs) {
-                        navigationController.navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                        navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                     }
                 }
             }
@@ -236,7 +238,7 @@ fun RootScreen(
                         }, onExitCalled = {
                             popBackStack()
                         }, onOpenMarketItemDetail = {
-                            navigate(DestinationItem.MarketItemDetail.buildRoute(it))
+                            navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                         })
                     }
                 }

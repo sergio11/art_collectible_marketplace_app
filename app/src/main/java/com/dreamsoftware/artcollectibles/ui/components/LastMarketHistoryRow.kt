@@ -2,9 +2,7 @@ package com.dreamsoftware.artcollectibles.ui.components
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,7 +32,7 @@ fun LastMarketHistoryRow(
             )
         },
         onItemSelected = {
-            onMarketItemSelected(it.token.id)
+            onMarketItemSelected(it.marketItemId)
         }
     )
 }
