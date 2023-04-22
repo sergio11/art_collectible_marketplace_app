@@ -32,6 +32,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.data.api.exception.FetchItemForSaleException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import java.math.BigInteger
@@ -52,7 +53,7 @@ fun MarketItemDetailScreen(
     onOpenArtistDetailCalled: (userUid: String) -> Unit,
     onOpenTokenDetailCalled: (tokenId: BigInteger) -> Unit,
     onOpenMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onExitCalled: () -> Unit
+    onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -89,7 +90,7 @@ fun MarketItemDetailScreen(
             onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
             onWithdrawFromSaleCalled = ::withDrawFromSale,
             onOpenArtistDetailCalled = onOpenArtistDetailCalled,
-            onExitCalled = onExitCalled,
+            onBackClicked = onBackClicked,
             onOpenTokenDetailCalled = onOpenTokenDetailCalled,
             onOpenMarketItemDetail = onOpenMarketItemDetail
         )
@@ -109,14 +110,14 @@ fun MarketItemDetailComponent(
     onWithdrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onOpenArtistDetailCalled: (userUid: String) -> Unit,
     onOpenMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onExitCalled: () -> Unit
+    onBackClicked: () -> Unit
 ) {
     with(uiState) {
         // =======================
-        TokenWithdrawnFromSaleDialog(uiState, onExitCalled)
-        TokenBoughtDialog(uiState, onExitCalled)
-        ConfirmBuyItemDialog(uiState, onBuyItemCalled, onExitCalled)
-        TokenNotAvailableForSaleDialog(uiState, onExitCalled)
+        TokenWithdrawnFromSaleDialog(uiState, onBackClicked)
+        TokenBoughtDialog(uiState, onBackClicked)
+        ConfirmBuyItemDialog(uiState, onBuyItemCalled, onBackClicked)
+        TokenNotAvailableForSaleDialog(uiState, onBackClicked)
         ConfirmWithdrawFromSaleDialog(uiState, onWithdrawFromSaleCalled) {
             onConfirmWithDrawFromSaleDialogVisibilityChanged(false)
         }
@@ -126,6 +127,7 @@ fun MarketItemDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
+            onBackClicked = onBackClicked,
             imageUrl = artCollectibleForSale?.token?.metadata?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
         ) {

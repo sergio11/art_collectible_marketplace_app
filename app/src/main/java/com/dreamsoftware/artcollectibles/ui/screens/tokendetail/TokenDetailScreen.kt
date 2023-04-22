@@ -33,6 +33,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -56,7 +57,8 @@ fun TokenDetailScreen(
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
     onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onSeeTokenDetail: (tokenId: BigInteger) -> Unit
+    onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -87,6 +89,7 @@ fun TokenDetailScreen(
             scrollState = scrollState,
             density = density,
             onSeeArtistDetail = onSeeArtistDetail,
+            onBackClicked = onBackClicked,
             onBurnTokenCalled = ::burnToken,
             onPutItemForSaleCalled = ::putItemForSale,
             onWithDrawFromSaleCalled = ::withDrawFromSale,
@@ -114,6 +117,7 @@ fun TokenDetailComponent(
     uiState: TokenDetailUiState,
     scrollState: ScrollState,
     density: Density,
+    onBackClicked: () -> Unit,
     onSeeArtistDetail: (userUid: String) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -139,6 +143,7 @@ fun TokenDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
+            onBackClicked = onBackClicked,
             imageUrl = artCollectible?.metadata?.imageUrl,
             title = artCollectible?.displayName
         ) {

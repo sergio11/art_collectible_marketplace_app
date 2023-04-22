@@ -1,15 +1,13 @@
-package com.dreamsoftware.artcollectibles.ui.components
+package com.dreamsoftware.artcollectibles.ui.components.core
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,12 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.*
 import com.dreamsoftware.artcollectibles.ui.theme.*
 
@@ -42,6 +44,7 @@ fun CommonDetailScreen(
     isLoading: Boolean = false,
     imageUrl: String? = null,
     title: String? = null,
+    onBackClicked: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     LoadingDialog(isShowingDialog = isLoading)
@@ -71,7 +74,9 @@ fun CommonDetailScreen(
             scrollState = scrollState,
             headerHeightPx = headerHeightPx,
             toolbarHeightPx = toolbarHeightPx,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            isLoading = isLoading,
+            onBackClicked = onBackClicked
         )
         //....................
         CommonDetailTitle(
@@ -120,12 +125,14 @@ private fun CommonDetailHeader(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CommonDetailToolbar(
+private fun BoxScope.CommonDetailToolbar(
     context: Context,
     scrollState: ScrollState,
     headerHeightPx: Float,
     imageUrl: String?,
-    toolbarHeightPx: Float
+    toolbarHeightPx: Float,
+    isLoading: Boolean,
+    onBackClicked: (() -> Unit)? = null
 ) {
     val toolbarBottom = headerHeightPx - toolbarHeightPx
     val showToolbar by remember {
@@ -159,6 +166,18 @@ private fun CommonDetailToolbar(
                 containerColor = Color.Transparent
             )
         )
+    }
+
+    onBackClicked?.let {
+        if(!isLoading && !showToolbar) {
+            Image(
+                modifier = Modifier.padding(15.dp).size(35.dp).align(Alignment.TopStart).clickable { it() },
+                painter = painterResource(R.drawable.back_icon),
+                contentDescription = "Back Icon",
+                contentScale = ContentScale.Crop,
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+        }
     }
 }
 

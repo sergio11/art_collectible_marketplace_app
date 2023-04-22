@@ -31,6 +31,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -49,6 +50,7 @@ fun ArtistDetailScreen(
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowTokensOwnedBy: (userUid: String) -> Unit,
     onShowTokensCreatedBy: (userUid: String) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -74,6 +76,7 @@ fun ArtistDetailScreen(
             uiState = uiState,
             scrollState = scrollState,
             density = density,
+            onBackClicked = onBackClicked,
             onFollowUser = ::followUser,
             onUnfollowUser = ::unfollowUser,
             onShowFollowers = onShowFollowers,
@@ -91,6 +94,7 @@ fun ArtistDetailComponent(
     uiState: ArtistDetailUiState,
     scrollState: ScrollState,
     density: Density,
+    onBackClicked: () -> Unit,
     onFollowUser: (userUid: String) -> Unit,
     onUnfollowUser: (userUid: String) -> Unit,
     onShowFollowers: (userUid: String) -> Unit,
@@ -106,6 +110,7 @@ fun ArtistDetailComponent(
             density = density,
             isLoading = isLoading,
             imageUrl = userInfo?.photoUrl,
+            onBackClicked = onBackClicked,
             title = userInfo?.name?.ifBlank {
                 stringResource(id = R.string.search_user_info_name_empty)
             } ?: stringResource(id = R.string.search_user_info_name_empty)

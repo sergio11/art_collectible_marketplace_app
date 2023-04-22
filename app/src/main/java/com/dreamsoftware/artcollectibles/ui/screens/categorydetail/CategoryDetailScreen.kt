@@ -26,7 +26,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
-import com.dreamsoftware.artcollectibles.ui.components.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -42,7 +42,8 @@ data class CategoryDetailScreenArgs(
 fun CategoryDetailScreen(
     args: CategoryDetailScreenArgs,
     viewModel: CategoryDetailViewModel = hiltViewModel(),
-    onShowTokenForSaleDetail: (tokenId: BigInteger) -> Unit
+    onShowTokenForSaleDetail: (tokenId: BigInteger) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -68,7 +69,8 @@ fun CategoryDetailScreen(
             uiState = uiState,
             scrollState = scrollState,
             density = density,
-            onTokenForSaleClicked = onShowTokenForSaleDetail
+            onTokenForSaleClicked = onShowTokenForSaleDetail,
+            onBackClicked = onBackClicked
         )
     }
 }
@@ -79,7 +81,8 @@ fun CategoryDetailComponent(
     uiState: CategoryDetailUiState,
     scrollState: ScrollState,
     density: Density,
-    onTokenForSaleClicked: (tokenId: BigInteger) -> Unit
+    onTokenForSaleClicked: (tokenId: BigInteger) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -87,6 +90,7 @@ fun CategoryDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
+            onBackClicked = onBackClicked,
             imageUrl = uiState.category?.imageUrl,
             title = uiState.category?.name?.ifBlank {
                 stringResource(id = R.string.no_text_value)

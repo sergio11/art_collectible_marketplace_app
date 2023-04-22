@@ -25,6 +25,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -42,7 +43,8 @@ fun CommentDetailScreen(
     onCommentDeleted: () -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowTokensCreatedBy: (userUid: String) -> Unit,
-    onOpenArtistDetailCalled: (userUid: String) -> Unit
+    onOpenArtistDetailCalled: (userUid: String) -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -73,6 +75,7 @@ fun CommentDetailScreen(
             scrollState = scrollState,
             density = density,
             onDeleteComment = ::deleteComment,
+            onBackClicked = onBackClicked,
             onGoToTokenDetail = onGoToTokenDetail,
             onShowTokensCreatedBy = onShowTokensCreatedBy,
             onOpenArtistDetailCalled = onOpenArtistDetailCalled,
@@ -87,6 +90,7 @@ fun CommentDetailComponent(
     uiState: CommentDetailUiState,
     scrollState: ScrollState,
     density: Density,
+    onBackClicked: () -> Unit,
     onOpenArtistDetailCalled: (userUid: String) -> Unit,
     onDeleteComment: (comment: Comment) -> Unit,
     onShowTokensCreatedBy: (userUid: String) -> Unit,
@@ -99,6 +103,7 @@ fun CommentDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
+            onBackClicked = onBackClicked,
             imageUrl = comment?.user?.photoUrl,
             title = comment?.user?.name?.ifBlank {
                 stringResource(id = R.string.search_user_info_name_empty)

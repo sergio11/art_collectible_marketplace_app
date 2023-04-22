@@ -127,7 +127,7 @@ fun RootScreen(
                     with(navigationController) {
                         TokenDetailScreen(screenArgs, onSeeArtistDetail = {
                             navigate(DestinationItem.ArtistDetail.buildRoute(it))
-                        }, onTokenBurned =  {
+                        }, onTokenBurned = {
                             popBackStack()
                         }, onSeeCommentsByToken = {
                             navigate(DestinationItem.CommentsList.buildRoute(it))
@@ -143,6 +143,8 @@ fun RootScreen(
                             navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                         }, onSeeTokenDetail = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
+                        }, onBackClicked = {
+                            popBackStack()
                         })
                     }
                 }
@@ -169,6 +171,8 @@ fun RootScreen(
                             navigate(DestinationItem.UserTokens.buildShowTokensCreatedRoute(it))
                         }, onGoToTokenDetail = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
+                        }, onBackClicked = {
+                            popBackStack()
                         })
                     }
                 }
@@ -202,8 +206,15 @@ fun RootScreen(
         composable(DestinationItem.CategoryDetail.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.CategoryDetail.parseArgs(args)?.let { screenArgs ->
-                    CategoryDetailScreen(screenArgs) {
-                        navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+                    with(navigationController) {
+                        CategoryDetailScreen(
+                            args = screenArgs,
+                            onShowTokenForSaleDetail = {
+                                navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+                            }, onBackClicked = {
+                                popBackStack()
+                            }
+                        )
                     }
                 }
             }
@@ -222,6 +233,8 @@ fun RootScreen(
                             navigate(DestinationItem.UserTokens.buildShowTokensOwnedRoute(it))
                         }, onShowTokensCreatedBy = {
                             navigate(DestinationItem.UserTokens.buildShowTokensCreatedRoute(it))
+                        }, onBackClicked = {
+                            popBackStack()
                         })
                     }
                 }
@@ -235,7 +248,7 @@ fun RootScreen(
                             navigate(DestinationItem.ArtistDetail.buildRoute(it))
                         }, onOpenTokenDetailCalled = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
-                        }, onExitCalled = {
+                        }, onBackClicked = {
                             popBackStack()
                         }, onOpenMarketItemDetail = {
                             navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
