@@ -76,6 +76,7 @@
     <string name="profile_input_contact_placeholder">Your contact info</string>
     <string name="profile_current_matic">%.3f MATIC</string>
     <string name="profile_get_more_matic">Get more</string>
+    <string name="profile_open_instagram_profile">Open instagram profile</string>
     <string name="profile_picture_picker_title">Pick image from gallery or camera</string>
     <string name="profile_pick_image_from_gallery">Pick Image From Gallery</string>
     <string name="profile_pick_from_camera">Pick From Camera</string>

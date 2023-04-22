@@ -28,14 +28,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.*
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
 import java.math.BigInteger
 
 data class ArtistDetailScreenArgs(
@@ -44,7 +42,6 @@ data class ArtistDetailScreenArgs(
 
 @Composable
 fun ArtistDetailScreen(
-    navController: NavController,
     args: ArtistDetailScreenArgs,
     viewModel: ArtistDetailViewModel = hiltViewModel(),
     onShowFollowers: (userUid: String) -> Unit,
@@ -115,9 +112,8 @@ fun ArtistDetailComponent(
         ) {
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
-                .fillMaxWidth()
             Box(
-                modifier = defaultModifier
+                modifier = defaultModifier.fillMaxWidth()
             ) {
                 userInfo?.professionalTitle?.let {
                     Text(
@@ -157,7 +153,7 @@ fun ArtistDetailComponent(
                 }
             }
             UserFollowersInfoComponent(
-                modifier = defaultModifier,
+                modifier = defaultModifier.fillMaxWidth(),
                 followersCount = followersCount,
                 followingCount = followingCount,
                 onShowFollowers = {
@@ -168,41 +164,44 @@ fun ArtistDetailComponent(
                 }
             )
             UserStatisticsComponent(
-                modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
+                modifier = defaultModifier,
                 itemSize = 30.dp,
                 userInfo = userInfo
             )
-            Row(
+            FlowRow(
                 modifier = defaultModifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                crossAxisAlignment = FlowCrossAxisAlignment.Center
             ) {
                 userInfo?.location?.let {
                     TextWithImage(
+                        modifier = Modifier.padding(8.dp),
                         imageRes = R.drawable.user_location_icon,
                         text = it
                     )
                 }
                 userInfo?.country?.let {
                     TextWithImage(
+                        modifier = Modifier.padding(8.dp),
                         imageRes = R.drawable.country_icon,
                         text = it
                     )
                 }
-            }
-            Row(
-                modifier = defaultModifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
                 TextWithImage(
+                    modifier = Modifier.padding(8.dp),
                     imageRes = R.drawable.user_mail_icon,
                     text = userInfo?.contact ?: stringResource(id = R.string.no_text_value)
                 )
                 userInfo?.birthdate?.let {
                     TextWithImage(
+                        modifier = Modifier.padding(8.dp),
                         imageRes = R.drawable.user_birthdate_icon,
+                        text = it
+                    )
+                }
+                userInfo?.instagramNick?.let {
+                    TextWithImage(
+                        modifier = Modifier.padding(8.dp),
+                        imageRes = R.drawable.instagram_icon,
                         text = it
                     )
                 }
@@ -281,6 +280,27 @@ fun ArtistDetailComponent(
                 }
             )
             Spacer(modifier = Modifier.height(50.dp))
+            userInfo?.instagramNick?.let { nick ->
+                CommonButton(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 8.dp)
+                        .fillMaxWidth(),
+                    text = R.string.profile_open_instagram_profile,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = instagramPurpleRed,
+                        contentColor = Color.White
+                    ),
+                    buttonShape = ButtonDefaults.elevatedShape,
+                    onClick = {
+                        context.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(BuildConfig.INSTAGRAM_URL + nick)
+                            )
+                        )
+                    }
+                )
+            }
             if(isAuthUser) {
                 CommonButton(
                     modifier = Modifier
@@ -301,9 +321,8 @@ fun ArtistDetailComponent(
                         )
                     }
                 )
-                Spacer(modifier = Modifier.height(30.dp))
             }
-
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

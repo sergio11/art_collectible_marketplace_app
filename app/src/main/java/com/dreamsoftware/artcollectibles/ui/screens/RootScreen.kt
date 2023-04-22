@@ -212,7 +212,7 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.ArtistDetail.parseArgs(args)?.let { screenArgs ->
                     with(navigationController) {
-                        ArtistDetailScreen(this, screenArgs, onShowFollowers = {
+                        ArtistDetailScreen(screenArgs, onShowFollowers = {
                             navigate(DestinationItem.UserFollowers.buildFollowersRoute(it))
                         }, onShowFollowing = {
                             navigate(DestinationItem.UserFollowers.buildFollowingRoute(it))

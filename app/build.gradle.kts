@@ -64,6 +64,7 @@ android {
             buildConfigField(type = "Long", name = "GAS_PRICE", value = "50000000000L")
             buildConfigField(type = "Long", name = "GAS_LIMIT", value = "5000000L")
             buildConfigField(type = "String", name = "MUMBAI_FAUCET_URL", value = "\"https://mumbaifaucet.com/\"")
+            buildConfigField(type = "String", name = "INSTAGRAM_URL", value = "\"https://www.instagram.com/\"")
             // ArtCollectible contract deployed to 0x2a230316fe8C5411f70Fe83BC6A3FEb30D68389A
             buildConfigField(type = "String", name = "ART_COLLECTIBLE_CONTRACT_ADDRESS", value = "\"0x2a230316fe8C5411f70Fe83BC6A3FEb30D68389A\"")
             // ArtMarketplace contract deployed to 0x8390A55EeEC02E04013835aA4b182d37C27331AB
