@@ -3,14 +3,12 @@ package com.dreamsoftware.artcollectibles.ui.components.core
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
@@ -29,13 +27,13 @@ fun CommonAsyncImage(
 ) {
     imageUrl?.let {
         SubcomposeAsyncImage(
-            modifier = Modifier.then(modifier),
+            modifier = modifier,
             model = ImageRequest.Builder(context)
                 .data(it)
                 .crossfade(true)
                 .build(),
-            contentDescription = stringResource(R.string.image_content_description),
             contentScale = ContentScale.FillBounds,
+            contentDescription = stringResource(R.string.image_content_description),
             colorFilter = colorFilter
         ) {
             val state = painter.state
@@ -58,16 +56,16 @@ private fun DefaultImagePlaceholder(
     Image(
         painter = painterResource(R.drawable.default_image_placeholder),
         colorFilter = ColorFilter.tint(if(reverseStyle) {
-            Purple40
-        } else {
             BackgroundWhite
+        } else {
+            Purple40
         }),
         contentDescription = stringResource(R.string.image_content_description),
-        contentScale = ContentScale.FillBounds,
-        modifier = Modifier.background(if(reverseStyle) {
-            BackgroundWhite
-        } else {
+        contentScale = ContentScale.Fit,
+        modifier = modifier.background(if(reverseStyle) {
             Purple40
-        }).then(modifier)
+        } else {
+            BackgroundWhite
+        })
     )
 }

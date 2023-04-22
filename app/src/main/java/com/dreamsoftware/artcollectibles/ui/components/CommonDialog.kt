@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,6 +22,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.Purple80
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
@@ -76,13 +79,13 @@ internal fun CommonDialogUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.app_icon),
+                painter = painterResource(id = R.drawable.default_image_placeholder),
                 contentDescription = null, // decorative
-                contentScale = ContentScale.Inside,
+                colorFilter = ColorFilter.tint(BackgroundWhite),
                 modifier = Modifier
                     .padding(top = 35.dp)
                     .size(70.dp)
-                    .clip(CircleShape),
+                    .background(Purple40)
                 )
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(

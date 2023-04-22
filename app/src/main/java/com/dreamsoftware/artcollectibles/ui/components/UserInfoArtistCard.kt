@@ -67,7 +67,6 @@ fun UserInfoArtistCard(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(27.dp)
                     )
-                    .fillMaxSize()
                     .clip(RoundedCornerShape(27.dp)),
                 context = context,
                 user = user

@@ -19,14 +19,13 @@ private const val EXTERNAL_ACCOUNT_PERCENTAGE_SIZE = 0.26f
 @Composable
 fun UserAccountProfilePicture(size: Dp, userInfo: UserInfo? = null, onPictureClicked: () -> Unit = {}) {
     Box {
-        val profilePictureModifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .clickable {
-                onPictureClicked()
-            }
         CommonAsyncImage(
-            modifier = profilePictureModifier,
+            modifier =  Modifier
+                .size(size)
+                .clip(CircleShape)
+                .clickable {
+                    onPictureClicked()
+                },
             context = LocalContext.current,
             imageUrl = userInfo?.photoUrl
         )

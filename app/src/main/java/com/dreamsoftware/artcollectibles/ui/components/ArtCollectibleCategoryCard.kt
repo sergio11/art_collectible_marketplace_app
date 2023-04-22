@@ -26,7 +26,7 @@ fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, 
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(27.dp))
-            .height(186.dp)
+            .height(200.dp)
             .width(280.dp)
             .then(modifier)
     ) {
