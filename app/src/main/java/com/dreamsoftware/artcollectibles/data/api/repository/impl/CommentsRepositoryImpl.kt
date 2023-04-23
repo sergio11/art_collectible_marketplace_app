@@ -78,7 +78,7 @@ internal class CommentsRepositoryImpl(
         try {
             commentsDataSource.count(tokenId)
         } catch (ex: Exception) {
-            throw CountCommentsByTokenDataException("An error occurred when trying to count comments")
+            throw CountCommentsByTokenDataException("An error occurred when trying to count comments", ex)
         }
     }
 

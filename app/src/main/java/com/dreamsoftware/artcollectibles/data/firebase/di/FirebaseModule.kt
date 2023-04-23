@@ -102,6 +102,20 @@ class FirebaseModule {
     fun provideSaveCommentMapper(): SaveCommentMapper = SaveCommentMapper()
 
     /**
+     * Provide Save notification mapper
+     */
+    @Provides
+    @Singleton
+    fun provideSaveNotificationMapper(): SaveNotificationMapper = SaveNotificationMapper()
+
+    /**
+     * Provide Notification mapper
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationMapper(): NotificationMapper = NotificationMapper()
+
+    /**
      * Provide Firebase Auth
      */
     @Provides
@@ -249,4 +263,18 @@ class FirebaseModule {
         commentMapper: CommentMapper,
         saveCommentMapper: SaveCommentMapper
     ): ICommentsDataSource = CommentsDataSourceImpl(firebaseStore, commentMapper, saveCommentMapper)
+
+    /**
+     * Provide Notifications Data Source
+     * @param firebaseStore
+     * @param saveNotificationMapper
+     * @param notificationMapper
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationsDataSource(
+        firebaseStore: FirebaseFirestore,
+        saveNotificationMapper: SaveNotificationMapper,
+        notificationMapper: NotificationMapper
+    ): INotificationsDataSource = NotificationsDataSourceImpl(firebaseStore, saveNotificationMapper, notificationMapper)
 }

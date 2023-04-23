@@ -90,3 +90,11 @@ class SaveCommentDataException(message: String? = null, cause: Throwable? = null
 class DeleteCommentDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
 class GetCommentByIdDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
 class CountCommentsByTokenDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+
+// Notification Repository Exception
+abstract class NotificationsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+class GetNotificationsByUserDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class SaveNotificationDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class DeleteNotificationDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class GetNotificationByIdDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class CountNotificationsByUserDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)

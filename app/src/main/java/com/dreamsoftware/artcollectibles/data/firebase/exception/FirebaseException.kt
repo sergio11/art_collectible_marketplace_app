@@ -61,4 +61,11 @@ class CountCommentsException(message: String? = null, cause: Throwable? = null):
 class GetCommentByIdException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class DeleteCommentException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 
+// Notifications Data Source
+class SaveNotificationException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetNotificationsByUserException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class CountNotificationsException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetNotificationByIdException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class DeleteNotificationException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
 

@@ -102,6 +102,14 @@ class DataModule {
     @Singleton
     fun provideArtCollectibleCategoryMapper(): ArtCollectibleCategoryMapper = ArtCollectibleCategoryMapper()
 
+    @Provides
+    @Singleton
+    fun provideNotificationMapper(): NotificationMapper = NotificationMapper()
+
+    @Provides
+    @Singleton
+    fun provideSaveNotificationMapper(): SaveNotificationMapper = SaveNotificationMapper()
+
     /**
      * Provide Token Metadata Mapper
      */
@@ -428,4 +436,20 @@ class DataModule {
         saveCommentMapper,
         artCollectibleMemoryCacheDataSource
     )
+
+    /**
+     * Provide notifications repository
+     * @param notificationDataSource
+     * @param notificationMapper
+     * @param saveNotificationMapper
+     * @param userRepository
+     */
+    @Provides
+    @Singleton
+    fun provideNotificationsRepository(
+        notificationDataSource: INotificationsDataSource,
+        notificationMapper: NotificationMapper,
+        saveNotificationMapper: SaveNotificationMapper,
+        userRepository: IUserRepository
+    ): INotificationsRepository = NotificationsRepositoryImpl(notificationDataSource, notificationMapper, saveNotificationMapper, userRepository)
 }
