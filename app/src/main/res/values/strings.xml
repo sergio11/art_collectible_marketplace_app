@@ -233,4 +233,10 @@
     <string name="token_history_title_count" formatted="false">NFT History (%d)</string>
     <!-- Category Detail -->
     <string name="category_detail_tokens_title">Collectibles available for this category</string>
+    <!-- Available Market Items -->
+    <string name="available_market_items_title_default">Available items for sale</string>
+    <string name="available_market_items_title_count" formatted="false">Available items for sale (%d)</string>
+    <!-- Selling Market Items -->
+    <string name="selling_market_items_title_default">Your items for sale</string>
+    <string name="selling_market_items_title_count" formatted="false">Your items for sale (%d)</string>
 </resources>

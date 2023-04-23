@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.components.core.CollectionRow
 
 @Composable
 fun ArtCollectiblesRow(
@@ -14,7 +15,7 @@ fun ArtCollectiblesRow(
     context: Context,
     reverseStyle: Boolean = false,
     items: Iterable<ArtCollectible>,
-    onShowAllItems: () -> Unit = {},
+    onShowAllItems: (() -> Unit)? = null,
     onItemSelected: (item: ArtCollectible) -> Unit = {}
 ) {
     CollectionRow(

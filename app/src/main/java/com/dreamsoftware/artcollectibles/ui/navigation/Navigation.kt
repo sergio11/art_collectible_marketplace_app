@@ -29,6 +29,8 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
     object Add : DestinationItem(route = "add")
     object Explore : DestinationItem(route = "explore")
     object Profile : DestinationItem(route = "profile")
+    object AvailableMarketItems: DestinationItem(route = "availableMarketItems")
+    object SellingMarketItems : DestinationItem(route = "sellingMarketItems")
     object TokenDetail : DestinationItem(route = "tokens/detail/{id}", arguments = listOf(
         navArgument("id") {
             type = NavType.StringType
@@ -216,7 +218,6 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
     }
-
     object CommentsList : DestinationItem(route = "token/{id}/comments", arguments = listOf(
         navArgument("id") {
             type = NavType.StringType

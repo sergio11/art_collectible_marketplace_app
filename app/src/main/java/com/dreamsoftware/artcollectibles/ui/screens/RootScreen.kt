@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
 import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.availableitems.AvailableMarketItemsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.commentdetail.CommentDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreen
@@ -21,6 +22,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemD
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
+import com.dreamsoftware.artcollectibles.ui.screens.sellingitems.SellingMarketItemsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokenhistory.TokenHistoryScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokens.TokensScreen
@@ -74,7 +76,21 @@ fun RootScreen(
                     navigate(DestinationItem.TokenDetail.buildRoute(it))
                 }, onGoToMarketHistoryItemDetail = {
                     navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
+                }, onShowAvailableMarketItems = {
+                    navigate(DestinationItem.AvailableMarketItems.route)
+                }, onShowSellingMarketItems = {
+                    navigate(DestinationItem.SellingMarketItems.route)
                 })
+            }
+        }
+        composable(DestinationItem.AvailableMarketItems.route) {
+            AvailableMarketItemsScreen {
+                navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+            }
+        }
+        composable(DestinationItem.SellingMarketItems.route) {
+            SellingMarketItemsScreen {
+                navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
             }
         }
         composable(DestinationItem.MyTokens.route) {

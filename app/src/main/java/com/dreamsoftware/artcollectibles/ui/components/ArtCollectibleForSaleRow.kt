@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.components.core.CollectionRow
 import java.math.BigInteger
 
 @Composable
@@ -15,6 +16,7 @@ fun ArtCollectibleForSaleRow(
     @StringRes titleRes: Int,
     items: Iterable<ArtCollectibleForSale>,
     reverseStyle: Boolean = false,
+    onShowAllItems: (() -> Unit)? = null,
     onMarketItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     CollectionRow(
@@ -23,6 +25,7 @@ fun ArtCollectibleForSaleRow(
         titleRes = titleRes,
         reverseStyle = reverseStyle,
         items = items,
+        onShowAllItems = onShowAllItems,
         onBuildItem = { modifier, item ->
             ArtCollectibleForSaleCard(
                 modifier = modifier,

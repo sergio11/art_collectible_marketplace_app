@@ -42,7 +42,9 @@ fun HomeScreen(
     onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userUid: String) -> Unit,
-    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onShowAvailableMarketItems: () -> Unit,
+    onShowSellingMarketItems: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -69,7 +71,9 @@ fun HomeScreen(
             onGoToMarketHistoryItemDetail = onGoToMarketHistoryItemDetail,
             onGoToCategoryDetail = onGoToCategoryDetail,
             onGoToUserDetail = onGoToUserDetail,
-            onGoToTokenDetail = onGoToTokenDetail
+            onGoToTokenDetail = onGoToTokenDetail,
+            onShowAvailableMarketItems = onShowAvailableMarketItems,
+            onShowSellingMarketItems = onShowSellingMarketItems
         )
     }
 }
@@ -84,7 +88,9 @@ private fun HomeComponent(
     onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit,
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userUid: String) -> Unit,
-    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onShowAvailableMarketItems: () -> Unit,
+    onShowSellingMarketItems: () -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -137,6 +143,7 @@ private fun HomeComponent(
                     context = context,
                     titleRes = R.string.home_available_items_for_sale_title,
                     items = availableMarketItems,
+                    onShowAllItems = onShowAvailableMarketItems,
                     onMarketItemSelected = onGoToMarketItemDetail
                 )
                 ArtCollectiblesRow(
@@ -159,6 +166,7 @@ private fun HomeComponent(
                     context = context,
                     titleRes = R.string.home_your_items_for_sale_title,
                     items = sellingMarketItems,
+                    onShowAllItems = onShowSellingMarketItems,
                     onMarketItemSelected = onGoToMarketItemDetail
                 )
                 LastMarketHistoryRow(
