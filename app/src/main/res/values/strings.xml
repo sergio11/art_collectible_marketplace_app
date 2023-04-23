@@ -239,4 +239,7 @@
     <!-- Selling Market Items -->
     <string name="selling_market_items_title_default">Your items for sale</string>
     <string name="selling_market_items_title_count" formatted="false">Your items for sale (%d)</string>
+    <!-- Market History -->
+    <string name="market_history_title_default">Market history</string>
+    <string name="market_history_title_count" formatted="false">Market history (%d)</string>
 </resources>

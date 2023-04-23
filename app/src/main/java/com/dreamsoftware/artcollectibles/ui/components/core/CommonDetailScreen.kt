@@ -106,8 +106,7 @@ private fun CommonDetailHeader(
         CommonAsyncImage(
             modifier = Modifier.fillMaxSize(),
             context = context,
-            imageUrl = imageUrl,
-            reverseStyle = true,
+            imageUrl = imageUrl
         )
         Box(
             Modifier

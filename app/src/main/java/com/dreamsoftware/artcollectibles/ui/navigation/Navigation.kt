@@ -31,6 +31,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
     object Profile : DestinationItem(route = "profile")
     object AvailableMarketItems: DestinationItem(route = "availableMarketItems")
     object SellingMarketItems : DestinationItem(route = "sellingMarketItems")
+    object MarketHistory: DestinationItem(route = "marketHistory")
     object TokenDetail : DestinationItem(route = "tokens/detail/{id}", arguments = listOf(
         navArgument("id") {
             type = NavType.StringType

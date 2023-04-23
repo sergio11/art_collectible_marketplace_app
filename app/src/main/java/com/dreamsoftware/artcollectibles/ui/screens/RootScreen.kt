@@ -18,6 +18,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.favorites.FavoritesScreen
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
+import com.dreamsoftware.artcollectibles.ui.screens.markethistory.MarketHistoryScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
@@ -80,6 +81,8 @@ fun RootScreen(
                     navigate(DestinationItem.AvailableMarketItems.route)
                 }, onShowSellingMarketItems = {
                     navigate(DestinationItem.SellingMarketItems.route)
+                }, onShowMarketHistory = {
+                    navigate(DestinationItem.MarketHistory.route)
                 })
             }
         }
@@ -91,6 +94,11 @@ fun RootScreen(
         composable(DestinationItem.SellingMarketItems.route) {
             SellingMarketItemsScreen {
                 navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+            }
+        }
+        composable(DestinationItem.MarketHistory.route) {
+            MarketHistoryScreen {
+                navigationController.navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
             }
         }
         composable(DestinationItem.MyTokens.route) {

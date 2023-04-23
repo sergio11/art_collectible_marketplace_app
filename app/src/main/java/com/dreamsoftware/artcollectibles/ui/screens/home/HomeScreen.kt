@@ -44,7 +44,8 @@ fun HomeScreen(
     onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowAvailableMarketItems: () -> Unit,
-    onShowSellingMarketItems: () -> Unit
+    onShowSellingMarketItems: () -> Unit,
+    onShowMarketHistory: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -73,7 +74,8 @@ fun HomeScreen(
             onGoToUserDetail = onGoToUserDetail,
             onGoToTokenDetail = onGoToTokenDetail,
             onShowAvailableMarketItems = onShowAvailableMarketItems,
-            onShowSellingMarketItems = onShowSellingMarketItems
+            onShowSellingMarketItems = onShowSellingMarketItems,
+            onShowMarketHistory = onShowMarketHistory
         )
     }
 }
@@ -90,7 +92,8 @@ private fun HomeComponent(
     onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowAvailableMarketItems: () -> Unit,
-    onShowSellingMarketItems: () -> Unit
+    onShowSellingMarketItems: () -> Unit,
+    onShowMarketHistory: () -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -173,6 +176,7 @@ private fun HomeComponent(
                     context = context,
                     titleRes = R.string.home_last_market_history_title,
                     items = marketHistory,
+                    onShowAllItems = onShowMarketHistory,
                     onMarketItemSelected = onGoToMarketHistoryItemDetail
                 )
             }

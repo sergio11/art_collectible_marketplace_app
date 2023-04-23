@@ -16,6 +16,7 @@ fun LastMarketHistoryRow(
     @StringRes titleRes: Int,
     items: Iterable<ArtCollectibleForSale>,
     reverseStyle: Boolean = false,
+    onShowAllItems: (() -> Unit)? = null,
     onMarketItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     CollectionRow(
@@ -24,6 +25,7 @@ fun LastMarketHistoryRow(
         titleRes = titleRes,
         reverseStyle = reverseStyle,
         items = items,
+        onShowAllItems = onShowAllItems,
         onBuildItem = { modifier, item ->
             MarketHistoryMiniCard(
                 modifier = modifier,
