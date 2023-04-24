@@ -20,6 +20,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
 import com.dreamsoftware.artcollectibles.ui.screens.markethistory.MarketHistoryScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
+import com.dreamsoftware.artcollectibles.ui.screens.marketstatistics.MarketStatisticsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
@@ -83,6 +84,8 @@ fun RootScreen(
                     navigate(DestinationItem.SellingMarketItems.route)
                 }, onShowMarketHistory = {
                     navigate(DestinationItem.MarketHistory.route)
+                }, onShowMarketStatistics = {
+                    navigate(DestinationItem.MarketStatistics.route)
                 })
             }
         }
@@ -100,6 +103,9 @@ fun RootScreen(
             MarketHistoryScreen {
                 navigationController.navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
             }
+        }
+        composable(DestinationItem.MarketStatistics.route) {
+            MarketStatisticsScreen()
         }
         composable(DestinationItem.MyTokens.route) {
             MyTokensScreen(navigationController) {

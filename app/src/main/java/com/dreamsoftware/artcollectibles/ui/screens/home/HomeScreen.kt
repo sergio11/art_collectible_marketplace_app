@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -45,7 +47,8 @@ fun HomeScreen(
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowAvailableMarketItems: () -> Unit,
     onShowSellingMarketItems: () -> Unit,
-    onShowMarketHistory: () -> Unit
+    onShowMarketHistory: () -> Unit,
+    onShowMarketStatistics: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -75,7 +78,8 @@ fun HomeScreen(
             onGoToTokenDetail = onGoToTokenDetail,
             onShowAvailableMarketItems = onShowAvailableMarketItems,
             onShowSellingMarketItems = onShowSellingMarketItems,
-            onShowMarketHistory = onShowMarketHistory
+            onShowMarketHistory = onShowMarketHistory,
+            onShowMarketStatistics = onShowMarketStatistics
         )
     }
 }
@@ -93,7 +97,8 @@ private fun HomeComponent(
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onShowAvailableMarketItems: () -> Unit,
     onShowSellingMarketItems: () -> Unit,
-    onShowMarketHistory: () -> Unit
+    onShowMarketHistory: () -> Unit,
+    onShowMarketStatistics: () -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -106,6 +111,10 @@ private fun HomeComponent(
                     titleRes = R.string.home_main_title,
                     navigationAction = TopBarAction(iconRes = R.drawable.splash_app_icon),
                     menuActions = listOf(
+                        TopBarAction(
+                            iconRes = R.drawable.statistics_icon,
+                            onActionClicked = onShowMarketStatistics
+                        ),
                         TopBarAction(
                             iconRes = R.drawable.notification_icon,
                             onActionClicked = {
@@ -124,7 +133,10 @@ private fun HomeComponent(
                     .verticalScroll(rememberScrollState())
             ) {
                 marketplaceStatistics?.let {
-                    MarketStatisticsRow(it)
+                    MarketStatisticsRow(
+                        marketplaceStatistics = it,
+                        onShowAllItems = onShowMarketStatistics
+                    )
                 }
                 if(!Iterables.isEmpty(categories)) {
                     ArtCollectibleCategoryList(
@@ -185,21 +197,38 @@ private fun HomeComponent(
 }
 
 @Composable
-private fun MarketStatisticsRow(marketplaceStatistics: MarketplaceStatistics) {
+private fun MarketStatisticsRow(
+    marketplaceStatistics: MarketplaceStatistics,
+    onShowAllItems: () -> Unit
+) {
     with(marketplaceStatistics) {
         Column(
             modifier = Modifier
                 .padding(vertical = 10.dp, horizontal = 10.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.home_market_statistics_title),
-                color = Color.White,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                fontFamily = montserratFontFamily,
-                style = MaterialTheme.typography.titleLarge
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(id = R.string.home_market_statistics_title),
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(8.dp),
+                    fontFamily = montserratFontFamily,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Image(
+                    modifier = Modifier.padding(end = 5.dp)
+                        .size(35.dp)
+                        .clickable { onShowAllItems() },
+                    painter = painterResource(R.drawable.arrow_right_icon),
+                    contentDescription = "onShowAllItems",
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
