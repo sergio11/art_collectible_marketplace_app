@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.TextUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -16,6 +18,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -39,6 +42,14 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
+import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
+import com.patrykandpatrick.vico.compose.chart.Chart
+import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.core.component.text.TextComponent
+import com.patrykandpatrick.vico.core.component.text.textComponent
+import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.patrykandpatrick.vico.core.legend.Legend
 import java.math.BigInteger
 
 data class TokenDetailScreenArgs(
@@ -298,6 +309,9 @@ private fun TokenDetailBody(
                     onSeeTokenHistory(artCollectible.id)
                 }
             )
+            TokenPricesChart(
+                modifier = Modifier.padding(8.dp)
+            )
             PublishCommentComponent(
                 modifier = Modifier.padding(8.dp),
                 authUserInfo = authUserInfo,
@@ -522,5 +536,51 @@ private fun TokenMarketHistory(
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun TokenPricesChart(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            text = stringResource(id = R.string.token_detail_price_history_title_text),
+            fontFamily = montserratFontFamily,
+            color = Color.Black,
+            style = MaterialTheme.typography.titleLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Left
+        )
+        val chartEntryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
+        Chart(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            chart = lineChart(),
+            model = chartEntryModel,
+            startAxis = startAxis(),
+            bottomAxis = bottomAxis(
+                label = textComponent {
+                    color = Purple700.toArgb()
+                    textSizeSp = 12f
+                    typeface = Typeface.MONOSPACE
+                    ellipsize = TextUtils.TruncateAt.END
+                },
+                title = stringResource(id = R.string.token_detail_price_history_title_text),
+                titleComponent = textComponent {
+                    color = Purple700.toArgb()
+                    textSizeSp = 20f
+                    typeface = Typeface.MONOSPACE
+                    ellipsize = TextUtils.TruncateAt.END
+                }
+            )
+        )
     }
 }

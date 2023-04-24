@@ -166,6 +166,7 @@
     <string name="token_detail_comments_publish_title_text">Comments</string>
     <string name="token_detail_tags_title_text">Related topics</string>
     <string name="token_detail_last_transactions_title_text">Last transactions</string>
+    <string name="token_detail_price_history_title_text">Price history</string>
     <string name="token_detail_last_transactions_cancelled_text" formatted="false">%s withdraws from the sale</string>
     <string name="token_detail_last_transactions_sold_text" formatted="false">%s has acquired this work from %s</string>
     <string name="token_detail_last_transactions_put_for_sale_text" formatted="false">The work has been put up for sale by %s</string>

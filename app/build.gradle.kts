@@ -150,9 +150,18 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation("androidx.compose.material:material-icons-extended:1.3.1")
+    implementation("androidx.compose.material:material-icons-extended:1.4.2")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.google.accompanist:accompanist-flowlayout:0.28.0")
+
+    // Charts
+    // Includes the core logic for charts and other elements.
+    implementation("com.patrykandpatrick.vico:core:1.6.5")
+    // For Jetpack Compose.
+    implementation("com.patrykandpatrick.vico:compose:1.6.5")
+    // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
+    implementation("com.patrykandpatrick.vico:compose-m3:1.6.5")
+
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
 
@@ -173,7 +182,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
 
     // Splash screen Api
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Facebook Login SDK
     implementation("com.facebook.android:facebook-login:latest.release")
