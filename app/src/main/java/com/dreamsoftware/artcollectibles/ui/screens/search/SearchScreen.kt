@@ -3,14 +3,18 @@ package com.dreamsoftware.artcollectibles.ui.screens.search
 
 import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -20,8 +24,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.SearchView
+import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
+import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.google.common.collect.Iterables
 
@@ -61,7 +67,6 @@ fun SearchScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SearchComponent(
     context: Context,
@@ -73,51 +78,42 @@ internal fun SearchComponent(
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     LoadingDialog(isShowingDialog = state.isLoading)
-    Scaffold(
-        bottomBar = {
-            BottomBar(navController)
-        },
-        topBar = {
-            CommonTopAppBar(
-                titleRes = R.string.search_main_title_text,
-                centerTitle = true
+    BasicScreen(
+        titleRes = R.string.search_main_title_text,
+        centerTitle = true,
+        navController = navController,
+        hasBottomBar = true,
+        screenContainerColor = Purple40,
+        screenContent = {
+            SearchView(
+                context = context,
+                term = state.searchTerm,
+                onTermChanged = onTermChanged,
+                onClearClicked = onResetSearch
             )
-        },
-        containerColor = Purple40
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
-            Column {
-                SearchView(
-                    context = context,
-                    term = state.searchTerm,
-                    onTermChanged = onTermChanged,
-                    onClearClicked = onResetSearch
-                )
-                LazyVerticalGrid(
-                    modifier = Modifier.padding(8.dp),
-                    columns = GridCells.Adaptive(minSize = 150.dp),
-                    state = lazyGridState,
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    with(state) {
-                        items(Iterables.size(userResult)) { index ->
-                            val artist = Iterables.get(userResult, index)
-                            UserInfoArtistCard(
-                                modifier = Modifier
-                                    .height(262.dp)
-                                    .width(150.dp)
-                                    .clickable {
-                                        onGoToArtistDetail(artist.uid)
-                                    },
-                                context = context,
-                                user = artist
-                            )
-                        }
+            LazyVerticalGrid(
+                modifier = Modifier.padding(8.dp),
+                columns = GridCells.Adaptive(minSize = 150.dp),
+                state = lazyGridState,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                with(state) {
+                    items(Iterables.size(userResult)) { index ->
+                        val artist = Iterables.get(userResult, index)
+                        UserInfoArtistCard(
+                            modifier = Modifier
+                                .height(262.dp)
+                                .width(150.dp)
+                                .clickable {
+                                    onGoToArtistDetail(artist.uid)
+                                },
+                            context = context,
+                            user = artist
+                        )
                     }
                 }
             }
         }
-    }
+    )
 }

@@ -37,6 +37,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTitleLarge
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -46,10 +47,8 @@ import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.component.text.TextComponent
 import com.patrykandpatrick.vico.core.component.text.textComponent
 import com.patrykandpatrick.vico.core.entry.entryModelOf
-import com.patrykandpatrick.vico.core.legend.Legend
 import java.math.BigInteger
 
 data class TokenDetailScreenArgs(
@@ -487,18 +486,7 @@ private fun TokenTags(
     Column(
         modifier = modifier
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            text = stringResource(id = R.string.token_detail_tags_title_text),
-            fontFamily = montserratFontFamily,
-            color = Color.Black,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Left
-        )
+        CommonTitleLarge(titleRes = R.string.token_detail_tags_title_text)
         TagsRow(
             tagList = tags,
             isReadOnly = true
@@ -546,18 +534,7 @@ private fun TokenPricesChart(
     Column(
         modifier = modifier
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            text = stringResource(id = R.string.token_detail_price_history_title_text),
-            fontFamily = montserratFontFamily,
-            color = Color.Black,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Left
-        )
+        CommonTitleLarge(titleRes = R.string.token_detail_price_history_title_text)
         val chartEntryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
         Chart(
             modifier = Modifier

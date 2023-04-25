@@ -3,11 +3,10 @@ package com.dreamsoftware.artcollectibles.ui.screens.profile
 import android.Manifest
 import android.content.Context
 import android.net.Uri
-import android.webkit.*
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -30,7 +29,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 import com.dreamsoftware.artcollectibles.ui.components.countrypicker.CountryPickerField
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
@@ -89,7 +88,6 @@ fun ProfileScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ProfileComponent(
     context: Context,
@@ -116,145 +114,142 @@ internal fun ProfileComponent(
     ConfirmCloseSessionDialog(state, onAcceptClicked = onCloseSessionClicked, onDialogCancelled = {
         onCloseSessionDialogVisibilityChanged(false)
     })
-    Scaffold(
-        bottomBar = {
-            BottomBar(navController)
-        },
-        topBar = {
-            CommonTopAppBar(titleRes = R.string.profile_main_title_text, menuActions = listOf(
-                TopBarAction(
-                    iconRes = R.drawable.settings_icon,
-                    onActionClicked = {
+    BasicScreen(
+        titleRes = R.string.profile_main_title_text,
+        navController = navController,
+        hasBottomBar = true,
+        enableVerticalScroll = true,
+        menuActions = listOf(
+            TopBarAction(
+                iconRes = R.drawable.settings_icon,
+                onActionClicked = {
 
-                    }
-                ),
-                TopBarAction(
-                    iconRes = R.drawable.close_session_icon,
-                    onActionClicked = {
-                        onCloseSessionDialogVisibilityChanged(true)
-                    }
-                )
-            ))
-        }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Card(
-                    modifier = Modifier.padding(20.dp),
-                    elevation = CardDefaults.cardElevation(4.dp),
-                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.7f)),
-                    shape = RoundedCornerShape(27.dp),
-                    border = BorderStroke(3.dp, Color.White)
+                }
+            ),
+            TopBarAction(
+                iconRes = R.drawable.close_session_icon,
+                onActionClicked = {
+                    onCloseSessionDialogVisibilityChanged(true)
+                }
+            )
+        ),
+        screenContent = {
+            Card(
+                modifier = Modifier.padding(20.dp),
+                elevation = CardDefaults.cardElevation(4.dp),
+                colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.7f)),
+                shape = RoundedCornerShape(27.dp),
+                border = BorderStroke(3.dp, Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(vertical = 20.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        UserAccountProfilePicture(size = 150.dp, userInfo = state.userInfo) {
-                            if (state.userInfo?.externalProviderAuthType == null) {
-                                isProfilePicturePicker = true
-                            }
+                    UserAccountProfilePicture(size = 150.dp, userInfo = state.userInfo) {
+                        if (state.userInfo?.externalProviderAuthType == null) {
+                            isProfilePicturePicker = true
                         }
-                        state.accountBalance?.let {
-                            CurrentAccountBalance(
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                iconSize = 30.dp,
-                                textSize = 20.sp,
-                                textColor = DarkPurple,
-                                accountBalance = it
-                            )
-                        }
-                        CommonDefaultTextField(
-                            labelRes = R.string.profile_input_name_label,
-                            placeHolderRes = R.string.profile_input_name_placeholder,
-                            value = state.userInfo?.name,
-                            onValueChanged = onNameChanged
-                        )
-                        CommonDefaultTextField(
-                            labelRes = R.string.profile_input_professional_title_label,
-                            placeHolderRes = R.string.profile_input_professional_title_placeholder,
-                            value = state.userInfo?.professionalTitle,
-                            onValueChanged = onProfessionalTitleChanged
-                        )
-                        CountryPickerField(
-                            labelRes = R.string.profile_input_country_label,
-                            placeHolderRes = R.string.profile_input_country_placeholder,
-                            selectedCountry = state.userInfo?.country,
-                            pickedCountry = onCountryChanged
-                        )
-                        CommonDefaultTextField(
-                            labelRes = R.string.profile_input_location_label,
-                            placeHolderRes = R.string.profile_input_location_placeholder,
-                            value = state.userInfo?.location,
-                            onValueChanged = onLocationChanged
-                        )
-                        CommonDefaultTextField(
-                            isReadOnly = true,
-                            labelRes = R.string.profile_input_contact_label,
-                            placeHolderRes = R.string.profile_input_contact_placeholder,
-                            value = state.userInfo?.contact
-                        )
-                        CommonDefaultTextField(
-                            isReadOnly = true,
-                            labelRes = R.string.profile_input_wallet_address_label,
-                            placeHolderRes = R.string.profile_input_wallet_address_placeholder,
-                            value = state.userInfo?.walletAddress
-                        )
-                        CommonDatePicker(
-                            labelRes = R.string.profile_input_birthdate_label,
-                            placeHolderRes = R.string.profile_input_birthdate_placeholder,
-                            value = state.userInfo?.birthdate,
-                            onValueChange = onBirthdateChanged
-                        )
-                        TagsInputComponent(
-                            tagList = state.userInfo?.tags.orEmpty(),
-                            titleRes = R.string.profile_input_tags_label,
-                            placeholderRes = R.string.profile_input_tags_placeholder,
-                            onAddNewTag = onAddNewTag,
-                            onDeleteTag = onDeleteTag
-                        )
-                        SocialNetworkField(
-                            labelRes = R.string.profile_input_instagram_label,
-                            placeHolderRes = R.string.profile_input_instagram_placeholder,
-                            value = state.userInfo?.instagramNick,
-                            onValueChanged = onInstagramNickChanged
-                        )
-                        CommonDefaultTextField(
-                            modifier = CommonDefaultTextFieldModifier.height(200.dp),
-                            labelRes = R.string.profile_input_info_label,
-                            placeHolderRes = R.string.profile_input_info_placeholder,
-                            value = state.userInfo?.info,
-                            isSingleLine = false,
-                            onValueChanged = onInfoChanged
-                        )
-                        CommonButton(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .width(300.dp),
-                            text = R.string.profile_save_button_text,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Purple700,
-                                contentColor = Color.White
-                            ),
-                            onClick = onSaveClicked
-                        )
-                        CommonButton(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .width(300.dp),
-                            text = R.string.profile_open_profile_button_text,
-                            onClick = {
-                                state.userInfo?.uid?.let(onOpenProfileClicked)
-                            }
+                    }
+                    state.accountBalance?.let {
+                        CurrentAccountBalance(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            iconSize = 30.dp,
+                            textSize = 20.sp,
+                            textColor = DarkPurple,
+                            accountBalance = it
                         )
                     }
+                    CommonDefaultTextField(
+                        labelRes = R.string.profile_input_name_label,
+                        placeHolderRes = R.string.profile_input_name_placeholder,
+                        value = state.userInfo?.name,
+                        onValueChanged = onNameChanged
+                    )
+                    CommonDefaultTextField(
+                        labelRes = R.string.profile_input_professional_title_label,
+                        placeHolderRes = R.string.profile_input_professional_title_placeholder,
+                        value = state.userInfo?.professionalTitle,
+                        onValueChanged = onProfessionalTitleChanged
+                    )
+                    CountryPickerField(
+                        labelRes = R.string.profile_input_country_label,
+                        placeHolderRes = R.string.profile_input_country_placeholder,
+                        selectedCountry = state.userInfo?.country,
+                        pickedCountry = onCountryChanged
+                    )
+                    CommonDefaultTextField(
+                        labelRes = R.string.profile_input_location_label,
+                        placeHolderRes = R.string.profile_input_location_placeholder,
+                        value = state.userInfo?.location,
+                        onValueChanged = onLocationChanged
+                    )
+                    CommonDefaultTextField(
+                        isReadOnly = true,
+                        labelRes = R.string.profile_input_contact_label,
+                        placeHolderRes = R.string.profile_input_contact_placeholder,
+                        value = state.userInfo?.contact
+                    )
+                    CommonDefaultTextField(
+                        isReadOnly = true,
+                        labelRes = R.string.profile_input_wallet_address_label,
+                        placeHolderRes = R.string.profile_input_wallet_address_placeholder,
+                        value = state.userInfo?.walletAddress
+                    )
+                    CommonDatePicker(
+                        labelRes = R.string.profile_input_birthdate_label,
+                        placeHolderRes = R.string.profile_input_birthdate_placeholder,
+                        value = state.userInfo?.birthdate,
+                        onValueChange = onBirthdateChanged
+                    )
+                    TagsInputComponent(
+                        tagList = state.userInfo?.tags.orEmpty(),
+                        titleRes = R.string.profile_input_tags_label,
+                        placeholderRes = R.string.profile_input_tags_placeholder,
+                        onAddNewTag = onAddNewTag,
+                        onDeleteTag = onDeleteTag
+                    )
+                    SocialNetworkField(
+                        labelRes = R.string.profile_input_instagram_label,
+                        placeHolderRes = R.string.profile_input_instagram_placeholder,
+                        value = state.userInfo?.instagramNick,
+                        onValueChanged = onInstagramNickChanged
+                    )
+                    CommonDefaultTextField(
+                        modifier = CommonDefaultTextFieldModifier.height(200.dp),
+                        labelRes = R.string.profile_input_info_label,
+                        placeHolderRes = R.string.profile_input_info_placeholder,
+                        value = state.userInfo?.info,
+                        isSingleLine = false,
+                        onValueChanged = onInfoChanged
+                    )
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.profile_save_button_text,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Purple700,
+                            contentColor = Color.White
+                        ),
+                        onClick = onSaveClicked
+                    )
+                    CommonButton(
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.profile_open_profile_button_text,
+                        onClick = {
+                            state.userInfo?.uid?.let(onOpenProfileClicked)
+                        }
+                    )
                 }
             }
+        },
+        backgroundContent = {
             ProfilePicturePicker(
                 context = context,
                 fileProviderId = fileProviderId,
@@ -266,7 +261,7 @@ internal fun ProfileComponent(
                 onImageSelected = onPictureChanged
             ) { isProfilePicturePicker = false }
         }
-    }
+    )
 }
 
 @Composable

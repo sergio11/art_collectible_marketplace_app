@@ -243,4 +243,6 @@
     <!-- Market History -->
     <string name="market_history_title_default">Market history</string>
     <string name="market_history_title_count" formatted="false">Market history (%d)</string>
+    <!-- Market Statistics -->
+    <string name="market_statistics_main_title">Market Statistics</string>
 </resources>

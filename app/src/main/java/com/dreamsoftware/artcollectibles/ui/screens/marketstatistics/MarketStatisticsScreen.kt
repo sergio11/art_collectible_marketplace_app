@@ -10,6 +10,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 
 @Composable
 fun MarketStatisticsScreen(
@@ -44,6 +46,11 @@ internal fun MarketStatisticsComponent(
     state: MarketStatisticsUiState
 ) {
     with(state) {
+        BasicScreen(
+            titleRes = R.string.market_statistics_main_title,
+            enableVerticalScroll = true,
+        ) {
 
+        }
     }
 }

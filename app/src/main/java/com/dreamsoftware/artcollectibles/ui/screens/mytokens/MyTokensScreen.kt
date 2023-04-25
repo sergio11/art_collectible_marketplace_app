@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
+import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import java.math.BigInteger
@@ -67,7 +67,6 @@ fun MyTokensScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MyTokensComponent(
     navController: NavController,
@@ -80,45 +79,33 @@ internal fun MyTokensComponent(
 ) {
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
-        Scaffold(
-            bottomBar = {
-                BottomBar(navController)
-            },
-            topBar = {
-                CommonTopAppBar(
-                    titleRes = state.tabSelectedTitle ?: R.string.my_tokens_main_title,
-                    centerTitle = true
-                )
-            },
-            containerColor = Purple40
-        ) { paddingValues ->
-            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
-            Box(modifier = Modifier.padding(paddingValues)) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    MyTokensTabsRow(state, onNewTabSelected)
-                    MyTokensLazyList(context, state, lazyGridState, onTokenClicked)
-                    ErrorStateNotificationComponent(
-                        isVisible = tokens.isEmpty() || !errorMessage.isNullOrBlank(),
-                        imageRes = if (tokens.isEmpty()) {
-                            R.drawable.not_data_found
-                        } else {
-                            R.drawable.error_occurred
-                        },
-                        title = errorMessage ?: stringResource(
-                            id = if (tabSelectedType == MyTokensTabsTypeEnum.TOKENS_OWNED) {
-                                R.string.my_tokens_tab_tokens_owned_not_found_error
-                            } else {
-                                R.string.my_tokens_tab_tokens_created_not_found_error
-                            }
-                        ),
-                        isRetryButtonVisible = true,
-                        onRetryCalled = onRetryCalled
-                    )
-                }
-            }
-        }
+        BasicScreen(
+            titleRes = state.tabSelectedTitle ?: R.string.my_tokens_main_title,
+            centerTitle = true,
+            navController = navController,
+            hasBottomBar = true,
+            screenContainerColor = Purple40,
+            screenContent = {
+            MyTokensTabsRow(state, onNewTabSelected)
+            MyTokensLazyList(context, state, lazyGridState, onTokenClicked)
+            ErrorStateNotificationComponent(
+                isVisible = tokens.isEmpty() || !errorMessage.isNullOrBlank(),
+                imageRes = if (tokens.isEmpty()) {
+                    R.drawable.not_data_found
+                } else {
+                    R.drawable.error_occurred
+                },
+                title = errorMessage ?: stringResource(
+                    id = if (tabSelectedType == MyTokensTabsTypeEnum.TOKENS_OWNED) {
+                        R.string.my_tokens_tab_tokens_owned_not_found_error
+                    } else {
+                        R.string.my_tokens_tab_tokens_created_not_found_error
+                    }
+                ),
+                isRetryButtonVisible = true,
+                onRetryCalled = onRetryCalled
+            )
+        })
     }
 }
 
@@ -161,7 +148,9 @@ private fun MyTokensLazyList(
     with(state) {
         if (!isLoading) {
             LazyVerticalGrid(
-                modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 8.dp),
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
