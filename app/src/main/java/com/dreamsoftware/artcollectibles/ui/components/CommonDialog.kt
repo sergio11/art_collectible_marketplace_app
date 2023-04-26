@@ -4,28 +4,26 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.Purple80
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun CommonDialog(
@@ -88,25 +86,22 @@ internal fun CommonDialogUI(
                     .background(Purple40)
                 )
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = stringResource(id = titleRes),
-                    textAlign = TextAlign.Center,
+                CommonText(
+                    type = CommonTextTypeEnum.LABEL_LARGE,
+                    titleRes = titleRes,
                     modifier = Modifier
                         .padding(top = 5.dp)
                         .fillMaxWidth(),
-                    style = MaterialTheme.typography.labelLarge,
                     maxLines = 2,
-                    fontFamily = montserratFontFamily,
-                    overflow = TextOverflow.Ellipsis
+                    textAlign = TextAlign.Center
                 )
-                Text(
-                    text = stringResource(id = descriptionRes),
-                    textAlign = TextAlign.Center,
+                CommonText(
                     modifier = Modifier
                         .padding(top = 10.dp, start = 25.dp, end = 25.dp)
                         .fillMaxWidth(),
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.bodyMedium
+                    type = CommonTextTypeEnum.BODY_MEDIUM,
+                    titleRes = descriptionRes,
+                    textAlign = TextAlign.Center
                 )
             }
             customContent()
@@ -120,23 +115,21 @@ internal fun CommonDialogUI(
             ) {
                 cancelRes?.let {
                     TextButton(onClick = onCancelClicked) {
-                        Text(
-                            text = stringResource(id = it),
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Gray,
-                            fontFamily = montserratFontFamily,
-                            modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                        CommonText(
+                            modifier = Modifier.padding(top = 5.dp, bottom = 5.dp),
+                            type = CommonTextTypeEnum.LABEL_SMALL,
+                            titleText = stringResource(id = it),
+                            textColor = Color.Gray
                         )
                     }
                 }
                 successRes?.let {
                     TextButton(enabled = isAcceptEnabled, onClick = onAcceptClicked) {
-                        Text(
-                            text = stringResource(id = it),
-                            fontWeight = FontWeight.ExtraBold,
-                            color = Color.Black,
-                            fontFamily = montserratFontFamily,
-                            modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                        CommonText(
+                            modifier = Modifier.padding(top = 5.dp, bottom = 5.dp),
+                            type = CommonTextTypeEnum.LABEL_SMALL,
+                            titleText = stringResource(id = it),
+                            textColor = Color.Black
                         )
                     }
                 }

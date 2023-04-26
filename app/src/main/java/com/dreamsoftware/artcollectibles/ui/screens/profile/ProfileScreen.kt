@@ -30,6 +30,8 @@ import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 import com.dreamsoftware.artcollectibles.ui.components.countrypicker.CountryPickerField
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
@@ -307,15 +309,14 @@ internal fun ProfilePicturePicker(
             modifier,
             onBottomSheetClosed = onPickerClosed
         ) {
-            Text(
-                text = stringResource(id = R.string.profile_picture_picker_title),
-                textAlign = TextAlign.Center,
-                color = Purple500,
+            CommonText(
                 modifier = Modifier
                     .padding(vertical = 20.dp, horizontal = 20.dp)
                     .fillMaxWidth(),
-                fontFamily = montserratFontFamily,
-                style = MaterialTheme.typography.headlineSmall
+                type = CommonTextTypeEnum.TITLE_MEDIUM,
+                titleRes = R.string.profile_picture_picker_title,
+                textAlign = TextAlign.Center,
+                textColor = Purple500
             )
             CommonButton(
                 modifier = Modifier

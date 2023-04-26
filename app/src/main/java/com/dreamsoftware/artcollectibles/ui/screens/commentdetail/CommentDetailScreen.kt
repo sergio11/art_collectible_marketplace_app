@@ -26,6 +26,8 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
@@ -120,11 +122,10 @@ fun CommentDetailComponent(
             }
             comment?.user?.let { userInfo ->
                 userInfo.professionalTitle?.let {
-                    Text(
+                    CommonText(
                         modifier = defaultModifier,
-                        text = it,
-                        fontFamily = montserratFontFamily,
-                        style = MaterialTheme.typography.titleLarge
+                        type = CommonTextTypeEnum.TITLE_LARGE,
+                        titleText = it
                     )
                 }
                 UserFollowersInfoComponent(
@@ -140,20 +141,18 @@ fun CommentDetailComponent(
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = comment?.createdAt?.format()?.let {
+            CommonText(
+                modifier = defaultModifier,
+                type = CommonTextTypeEnum.TITLE_MEDIUM,
+                titleText = comment?.createdAt?.format()?.let {
                     stringResource(id = R.string.comment_detail_created_at_label, it)
-                } ?: stringResource(id = R.string.no_text_value),
-                fontFamily = montserratFontFamily,
-                modifier = defaultModifier,
-                color = DarkPurple,
-                style = MaterialTheme.typography.titleMedium
+                },
+                textColor = DarkPurple
             )
-            Text(
+            CommonText(
                 modifier = defaultModifier,
-                text = comment?.text ?: stringResource(id = R.string.no_text_value),
-                style = MaterialTheme.typography.bodyLarge,
-                fontFamily = montserratFontFamily
+                type = CommonTextTypeEnum.BODY_LARGE,
+                titleText = comment?.text
             )
             Spacer(modifier = Modifier.height(30.dp))
             ArtCollectiblesRow(

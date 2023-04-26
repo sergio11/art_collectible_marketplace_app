@@ -6,25 +6,19 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun MarketHistoryMiniCard(
@@ -61,25 +55,22 @@ fun MarketHistoryMiniCard(
             Column(
                 Modifier.padding(horizontal = 10.dp)
             ) {
-                Text(
-                    token.displayName,
-                    fontFamily = montserratFontFamily,
-                    color = if (reverseStyle) {
+                CommonText(
+                    type = CommonTextTypeEnum.TITLE_SMALL,
+                    titleText = token.displayName,
+                    textColor = if (reverseStyle) {
                         BackgroundWhite
                     } else {
                         Color.Black
                     },
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Left
+                    singleLine = true
                 )
-                Text(
+                CommonText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                    text = if (sold) {
+                    type = CommonTextTypeEnum.BODY_MEDIUM,
+                    titleText = if (sold) {
                         stringResource(
                             id = R.string.token_detail_last_transactions_sold_text,
                             owner?.name.orEmpty(),
@@ -96,12 +87,7 @@ fun MarketHistoryMiniCard(
                             seller.name
                         )
                     },
-                    fontFamily = montserratFontFamily,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Left
+                    maxLines = 3
                 )
                 ArtCollectiblePrice(
                     modifier = Modifier,

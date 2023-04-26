@@ -1,27 +1,24 @@
 package com.dreamsoftware.artcollectibles.ui.screens.account.signup
 
-import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun SignUpScreen(
@@ -67,7 +64,6 @@ internal fun SignUpComponent(
     onSignUp: () -> Unit,
     onSignUpSuccess: () -> Unit
 ) {
-    Log.d("USER_REPO", "uiState -> $uiState")
     if (uiState.state is SignUpState.OnError) {
         val signUpFailedText = stringResource(id = R.string.signup_signup_failed)
         LaunchedEffect(snackBarHostState) {
@@ -90,12 +86,10 @@ internal fun SignUpComponent(
         mainTitleRes = R.string.signup_main_title_text,
         screenBackgroundRes = R.drawable.common_background
     ) {
-        Text(
-            stringResource(R.string.onboarding_subtitle_text),
-            color = Purple500,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            fontFamily = montserratFontFamily,
+        CommonText(
+            type = CommonTextTypeEnum.TITLE_LARGE,
+            titleRes = R.string.onboarding_subtitle_text,
+            textColor = Purple500,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.padding(bottom = 50.dp))

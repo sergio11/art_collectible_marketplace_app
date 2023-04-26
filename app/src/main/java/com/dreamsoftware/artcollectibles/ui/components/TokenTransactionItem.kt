@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,15 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun TokenTransactionItem(
@@ -69,11 +66,12 @@ fun TokenTransactionItem(
                     modifier = Modifier.padding(start = 16.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
+                    CommonText(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        text = if (sold) {
+                        type = CommonTextTypeEnum.BODY_MEDIUM,
+                        titleText = if (sold) {
                             stringResource(
                                 id = R.string.token_detail_last_transactions_sold_text,
                                 owner?.name.orEmpty(),
@@ -90,12 +88,7 @@ fun TokenTransactionItem(
                                 seller.name
                             )
                         },
-                        fontFamily = montserratFontFamily,
-                        color = Color.Black,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Left
+                        maxLines = 2
                     )
                     Box(
                         modifier = Modifier
@@ -118,17 +111,14 @@ fun TokenTransactionItem(
                             putForSaleAt
                         }
                         date?.let {
-                            Text(
+                            CommonText(
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
                                     .padding(end = 10.dp),
-                                text = it.format(),
-                                fontFamily = montserratFontFamily,
-                                color = Color.Gray,
-                                style = MaterialTheme.typography.titleSmall,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Left
+                                type = CommonTextTypeEnum.TITLE_SMALL,
+                                titleText = it.format(),
+                                textColor = Color.Gray,
+                                singleLine = true
                             )
                         }
                     }

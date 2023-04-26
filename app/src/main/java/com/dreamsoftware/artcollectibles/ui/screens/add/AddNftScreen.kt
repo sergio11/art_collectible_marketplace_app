@@ -30,16 +30,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
-import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
+import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.extensions.checkPermissionState
 import com.dreamsoftware.artcollectibles.ui.extensions.getCacheSubDir
 import com.dreamsoftware.artcollectibles.ui.extensions.getMimeType
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -294,12 +291,11 @@ private fun AddNftForm(
                             )
                         }
                         Spacer(modifier = Modifier.padding(10.dp))
-                        Text(
-                            text = stringResource(id = R.string.add_nft_subtitle_text),
-                            fontFamily = montserratFontFamily,
+                        CommonText(
                             modifier = defaultModifier,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = DarkPurple,
+                            type = CommonTextTypeEnum.TITLE_MEDIUM,
+                            titleRes = R.string.add_nft_subtitle_text,
+                            textColor = DarkPurple,
                             textAlign = TextAlign.Center
                         )
                         CommonDefaultTextField(

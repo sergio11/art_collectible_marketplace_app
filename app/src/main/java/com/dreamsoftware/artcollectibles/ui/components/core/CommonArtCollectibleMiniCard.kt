@@ -18,6 +18,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
@@ -57,31 +59,24 @@ fun CommonArtCollectibleMiniCard(
         Column(
             Modifier.padding(horizontal = 10.dp)
         ) {
-            Text(
-                artCollectible.displayName,
-                fontFamily = montserratFontFamily,
-                color = if (reverseStyle) {
+            CommonText(
+                type = CommonTextTypeEnum.TITLE_SMALL,
+                titleText = artCollectible.displayName,
+                textColor = if (reverseStyle) {
                     BackgroundWhite
                 } else {
                     Color.Black
                 },
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Left
+                singleLine = true
             )
-            Text(
-                artCollectible.metadata.description,
-                color = if (reverseStyle) {
+            CommonText(
+                type = CommonTextTypeEnum.BODY_SMALL,
+                titleText = artCollectible.metadata.description,
+                textColor = if (reverseStyle) {
                     BackgroundWhite
                 } else {
                     Color.Black
                 },
-                fontFamily = montserratFontFamily,
-                textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.bodySmall,
-                overflow = TextOverflow.Ellipsis,
                 maxLines = 2
             )
         }

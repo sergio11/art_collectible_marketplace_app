@@ -5,14 +5,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 
 @Composable
 fun SliderComponent(
@@ -26,14 +25,12 @@ fun SliderComponent(
     Column(modifier = Modifier
         .background(Color.White, RoundedCornerShape(percent = 5))
         .then(modifier)) {
-        Text(
-            text = title,
-            fontFamily = montserratFontFamily,
+        CommonText(
             modifier = Modifier
                 .padding(horizontal = 12.dp, vertical = 4.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.Black
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
+            titleText = title
         )
         Slider(
             modifier = Modifier

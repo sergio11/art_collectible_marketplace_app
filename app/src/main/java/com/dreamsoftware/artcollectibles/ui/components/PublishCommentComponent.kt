@@ -9,8 +9,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,16 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 
 @Composable
@@ -59,51 +55,41 @@ fun PublishCommentComponent(
         modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 16.dp),
-            text = stringResource(id = R.string.token_detail_comments_publish_title_text),
-            fontFamily = montserratFontFamily,
-            color = Color.Black,
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Left
+        CommonText(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            type = CommonTextTypeEnum.TITLE_LARGE,
+            titleText = stringResource(id = R.string.token_detail_comments_publish_title_text),
+            singleLine = true
         )
         repeat(Iterables.size(lastComments)) {
             with(Iterables.get(lastComments, it)) {
-                Text(
+                CommonText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(25.dp)
                         .padding(horizontal = 8.dp)
                         .clickable { onSeeCommentDetail(this) },
-                    text = "${user.name}: $text",
-                    fontFamily = montserratFontFamily,
-                    color = Color.Black,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Left
+                    titleText = "${user.name}: $text",
+                    type = CommonTextTypeEnum.BODY_MEDIUM,
+                    singleLine = true
                 )
             }
         }
         commentsCount?.let {
             if (it > 0) {
-                Text(
+                CommonText(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
                             onSeeAllComments()
                         },
-                    text = stringResource(id = R.string.token_detail_comments_see_more_text, it),
-                    fontFamily = montserratFontFamily,
-                    color = Color.LightGray,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Left
+                    type = CommonTextTypeEnum.TITLE_SMALL,
+                    titleText = stringResource(id = R.string.token_detail_comments_see_more_text, it),
+                    textColor = Color.LightGray,
+                    singleLine = true
                 )
             }
         }

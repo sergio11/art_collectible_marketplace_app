@@ -5,21 +5,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, title: String, imageUrl: String) {
@@ -42,19 +39,16 @@ fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, 
             imageUrl = imageUrl,
             context = context
         )
-        Text(
-            title,
+        CommonText(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .background(color = Purple40.copy(0.6f), shape = RectangleShape)
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            color = Color.White,
-            fontFamily = montserratFontFamily,
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
+            textColor = Color.White,
+            titleText = title,
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
-            overflow = TextOverflow.Ellipsis,
             maxLines = 2
         )
     }

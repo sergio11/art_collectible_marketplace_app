@@ -9,8 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,8 +22,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,11 +33,11 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTitleLarge
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
@@ -263,14 +259,10 @@ private fun TokenDetailBody(
                         contentDescription = "Token Image"
                     )
                     Column {
-                        Text(
-                            text = stringResource(id = R.string.token_detail_available_for_sale_text),
-                            fontFamily = montserratFontFamily,
-                            color = Color.Black,
-                            style = MaterialTheme.typography.bodyLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Left
+                        CommonText(
+                            type = CommonTextTypeEnum.BODY_LARGE,
+                            titleRes = R.string.token_detail_available_for_sale_text,
+                            singleLine = true
                         )
                         tokenCurrentPrices?.let {
                             ArtCollectiblePrice(
@@ -486,7 +478,14 @@ private fun TokenTags(
     Column(
         modifier = modifier
     ) {
-        CommonTitleLarge(titleRes = R.string.token_detail_tags_title_text)
+        CommonText(
+            modifier = Modifier
+                .padding(horizontal = 8.dp, vertical = 2.dp)
+                .fillMaxWidth(),
+            type = CommonTextTypeEnum.TITLE_LARGE,
+            titleRes = R.string.token_detail_tags_title_text,
+            singleLine = true
+        )
         TagsRow(
             tagList = tags,
             isReadOnly = true
@@ -504,18 +503,14 @@ private fun TokenMarketHistory(
         Column(
             modifier = modifier
         ) {
-            Text(
+            CommonText(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 16.dp)
                     .clickable { onSeeAllTokenHistory() },
-                text = stringResource(id = R.string.token_detail_last_transactions_title_text),
-                fontFamily = montserratFontFamily,
-                color = Color.Black,
-                style = MaterialTheme.typography.titleLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Left
+                type = CommonTextTypeEnum.TITLE_LARGE,
+                titleRes = R.string.token_detail_last_transactions_title_text,
+                singleLine = true
             )
             repeat(Iterables.size(tokenMarketHistory)) {
                 TokenTransactionItem(
@@ -534,7 +529,14 @@ private fun TokenPricesChart(
     Column(
         modifier = modifier
     ) {
-        CommonTitleLarge(titleRes = R.string.token_detail_price_history_title_text)
+        CommonText(
+            modifier = Modifier
+                .padding(horizontal = 8.dp, vertical = 2.dp)
+                .fillMaxWidth(),
+            type = CommonTextTypeEnum.TITLE_LARGE,
+            titleRes = R.string.token_detail_price_history_title_text,
+            singleLine = true
+        )
         val chartEntryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
         Chart(
             modifier = Modifier

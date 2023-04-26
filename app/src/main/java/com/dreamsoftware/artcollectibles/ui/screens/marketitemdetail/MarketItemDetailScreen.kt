@@ -7,8 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,8 +31,13 @@ import com.dreamsoftware.artcollectibles.data.api.exception.FetchItemForSaleExce
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.extensions.format
-import com.dreamsoftware.artcollectibles.ui.theme.*
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
+import com.dreamsoftware.artcollectibles.ui.theme.Purple200
+import com.dreamsoftware.artcollectibles.ui.theme.Purple500
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import java.math.BigInteger
 
 data class MarketItemDetailScreenArgs(
@@ -188,20 +191,19 @@ fun MarketItemDetailComponent(
                         contentDescription = "Token Image"
                     )
                     Column {
-                        Text(
-                            text = if (it.sold) {
+                        CommonText(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            type = CommonTextTypeEnum.TITLE_MEDIUM,
+                            titleText = if (it.sold) {
                                 stringResource(id = R.string.market_item_detail_sold_at_label, it.soldAt?.format().orEmpty())
                             } else if (it.canceled) {
                                 stringResource(id = R.string.market_item_detail_canceled_at_label, it.canceledAt?.format().orEmpty())
                             } else {
                                 stringResource(id = R.string.market_item_detail_put_for_sale_at_label, it.putForSaleAt.format())
                             },
-                            fontFamily = montserratFontFamily,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            color = DarkPurple,
-                            style = MaterialTheme.typography.titleMedium
+                            textColor = DarkPurple
                         )
                         ArtCollectiblePrice(
                             modifier = Modifier
@@ -240,14 +242,13 @@ fun MarketItemDetailComponent(
             if (!isLoading) {
                 if (!isMarketHistoryItem && !isTokenSeller) {
                     if(!enoughFunds) {
-                        Text(
-                            text = stringResource(id = R.string.market_item_detail_not_enough_funds_text),
-                            fontFamily = montserratFontFamily,
+                        CommonText(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            color = DarkPurple,
-                            style = MaterialTheme.typography.titleMedium
+                            type = CommonTextTypeEnum.TITLE_MEDIUM,
+                            titleRes = R.string.market_item_detail_not_enough_funds_text,
+                            textColor = DarkPurple
                         )
                     }
                     CommonButton(

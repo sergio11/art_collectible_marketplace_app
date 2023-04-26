@@ -32,6 +32,8 @@ import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -121,11 +123,10 @@ fun ArtistDetailComponent(
                 modifier = defaultModifier.fillMaxWidth()
             ) {
                 userInfo?.professionalTitle?.let {
-                    Text(
+                    CommonText(
                         modifier = Modifier.align(Alignment.CenterStart),
-                        text = it,
-                        fontFamily = montserratFontFamily,
-                        style = MaterialTheme.typography.titleLarge
+                        type = CommonTextTypeEnum.TITLE_LARGE,
+                        titleText = it
                     )
                 }
                 if (!isAuthUser) {
@@ -211,27 +212,23 @@ fun ArtistDetailComponent(
                     )
                 }
             }
-            Text(
+            CommonText(
                 modifier = defaultModifier,
-                text = userInfo?.info?.let {
+                type = CommonTextTypeEnum.BODY_LARGE,
+                titleText = userInfo?.info?.let {
                     it.ifBlank {
                         stringResource(id = R.string.search_user_info_description_empty)
                     }
-                } ?: stringResource(id = R.string.no_text_value),
-                fontFamily = montserratFontFamily,
-                style = MaterialTheme.typography.bodyLarge
+                }
             )
             userInfo?.tags?.let { tags ->
                 if (tags.isNotEmpty()) {
-                    Text(
-                        text = stringResource(id = R.string.profile_tokens_artist_interested_in),
-                        color = DarkPurple,
+                    CommonText(
                         modifier = defaultModifier,
-                        fontFamily = montserratFontFamily,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Left,
-                        style = MaterialTheme.typography.titleLarge
+                        type = CommonTextTypeEnum.TITLE_LARGE,
+                        titleRes = R.string.profile_tokens_artist_interested_in,
+                        textColor = DarkPurple,
+                        maxLines = 2
                     )
                     TagsRow(
                         modifier = defaultModifier,
@@ -241,15 +238,12 @@ fun ArtistDetailComponent(
                 }
             }
             currentBalance?.let {
-                Text(
-                    text = stringResource(id = R.string.profile_tokens_artist_account_balance),
-                    color = DarkPurple,
+                CommonText(
                     modifier = defaultModifier,
-                    fontFamily = montserratFontFamily,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.titleLarge
+                    type = CommonTextTypeEnum.TITLE_LARGE,
+                    titleRes = R.string.profile_tokens_artist_account_balance,
+                    textColor = DarkPurple,
+                    maxLines = 2
                 )
                 CurrentAccountBalance(
                     modifier = defaultModifier,

@@ -8,16 +8,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
-import com.dreamsoftware.artcollectibles.ui.components.core.ExpandableText
+import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
@@ -35,27 +32,15 @@ fun ArtCollectibleMiniInfoComponent(
     onSeeCreatorDetail: (userUid: String) -> Unit = {}
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = artCollectible?.metadata?.name ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            style = MaterialTheme.typography.titleLarge,
-            maxLines = 1,
-            color = Color.Black,
-            overflow = TextOverflow.Ellipsis
+        CommonText(
+            type = CommonTextTypeEnum.TITLE_LARGE,
+            titleText = artCollectible?.metadata?.name
         )
-        Text(
-            text = artCollectible?.metadata?.createdAt?.format()?.let {
+        CommonText(
+            type = CommonTextTypeEnum.TITLE_SMALL,
+            titleText = artCollectible?.metadata?.createdAt?.format()?.let {
                 stringResource(id = R.string.token_detail_created_at_label, it)
-            } ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 2.dp)
-                .fillMaxWidth(),
-            color = Color.Black,
-            style = MaterialTheme.typography.titleSmall
+            }
         )
         FlowRow(
             crossAxisAlignment = FlowCrossAxisAlignment.Center

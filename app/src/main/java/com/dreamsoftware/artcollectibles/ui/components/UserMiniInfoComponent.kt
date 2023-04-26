@@ -1,18 +1,14 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 
 @Composable
 fun UserMiniInfoComponent(
@@ -33,24 +29,17 @@ fun UserMiniInfoComponent(
             modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(
+            CommonText(
                 modifier = Modifier.padding(vertical = 2.dp),
-                text = userInfo?.name ?: stringResource(id = R.string.no_text_value),
-                fontFamily = montserratFontFamily,
-                style = MaterialTheme.typography.labelLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = Color.Black
+                type = CommonTextTypeEnum.LABEL_LARGE,
+                titleText = userInfo?.name
             )
             userInfo?.professionalTitle?.let {
-                Text(
+                CommonText(
                     modifier = Modifier.padding(vertical = 2.dp),
-                    text = it,
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.labelMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = Color.DarkGray,
+                    type = CommonTextTypeEnum.LABEL_MEDIUM,
+                    titleText = it,
+                    textColor = Color.DarkGray
                 )
             }
             UserStatisticsComponent(

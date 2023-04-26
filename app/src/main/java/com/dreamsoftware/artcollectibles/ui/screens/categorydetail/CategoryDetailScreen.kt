@@ -5,20 +5,15 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,7 +22,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
@@ -96,28 +92,23 @@ fun CategoryDetailComponent(
                 stringResource(id = R.string.no_text_value)
             } ?: stringResource(id = R.string.no_text_value)
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
-                text = uiState.category?.description?.ifBlank {
+            CommonText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                type = CommonTextTypeEnum.TITLE_MEDIUM,
+                titleText = uiState.category?.description?.ifBlank {
                     stringResource(id = R.string.no_text_value)
-                } ?: stringResource(id = R.string.no_text_value),
-                color = Color.Black,
-                fontFamily = montserratFontFamily,
-                textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.titleMedium,
+                } ?: stringResource(id = R.string.no_text_value)
             )
             if(!Iterables.isEmpty(tokensForSale)) {
-                Text(
-                    text = stringResource(id = R.string.category_detail_tokens_title),
-                    color = Color.Black,
+                CommonText(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 8.dp)
                         .fillMaxWidth(),
-                    fontFamily = montserratFontFamily,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.titleLarge
+                    type = CommonTextTypeEnum.TITLE_LARGE,
+                    titleRes = R.string.category_detail_tokens_title,
+                    maxLines = 2
                 )
             }
             FlowRow(

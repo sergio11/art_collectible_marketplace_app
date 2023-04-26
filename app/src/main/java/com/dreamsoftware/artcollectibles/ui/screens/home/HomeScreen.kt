@@ -20,8 +20,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -30,6 +28,8 @@ import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 import com.dreamsoftware.artcollectibles.ui.theme.*
@@ -211,16 +211,15 @@ private fun MarketStatisticsRow(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = stringResource(id = R.string.home_market_statistics_title),
-                    color = Color.White,
-                    modifier = Modifier
-                        .padding(8.dp),
-                    fontFamily = montserratFontFamily,
-                    style = MaterialTheme.typography.titleLarge
+                CommonText(
+                    modifier = Modifier.padding(8.dp),
+                    type = CommonTextTypeEnum.TITLE_LARGE,
+                    titleRes = R.string.home_market_statistics_title,
+                    textColor = Color.White
                 )
                 Image(
-                    modifier = Modifier.padding(end = 5.dp)
+                    modifier = Modifier
+                        .padding(end = 5.dp)
                         .size(35.dp)
                         .clickable { onShowAllItems() },
                     painter = painterResource(R.drawable.arrow_right_icon),
@@ -291,19 +290,15 @@ private fun MarketStatisticsCard(
                 .padding(10.dp)
                 .align(Alignment.TopCenter)
         ) {
-            Text(
-                text = stringResource(id = titleRes),
-                color = Color.White,
-                fontFamily = montserratFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                style = MaterialTheme.typography.headlineMedium
+            CommonText(
+                type = CommonTextTypeEnum.TITLE_MEDIUM,
+                titleRes = titleRes,
+                textColor = Color.White
             )
-            Text(
-                text = value,
-                color = Color.White,
-                fontFamily = montserratFontFamily,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineLarge
+            CommonText(
+                type = CommonTextTypeEnum.TITLE_SMALL,
+                titleText = value,
+                textColor = Color.White
             )
         }
     }

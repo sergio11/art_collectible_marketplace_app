@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,9 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -29,10 +24,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.UserAccountProfilePicture
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalColumnScreen
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import com.google.common.collect.Iterables
 import java.math.BigInteger
 
@@ -113,48 +109,35 @@ private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
                     modifier = Modifier.padding(start = 16.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = user.name,
-                        fontFamily = montserratFontFamily,
-                        color = Color.Gray,
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Left
+                    CommonText(
+                        type = CommonTextTypeEnum.TITLE_MEDIUM,
+                        titleText = user.name,
+                        textColor = Color.Gray,
+                        singleLine = true
                     )
                     user.professionalTitle?.let {
-                        Text(
+                        CommonText(
                             modifier = Modifier.padding(vertical = 2.dp),
-                            text = it,
-                            fontFamily = montserratFontFamily,
-                            style = MaterialTheme.typography.labelMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = Color.DarkGray,
+                            type = CommonTextTypeEnum.LABEL_MEDIUM,
+                            titleText = it,
+                            singleLine = true,
+                            textColor = Color.DarkGray
                         )
                     }
-                    Text(
+                    CommonText(
                         modifier = Modifier.padding(top = 4.dp),
-                        text = text,
-                        fontFamily = montserratFontFamily,
-                        color = Color.Black,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 5,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Left
+                        type = CommonTextTypeEnum.BODY_MEDIUM,
+                        titleText = text,
+                        maxLines = 5
                     )
                 }
             }
-            Text(
+            CommonText(
                 modifier = Modifier.align(Alignment.End),
-                text = createdAt.format(),
-                fontFamily = montserratFontFamily,
-                color = Color.Gray,
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Left
+                type = CommonTextTypeEnum.TITLE_SMALL,
+                titleText = createdAt.format(),
+                textColor = Color.Gray,
+                singleLine = true
             )
         }
     }

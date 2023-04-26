@@ -9,19 +9,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @Composable
 fun CommonButton(
@@ -54,12 +53,12 @@ fun CommonButton(
         shape = buttonShape,
         colors = colors
     ) {
-        Text(
-            stringResource(text),
+        CommonText(
             modifier = Modifier.padding(vertical = 4.dp),
-            fontSize = 15.sp,
-            fontFamily = montserratFontFamily,
-            fontWeight = FontWeight.SemiBold
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
+            titleText = stringResource(text),
+            textColor = Color.White,
+            textAlign = TextAlign.Center
         )
     }
 }

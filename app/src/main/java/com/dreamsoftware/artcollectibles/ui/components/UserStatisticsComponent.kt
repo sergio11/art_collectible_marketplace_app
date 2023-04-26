@@ -6,21 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 
 @Composable
 fun UserStatisticsComponent(
@@ -58,12 +56,11 @@ private fun StatisticItem(
             contentScale = ContentScale.Crop,
             modifier = Modifier.size(itemSize)
         )
-        Text(
+        CommonText(
             modifier = Modifier.padding(start = 5.dp),
-            text = value?.toString() ?: stringResource(id = R.string.no_text_value),
-            fontFamily = montserratFontFamily,
-            style = MaterialTheme.typography.titleMedium,
-            color = palette?.lightVibrantSwatch?.rgb?.let { paletteColor ->
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
+            titleText = value?.toString(),
+            textColor = palette?.lightVibrantSwatch?.rgb?.let { paletteColor ->
                 Color(paletteColor)
             } ?: Color.Black
         )
