@@ -1,8 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
 import android.content.Context
-import android.graphics.Typeface
-import android.text.TextUtils
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -16,12 +14,10 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +28,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonChart
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
@@ -39,11 +36,6 @@ import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 import com.google.common.collect.Iterables
-import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.component.text.textComponent
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import java.math.BigInteger
 
@@ -526,40 +518,9 @@ private fun TokenMarketHistory(
 private fun TokenPricesChart(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-    ) {
-        CommonText(
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 16.dp)
-                .fillMaxWidth(),
-            type = CommonTextTypeEnum.TITLE_LARGE,
-            titleRes = R.string.token_detail_price_history_title_text,
-            singleLine = true
-        )
-        val chartEntryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
-        Chart(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            chart = lineChart(),
-            model = chartEntryModel,
-            startAxis = startAxis(),
-            bottomAxis = bottomAxis(
-                label = textComponent {
-                    color = Purple700.toArgb()
-                    textSizeSp = 12f
-                    typeface = Typeface.MONOSPACE
-                    ellipsize = TextUtils.TruncateAt.END
-                },
-                title = stringResource(id = R.string.token_detail_price_history_title_text),
-                titleComponent = textComponent {
-                    color = Purple700.toArgb()
-                    textSizeSp = 20f
-                    typeface = Typeface.MONOSPACE
-                    ellipsize = TextUtils.TruncateAt.END
-                }
-            )
-        )
-    }
+    CommonChart(
+        modifier = modifier,
+        titleRes = R.string.token_detail_price_history_title_text,
+        entryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
+    )
 }
