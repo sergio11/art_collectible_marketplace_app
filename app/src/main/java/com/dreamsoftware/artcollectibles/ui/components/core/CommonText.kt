@@ -30,7 +30,10 @@ enum class CommonTextTypeEnum {
     LABEL_SMALL,
     BODY_SMALL,
     BODY_MEDIUM,
-    BODY_LARGE
+    BODY_LARGE,
+    HEADLINE_SMALL,
+    HEADLINE_MEDIUM,
+    HEADLINE_LARGE
 }
 
 @Composable
@@ -64,6 +67,9 @@ fun CommonText(
                 CommonTextTypeEnum.BODY_SMALL -> bodySmall
                 CommonTextTypeEnum.BODY_MEDIUM -> bodyMedium
                 CommonTextTypeEnum.BODY_LARGE -> bodyLarge
+                CommonTextTypeEnum.HEADLINE_SMALL -> headlineSmall
+                CommonTextTypeEnum.HEADLINE_MEDIUM -> headlineMedium
+                CommonTextTypeEnum.HEADLINE_LARGE -> headlineLarge
             }
         }
     )

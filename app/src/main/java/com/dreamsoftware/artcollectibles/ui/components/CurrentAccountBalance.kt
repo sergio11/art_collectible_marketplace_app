@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.AccountBalance
 import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 private val DEFAULT_TEXT_SIZE = 13.sp
 private val DEFAULT_TEXT_COLOR = Color.White
@@ -50,7 +51,8 @@ fun CurrentAccountBalance(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp),
                 color = textColor,
-                fontSize = textSize
+                fontSize = textSize,
+                fontFamily = montserratFontFamily
             )
         }
         if(fullMode) {

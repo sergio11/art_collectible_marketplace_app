@@ -12,10 +12,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
 
 @Composable
 fun MarketStatisticsScreen(
-    viewModel: MarketStatisticsViewModel = hiltViewModel()
+    viewModel: MarketStatisticsViewModel = hiltViewModel(),
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -35,7 +37,8 @@ fun MarketStatisticsScreen(
         }
         MarketStatisticsComponent(
             context = context,
-            state = uiState
+            state = uiState,
+            onBackPressed = onBackPressed
         )
     }
 }
@@ -43,12 +46,18 @@ fun MarketStatisticsScreen(
 @Composable
 internal fun MarketStatisticsComponent(
     context: Context,
-    state: MarketStatisticsUiState
+    state: MarketStatisticsUiState,
+    onBackPressed: () -> Unit,
 ) {
     with(state) {
         BasicScreen(
             titleRes = R.string.market_statistics_main_title,
             enableVerticalScroll = true,
+            centerTitle = true,
+            navigationAction = TopBarAction(
+                iconRes = R.drawable.back_icon,
+                onActionClicked = onBackPressed
+            )
         ) {
 
         }

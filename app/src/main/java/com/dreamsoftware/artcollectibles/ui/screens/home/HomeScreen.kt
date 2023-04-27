@@ -6,7 +6,6 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,10 +27,7 @@ import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTopAppBar
-import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
+import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.common.collect.Iterables
 import java.math.BigInteger
@@ -84,7 +80,6 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeComponent(
     navController: NavController,
@@ -102,36 +97,26 @@ private fun HomeComponent(
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
-        Scaffold(
-            bottomBar = {
-                BottomBar(navController)
-            },
-            topBar = {
-                CommonTopAppBar(
-                    titleRes = R.string.home_main_title,
-                    navigationAction = TopBarAction(iconRes = R.drawable.splash_app_icon),
-                    menuActions = listOf(
-                        TopBarAction(
-                            iconRes = R.drawable.statistics_icon,
-                            onActionClicked = onShowMarketStatistics
-                        ),
-                        TopBarAction(
-                            iconRes = R.drawable.notification_icon,
-                            onActionClicked = {
+        BasicScreen(
+            titleRes = R.string.home_main_title,
+            navController = navController,
+            hasBottomBar = true,
+            menuActions = listOf(
+                TopBarAction(
+                    iconRes = R.drawable.statistics_icon,
+                    onActionClicked = onShowMarketStatistics
+                ),
+                TopBarAction(
+                    iconRes = R.drawable.notification_icon,
+                    onActionClicked = {
 
-                            }
-                        )
-                    )
+                    }
                 )
-            },
-            containerColor = Purple40
-        ) { paddingValues ->
-            ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
-            Column(
-                Modifier
-                    .padding(paddingValues)
-                    .verticalScroll(rememberScrollState())
-            ) {
+            ),
+            navigationAction = TopBarAction(iconRes = R.drawable.splash_app_icon),
+            screenContainerColor = Purple40,
+            enableVerticalScroll = true,
+            screenContent = {
                 marketplaceStatistics?.let {
                     MarketStatisticsRow(
                         marketplaceStatistics = it,
@@ -192,7 +177,7 @@ private fun HomeComponent(
                     onMarketItemSelected = onGoToMarketHistoryItemDetail
                 )
             }
-        }
+        )
     }
 }
 
@@ -286,17 +271,19 @@ private fun MarketStatisticsCard(
         )
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(10.dp)
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopCenter),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             CommonText(
-                type = CommonTextTypeEnum.TITLE_MEDIUM,
+                type = CommonTextTypeEnum.HEADLINE_MEDIUM,
                 titleRes = titleRes,
                 textColor = Color.White
             )
             CommonText(
-                type = CommonTextTypeEnum.TITLE_SMALL,
+                modifier = Modifier.padding(start = 4.dp),
+                type = CommonTextTypeEnum.HEADLINE_LARGE,
                 titleText = value,
                 textColor = Color.White
             )

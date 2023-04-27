@@ -12,12 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,18 +34,16 @@ fun AccountScreen(
         Box(modifier = Modifier.padding(paddingValues)) {
             ScreenBackgroundImage(screenBackgroundRes)
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 32.dp)
                     .padding(top = 80.dp)
                     .fillMaxSize()
             ) {
-                Text(
-                    stringResource(mainTitleRes),
-                    color = Color.White,
-                    fontSize = 37.sp,
-                    lineHeight = 40.sp,
-                    fontFamily = montserratFontFamily,
-                    fontWeight = FontWeight.Black
+                CommonText(
+                    type = CommonTextTypeEnum.HEADLINE_LARGE,
+                    textColor = Color.White,
+                    titleRes = mainTitleRes
                 )
                 Spacer(Modifier.height(60.dp))
                 Card(

@@ -280,7 +280,7 @@ private fun TokenDetailBody(
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(10.dp),
                 artCollectible = artCollectible,
                 onSeeAllComments = onSeeAllComments,
                 onSeeLikesByToken = onSeeLikesByToken,
@@ -323,7 +323,7 @@ private fun TokenDetailBody(
                     onSeeTokenDetail(it.id)
                 }
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             if (isTokenAddedForSale) {
                 CommonButton(
                     modifier = Modifier
@@ -480,8 +480,8 @@ private fun TokenTags(
     ) {
         CommonText(
             modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 2.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 16.dp),
             type = CommonTextTypeEnum.TITLE_LARGE,
             titleRes = R.string.token_detail_tags_title_text,
             singleLine = true
@@ -531,7 +531,7 @@ private fun TokenPricesChart(
     ) {
         CommonText(
             modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 2.dp)
+                .padding(horizontal = 8.dp, vertical = 16.dp)
                 .fillMaxWidth(),
             type = CommonTextTypeEnum.TITLE_LARGE,
             titleRes = R.string.token_detail_price_history_title_text,

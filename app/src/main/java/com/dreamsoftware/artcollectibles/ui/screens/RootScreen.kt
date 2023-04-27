@@ -105,7 +105,9 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.MarketStatistics.route) {
-            MarketStatisticsScreen()
+            MarketStatisticsScreen {
+                navigationController.popBackStack()
+            }
         }
         composable(DestinationItem.MyTokens.route) {
             MyTokensScreen(navigationController) {

@@ -11,8 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -21,7 +19,8 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 
 val CommonDefaultTagsInputModifier = Modifier
     .padding(vertical = 15.dp)
@@ -43,14 +42,12 @@ fun TagsInputComponent(
             .background(Color.White, RoundedCornerShape(percent = 5))
             .then(modifier)
     ) {
-        Text(
-            text = stringResource(id = titleRes),
-            fontFamily = montserratFontFamily,
+        CommonText(
             modifier = Modifier
                 .padding(horizontal = 12.dp, vertical = 8.dp)
                 .fillMaxWidth(),
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.Black
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
+            titleRes = titleRes
         )
         TagsRow(
             modifier = Modifier

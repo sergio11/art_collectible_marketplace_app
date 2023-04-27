@@ -33,11 +33,13 @@ fun ArtCollectibleMiniInfoComponent(
 ) {
     Column(modifier = modifier) {
         CommonText(
+            modifier = Modifier.padding(8.dp),
             type = CommonTextTypeEnum.TITLE_LARGE,
             titleText = artCollectible?.metadata?.name
         )
         CommonText(
-            type = CommonTextTypeEnum.TITLE_SMALL,
+            modifier = Modifier.padding(8.dp),
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
             titleText = artCollectible?.metadata?.createdAt?.format()?.let {
                 stringResource(id = R.string.token_detail_created_at_label, it)
             }

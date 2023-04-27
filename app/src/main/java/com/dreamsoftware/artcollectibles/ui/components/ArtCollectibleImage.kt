@@ -30,7 +30,6 @@ fun ArtCollectibleImage(
                 color = Color.Transparent,
                 shape = RoundedCornerShape(27.dp)
             )
-            .fillMaxSize()
             .clip(RoundedCornerShape(27.dp)),
         context = context,
         imageUrl = artCollectible.metadata.imageUrl

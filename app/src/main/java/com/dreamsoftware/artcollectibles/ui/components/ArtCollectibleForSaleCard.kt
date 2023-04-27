@@ -1,9 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import android.content.Context
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonArtCollectibleMiniCard
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 
 
@@ -30,11 +29,13 @@ fun ArtCollectibleForSaleCard(
             reverseStyle = reverseStyle,
             onClicked = onClicked
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 10.dp).padding(bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 15.dp)
+                    .padding(bottom = 8.dp)
             ) {
                 ArtCollectiblePrice(
+                    modifier = Modifier.align(Alignment.CenterStart),
                     iconSize = 15.dp,
                     textSize = 15.sp,
                     priceData = price,
@@ -44,9 +45,10 @@ fun ArtCollectibleForSaleCard(
                         Color.Black
                     }
                 )
-                Spacer(Modifier.weight(0.9f))
                 FavoriteCountComponent(
-                    artCollectible = token, defaultColor = if (reverseStyle) {
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    artCollectible = token,
+                    defaultColor = if (reverseStyle) {
                         BackgroundWhite
                     } else {
                         Color.Black

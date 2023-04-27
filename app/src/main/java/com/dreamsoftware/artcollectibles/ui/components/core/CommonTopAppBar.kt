@@ -12,13 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,18 +26,16 @@ fun CommonTopAppBar(
 ) {
     TopAppBar(
         title = {
-            Text(
-                stringResource(id = titleRes),
+            CommonText(
+                type = CommonTextTypeEnum.HEADLINE_SMALL,
                 modifier = if (centerTitle) {
                     Modifier.fillMaxWidth()
                 } else {
                     Modifier
                 },
+                titleRes = titleRes,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontFamily = montserratFontFamily,
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White
+                textColor = Color.White
             )
         },
         navigationIcon = {

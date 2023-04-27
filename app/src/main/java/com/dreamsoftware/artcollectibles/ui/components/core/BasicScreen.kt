@@ -23,6 +23,7 @@ fun BasicScreen(
     @DrawableRes backgroundRes: Int = R.drawable.screen_background_2,
     centerTitle: Boolean = false,
     menuActions: List<TopBarAction> = emptyList(),
+    navigationAction: TopBarAction? = null,
     navController: NavController? = null,
     screenContainerColor: Color = MaterialTheme.colorScheme.background,
     hasBottomBar: Boolean = false,
@@ -41,6 +42,7 @@ fun BasicScreen(
         topBar = {
             CommonTopAppBar(
                 titleRes = titleRes,
+                navigationAction = navigationAction,
                 centerTitle = centerTitle,
                 menuActions =  menuActions
             )

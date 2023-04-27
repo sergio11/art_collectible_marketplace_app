@@ -228,6 +228,7 @@ internal fun ProfileComponent(
                         isSingleLine = false,
                         onValueChanged = onInfoChanged
                     )
+                    Spacer(modifier = Modifier.height(50.dp))
                     CommonButton(
                         modifier = Modifier
                             .padding(bottom = 8.dp)
