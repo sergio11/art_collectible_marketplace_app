@@ -48,6 +48,7 @@ fun MyTokensScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
@@ -55,6 +56,7 @@ fun MyTokensScreen(
         }
         MyTokensComponent(
             navController = navController,
+            snackBarHostState = snackBarHostState,
             context = context,
             state = uiState,
             lazyGridState = lazyGridState,
@@ -70,6 +72,7 @@ fun MyTokensScreen(
 @Composable
 internal fun MyTokensComponent(
     navController: NavController,
+    snackBarHostState: SnackbarHostState,
     context: Context,
     state: MyTokensUiState,
     lazyGridState: LazyGridState,
@@ -80,6 +83,7 @@ internal fun MyTokensComponent(
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
         BasicScreen(
+            snackBarHostState = snackBarHostState,
             titleRes = state.tabSelectedTitle ?: R.string.my_tokens_main_title,
             centerTitle = true,
             navController = navController,
@@ -89,7 +93,7 @@ internal fun MyTokensComponent(
             MyTokensTabsRow(state, onNewTabSelected)
             MyTokensLazyList(context, state, lazyGridState, onTokenClicked)
             ErrorStateNotificationComponent(
-                isVisible = tokens.isEmpty() || !errorMessage.isNullOrBlank(),
+                isVisible = !isLoading && tokens.isEmpty() || !errorMessage.isNullOrBlank(),
                 imageRes = if (tokens.isEmpty()) {
                     R.drawable.not_data_found
                 } else {

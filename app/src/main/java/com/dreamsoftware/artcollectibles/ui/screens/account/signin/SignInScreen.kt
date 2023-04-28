@@ -57,10 +57,10 @@ fun SignInScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     SignInComponent(
-        modifier,
-        state,
-        snackBarHostState,
-        coroutineScope,
+        modifier = modifier,
+        state = state,
+        snackBarHostState = snackBarHostState,
+        coroutineScope = coroutineScope,
         onEmailChanged = {
             viewModel.onEmailChanged(newEmail = it)
         },

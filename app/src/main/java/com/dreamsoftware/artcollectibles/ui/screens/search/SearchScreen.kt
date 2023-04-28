@@ -11,10 +11,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -51,11 +49,13 @@ fun SearchScreen(
     }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
+    val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             load()
         }
         SearchComponent(
+            snackBarHostState = snackBarHostState,
             context = context,
             state = uiState,
             lazyGridState = lazyGridState,
@@ -69,6 +69,7 @@ fun SearchScreen(
 
 @Composable
 internal fun SearchComponent(
+    snackBarHostState: SnackbarHostState,
     context: Context,
     state: SearchUiState,
     lazyGridState: LazyGridState,
@@ -80,6 +81,7 @@ internal fun SearchComponent(
     LoadingDialog(isShowingDialog = state.isLoading)
     BasicScreen(
         titleRes = R.string.search_main_title_text,
+        snackBarHostState = snackBarHostState,
         centerTitle = true,
         navController = navController,
         hasBottomBar = true,

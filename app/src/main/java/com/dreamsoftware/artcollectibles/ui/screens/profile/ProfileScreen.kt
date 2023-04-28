@@ -61,6 +61,7 @@ fun ProfileScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(isProfileLoaded()) {
             if (!isProfileLoaded()) {
@@ -69,6 +70,7 @@ fun ProfileScreen(
         }
         ProfileComponent(
             context = LocalContext.current,
+            snackBarHostState = snackBarHostState,
             fileProviderId = getFileProviderAuthority(),
             navController = navController,
             state = state,
@@ -93,6 +95,7 @@ fun ProfileScreen(
 @Composable
 internal fun ProfileComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     fileProviderId: String,
     navController: NavController,
     state: ProfileUiState,
@@ -117,6 +120,7 @@ internal fun ProfileComponent(
         onCloseSessionDialogVisibilityChanged(false)
     })
     BasicScreen(
+        snackBarHostState = snackBarHostState,
         titleRes = R.string.profile_main_title_text,
         navController = navController,
         hasBottomBar = true,

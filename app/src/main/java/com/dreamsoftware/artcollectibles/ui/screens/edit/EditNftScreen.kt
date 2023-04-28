@@ -8,10 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,12 +52,14 @@ fun EditNftScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             load(metadataCid = args.metadataCid)
         }
         EditNftComponent(
             state = state,
+            snackBarHostState = snackBarHostState,
             onNameChanged = ::onNameChanged,
             onDescriptionChanged = ::onDescriptionChanged,
             onAddNewTag = ::onAddNewTag,
@@ -73,6 +73,7 @@ fun EditNftScreen(
 @Composable
 internal fun EditNftComponent(
     state: EditNftUiState,
+    snackBarHostState: SnackbarHostState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onAddNewTag: (tag: String) -> Unit,
@@ -83,6 +84,7 @@ internal fun EditNftComponent(
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
         BasicScreen(
+            snackBarHostState = snackBarHostState,
             titleRes = R.string.edit_nft_main_title_text,
             centerTitle = true,
             enableVerticalScroll = true,

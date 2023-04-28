@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -48,11 +46,13 @@ fun MarketStatisticsScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
         }
         MarketStatisticsComponent(
+            snackBarHostState = snackBarHostState,
             context = context,
             state = uiState,
             onBackPressed = onBackPressed
@@ -63,12 +63,14 @@ fun MarketStatisticsScreen(
 @Composable
 internal fun MarketStatisticsComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     state: MarketStatisticsUiState,
     onBackPressed: () -> Unit,
 ) {
     with(state) {
         BasicScreen(
             titleRes = R.string.market_statistics_main_title,
+            snackBarHostState = snackBarHostState,
             enableVerticalScroll = true,
             centerTitle = true,
             navigationAction = TopBarAction(

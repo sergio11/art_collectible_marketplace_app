@@ -75,6 +75,7 @@ internal class TokenMetadataRepositoryImpl(
                     )
                 }
             } catch (ex: Exception) {
+                ex.printStackTrace()
                 throw UpdateTokenMetadataDataException(
                     "An error occurred when trying to update token metadata",
                     ex
@@ -120,9 +121,7 @@ internal class TokenMetadataRepositoryImpl(
                 try {
                     ipfsDataSource.fetchByCreatorAddress(address).also {
                         tokenMetadataDatabaseDataSource.save(
-                            tokenMetadataToEntityMapper.mapInListToOutList(
-                                it
-                            )
+                            tokenMetadataToEntityMapper.mapInListToOutList(it)
                         )
                     }.map {
                         TokenMetadataMapper.InputData(
@@ -157,9 +156,7 @@ internal class TokenMetadataRepositoryImpl(
                 try {
                     ipfsDataSource.fetchByCid(cid).also {
                         tokenMetadataDatabaseDataSource.save(
-                            tokenMetadataToEntityMapper.mapInToOut(
-                                it
-                            )
+                            tokenMetadataToEntityMapper.mapInToOut(it)
                         )
                     }.let {
                         tokenMetadataMapper.mapInToOut(

@@ -6,10 +6,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,12 +57,14 @@ fun HomeScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             loadData()
         }
         HomeComponent(
             navController = navController,
+            snackBarHostState = snackBarHostState,
             context = context,
             uiState = uiState,
             onGoToMarketItemDetail = onGoToMarketItemDetail,
@@ -83,6 +83,7 @@ fun HomeScreen(
 @Composable
 private fun HomeComponent(
     navController: NavController,
+    snackBarHostState: SnackbarHostState,
     context: Context,
     uiState: HomeUiState,
     onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
@@ -99,6 +100,7 @@ private fun HomeComponent(
         LoadingDialog(isShowingDialog = isLoading)
         BasicScreen(
             titleRes = R.string.home_main_title,
+            snackBarHostState = snackBarHostState,
             navController = navController,
             hasBottomBar = true,
             menuActions = listOf(

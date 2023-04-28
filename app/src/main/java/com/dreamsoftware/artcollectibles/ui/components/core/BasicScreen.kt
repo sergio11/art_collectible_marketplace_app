@@ -5,9 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +17,7 @@ import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicScreen(
+    snackBarHostState: SnackbarHostState,
     @StringRes titleRes: Int,
     @DrawableRes backgroundRes: Int = R.drawable.screen_background_2,
     centerTitle: Boolean = false,
@@ -39,6 +38,7 @@ fun BasicScreen(
                 }
             }
         },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             CommonTopAppBar(
                 titleRes = titleRes,
