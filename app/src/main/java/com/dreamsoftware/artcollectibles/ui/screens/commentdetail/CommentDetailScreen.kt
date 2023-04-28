@@ -2,11 +2,12 @@ package com.dreamsoftware.artcollectibles.ui.screens.commentdetail
 
 import android.content.Context
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +32,6 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 import java.math.BigInteger
 
 data class CommentDetailScreenArgs(

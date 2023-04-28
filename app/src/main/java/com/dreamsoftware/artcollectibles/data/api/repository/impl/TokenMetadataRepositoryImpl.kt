@@ -1,19 +1,14 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import com.dreamsoftware.artcollectibles.data.api.exception.CreateTokenMetadataDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.DeleteTokenMetadataDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.FetchByAuthorAddressDataException
-import com.dreamsoftware.artcollectibles.data.api.exception.FetchByCidDataException
-import com.dreamsoftware.artcollectibles.data.api.mapper.CreateArtCollectibleMetadataMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataToEntityMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataEntityMapper
-import com.dreamsoftware.artcollectibles.data.api.mapper.TokenMetadataMapper
+import com.dreamsoftware.artcollectibles.data.api.exception.*
+import com.dreamsoftware.artcollectibles.data.api.mapper.*
 import com.dreamsoftware.artcollectibles.data.api.repository.ITokenMetadataRepository
 import com.dreamsoftware.artcollectibles.data.database.datasource.metadata.ITokenMetadataDatabaseDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDataSource
 import com.dreamsoftware.artcollectibles.data.ipfs.datasource.IpfsDataSource
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMetadata
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectibleMetadata
+import com.dreamsoftware.artcollectibles.domain.models.UpdateArtCollectibleMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -28,6 +23,7 @@ import kotlinx.coroutines.withContext
  * @param tokenMetadataToEntityMapper
  * @param tokenMetadataEntityMapper
  * @param categoriesDataSource
+ * @param updateArtCollectibleMetadataMapper
  */
 internal class TokenMetadataRepositoryImpl(
     private val ipfsDataSource: IpfsDataSource,
@@ -36,7 +32,8 @@ internal class TokenMetadataRepositoryImpl(
     private val tokenMetadataMapper: TokenMetadataMapper,
     private val tokenMetadataToEntityMapper: TokenMetadataToEntityMapper,
     private val tokenMetadataEntityMapper: TokenMetadataEntityMapper,
-    private val categoriesDataSource: ICategoriesDataSource
+    private val categoriesDataSource: ICategoriesDataSource,
+    private val updateArtCollectibleMetadataMapper: UpdateArtCollectibleMetadataMapper
 ) : ITokenMetadataRepository {
 
     @Throws(CreateTokenMetadataDataException::class)
@@ -58,6 +55,28 @@ internal class TokenMetadataRepositoryImpl(
             } catch (ex: Exception) {
                 throw CreateTokenMetadataDataException(
                     "An error occurred when trying to save token metadata",
+                    ex
+                )
+            }
+        }
+
+    @Throws(UpdateTokenMetadataDataException::class)
+    override suspend fun update(tokenMetadata: UpdateArtCollectibleMetadata): ArtCollectibleMetadata =
+        withContext(Dispatchers.Default) {
+            try {
+                ipfsDataSource.update(updateArtCollectibleMetadataMapper.mapInToOut(tokenMetadata)).also {
+                    tokenMetadataDatabaseDataSource.save(tokenMetadataToEntityMapper.mapInToOut(it))
+                }.let {
+                    tokenMetadataMapper.mapInToOut(
+                        TokenMetadataMapper.InputData(
+                            tokenMetadata = it,
+                            category = categoriesDataSource.getByUid(it.categoryUid)
+                        )
+                    )
+                }
+            } catch (ex: Exception) {
+                throw UpdateTokenMetadataDataException(
+                    "An error occurred when trying to update token metadata",
                     ex
                 )
             }

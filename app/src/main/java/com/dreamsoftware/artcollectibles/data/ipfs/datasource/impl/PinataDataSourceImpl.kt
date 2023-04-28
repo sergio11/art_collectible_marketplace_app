@@ -41,9 +41,10 @@ internal class PinataDataSourceImpl(
             }
         }
 
-    override suspend fun update(metadata: UpdateTokenMetadataDTO) = safeNetworkCall {
+    override suspend fun update(metadata: UpdateTokenMetadataDTO): TokenMetadataDTO = safeNetworkCall {
         val tokenMetadataToUpdate = updateTokenMetadataMapper.mapInToOut(metadata)
         pinataPinningService.updateMetadata(tokenMetadataToUpdate)
+        tokenMetadataMapper.mapInToOut(pinataQueryFilesService.getPinnedFileByCid(metadata.cid).rows.first())
     }
 
     override suspend fun delete(cid: String) = safeNetworkCall {
@@ -57,8 +58,7 @@ internal class PinataDataSourceImpl(
     override suspend fun fetchByCreatorAddress(creatorAddress: String): Iterable<TokenMetadataDTO> =
         safeNetworkCall {
             tokenMetadataMapper.mapInListToOutList(
-                pinataQueryFilesService.getPinnedFileByCreatorAddress(creatorAddress)
-                    .rows
+                pinataQueryFilesService.getPinnedFileByCreatorAddress(creatorAddress).rows
             )
         }
 }

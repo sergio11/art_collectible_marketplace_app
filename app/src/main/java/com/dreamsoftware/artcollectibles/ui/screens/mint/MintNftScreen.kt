@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.add
+package com.dreamsoftware.artcollectibles.ui.screens.mint
 
 import android.Manifest
 import android.content.Context
@@ -45,13 +45,14 @@ private val ROYALTY_RANGE = 0.0f..40.0f
 private const val ROYALTY_STEPS = 3
 
 @Composable
-fun AddNftScreen(
-    viewModel: AddNftViewModel = hiltViewModel(),
+fun MintNftScreen(
+    viewModel: MintNftViewModel = hiltViewModel(),
     onExitClicked: () -> Unit
 ) {
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycle = lifecycleOwner.lifecycle
     val state by produceState(
-        initialValue = AddNftUiState(),
+        initialValue = MintNftUiState(),
         key1 = lifecycle,
         key2 = viewModel
     ) {
@@ -61,7 +62,6 @@ fun AddNftScreen(
             }
         }
     }
-    val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val outputDirectory = context.getCacheSubDir("nft_images")
     val cameraExecutor = Executors.newSingleThreadExecutor()
@@ -89,7 +89,7 @@ fun AddNftScreen(
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             load()
         }
-        AddNftComponent(
+        MintNftComponent(
             state = state,
             lifecycleOwner = lifecycleOwner,
             context = context,
@@ -121,8 +121,8 @@ fun AddNftScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AddNftComponent(
-    state: AddNftUiState,
+internal fun MintNftComponent(
+    state: MintNftUiState,
     lifecycleOwner: LifecycleOwner,
     context: Context,
     outputDirectory: File,
@@ -170,7 +170,7 @@ internal fun AddNftComponent(
             CommonTopAppBar(
                 titleRes = R.string.add_nft_main_title_text,
                 centerTitle = true,
-                navigationAction =  TopBarAction(
+                navigationAction = TopBarAction(
                     iconRes = R.drawable.back_icon,
                     onActionClicked = {
                         onConfirmCancelMintNftVisibilityChanged(true)
@@ -201,7 +201,7 @@ internal fun AddNftComponent(
                         }
                     )
                 } else {
-                    AddNftForm(
+                    MintNftForm(
                         state = state,
                         onNameChanged = onNameChanged,
                         onDescriptionChanged = onDescriptionChanged,
@@ -224,8 +224,8 @@ internal fun AddNftComponent(
 }
 
 @Composable
-private fun AddNftForm(
-    state: AddNftUiState,
+private fun MintNftForm(
+    state: MintNftUiState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onRoyaltyChanged: (Float) -> Unit,

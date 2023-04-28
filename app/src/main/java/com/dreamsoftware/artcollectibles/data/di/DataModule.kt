@@ -129,6 +129,10 @@ class DataModule {
     @Singleton
     fun provideSaveCommentMapper(): SaveCommentMapper = SaveCommentMapper()
 
+    @Provides
+    @Singleton
+    fun provideUpdateArtCollectibleMetadataMapper(): UpdateArtCollectibleMetadataMapper = UpdateArtCollectibleMetadataMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -342,6 +346,7 @@ class DataModule {
      * @param tokenMetadataToEntityMapper
      * @param tokenMetadataEntityMapper
      * @param categoriesDataSource
+     * @param updateArtCollectibleMetadataMapper
      */
     @Provides
     @Singleton
@@ -352,7 +357,8 @@ class DataModule {
         tokenMetadataMapper: TokenMetadataMapper,
         tokenMetadataToEntityMapper: TokenMetadataToEntityMapper,
         tokenMetadataEntityMapper: TokenMetadataEntityMapper,
-        categoriesDataSource: ICategoriesDataSource
+        categoriesDataSource: ICategoriesDataSource,
+        updateArtCollectibleMetadataMapper: UpdateArtCollectibleMetadataMapper
     ): ITokenMetadataRepository = TokenMetadataRepositoryImpl(
         ipfsDataSource,
         tokenMetadataDatabaseDataSource,
@@ -360,7 +366,8 @@ class DataModule {
         tokenMetadataMapper,
         tokenMetadataToEntityMapper,
         tokenMetadataEntityMapper,
-        categoriesDataSource
+        categoriesDataSource,
+        updateArtCollectibleMetadataMapper
     )
 
     /**

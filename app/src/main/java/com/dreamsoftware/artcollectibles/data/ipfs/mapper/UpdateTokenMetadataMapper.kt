@@ -8,6 +8,7 @@ class UpdateTokenMetadataMapper: IOneSideMapper<UpdateTokenMetadataDTO, UpdateFi
 
     internal companion object {
         const val TOKEN_DESCRIPTION_KEY = "description"
+        const val TOKEN_TAGS_KEY = "token_tags"
     }
 
     override fun mapInToOut(input: UpdateTokenMetadataDTO): UpdateFileMetadataDTO = with(input) {
@@ -18,6 +19,7 @@ class UpdateTokenMetadataMapper: IOneSideMapper<UpdateTokenMetadataDTO, UpdateFi
                 description?.let {
                     put(TOKEN_DESCRIPTION_KEY, it)
                 }
+                put(TOKEN_TAGS_KEY, tags.joinToString(separator = ","))
             }
         )
     }

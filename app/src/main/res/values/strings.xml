@@ -245,4 +245,8 @@
     <string name="market_history_title_count" formatted="false">Market history (%d)</string>
     <!-- Market Statistics -->
     <string name="market_statistics_main_title">Market Statistics</string>
+    <!-- Edit NFT -->
+    <string name="edit_nft_main_title_text">Edit NFT</string>
+    <string name="edit_nft_save_button_text">Save</string>
+    <string name="edit_nft_cancel_button_text">Cancel</string>
 </resources>

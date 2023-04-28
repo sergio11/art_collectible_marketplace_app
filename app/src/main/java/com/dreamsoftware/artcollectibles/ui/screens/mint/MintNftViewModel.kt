@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.add
+package com.dreamsoftware.artcollectibles.ui.screens.mint
 
 import android.net.Uri
 import android.util.Log
@@ -13,18 +13,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AddNftViewModel @Inject constructor(
+class MintNftViewModel @Inject constructor(
     private val createArtCollectibleUseCase: CreateArtCollectibleUseCase,
     private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
     private val applicationAware: IApplicationAware
-) : SupportViewModel<AddNftUiState>() {
+) : SupportViewModel<MintNftUiState>() {
 
     companion object {
         const val MIN_NFT_NAME_LENGTH = 6
         const val MIN_NFT_DESCRIPTION_LENGTH = 10
     }
 
-    override fun onGetDefaultState(): AddNftUiState = AddNftUiState()
+    override fun onGetDefaultState(): MintNftUiState = MintNftUiState()
 
     fun load() {
         fetchArtCollectibleCategories()
@@ -165,14 +165,13 @@ class AddNftViewModel @Inject constructor(
             onSuccess = ::onCategoriesLoaded,
             onError = {
                 it.printStackTrace()
-                Log.d("ART_COLL", "it.message -> ${it.message}")
             }
         )
     }
 
 }
 
-data class AddNftUiState(
+data class MintNftUiState(
     val isLoading: Boolean = false,
     val imageUri: Uri? = null,
     val mimeType: String = "",

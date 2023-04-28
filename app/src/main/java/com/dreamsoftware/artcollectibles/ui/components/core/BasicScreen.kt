@@ -28,7 +28,7 @@ fun BasicScreen(
     screenContainerColor: Color = MaterialTheme.colorScheme.background,
     hasBottomBar: Boolean = false,
     enableVerticalScroll: Boolean = false,
-    screenContent: @Composable () -> Unit = {},
+    screenContent: @Composable ColumnScope.() -> Unit = {},
     backgroundContent: @Composable BoxScope.() -> Unit = {}
 ) {
     Scaffold(

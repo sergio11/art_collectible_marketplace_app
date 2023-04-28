@@ -73,6 +73,7 @@ class GetMostVisitedTokensDataException(message: String? = null, cause: Throwabl
 // Token Metadata Repository Exception
 abstract class TokenMetadataDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
 class CreateTokenMetadataDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)
+class UpdateTokenMetadataDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)
 class DeleteTokenMetadataDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)
 class FetchByAuthorAddressDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)
 class FetchByCidDataException(message: String? = null, cause: Throwable? = null): TokenMetadataDataException(message, cause)

@@ -11,6 +11,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScr
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.commentdetail.CommentDetailScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreenArgs
+import com.dreamsoftware.artcollectibles.ui.screens.edit.EditNftScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.favorites.FavoritesScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreenArgs
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreenArgs
@@ -26,7 +27,7 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
     object SignUp : DestinationItem(route = "signUp")
     object Home : DestinationItem(route = "home")
     object MyTokens : DestinationItem(route = "myTokens")
-    object Add : DestinationItem(route = "add")
+    object Mint : DestinationItem(route = "mint")
     object Explore : DestinationItem(route = "explore")
     object Profile : DestinationItem(route = "profile")
     object AvailableMarketItems: DestinationItem(route = "availableMarketItems")
@@ -266,6 +267,25 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         }
     }
 
+    object EditTokenMetadata : DestinationItem(route = "token/{cid}/edit", arguments = listOf(
+        navArgument("cid") {
+            type = NavType.StringType
+        }
+    )) {
+
+        fun buildRoute(cid: String): String =
+            route.replace(
+                oldValue = "{cid}",
+                newValue = cid
+            )
+
+        fun parseArgs(args: Bundle): EditNftScreenArgs? = with(args) {
+            getString("cid")?.let {
+                EditNftScreenArgs(metadataCid = it)
+            }
+        }
+    }
+
 
     object FavoriteList : DestinationItem(route = "token/{id}/likes", arguments = listOf(
         navArgument("id") {
@@ -353,7 +373,7 @@ sealed class NavigationItem(
 
     object Add :
         NavigationItem(
-            destination = DestinationItem.Add,
+            destination = DestinationItem.Mint,
             iconRes = R.drawable.add_menu_item_icon,
             title = "Add"
         )

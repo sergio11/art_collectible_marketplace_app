@@ -16,3 +16,10 @@ class CreateArtCollectibleMetadata(
     val authorAddress: String,
     val deviceName: String? = null
 )
+
+class UpdateArtCollectibleMetadata(
+    val cid: String,
+    val name: String,
+    val description: String? = null,
+    val tags: List<String>
+)

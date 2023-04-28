@@ -618,4 +618,22 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetMostVisitedTokensUseCase(visitorsRepository: IVisitorsRepository) =
         GetMostVisitedTokensUseCase(visitorsRepository)
+
+    /**
+     * Provide fetch token metadata use case
+     * @param tokenMetadataRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchTokenMetadataUseCase(tokenMetadataRepository: ITokenMetadataRepository) =
+        FetchTokenMetadataUseCase(tokenMetadataRepository)
+
+    /**
+     * Provide update token metadata use case
+     * @param tokenMetadataRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideUpdateTokenMetadataUseCase(tokenMetadataRepository: ITokenMetadataRepository) =
+        UpdateTokenMetadataUseCase(tokenMetadataRepository)
 }

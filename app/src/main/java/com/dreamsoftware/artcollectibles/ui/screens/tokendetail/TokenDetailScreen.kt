@@ -56,6 +56,7 @@ fun TokenDetailScreen(
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
     onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
     onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
+    onEditToken: (metadataCid: String) -> Unit,
     onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
@@ -104,7 +105,8 @@ fun TokenDetailScreen(
             onSeeVisitorsByToken = onSeeVisitorsByToken,
             onSeeTokenHistory = onSeeTokenHistory,
             onSeeMarketItemDetail = onSeeMarketItemDetail,
-            onSeeTokenDetail = onSeeTokenDetail
+            onSeeTokenDetail = onSeeTokenDetail,
+            onEditToken = onEditToken
         )
     }
 }
@@ -133,7 +135,8 @@ fun TokenDetailComponent(
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
     onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onSeeTokenDetail: (tokenId: BigInteger) -> Unit
+    onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
+    onEditToken: (metadataCid: String) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -165,7 +168,8 @@ fun TokenDetailComponent(
                 onSeeVisitorsByToken = onSeeVisitorsByToken,
                 onSeeTokenHistory = onSeeTokenHistory,
                 onSeeMarketItemDetail = onSeeMarketItemDetail,
-                onSeeTokenDetail = onSeeTokenDetail
+                onSeeTokenDetail = onSeeTokenDetail,
+                onEditToken = onEditToken
             )
         }
     }
@@ -193,7 +197,8 @@ private fun TokenDetailBody(
     onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
     onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
     onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onSeeTokenDetail: (tokenId: BigInteger) -> Unit
+    onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
+    onEditToken: (metadataCid: String) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -221,19 +226,29 @@ private fun TokenDetailBody(
                         },
                     userInfo = artCollectible.owner
                 )
-                FavoriteButton(
-                    modifier = Modifier
-                        .size(54.dp)
-                        .align(Alignment.CenterEnd),
-                    isChecked = tokenAddedToFavorites,
-                    onCheckedChange = {
-                        if (tokenAddedToFavorites) {
-                            onTokenRemovedFromFavorites(artCollectible.id)
-                        } else {
-                            onTokenAddedToFavorites(artCollectible.id)
-                        }
+                Row(
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    if(isTokenOwner) {
+                        EditButton(
+                            modifier = Modifier.size(54.dp),
+                            onEditClicked = {
+                                onEditToken(artCollectible.metadata.cid)
+                            }
+                        )
                     }
-                )
+                    FavoriteButton(
+                        modifier = Modifier.size(54.dp),
+                        isChecked = tokenAddedToFavorites,
+                        onCheckedChange = {
+                            if (tokenAddedToFavorites) {
+                                onTokenRemovedFromFavorites(artCollectible.id)
+                            } else {
+                                onTokenAddedToFavorites(artCollectible.id)
+                            }
+                        }
+                    )
+                }
             }
             if (isTokenAddedForSale) {
                 Row(

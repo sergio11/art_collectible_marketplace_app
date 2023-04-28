@@ -16,7 +16,7 @@ interface IpfsDataSource {
      * Update Metadata
      * @param metadata
      */
-    suspend fun update(metadata: UpdateTokenMetadataDTO)
+    suspend fun update(metadata: UpdateTokenMetadataDTO): TokenMetadataDTO
 
     /**
      * Delete File by CID

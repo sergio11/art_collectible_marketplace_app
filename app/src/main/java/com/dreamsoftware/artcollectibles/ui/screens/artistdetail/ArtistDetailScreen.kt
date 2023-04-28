@@ -7,8 +7,6 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,8 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,7 +30,10 @@ import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
-import com.dreamsoftware.artcollectibles.ui.theme.*
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
+import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
+import com.dreamsoftware.artcollectibles.ui.theme.instagramPurpleRed
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import java.math.BigInteger

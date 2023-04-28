@@ -9,12 +9,13 @@ import com.dreamsoftware.artcollectibles.ui.navigation.DestinationItem
 import com.dreamsoftware.artcollectibles.ui.screens.account.onboarding.OnBoardingScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signin.SignInScreen
 import com.dreamsoftware.artcollectibles.ui.screens.account.signup.SignUpScreen
-import com.dreamsoftware.artcollectibles.ui.screens.add.AddNftScreen
+import com.dreamsoftware.artcollectibles.ui.screens.mint.MintNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.artistdetail.ArtistDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.availableitems.AvailableMarketItemsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.categorydetail.CategoryDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.commentdetail.CommentDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.comments.CommentsScreen
+import com.dreamsoftware.artcollectibles.ui.screens.edit.EditNftScreen
 import com.dreamsoftware.artcollectibles.ui.screens.favorites.FavoritesScreen
 import com.dreamsoftware.artcollectibles.ui.screens.followers.FollowersScreen
 import com.dreamsoftware.artcollectibles.ui.screens.home.HomeScreen
@@ -114,9 +115,18 @@ fun RootScreen(
                 navigationController.navigate(DestinationItem.TokenDetail.buildRoute(it))
             }
         }
-        composable(DestinationItem.Add.route) {
-            AddNftScreen {
+        composable(DestinationItem.Mint.route) {
+            MintNftScreen {
                 navigationController.popBackStack()
+            }
+        }
+        composable(DestinationItem.EditTokenMetadata.route) { navBackStackEntry ->
+            navBackStackEntry.arguments?.let { args ->
+                DestinationItem.EditTokenMetadata.parseArgs(args)?.let { screenArgs ->
+                    EditNftScreen(screenArgs) {
+                        navigationController.popBackStack()
+                    }
+                }
             }
         }
         composable(DestinationItem.Explore.route) {
@@ -177,6 +187,8 @@ fun RootScreen(
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
                         }, onBackClicked = {
                             popBackStack()
+                        }, onEditToken = {
+                            navigate(DestinationItem.EditTokenMetadata.buildRoute(it))
                         })
                     }
                 }

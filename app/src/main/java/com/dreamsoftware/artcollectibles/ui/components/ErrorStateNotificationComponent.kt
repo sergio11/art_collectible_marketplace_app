@@ -31,7 +31,7 @@ fun ErrorStateNotificationComponent(
     if (isVisible) {
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)) {
+            .padding(15.dp)) {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -49,7 +49,7 @@ fun ErrorStateNotificationComponent(
                         .padding(10.dp),
                     painter = painterResource(id = imageRes),
                     contentDescription = "Content Description",
-                    colorFilter = ColorFilter.tint(DarkPurple)
+                    colorFilter = ColorFilter.tint(Purple40)
                 )
                 CommonText(
                     modifier = Modifier
