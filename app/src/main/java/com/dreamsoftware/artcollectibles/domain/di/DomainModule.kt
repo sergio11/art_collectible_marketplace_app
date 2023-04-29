@@ -229,13 +229,17 @@ class DomainModule {
      * Provide Create Art Collectible Use case
      * @param artCollectibleRepository
      * @param walletRepository
+     * @param statisticsRepository
+     * @param preferenceRepository
      */
     @Provides
     @ViewModelScoped
     fun provideCreateArtCollectibleUseCase(
         artCollectibleRepository: IArtCollectibleRepository,
-        walletRepository: IWalletRepository
-    ) = CreateArtCollectibleUseCase(artCollectibleRepository, walletRepository)
+        walletRepository: IWalletRepository,
+        statisticsRepository: IStatisticsRepository,
+        preferenceRepository: IPreferenceRepository
+    ) = CreateArtCollectibleUseCase(artCollectibleRepository, walletRepository, statisticsRepository, preferenceRepository)
 
     /**
      * Provide Get token detail use case
@@ -320,12 +324,16 @@ class DomainModule {
     /**
      * Provide Buy Item use case
      * @param artMarketplaceRepository
+     * @param statisticsRepository
+     * @param preferenceRepository
      */
     @Provides
     @ViewModelScoped
     fun provideBuyItemUseCase(
-        artMarketplaceRepository: IArtMarketplaceRepository
-    ) = BuyItemUseCase(artMarketplaceRepository)
+        artMarketplaceRepository: IArtMarketplaceRepository,
+        statisticsRepository: IStatisticsRepository,
+        preferenceRepository: IPreferenceRepository
+    ) = BuyArtCollectibleUseCase(artMarketplaceRepository, statisticsRepository, preferenceRepository)
 
     /**
      * Provide Add Token to favorites Use case
@@ -636,4 +644,31 @@ class DomainModule {
     @ViewModelScoped
     fun provideUpdateTokenMetadataUseCase(tokenMetadataRepository: ITokenMetadataRepository) =
         UpdateTokenMetadataUseCase(tokenMetadataRepository)
+
+    /**
+     * Provide fetch users with more purchases use case
+     * @param statisticsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchUsersWithMorePurchasesUseCase(statisticsRepository: IStatisticsRepository) =
+        FetchUsersWithMorePurchasesUseCase(statisticsRepository)
+
+    /**
+     * Provide fetch users with more sales use case
+     * @param statisticsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchUsersWithMoreSalesUseCase(statisticsRepository: IStatisticsRepository) =
+        FetchUsersWithMoreSalesUseCase(statisticsRepository)
+
+    /**
+     * Provide fetch users with more tokens created use case
+     * @param statisticsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchUsersWithMoreTokensCreatedUseCase(statisticsRepository: IStatisticsRepository) =
+        FetchUsersWithMoreTokensCreatedUseCase(statisticsRepository)
 }

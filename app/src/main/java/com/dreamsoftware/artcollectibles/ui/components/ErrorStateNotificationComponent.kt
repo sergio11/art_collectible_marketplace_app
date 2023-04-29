@@ -22,6 +22,7 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun ErrorStateNotificationComponent(
+    modifier: Modifier = Modifier,
     isVisible: Boolean,
     @DrawableRes imageRes: Int,
     title: String,
@@ -31,7 +32,8 @@ fun ErrorStateNotificationComponent(
     if (isVisible) {
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp)) {
+            .padding(15.dp)
+            .then(modifier)) {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)

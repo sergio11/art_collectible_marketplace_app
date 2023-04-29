@@ -245,6 +245,10 @@
     <string name="market_history_title_count" formatted="false">Market history (%d)</string>
     <!-- Market Statistics -->
     <string name="market_statistics_main_title">Market Statistics</string>
+    <string name="market_statistics_not_found_message">No market statistics has been found on this moment, please try again later</string>
+    <string name="market_statistics_users_with_more_purchases_title">Users with more purchases</string>
+    <string name="market_statistics_users_with_more_sales_title">Users with more sales</string>
+    <string name="market_statistics_users_with_more_tokens_created_title">Users with more tokens created</string>
     <!-- Edit NFT -->
     <string name="edit_nft_main_title_text">Edit NFT</string>
     <string name="edit_nft_save_button_text">Save</string>

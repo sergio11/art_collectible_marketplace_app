@@ -94,8 +94,15 @@ class CountCommentsByTokenDataException(message: String? = null, cause: Throwabl
 
 // Notification Repository Exception
 abstract class NotificationsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
-class GetNotificationsByUserDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
-class SaveNotificationDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
-class DeleteNotificationDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
-class GetNotificationByIdDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
-class CountNotificationsByUserDataException(message: String? = null, cause: Throwable? = null): CommentsDataException(message, cause)
+class GetNotificationsByUserDataException(message: String? = null, cause: Throwable? = null): NotificationsDataException(message, cause)
+class SaveNotificationDataException(message: String? = null, cause: Throwable? = null): NotificationsDataException(message, cause)
+class DeleteNotificationDataException(message: String? = null, cause: Throwable? = null): NotificationsDataException(message, cause)
+class GetNotificationByIdDataException(message: String? = null, cause: Throwable? = null): NotificationsDataException(message, cause)
+class CountNotificationsByUserDataException(message: String? = null, cause: Throwable? = null): NotificationsDataException(message, cause)
+
+// Statistics Repository Exception
+
+abstract class StatisticsDataException(message: String? = null, cause: Throwable? = null): DataRepositoryException(message, cause)
+
+class FetchMarketStatisticsDataException(message: String? = null, cause: Throwable? = null): StatisticsDataException(message, cause)
+class RegisterEventDataException(message: String? = null, cause: Throwable? = null): StatisticsDataException(message, cause)

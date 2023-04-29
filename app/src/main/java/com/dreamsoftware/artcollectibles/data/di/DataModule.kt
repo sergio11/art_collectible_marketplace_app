@@ -133,6 +133,10 @@ class DataModule {
     @Singleton
     fun provideUpdateArtCollectibleMetadataMapper(): UpdateArtCollectibleMetadataMapper = UpdateArtCollectibleMetadataMapper()
 
+    @Provides
+    @Singleton
+    fun provideUserMarketStatisticMapper(): UserMarketStatisticMapper = UserMarketStatisticMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -459,4 +463,22 @@ class DataModule {
         saveNotificationMapper: SaveNotificationMapper,
         userRepository: IUserRepository
     ): INotificationsRepository = NotificationsRepositoryImpl(notificationDataSource, notificationMapper, saveNotificationMapper, userRepository)
+
+    /**
+     * Provide statistics repository
+     * @param statisticsDataSource
+     * @param userRepository
+     * @param userMarketStatisticMapper
+     */
+    @Provides
+    @Singleton
+    fun provideStatisticsRepository(
+        statisticsDataSource: IStatisticsDataSource,
+        userRepository: IUserRepository,
+        userMarketStatisticMapper: UserMarketStatisticMapper
+    ): IStatisticsRepository = StatisticsRepositoryImpl(
+        statisticsDataSource,
+        userRepository,
+        userMarketStatisticMapper
+    )
 }

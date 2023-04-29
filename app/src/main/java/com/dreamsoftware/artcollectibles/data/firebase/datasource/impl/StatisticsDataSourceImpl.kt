@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.data.firebase.datasource.impl
 import com.dreamsoftware.artcollectibles.data.firebase.datasource.IStatisticsDataSource
 import com.dreamsoftware.artcollectibles.data.firebase.exception.FetchMarketStatisticsException
 import com.dreamsoftware.artcollectibles.data.firebase.exception.RegisterEventException
+import com.dreamsoftware.artcollectibles.data.firebase.model.MarketStatisticDTO
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -23,15 +24,15 @@ internal class StatisticsDataSourceImpl(
     }
 
     @Throws(FetchMarketStatisticsException::class)
-    override suspend fun fetchUsersWithMorePurchases(limit: Int): Iterable<String> =
+    override suspend fun fetchUsersWithMorePurchases(limit: Int): Iterable<MarketStatisticDTO> =
         fetchStatistics(field = COUNT_PURCHASES_FIELD, limit = limit)
 
     @Throws(FetchMarketStatisticsException::class)
-    override suspend fun fetchUsersWithMoreSales(limit: Int): Iterable<String> =
+    override suspend fun fetchUsersWithMoreSales(limit: Int): Iterable<MarketStatisticDTO> =
         fetchStatistics(field = COUNT_SALES_FIELD, limit = limit)
 
     @Throws(FetchMarketStatisticsException::class)
-    override suspend fun fetchUsersWithMoreTokensCreated(limit: Int): Iterable<String> =
+    override suspend fun fetchUsersWithMoreTokensCreated(limit: Int): Iterable<MarketStatisticDTO> =
         fetchStatistics(field = COUNT_CREATED_FIELD, limit = limit)
 
     @Throws(RegisterEventException::class)
@@ -74,12 +75,14 @@ internal class StatisticsDataSourceImpl(
         }
     }
 
-    private suspend fun fetchStatistics(field: String, limit: Int): Iterable<String> = withContext(Dispatchers.IO) {
+    private suspend fun fetchStatistics(field: String, limit: Int): Iterable<MarketStatisticDTO> = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
                 .orderBy(field, Query.Direction.DESCENDING)
                 .limit(limit.toLong()).get()
-                .await()?.documents?.mapNotNull { it.id }
+                .await()?.documents?.mapNotNull {
+                    MarketStatisticDTO(key = it.id, value = it.data?.get(field)?.toString()?.toLongOrNull() ?: 0L)
+                }
                 .orEmpty()
         } catch (ex: Exception) {
             throw FetchMarketStatisticsException(

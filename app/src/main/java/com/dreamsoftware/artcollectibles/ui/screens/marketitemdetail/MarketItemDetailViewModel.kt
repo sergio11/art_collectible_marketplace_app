@@ -15,7 +15,7 @@ import javax.inject.Inject
 class MarketItemDetailViewModel @Inject constructor(
     private val fetchItemForSaleUseCase: FetchItemForSaleUseCase,
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
-    private val buyItemUseCase: BuyItemUseCase,
+    private val buyArtCollectibleUseCase: BuyArtCollectibleUseCase,
     private val withdrawFromSaleUseCase: WithdrawFromSaleUseCase,
     private val getSimilarMarketItemsUseCase: GetSimilarMarketItemsUseCase,
     private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
@@ -45,12 +45,18 @@ class MarketItemDetailViewModel @Inject constructor(
 
     fun buyItem(tokenId: BigInteger) {
         onLoading()
-        buyItemUseCase.invoke(
-            scope = viewModelScope,
-            params = BuyItemUseCase.Params(tokenId),
-            onSuccess = { onBuyItemSuccess() },
-            onError = ::onErrorOccurred
-        )
+        with(uiState.value) {
+            buyArtCollectibleUseCase.invoke(
+                scope = viewModelScope,
+                params = BuyArtCollectibleUseCase.Params(
+                    sellerUid = artCollectibleForSale?.seller?.uid.orEmpty(),
+                    tokenId = tokenId
+                ),
+                onSuccess = { onBuyItemSuccess() },
+                onError = ::onErrorOccurred
+            )
+        }
+
     }
 
     fun onConfirmBuyItemDialogVisibilityChanged(isVisible: Boolean) {

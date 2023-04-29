@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.domain.usecase.impl
 
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IPreferenceRepository
+import com.dreamsoftware.artcollectibles.data.api.repository.IStatisticsRepository
 import com.dreamsoftware.artcollectibles.data.api.repository.IWalletRepository
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.models.CreateArtCollectible
@@ -9,7 +11,9 @@ import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithPara
 
 class CreateArtCollectibleUseCase(
     private val artCollectibleRepository: IArtCollectibleRepository,
-    private val walletRepository: IWalletRepository
+    private val walletRepository: IWalletRepository,
+    private val statisticsRepository: IStatisticsRepository,
+    private val preferencesRepository: IPreferenceRepository
 ): BaseUseCaseWithParams<CreateArtCollectibleUseCase.Params, ArtCollectible>() {
 
     override suspend fun onExecuted(params: Params): ArtCollectible = with(params) {
@@ -26,7 +30,10 @@ class CreateArtCollectibleUseCase(
                 authorAddress = credentials.address,
                 deviceName = deviceName
             )
-        ))
+        )).also {
+            val authUserUid = preferencesRepository.getAuthUserUid()
+            statisticsRepository.registerNewCreation(userUid = authUserUid)
+        }
     }
 
     data class Params(
