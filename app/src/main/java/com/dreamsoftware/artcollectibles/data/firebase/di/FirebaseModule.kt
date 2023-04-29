@@ -277,4 +277,11 @@ class FirebaseModule {
         saveNotificationMapper: SaveNotificationMapper,
         notificationMapper: NotificationMapper
     ): INotificationsDataSource = NotificationsDataSourceImpl(firebaseStore, saveNotificationMapper, notificationMapper)
+
+    @Provides
+    @Singleton
+    fun provideStatisticsDataSource(
+        firebaseStore: FirebaseFirestore
+    ): IStatisticsDataSource = StatisticsDataSourceImpl(firebaseStore)
+
 }

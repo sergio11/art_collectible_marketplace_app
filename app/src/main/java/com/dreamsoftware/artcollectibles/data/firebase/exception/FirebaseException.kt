@@ -68,4 +68,8 @@ class CountNotificationsException(message: String? = null, cause: Throwable? = n
 class GetNotificationByIdException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class DeleteNotificationException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 
+// Statistics Data Source
 
+class FetchMarketStatisticsException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+
+class RegisterEventException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
