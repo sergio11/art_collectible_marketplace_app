@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -21,6 +22,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
+import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
@@ -66,6 +68,9 @@ fun CategoryDetailScreen(
             scrollState = scrollState,
             density = density,
             onTokenForSaleClicked = onShowTokenForSaleDetail,
+            onRetryCalled = {
+                load(args.uid)
+            },
             onBackClicked = onBackClicked
         )
     }
@@ -78,6 +83,7 @@ fun CategoryDetailComponent(
     scrollState: ScrollState,
     density: Density,
     onTokenForSaleClicked: (tokenId: BigInteger) -> Unit,
+    onRetryCalled: () -> Unit,
     onBackClicked: () -> Unit
 ) {
     with(uiState) {
@@ -100,6 +106,13 @@ fun CategoryDetailComponent(
                 titleText = uiState.category?.description?.ifBlank {
                     stringResource(id = R.string.no_text_value)
                 } ?: stringResource(id = R.string.no_text_value)
+            )
+            ErrorStateNotificationComponent(
+                isVisible = !isLoading && Iterables.isEmpty(tokensForSale),
+                imageRes = R.drawable.not_data_found,
+                title = stringResource(id = R.string.category_detail_no_tokens_found_title),
+                isRetryButtonVisible = true,
+                onRetryCalled = onRetryCalled
             )
             if(!Iterables.isEmpty(tokensForSale)) {
                 CommonText(

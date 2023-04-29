@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.comments
+package com.dreamsoftware.artcollectibles.ui.screens.notifications
 
 
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.Comment
+import com.dreamsoftware.artcollectibles.domain.models.Notification
 import com.dreamsoftware.artcollectibles.ui.components.UserAccountProfilePicture
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
@@ -28,21 +28,15 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalColumn
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.google.common.collect.Iterables
-import java.math.BigInteger
-
-data class CommentsScreenArgs(
-    val tokenId: BigInteger
-)
 
 @Composable
-fun CommentsScreen(
-    args: CommentsScreenArgs,
-    viewModel: CommentsViewModel = hiltViewModel(),
-    onSeeCommentDetail: (comment: Comment) -> Unit
+fun NotificationsScreen(
+    viewModel: NotificationsViewModel = hiltViewModel(),
+    onSeeNotificationDetail: (notification: Notification) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
-        initialValue = CommentsUiState(),
+        initialValue = NotificationsUiState(),
         key1 = lifecycle,
         key2 = viewModel
     ) {
@@ -56,45 +50,45 @@ fun CommentsScreen(
     val lazyListState = rememberLazyListState()
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-            load(args.tokenId)
+            load()
         }
         CommentsComponent(
             state = uiState,
             snackBarHostState = snackBarHostState,
             lazyListState = lazyListState,
-            onSeeCommentDetail = onSeeCommentDetail
+            onSeeNotificationDetail = onSeeNotificationDetail
         )
     }
 }
 
 @Composable
 internal fun CommentsComponent(
-    state: CommentsUiState,
-    lazyListState: LazyListState,
+    state: NotificationsUiState,
     snackBarHostState: SnackbarHostState,
-    onSeeCommentDetail: (comment: Comment) -> Unit
+    lazyListState: LazyListState,
+    onSeeNotificationDetail: (notification: Notification) -> Unit
 ) {
     with(state) {
         CommonVerticalColumnScreen(
             lazyListState = lazyListState,
             snackBarHostState = snackBarHostState,
             isLoading = isLoading,
-            items = comments,
-            appBarTitle = getTopAppBarTitle(comments)
-        ) { comment ->
-            CommentItemDetail(
+            items = notifications,
+            appBarTitle = getTopAppBarTitle(notifications)
+        ) { notification ->
+            NotificationItemDetail(
                 modifier = Modifier.clickable {
-                    onSeeCommentDetail(comment)
+                    onSeeNotificationDetail(notification)
                 },
-                comment = comment
+                notification = notification
             )
         }
     }
 }
 
 @Composable
-private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
-    with(comment) {
+private fun NotificationItemDetail(modifier: Modifier = Modifier, notification: Notification) {
+    with(notification) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,12 +120,12 @@ private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
                             textColor = Color.DarkGray
                         )
                     }
-                    CommonText(
+                    /*CommonText(
                         modifier = Modifier.padding(top = 4.dp),
                         type = CommonTextTypeEnum.BODY_MEDIUM,
-                        titleText = text,
+                        titleText = ,
                         maxLines = 5
-                    )
+                    )*/
                 }
             }
             CommonText(
@@ -147,9 +141,9 @@ private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
 
 @Composable
 private fun getTopAppBarTitle(
-    data: Iterable<Comment>
+    data: Iterable<Notification>
 ) = if (Iterables.isEmpty(data)) {
-    stringResource(id = R.string.comments_detail_title_default)
+    stringResource(id = R.string.notifications_detail_title_default)
 } else {
-    stringResource(id = R.string.comments_detail_title_count, Iterables.size(data))
+    stringResource(id = R.string.notifications_detail_title_count, Iterables.size(data))
 }

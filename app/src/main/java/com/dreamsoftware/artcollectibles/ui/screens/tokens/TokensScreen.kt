@@ -2,12 +2,11 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokens
 
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -48,41 +47,61 @@ fun TokensScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
     with(viewModel) {
-        LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-            with(args) {
+        with(args) {
+            LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
                 if(viewType == TokensScreenArgs.ViewTypeEnum.OWNED) {
                     loadTokensOwnedBy(userAddress)
                 } else {
                     loadTokensCreatedBy(userAddress)
                 }
             }
+            TokensComponent(
+                context = context,
+                snackBarHostState = snackBarHostState,
+                state = uiState,
+                args = args,
+                lazyGridState = lazyGridState,
+                noDataFoundMessageId = if(viewType == TokensScreenArgs.ViewTypeEnum.OWNED) {
+                    R.string.profile_tokens_owned_by_user_not_found_message
+                } else {
+                    R.string.profile_tokens_created_by_user_not_found_message
+                },
+                onRetryCalled = {
+                    if(viewType == TokensScreenArgs.ViewTypeEnum.OWNED) {
+                        loadTokensOwnedBy(userAddress)
+                    } else {
+                        loadTokensCreatedBy(userAddress)
+                    }
+                },
+                onGoToTokenDetail = onGoToTokenDetail
+            )
         }
-        TokensComponent(
-            context = context,
-            state = uiState,
-            args = args,
-            lazyGridState = lazyGridState,
-            onGoToTokenDetail = onGoToTokenDetail
-        )
     }
 }
 
 @Composable
 internal fun TokensComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     state: TokensUiState,
     args: TokensScreenArgs,
     lazyGridState: LazyGridState,
+    @StringRes noDataFoundMessageId: Int,
+    onRetryCalled: () -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
             lazyGridState = lazyGridState,
+            snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = tokensResult,
+            noDataFoundMessageId = noDataFoundMessageId,
+            onRetryCalled = onRetryCalled,
             appBarTitle = getTopAppBarTitle(args, tokensResult)
         ) {token ->
             ArtCollectibleMiniCard(context = context, artCollectible = token) {

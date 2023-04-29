@@ -39,10 +39,11 @@ fun HomeScreen(
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowAvailableMarketItems: () -> Unit,
-    onShowSellingMarketItems: () -> Unit,
-    onShowMarketHistory: () -> Unit,
-    onShowMarketStatistics: () -> Unit
+    onGoToAvailableMarketItems: () -> Unit,
+    onGoToSellingMarketItems: () -> Unit,
+    onGoToMarketHistory: () -> Unit,
+    onGoToMarketStatistics: () -> Unit,
+    onGoToNotifications: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -72,10 +73,11 @@ fun HomeScreen(
             onGoToCategoryDetail = onGoToCategoryDetail,
             onGoToUserDetail = onGoToUserDetail,
             onGoToTokenDetail = onGoToTokenDetail,
-            onShowAvailableMarketItems = onShowAvailableMarketItems,
-            onShowSellingMarketItems = onShowSellingMarketItems,
-            onShowMarketHistory = onShowMarketHistory,
-            onShowMarketStatistics = onShowMarketStatistics
+            onGoToAvailableMarketItems = onGoToAvailableMarketItems,
+            onGoToSellingMarketItems = onGoToSellingMarketItems,
+            onGoToMarketHistory = onGoToMarketHistory,
+            onGoToMarketStatistics = onGoToMarketStatistics,
+            onGoToNotifications = onGoToNotifications
         )
     }
 }
@@ -91,10 +93,11 @@ private fun HomeComponent(
     onGoToCategoryDetail: (category: ArtCollectibleCategory) -> Unit,
     onGoToUserDetail: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowAvailableMarketItems: () -> Unit,
-    onShowSellingMarketItems: () -> Unit,
-    onShowMarketHistory: () -> Unit,
-    onShowMarketStatistics: () -> Unit
+    onGoToAvailableMarketItems: () -> Unit,
+    onGoToSellingMarketItems: () -> Unit,
+    onGoToMarketHistory: () -> Unit,
+    onGoToMarketStatistics: () -> Unit,
+    onGoToNotifications: () -> Unit
 ) {
     with(uiState) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -106,13 +109,11 @@ private fun HomeComponent(
             menuActions = listOf(
                 TopBarAction(
                     iconRes = R.drawable.statistics_icon,
-                    onActionClicked = onShowMarketStatistics
+                    onActionClicked = onGoToMarketStatistics
                 ),
                 TopBarAction(
                     iconRes = R.drawable.notification_icon,
-                    onActionClicked = {
-
-                    }
+                    onActionClicked = onGoToNotifications
                 )
             ),
             navigationAction = TopBarAction(iconRes = R.drawable.splash_app_icon),
@@ -122,7 +123,7 @@ private fun HomeComponent(
                 marketplaceStatistics?.let {
                     MarketStatisticsRow(
                         marketplaceStatistics = it,
-                        onShowAllItems = onShowMarketStatistics
+                        onShowAllItems = onGoToMarketStatistics
                     )
                 }
                 if(!Iterables.isEmpty(categories)) {
@@ -145,7 +146,7 @@ private fun HomeComponent(
                     context = context,
                     titleRes = R.string.home_available_items_for_sale_title,
                     items = availableMarketItems,
-                    onShowAllItems = onShowAvailableMarketItems,
+                    onShowAllItems = onGoToAvailableMarketItems,
                     onMarketItemSelected = onGoToMarketItemDetail
                 )
                 ArtCollectiblesRow(
@@ -168,14 +169,14 @@ private fun HomeComponent(
                     context = context,
                     titleRes = R.string.home_your_items_for_sale_title,
                     items = sellingMarketItems,
-                    onShowAllItems = onShowSellingMarketItems,
+                    onShowAllItems = onGoToSellingMarketItems,
                     onMarketItemSelected = onGoToMarketItemDetail
                 )
                 LastMarketHistoryRow(
                     context = context,
                     titleRes = R.string.home_last_market_history_title,
                     items = marketHistory,
-                    onShowAllItems = onShowMarketHistory,
+                    onShowAllItems = onGoToMarketHistory,
                     onMarketItemSelected = onGoToMarketHistoryItemDetail
                 )
             }

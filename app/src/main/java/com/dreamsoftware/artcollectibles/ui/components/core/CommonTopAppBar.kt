@@ -19,7 +19,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonTopAppBar(
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int? = null,
+    titleText: String? = null,
     centerTitle: Boolean = false,
     navigationAction: TopBarAction? = null,
     menuActions: List<TopBarAction> = emptyList()
@@ -34,6 +35,7 @@ fun CommonTopAppBar(
                     Modifier
                 },
                 titleRes = titleRes,
+                titleText = titleText,
                 textAlign = TextAlign.Center,
                 textColor = Color.White
             )

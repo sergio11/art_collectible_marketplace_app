@@ -2,10 +2,8 @@ package com.dreamsoftware.artcollectibles.ui.screens.tokenhistory
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +37,7 @@ fun TokenHistoryScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
@@ -46,6 +45,7 @@ fun TokenHistoryScreen(
         }
         TokenHistoryComponent(
             state = uiState,
+            snackBarHostState = snackBarHostState,
             lazyListState = lazyListState
         )
     }
@@ -54,11 +54,13 @@ fun TokenHistoryScreen(
 @Composable
 internal fun TokenHistoryComponent(
     state: TokenHistoryUiState,
+    snackBarHostState: SnackbarHostState,
     lazyListState: LazyListState
 ) {
     with(state) {
         CommonVerticalColumnScreen(
             lazyListState = lazyListState,
+            snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = tokenHistory,
             appBarTitle = getTopAppBarTitle(tokenHistory)

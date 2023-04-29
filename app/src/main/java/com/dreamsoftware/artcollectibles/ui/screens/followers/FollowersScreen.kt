@@ -2,15 +2,14 @@ package com.dreamsoftware.artcollectibles.ui.screens.followers
 
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -52,41 +51,61 @@ fun FollowersScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
     with(viewModel) {
-        LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-            with(args) {
-                if(viewType == FollowersScreenArgs.ViewTypeEnum.FOLLOWING) {
+        with(args) {
+            LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
+                if (viewType == FollowersScreenArgs.ViewTypeEnum.FOLLOWING) {
                     loadFollowing(userUid)
                 } else {
                     loadFollowers(userUid)
                 }
             }
+            FollowersComponent(
+                context = context,
+                snackBarHostState = snackBarHostState,
+                state = uiState,
+                args = args,
+                lazyGridState = lazyGridState,
+                noDataFoundMessageId = if (viewType == FollowersScreenArgs.ViewTypeEnum.FOLLOWING) {
+                    R.string.following_detail_not_found_message
+                } else {
+                    R.string.followers_detail_not_found_message
+                },
+                onRetryCalled = {
+                    if (viewType == FollowersScreenArgs.ViewTypeEnum.FOLLOWING) {
+                        loadFollowing(userUid)
+                    } else {
+                        loadFollowers(userUid)
+                    }
+                },
+                onGoToArtistDetail = onGoToArtistDetail
+            )
         }
-        FollowersComponent(
-            context = context,
-            state = uiState,
-            args = args,
-            lazyGridState = lazyGridState,
-            onGoToArtistDetail = onGoToArtistDetail
-        )
     }
 }
 
 @Composable
 internal fun FollowersComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     state: FollowersUiState,
     args: FollowersScreenArgs,
     lazyGridState: LazyGridState,
+    @StringRes noDataFoundMessageId: Int,
+    onRetryCalled: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
             lazyGridState = lazyGridState,
+            snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = userResult,
+            noDataFoundMessageId = noDataFoundMessageId,
+            onRetryCalled = onRetryCalled,
             appBarTitle = getTopAppBarTitle(args, userResult)
         ) { artist ->
             UserInfoArtistCard(

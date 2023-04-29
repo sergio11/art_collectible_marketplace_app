@@ -4,10 +4,8 @@ package com.dreamsoftware.artcollectibles.ui.screens.sellingitems
 import android.content.Context
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -38,6 +36,7 @@ fun SellingMarketItemsScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
     with(viewModel) {
@@ -46,8 +45,10 @@ fun SellingMarketItemsScreen(
         }
         SellingMarketItemsComponent(
             context = context,
+            snackBarHostState = snackBarHostState,
             state = uiState,
             lazyGridState = lazyGridState,
+            onRetryCalled = ::load,
             onMarketItemSelected = onMarketItemSelected
         )
     }
@@ -56,15 +57,20 @@ fun SellingMarketItemsScreen(
 @Composable
 internal fun SellingMarketItemsComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     state: SellingMarketItemsUiState,
     lazyGridState: LazyGridState,
+    onRetryCalled: () -> Unit,
     onMarketItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
             lazyGridState = lazyGridState,
+            snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = sellingItems,
+            noDataFoundMessageId = R.string.selling_market_items_not_found_message,
+            onRetryCalled = onRetryCalled,
             appBarTitle = getTopAppBarTitle(sellingItems)
         ) { sellingItem ->
             ArtCollectibleForSaleCard(

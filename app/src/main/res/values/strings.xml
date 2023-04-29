@@ -95,8 +95,10 @@
     <string name="profile_tokens_created_by_user_text">Your created tokens</string>
     <string name="profile_tokens_owned_by_user_title_default">Your owned tokens</string>
     <string name="profile_tokens_owned_by_user_title_count" formatted="false">Your owned tokens (%d)</string>
+    <string name="profile_tokens_owned_by_user_not_found_message">No art collectibles owned by this user have been found</string>
     <string name="profile_tokens_created_by_user_title_default">Your created tokens</string>
     <string name="profile_tokens_created_by_user_title_count" formatted="false">Your created tokens (%d)</string>
+    <string name="profile_tokens_created_by_user_not_found_message">No art collectibles created by this user have been found</string>
     <string name="profile_tokens_artist_interested_in">Interested in</string>
     <string name="profile_tokens_artist_account_balance">Account Balance</string>
     <string name="profile_input_country_label">Country</string>
@@ -209,16 +211,20 @@
     <!-- Followers -->
     <string name="followers_detail_title_default">Followers</string>
     <string name="followers_detail_title_count" formatted="false">Followers (%d)</string>
+    <string name="followers_detail_not_found_message">No followers found</string>
     <string name="following_detail_title_default">Following</string>
     <string name="following_detail_title_count" formatted="false">Following (%d)</string>
+    <string name="following_detail_not_found_message">No user you are following was found</string>
     <!-- Comments -->
     <string name="comments_detail_title_default">Comments</string>
     <string name="comments_detail_title_count" formatted="false">Comments (%d)</string>
     <!-- Favorites -->
     <string name="favorites_detail_title_default">Likes</string>
     <string name="favorites_detail_title_count" formatted="false">Likes (%d)</string>
+    <string name="favorites_detail_not_found_message">This art collectible has not receive any like</string>
     <!-- Visitors -->
     <string name="visitors_detail_title_default">Visitors</string>
+    <string name="visitors_detail_not_found_message">This art collectible has not receive any visit yet</string>
     <string name="visitors_detail_title_count" formatted="false">Visitors (%d)</string>
     <!-- Comment Detail -->
     <string name="comment_detail_tokens_created_by_user_text">Collectibles created by this user</string>
@@ -234,15 +240,19 @@
     <string name="token_history_title_count" formatted="false">NFT History (%d)</string>
     <!-- Category Detail -->
     <string name="category_detail_tokens_title">Collectibles available for this category</string>
+    <string name="category_detail_no_tokens_found_title">No art collectibles has been found for this category, be the first on mint a NFT on this category!</string>
     <!-- Available Market Items -->
     <string name="available_market_items_title_default">Available items for sale</string>
     <string name="available_market_items_title_count" formatted="false">Available items for sale (%d)</string>
+    <string name="available_market_no_items_found_title">No art collectibles availables to buy has been found, please try again later</string>
     <!-- Selling Market Items -->
     <string name="selling_market_items_title_default">Your items for sale</string>
+    <string name="selling_market_items_not_found_message">You have not put for sale any art collectible</string>
     <string name="selling_market_items_title_count" formatted="false">Your items for sale (%d)</string>
     <!-- Market History -->
     <string name="market_history_title_default">Market history</string>
     <string name="market_history_title_count" formatted="false">Market history (%d)</string>
+    <string name="market_history_not_found_message">No market history found</string>
     <!-- Market Statistics -->
     <string name="market_statistics_main_title">Market Statistics</string>
     <string name="market_statistics_not_found_message">No market statistics has been found on this moment, please try again later</string>
@@ -253,4 +263,8 @@
     <string name="edit_nft_main_title_text">Edit NFT</string>
     <string name="edit_nft_save_button_text">Save</string>
     <string name="edit_nft_cancel_button_text">Cancel</string>
+
+    <!-- Notifications -->
+    <string name="notifications_detail_title_default">Notifications</string>
+    <string name="notifications_detail_title_count" formatted="false">Notifications (%d)</string>
 </resources>

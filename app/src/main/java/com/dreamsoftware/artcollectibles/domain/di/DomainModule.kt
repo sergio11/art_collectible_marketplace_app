@@ -671,4 +671,18 @@ class DomainModule {
     @ViewModelScoped
     fun provideFetchUsersWithMoreTokensCreatedUseCase(statisticsRepository: IStatisticsRepository) =
         FetchUsersWithMoreTokensCreatedUseCase(statisticsRepository)
+
+    /**
+     * Provide get my notifications use case
+     * @param preferenceRepository
+     * @param notificationsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetMyNotificationsUseCase(
+        preferenceRepository: IPreferenceRepository,
+        notificationsRepository: INotificationsRepository
+    ) = GetMyNotificationsUseCase(
+        preferenceRepository, notificationsRepository
+    )
 }

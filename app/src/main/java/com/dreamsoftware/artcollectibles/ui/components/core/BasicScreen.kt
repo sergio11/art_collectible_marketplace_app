@@ -18,8 +18,9 @@ import com.dreamsoftware.artcollectibles.ui.components.ScreenBackgroundImage
 @Composable
 fun BasicScreen(
     snackBarHostState: SnackbarHostState,
-    @StringRes titleRes: Int,
+    @StringRes titleRes: Int? = null,
     @DrawableRes backgroundRes: Int = R.drawable.screen_background_2,
+    titleText: String? = null,
     centerTitle: Boolean = false,
     menuActions: List<TopBarAction> = emptyList(),
     navigationAction: TopBarAction? = null,
@@ -42,6 +43,7 @@ fun BasicScreen(
         topBar = {
             CommonTopAppBar(
                 titleRes = titleRes,
+                titleText = titleText,
                 navigationAction = navigationAction,
                 centerTitle = centerTitle,
                 menuActions =  menuActions

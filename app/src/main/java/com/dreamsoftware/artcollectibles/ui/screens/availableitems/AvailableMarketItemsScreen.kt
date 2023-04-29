@@ -4,10 +4,8 @@ package com.dreamsoftware.artcollectibles.ui.screens.availableitems
 import android.content.Context
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -39,6 +37,7 @@ fun AvailableMarketItemsScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
     with(viewModel) {
@@ -47,8 +46,10 @@ fun AvailableMarketItemsScreen(
         }
         AvailableMarketItemsComponent(
             context = context,
+            snackBarHostState = snackBarHostState,
             state = uiState,
             lazyGridState = lazyGridState,
+            onRetryCalled = ::load,
             onMarketItemSelected = onMarketItemSelected
         )
     }
@@ -57,15 +58,20 @@ fun AvailableMarketItemsScreen(
 @Composable
 internal fun AvailableMarketItemsComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     state: AvailableMarketItemsUiState,
     lazyGridState: LazyGridState,
+    onRetryCalled: () -> Unit,
     onMarketItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
             lazyGridState = lazyGridState,
+            snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = availableItems,
+            onRetryCalled = onRetryCalled,
+            noDataFoundMessageId = R.string.available_market_no_items_found_title,
             appBarTitle = getTopAppBarTitle(availableItems)
         ) { availableItem ->
             ArtCollectibleForSaleCard(

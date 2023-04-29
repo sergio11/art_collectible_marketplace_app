@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -48,6 +46,7 @@ fun FavoritesScreen(
             }
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
     with(viewModel) {
@@ -56,8 +55,10 @@ fun FavoritesScreen(
         }
         FavoritesComponent(
             context = context,
+            snackBarHostState = snackBarHostState,
             state = uiState,
             lazyGridState = lazyGridState,
+            onRetryCalled = { load(args.tokenId) },
             onGoToArtistDetail = onGoToArtistDetail
         )
     }
@@ -66,15 +67,20 @@ fun FavoritesScreen(
 @Composable
 internal fun FavoritesComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     state: FavoritesUiState,
     lazyGridState: LazyGridState,
+    onRetryCalled: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
             lazyGridState = lazyGridState,
+            snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = userResult,
+            onRetryCalled = onRetryCalled,
+            noDataFoundMessageId = R.string.favorites_detail_not_found_message,
             appBarTitle = getTopAppBarTitle(userResult)
         ) { artist ->
             UserInfoArtistCard(

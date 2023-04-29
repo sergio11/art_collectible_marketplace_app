@@ -23,6 +23,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.markethistory.MarketHistoryS
 import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.marketstatistics.MarketStatisticsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
+import com.dreamsoftware.artcollectibles.ui.screens.notifications.NotificationsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
 import com.dreamsoftware.artcollectibles.ui.screens.sellingitems.SellingMarketItemsScreen
@@ -79,14 +80,16 @@ fun RootScreen(
                     navigate(DestinationItem.TokenDetail.buildRoute(it))
                 }, onGoToMarketHistoryItemDetail = {
                     navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
-                }, onShowAvailableMarketItems = {
+                }, onGoToAvailableMarketItems = {
                     navigate(DestinationItem.AvailableMarketItems.route)
-                }, onShowSellingMarketItems = {
+                }, onGoToSellingMarketItems = {
                     navigate(DestinationItem.SellingMarketItems.route)
-                }, onShowMarketHistory = {
+                }, onGoToMarketHistory = {
                     navigate(DestinationItem.MarketHistory.route)
-                }, onShowMarketStatistics = {
+                }, onGoToMarketStatistics = {
                     navigate(DestinationItem.MarketStatistics.route)
+                }, onGoToNotifications = {
+                    navigate(DestinationItem.Notifications.route)
                 })
             }
         }
@@ -103,6 +106,11 @@ fun RootScreen(
         composable(DestinationItem.MarketHistory.route) {
             MarketHistoryScreen {
                 navigationController.navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
+            }
+        }
+        composable(DestinationItem.Notifications.route) {
+            NotificationsScreen {
+
             }
         }
         composable(DestinationItem.MarketStatistics.route) {
