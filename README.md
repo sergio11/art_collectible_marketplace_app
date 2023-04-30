@@ -5,3 +5,6 @@
 </p>
 
 <img width="auto" align="left" src="./doc/screenshots/art_niche_icon.png" />
+
+
+Explore exclusive art collectibles by the most in-demand creators, trade with other collectors in the Marketplace, and mint your own NFTs all in one place!
