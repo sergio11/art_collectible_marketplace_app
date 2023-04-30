@@ -16,10 +16,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonButton
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDefaultTextField
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.components.TagsInputComponent
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonTagsInputComponent
 import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonCardColumn
@@ -111,7 +111,7 @@ internal fun EditNftComponent(
                         value = tokenName,
                         onValueChanged = onNameChanged
                     )
-                    TagsInputComponent(
+                    CommonTagsInputComponent(
                         modifier = defaultModifier,
                         titleRes = R.string.add_nft_input_related_topic_label,
                         placeholderRes = R.string.add_nft_input_related_topic_placeholder,

@@ -14,8 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
-import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextField
-import com.dreamsoftware.artcollectibles.ui.components.CommonDefaultTextFieldModifier
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDefaultTextField
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDefaultTextFieldModifier
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun CountryPickerField(
@@ -43,7 +44,8 @@ fun CountryPickerField(
                 Icon(
                     modifier = Modifier.clickable { isOpenState.value = true },
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = Purple40
                 )
             }
         )

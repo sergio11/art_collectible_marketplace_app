@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDialog
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 
 @Composable

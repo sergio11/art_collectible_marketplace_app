@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.components
+package com.dreamsoftware.artcollectibles.ui.components.core
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border

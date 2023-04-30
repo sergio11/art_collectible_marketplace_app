@@ -290,14 +290,6 @@ private fun MintNftForm(
                         value = name,
                         onValueChanged = onNameChanged
                     )
-                    TagsInputComponent(
-                        modifier = defaultModifier,
-                        titleRes = R.string.add_nft_input_related_topic_label,
-                        placeholderRes = R.string.add_nft_input_related_topic_placeholder,
-                        tagList = tags,
-                        onAddNewTag = onAddNewTag,
-                        onDeleteTag = onDeleteTag
-                    )
                     CategorySelectorInput(
                         modifier = defaultModifier,
                         category = categorySelected,
@@ -306,7 +298,7 @@ private fun MintNftForm(
                         placeHolderRes = R.string.add_nft_input_category_placeholder,
                         onCategorySelected = onCategoryChanged
                     )
-                    SliderComponent(
+                    CommonSliderComponent(
                         modifier = defaultModifier,
                         title = "${stringResource(R.string.add_nft_input_royalty_label)} ${royalty.toLong()}%",
                         value = royalty,
@@ -321,6 +313,14 @@ private fun MintNftForm(
                         value = description,
                         isSingleLine = false,
                         onValueChanged = onDescriptionChanged
+                    )
+                    CommonTagsInputComponent(
+                        modifier = defaultModifier,
+                        titleRes = R.string.add_nft_input_related_topic_label,
+                        placeholderRes = R.string.add_nft_input_related_topic_placeholder,
+                        tagList = tags,
+                        onAddNewTag = onAddNewTag,
+                        onDeleteTag = onDeleteTag
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
                     CommonButton(

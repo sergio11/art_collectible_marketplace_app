@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.components
+package com.dreamsoftware.artcollectibles.ui.components.core
 
 import android.view.KeyEvent.KEYCODE_ENTER
 import androidx.annotation.StringRes
@@ -19,15 +19,15 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
+import com.dreamsoftware.artcollectibles.ui.components.TagsRow
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 val CommonDefaultTagsInputModifier = Modifier
     .padding(vertical = 15.dp)
     .width(300.dp)
 
 @Composable
-fun TagsInputComponent(
+fun CommonTagsInputComponent(
     modifier: Modifier = CommonDefaultTagsInputModifier,
     @StringRes titleRes: Int,
     @StringRes placeholderRes: Int,
@@ -39,7 +39,7 @@ fun TagsInputComponent(
     var textFieldHasFocus by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
-            .background(Color.White, RoundedCornerShape(percent = 5))
+            .background(Color.White, RoundedCornerShape(27.dp))
             .then(modifier)
     ) {
         CommonText(
@@ -47,7 +47,8 @@ fun TagsInputComponent(
                 .padding(horizontal = 12.dp, vertical = 8.dp)
                 .fillMaxWidth(),
             type = CommonTextTypeEnum.TITLE_MEDIUM,
-            titleRes = titleRes
+            titleRes = titleRes,
+            textColor = Purple40
         )
         TagsRow(
             modifier = Modifier

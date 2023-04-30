@@ -10,10 +10,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 private const val DEFAULT_MAX_LINES = Int.MAX_VALUE
-private val DEFAULT_TEXT_COLOR = Color.Black
+private val DEFAULT_TEXT_COLOR = DarkPurple
 
 enum class CommonTextTypeEnum {
     TITLE_LARGE,

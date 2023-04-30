@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDefaultTextField
 
 val CommonCategorySelectorInputModifier = Modifier.padding(vertical = 15.dp).width(300.dp)
 

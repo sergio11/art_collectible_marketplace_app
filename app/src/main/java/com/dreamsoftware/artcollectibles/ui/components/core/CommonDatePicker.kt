@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.components
+package com.dreamsoftware.artcollectibles.ui.components.core
 
 import android.app.DatePickerDialog
 import androidx.annotation.StringRes

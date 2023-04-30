@@ -1,8 +1,9 @@
-package com.dreamsoftware.artcollectibles.ui.components
+package com.dreamsoftware.artcollectibles.ui.components.core
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -14,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
+import com.dreamsoftware.artcollectibles.ui.theme.*
 
 val CommonDefaultTextFieldModifier = Modifier.padding(vertical = 15.dp).width(300.dp)
 
@@ -39,7 +40,15 @@ fun CommonDefaultTextField(
         enabled = isEnabled,
         readOnly = isReadOnly,
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.White
+            containerColor = Color.White,
+            cursorColor = Purple200,
+            textColor = Purple40,
+            placeholderColor = Purple200,
+            unfocusedLabelColor = Purple40,
+            focusedLabelColor = Purple200,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
         ),
         label = { Text(stringResource(id = labelRes), fontFamily = montserratFontFamily) },
         placeholder = { Text(stringResource(id = placeHolderRes), fontFamily = montserratFontFamily) },
@@ -47,6 +56,8 @@ fun CommonDefaultTextField(
         singleLine = isSingleLine,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
+        shape = RoundedCornerShape(27.dp),
         maxLines = if(isSingleLine) 1 else Int.MAX_VALUE,
-        onValueChange = onValueChanged)
+        onValueChange = onValueChanged
+    )
 }

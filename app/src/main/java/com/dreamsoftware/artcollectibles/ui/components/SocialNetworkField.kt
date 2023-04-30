@@ -9,6 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonDefaultTextField
 
 @Composable
 fun SocialNetworkField(

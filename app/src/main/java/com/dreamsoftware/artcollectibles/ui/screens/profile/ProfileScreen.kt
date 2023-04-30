@@ -194,7 +194,7 @@ internal fun ProfileComponent(
                     value = state.userInfo?.birthdate,
                     onValueChange = onBirthdateChanged
                 )
-                TagsInputComponent(
+                CommonTagsInputComponent(
                     tagList = state.userInfo?.tags.orEmpty(),
                     titleRes = R.string.profile_input_tags_label,
                     placeholderRes = R.string.profile_input_tags_placeholder,

@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.components
+package com.dreamsoftware.artcollectibles.ui.components.core
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
-fun SliderComponent(
+fun CommonSliderComponent(
     modifier: Modifier = Modifier,
     title: String,
     value: Float,
@@ -23,14 +22,16 @@ fun SliderComponent(
     onValueChange: (Float) -> Unit
 ) {
     Column(modifier = Modifier
-        .background(Color.White, RoundedCornerShape(percent = 5))
-        .then(modifier)) {
+        .background(Color.White, RoundedCornerShape(27.dp))
+        .then(modifier)
+    ) {
         CommonText(
             modifier = Modifier
                 .padding(horizontal = 12.dp, vertical = 4.dp)
                 .fillMaxWidth(),
             type = CommonTextTypeEnum.TITLE_MEDIUM,
-            titleText = title
+            titleText = title,
+            textColor = Purple40
         )
         Slider(
             modifier = Modifier
