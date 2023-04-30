@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -251,120 +250,105 @@ private fun MintNftForm(
         Box {
             ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Card(
-                    modifier = Modifier.padding(20.dp),
-                    elevation = CardDefaults.cardElevation(4.dp),
-                    colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.6f)),
-                    shape = RoundedCornerShape(27.dp),
-                    border = BorderStroke(3.dp, Color.White)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(vertical = 20.dp)
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        val defaultModifier = Modifier
-                            .padding(vertical = 15.dp)
-                            .width(300.dp)
-                        Box {
-                            CommonAsyncImage(
-                                modifier = Modifier
-                                    .size(200.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, Color.White, CircleShape),
-                                context = LocalContext.current,
-                                imageUrl = imageUri?.path
-                            )
-                            Image(
-                                modifier = Modifier
-                                    .background(Color.White, CircleShape)
-                                    .size(40.dp)
-                                    .padding(4.dp)
-                                    .clip(CircleShape)
-                                    .align(Alignment.BottomEnd)
-                                    .clickable { onResetImage() },
-                                painter = painterResource(id = R.drawable.remove_nft_photo),
-                                contentDescription = "Remove picture"
-                            )
-                        }
-                        Spacer(modifier = Modifier.padding(10.dp))
-                        CommonText(
-                            modifier = defaultModifier,
-                            type = CommonTextTypeEnum.TITLE_MEDIUM,
-                            titleRes = R.string.add_nft_subtitle_text,
-                            textColor = DarkPurple,
-                            textAlign = TextAlign.Center
-                        )
-                        CommonDefaultTextField(
-                            modifier = defaultModifier,
-                            labelRes = R.string.add_nft_input_name_label,
-                            placeHolderRes = R.string.add_nft_input_name_placeholder,
-                            value = name,
-                            onValueChanged = onNameChanged
-                        )
-                        TagsInputComponent(
-                            modifier = defaultModifier,
-                            titleRes = R.string.add_nft_input_related_topic_label,
-                            placeholderRes = R.string.add_nft_input_related_topic_placeholder,
-                            tagList = tags,
-                            onAddNewTag = onAddNewTag,
-                            onDeleteTag = onDeleteTag
-                        )
-                        CategorySelectorInput(
-                            modifier = defaultModifier,
-                            category = categorySelected,
-                            categories = categories,
-                            labelRes = R.string.add_nft_input_category_label,
-                            placeHolderRes = R.string.add_nft_input_category_placeholder,
-                            onCategorySelected = onCategoryChanged
-                        )
-                        SliderComponent(
-                            modifier = defaultModifier,
-                            title = "${stringResource(R.string.add_nft_input_royalty_label)} ${royalty.toLong()}%",
-                            value = royalty,
-                            valueRange = ROYALTY_RANGE,
-                            steps = ROYALTY_STEPS,
-                            onValueChange = onRoyaltyChanged
-                        )
-                        CommonDefaultTextField(
-                            modifier = defaultModifier.height(150.dp),
-                            labelRes = R.string.add_nft_input_description_label,
-                            placeHolderRes = R.string.add_nft_input_description_placeholder,
-                            value = description,
-                            isSingleLine = false,
-                            onValueChanged = onDescriptionChanged
-                        )
-                        Spacer(modifier = Modifier.padding(20.dp))
-                        CommonButton(
-                            enabled = !isLoading && isCreateButtonEnabled,
+                CommonCardColumn {
+                    val defaultModifier = Modifier
+                        .padding(vertical = 15.dp)
+                        .width(300.dp)
+                    Box {
+                        CommonAsyncImage(
                             modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .width(300.dp),
-                            text = R.string.add_nft_create_button_text,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Purple700,
-                                contentColor = Color.White
-                            ),
-                            onClick = onCreateClicked
+                                .size(200.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, Color.White, CircleShape),
+                            context = LocalContext.current,
+                            imageUrl = imageUri?.path
                         )
-                        CommonButton(
-                            enabled = !isLoading,
+                        Image(
                             modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .width(300.dp),
-                            text = R.string.add_nft_cancel_button_text,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Red,
-                                contentColor = Color.White
-                            ),
-                            onClick = {
-                                onConfirmCancelMintNftVisibilityChanged(true)
-                            }
+                                .background(Color.White, CircleShape)
+                                .size(40.dp)
+                                .padding(4.dp)
+                                .clip(CircleShape)
+                                .align(Alignment.BottomEnd)
+                                .clickable { onResetImage() },
+                            painter = painterResource(id = R.drawable.remove_nft_photo),
+                            contentDescription = "Remove picture"
                         )
                     }
+                    Spacer(modifier = Modifier.padding(10.dp))
+                    CommonText(
+                        modifier = defaultModifier,
+                        type = CommonTextTypeEnum.TITLE_MEDIUM,
+                        titleRes = R.string.add_nft_subtitle_text,
+                        textColor = DarkPurple,
+                        textAlign = TextAlign.Center
+                    )
+                    CommonDefaultTextField(
+                        modifier = defaultModifier,
+                        labelRes = R.string.add_nft_input_name_label,
+                        placeHolderRes = R.string.add_nft_input_name_placeholder,
+                        value = name,
+                        onValueChanged = onNameChanged
+                    )
+                    TagsInputComponent(
+                        modifier = defaultModifier,
+                        titleRes = R.string.add_nft_input_related_topic_label,
+                        placeholderRes = R.string.add_nft_input_related_topic_placeholder,
+                        tagList = tags,
+                        onAddNewTag = onAddNewTag,
+                        onDeleteTag = onDeleteTag
+                    )
+                    CategorySelectorInput(
+                        modifier = defaultModifier,
+                        category = categorySelected,
+                        categories = categories,
+                        labelRes = R.string.add_nft_input_category_label,
+                        placeHolderRes = R.string.add_nft_input_category_placeholder,
+                        onCategorySelected = onCategoryChanged
+                    )
+                    SliderComponent(
+                        modifier = defaultModifier,
+                        title = "${stringResource(R.string.add_nft_input_royalty_label)} ${royalty.toLong()}%",
+                        value = royalty,
+                        valueRange = ROYALTY_RANGE,
+                        steps = ROYALTY_STEPS,
+                        onValueChange = onRoyaltyChanged
+                    )
+                    CommonDefaultTextField(
+                        modifier = defaultModifier.height(150.dp),
+                        labelRes = R.string.add_nft_input_description_label,
+                        placeHolderRes = R.string.add_nft_input_description_placeholder,
+                        value = description,
+                        isSingleLine = false,
+                        onValueChanged = onDescriptionChanged
+                    )
+                    Spacer(modifier = Modifier.padding(20.dp))
+                    CommonButton(
+                        enabled = !isLoading && isCreateButtonEnabled,
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.add_nft_create_button_text,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Purple700,
+                            contentColor = Color.White
+                        ),
+                        onClick = onCreateClicked
+                    )
+                    CommonButton(
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.add_nft_cancel_button_text,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            onConfirmCancelMintNftVisibilityChanged(true)
+                        }
+                    )
                 }
             }
         }

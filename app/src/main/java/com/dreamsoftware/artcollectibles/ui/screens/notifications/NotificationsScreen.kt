@@ -62,7 +62,7 @@ fun NotificationsScreen(
 }
 
 @Composable
-internal fun CommentsComponent(
+private fun CommentsComponent(
     state: NotificationsUiState,
     snackBarHostState: SnackbarHostState,
     lazyListState: LazyListState,

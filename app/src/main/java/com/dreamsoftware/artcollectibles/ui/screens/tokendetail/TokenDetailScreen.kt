@@ -311,7 +311,7 @@ private fun TokenDetailBody(
                 modifier = Modifier.padding(8.dp)
             )
             PublishCommentComponent(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 authUserInfo = authUserInfo,
                 commentsCount = artCollectible.commentsCount,
                 lastComments = lastComments,

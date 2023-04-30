@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
-    modifier: Modifier = Modifier,
     viewModel: SignInViewModel = hiltViewModel(),
     onSignInSuccess: () -> Unit
 ) {
@@ -57,7 +56,6 @@ fun SignInScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     SignInComponent(
-        modifier = modifier,
         state = state,
         snackBarHostState = snackBarHostState,
         coroutineScope = coroutineScope,
@@ -77,8 +75,7 @@ fun SignInScreen(
 }
 
 @Composable
-internal fun SignInComponent(
-    modifier: Modifier = Modifier,
+private fun SignInComponent(
     state: SignInUiState,
     snackBarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
@@ -97,7 +94,6 @@ internal fun SignInComponent(
     }
     LoadingDialog(isShowingDialog = state.loginState is LoginState.OnLoginInProgress)
     AccountScreen(
-        modifier = modifier,
         snackBarHostState = snackBarHostState,
         mainTitleRes = R.string.signin_main_title_text,
         screenBackgroundRes = R.drawable.common_background) {

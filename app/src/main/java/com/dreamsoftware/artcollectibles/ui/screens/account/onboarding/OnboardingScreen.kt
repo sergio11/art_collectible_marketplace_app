@@ -26,11 +26,10 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
 @Composable
 fun OnBoardingScreen(
-    modifier: Modifier = Modifier,
     viewModel: OnBoardingViewModel = hiltViewModel(),
     onUserAlreadyAuthenticated: () -> Unit = {},
-    onNavigateToLogin: () -> Unit = {},
-    onNavigateToSignUp: () -> Unit = {}
+    onGoToLogin: () -> Unit = {},
+    onGoToSignUp: () -> Unit = {}
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState<OnBoardingUiState>(
@@ -53,18 +52,16 @@ fun OnBoardingScreen(
         viewModel.restoreUserSession()
     }
     OnBoardingComponent(
-        modifier = modifier,
         state = uiState,
         snackBarHostState = snackBarHostState,
-        onLoginClicked = onNavigateToLogin,
-        onSignUpClicked = onNavigateToSignUp
+        onLoginClicked = onGoToLogin,
+        onSignUpClicked = onGoToSignUp
     )
 }
 
 
 @Composable
-internal fun OnBoardingComponent(
-    modifier: Modifier = Modifier,
+private fun OnBoardingComponent(
     state: OnBoardingUiState,
     snackBarHostState: SnackbarHostState,
     onLoginClicked: () -> Unit,
@@ -72,7 +69,6 @@ internal fun OnBoardingComponent(
 ) {
     LoadingDialog(isShowingDialog = state is OnBoardingUiState.VerificationInProgress)
     AccountScreen(
-        modifier = modifier,
         snackBarHostState = snackBarHostState,
         mainTitleRes = R.string.onboarding_main_title_text,
         screenBackgroundRes = R.drawable.common_background

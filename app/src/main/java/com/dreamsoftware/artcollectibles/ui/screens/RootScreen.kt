@@ -24,6 +24,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketItemD
 import com.dreamsoftware.artcollectibles.ui.screens.marketstatistics.MarketStatisticsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.notifications.NotificationsScreen
+import com.dreamsoftware.artcollectibles.ui.screens.preferences.PreferencesScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
 import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
 import com.dreamsoftware.artcollectibles.ui.screens.sellingitems.SellingMarketItemsScreen
@@ -48,10 +49,10 @@ fun RootScreen(
                         popUpTo(DestinationItem.Home.route)
                     }
                 },
-                onNavigateToLogin = {
+                onGoToLogin = {
                     navigationController.navigate(DestinationItem.SignIn.route)
                 },
-                onNavigateToSignUp = {
+                onGoToSignUp = {
                     navigationController.navigate(DestinationItem.SignUp.route)
                 }
             )
@@ -113,6 +114,9 @@ fun RootScreen(
 
             }
         }
+        composable(DestinationItem.Preferences.route) {
+            PreferencesScreen()
+        }
         composable(DestinationItem.MarketStatistics.route) {
             MarketStatisticsScreen {
                 navigationController.popBackStack()
@@ -166,8 +170,10 @@ fun RootScreen(
                     navigate(DestinationItem.OnBoarding.route) {
                         popUpTo(DestinationItem.OnBoarding.route)
                     }
-                }, onOpenProfile = {
+                }, onGoToUserProfile = {
                     navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                }, onGoToUserPreferences = {
+                    navigate(DestinationItem.Preferences.route)
                 })
             }
         }

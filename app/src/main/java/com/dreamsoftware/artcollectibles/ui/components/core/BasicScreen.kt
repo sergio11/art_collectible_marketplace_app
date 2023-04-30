@@ -27,6 +27,7 @@ fun BasicScreen(
     navController: NavController? = null,
     screenContainerColor: Color = MaterialTheme.colorScheme.background,
     hasBottomBar: Boolean = false,
+    hasTopBar: Boolean = true,
     enableVerticalScroll: Boolean = false,
     screenContent: @Composable ColumnScope.() -> Unit = {},
     backgroundContent: @Composable BoxScope.() -> Unit = {}
@@ -41,13 +42,15 @@ fun BasicScreen(
         },
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
-            CommonTopAppBar(
-                titleRes = titleRes,
-                titleText = titleText,
-                navigationAction = navigationAction,
-                centerTitle = centerTitle,
-                menuActions =  menuActions
-            )
+            if(hasTopBar) {
+                CommonTopAppBar(
+                    titleRes = titleRes,
+                    titleText = titleText,
+                    navigationAction = navigationAction,
+                    centerTitle = centerTitle,
+                    menuActions =  menuActions
+                )
+            }
         },
         containerColor = screenContainerColor
     ) { paddingValues ->

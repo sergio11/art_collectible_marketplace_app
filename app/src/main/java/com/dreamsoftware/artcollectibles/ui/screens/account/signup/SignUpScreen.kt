@@ -22,7 +22,6 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 
 @Composable
 fun SignUpScreen(
-    modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = hiltViewModel(),
     onSignUpSuccess: () -> Unit
 ) {
@@ -38,7 +37,6 @@ fun SignUpScreen(
     }
     val snackBarHostState = remember { SnackbarHostState() }
     SignUpComponent(
-        modifier = modifier,
         uiState = state,
         snackBarHostState = snackBarHostState,
         onEmailChanged = {
@@ -55,8 +53,7 @@ fun SignUpScreen(
 }
 
 @Composable
-internal fun SignUpComponent(
-    modifier: Modifier = Modifier,
+private fun SignUpComponent(
     uiState: SignUpUiState,
     snackBarHostState: SnackbarHostState,
     onEmailChanged: (email: String) -> Unit,
@@ -81,7 +78,6 @@ internal fun SignUpComponent(
     )
     LoadingDialog(isShowingDialog = uiState.state is SignUpState.InProgress)
     AccountScreen(
-        modifier = modifier,
         snackBarHostState = snackBarHostState,
         mainTitleRes = R.string.signup_main_title_text,
         screenBackgroundRes = R.drawable.common_background
