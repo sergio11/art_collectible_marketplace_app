@@ -122,7 +122,9 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Preferences.route) {
-            PreferencesScreen()
+            PreferencesScreen {
+                navigationController.popBackStack()
+            }
         }
         composable(DestinationItem.MarketStatistics.route) {
             MarketStatisticsScreen {

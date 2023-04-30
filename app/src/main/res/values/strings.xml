@@ -269,4 +269,12 @@
     <!-- Notifications -->
     <string name="notifications_detail_title_default">Notifications</string>
     <string name="notifications_detail_title_count" formatted="false">Notifications (%d)</string>
+    <!-- Preferences Screen -->
+    <string name="preferences_screen_main_title_text">Preferences</string>
+    <string name="preferences_screen_profile_visibility_title">Profile visibility</string>
+    <string name="preferences_screen_profile_visibility_description">Allow users to find out your profile on discovery artists screen</string>
+    <string name="preferences_screen_account_balance_title">Account balance</string>
+    <string name="preferences_screen_account_balance_description">Allow users to see your current account balance</string>
+    <string name="preferences_screen_subtitle_text">Set some privacy or app functionality options</string>
+    <string name="preferences_screen_bottom_text">ArtNiche - An Art Collectible NFT Marketplace | Created By Sergio Sánchez Sánchez | © 2023</string>
 </resources>

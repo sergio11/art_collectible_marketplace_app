@@ -1,18 +1,24 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
+import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 
 private const val EXTERNAL_ACCOUNT_PERCENTAGE_SIZE = 0.26f
 
@@ -23,6 +29,7 @@ fun UserAccountProfilePicture(size: Dp, userInfo: UserInfo? = null, onPictureCli
             modifier =  Modifier
                 .size(size)
                 .clip(CircleShape)
+                .border(2.dp, BackgroundWhite, CircleShape)
                 .clickable {
                     onPictureClicked()
                 },
