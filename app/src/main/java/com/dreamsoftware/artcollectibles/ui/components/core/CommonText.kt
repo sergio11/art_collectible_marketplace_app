@@ -1,8 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.components.core
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,15 +9,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.theme.montserratFontFamily
 
 private const val DEFAULT_MAX_LINES = Int.MAX_VALUE
 private val DEFAULT_TEXT_COLOR = Color.Black
-private val DEFAULT_TITLE_MODIFIER = Modifier
-    .padding(horizontal = 8.dp, vertical = 2.dp)
-    .fillMaxWidth()
 
 enum class CommonTextTypeEnum {
     TITLE_LARGE,
@@ -93,7 +87,7 @@ private fun CommonTextComponent(
         color = textColor,
         style = textStyle,
         maxLines = if(singleLine) {
-            DEFAULT_MAX_LINES
+            1
         } else {
             maxLines
         }

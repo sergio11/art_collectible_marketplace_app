@@ -77,13 +77,11 @@ internal fun CommonDialogUI(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.default_image_placeholder),
+                painter = painterResource(id = R.mipmap.ic_launcher),
                 contentDescription = null, // decorative
-                colorFilter = ColorFilter.tint(BackgroundWhite),
                 modifier = Modifier
-                    .padding(top = 35.dp)
-                    .size(70.dp)
-                    .background(Purple40)
+                    .padding(top = 30.dp)
+                    .size(100.dp)
                 )
             Column(modifier = Modifier.padding(16.dp)) {
                 CommonText(

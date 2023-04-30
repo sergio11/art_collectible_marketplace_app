@@ -74,19 +74,20 @@ private fun OnBoardingComponent(
         screenBackgroundRes = R.drawable.common_background
     ) {
         CommonText(
-            modifier = Modifier.padding(bottom = 10.dp),
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
             type = CommonTextTypeEnum.TITLE_LARGE,
             textColor = Purple500,
             titleRes = R.string.onboarding_subtitle_text,
             textAlign = TextAlign.Center
         )
         CommonText(
-            modifier = Modifier.padding(bottom = 20.dp),
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
             type = CommonTextTypeEnum.TITLE_MEDIUM,
             textColor = Purple700,
             titleRes = R.string.onboarding_description_text,
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.padding(bottom = 20.dp))
         CommonButton(
             modifier = Modifier.padding(bottom = 4.dp),
             text = R.string.onboarding_login_button_text,

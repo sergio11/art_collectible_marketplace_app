@@ -65,8 +65,15 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.SignUp.route) {
-            SignUpScreen {
-                navigationController.popBackStack()
+            with(navigationController) {
+                SignUpScreen(
+                    onSignUpSuccess = {
+                        popBackStack()
+                    },
+                    onGoToSignIn = {
+                        navigate(DestinationItem.SignIn.route)
+                    }
+                )
             }
         }
         composable(DestinationItem.Home.route) {

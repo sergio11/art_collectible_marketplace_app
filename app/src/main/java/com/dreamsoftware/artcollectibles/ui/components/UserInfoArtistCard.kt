@@ -23,6 +23,7 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun UserInfoArtistCard(
@@ -33,7 +34,7 @@ fun UserInfoArtistCard(
 ) {
     Card(
         modifier = Modifier
-            .height(290.dp)
+            .height(300.dp)
             .width(190.dp)
             .then(modifier),
         elevation = CardDefaults.cardElevation(4.dp),
@@ -59,8 +60,12 @@ fun UserInfoArtistCard(
                     .fillMaxWidth()
                     .padding(10.dp)
                     .border(
-                        1.dp,
-                        color = Color.Transparent,
+                        2.dp,
+                        color = if (reverseStyle) {
+                            BackgroundWhite
+                        } else {
+                            Purple40
+                        },
                         shape = RoundedCornerShape(27.dp)
                     )
                     .clip(RoundedCornerShape(27.dp)),

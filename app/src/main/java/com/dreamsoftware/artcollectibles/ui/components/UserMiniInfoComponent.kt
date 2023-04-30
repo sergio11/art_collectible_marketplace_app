@@ -32,14 +32,16 @@ fun UserMiniInfoComponent(
             CommonText(
                 modifier = Modifier.padding(vertical = 2.dp),
                 type = CommonTextTypeEnum.LABEL_LARGE,
-                titleText = userInfo?.name
+                titleText = userInfo?.name,
+                singleLine = true
             )
             userInfo?.professionalTitle?.let {
                 CommonText(
                     modifier = Modifier.padding(vertical = 2.dp),
                     type = CommonTextTypeEnum.LABEL_MEDIUM,
                     titleText = it,
-                    textColor = Color.DarkGray
+                    textColor = Color.DarkGray,
+                    singleLine = true
                 )
             }
             UserStatisticsComponent(

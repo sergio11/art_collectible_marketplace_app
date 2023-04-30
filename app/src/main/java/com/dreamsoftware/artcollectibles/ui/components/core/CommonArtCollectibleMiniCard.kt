@@ -49,7 +49,11 @@ fun CommonArtCollectibleMiniCard(
             .clickable { onClicked() }
             .then(modifier)
     ) {
-        ArtCollectibleImage(context, artCollectible)
+        ArtCollectibleImage(
+            context = context,
+            artCollectible = artCollectible,
+            reverseStyle = reverseStyle
+        )
         Column(
             Modifier.fillMaxWidth()
                 .padding(horizontal = 15.dp)

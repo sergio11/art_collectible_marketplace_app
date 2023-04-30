@@ -3,8 +3,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.account.core
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -32,13 +30,11 @@ fun AccountScreen(
         screenContent = {
             CommonText(
                 modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .padding(top = 80.dp),
+                    .padding(horizontal = 32.dp, vertical = 40.dp),
                 type = CommonTextTypeEnum.HEADLINE_LARGE,
                 textColor = Color.White,
                 titleRes = mainTitleRes
             )
-            Spacer(Modifier.height(60.dp))
             CommonCardColumn(content = screenContent)
         }
     )

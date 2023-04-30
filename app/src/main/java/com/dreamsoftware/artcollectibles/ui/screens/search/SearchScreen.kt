@@ -94,7 +94,7 @@ internal fun SearchComponent(
                 onClearClicked = onResetSearch
             )
             LazyVerticalGrid(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                 columns = GridCells.Adaptive(minSize = 150.dp),
                 state = lazyGridState,
                 verticalArrangement = Arrangement.spacedBy(10.dp),

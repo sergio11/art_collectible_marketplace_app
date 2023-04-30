@@ -19,11 +19,14 @@ import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun MarketItemImage(
     context: Context,
-    marketItem: ArtCollectibleForSale
+    marketItem: ArtCollectibleForSale,
+    reverseStyle: Boolean = false
 ) {
     with(marketItem) {
         Box {
@@ -33,8 +36,12 @@ fun MarketItemImage(
                     .fillMaxWidth()
                     .padding(10.dp)
                     .border(
-                        1.dp,
-                        color = Color.Transparent,
+                        2.dp,
+                        color = if (reverseStyle) {
+                            BackgroundWhite
+                        } else {
+                            Purple40
+                        },
                         shape = RoundedCornerShape(27.dp)
                     )
                     .clip(RoundedCornerShape(27.dp)),

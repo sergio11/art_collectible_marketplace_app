@@ -131,14 +131,15 @@ fun ArtistDetailComponent(
                 if (!isAuthUser) {
                     CommonButton(
                         modifier = Modifier
-                            .padding(start = 6.dp)
+                            .padding(start = 8.dp)
                             .align(Alignment.CenterEnd),
                         text = if (isFollowing) {
                             R.string.profile_following_button_unfollow_text
                         } else {
                             R.string.profile_following_button_follow_text
                         },
-                        widthDp = 120.dp,
+                        textType = CommonTextTypeEnum.LABEL_MEDIUM,
+                        widthDp = 110.dp,
                         enabled = !isLoading,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = PurpleGrey80,

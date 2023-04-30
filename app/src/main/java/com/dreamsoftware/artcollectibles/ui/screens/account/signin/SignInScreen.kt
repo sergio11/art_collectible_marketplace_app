@@ -55,23 +55,17 @@ fun SignInScreen(
     }
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    SignInComponent(
-        state = state,
-        snackBarHostState = snackBarHostState,
-        coroutineScope = coroutineScope,
-        onEmailChanged = {
-            viewModel.onEmailChanged(newEmail = it)
-        },
-        onPasswordChanged = {
-            viewModel.onPasswordChanged(newPassword = it)
-        },
-        onSignIn = {
-            viewModel.signIn()
-        },
-        onSocialSignIn = { token, authType ->
-            viewModel.signIn(token, authType)
-        }
-    )
+    with(viewModel) {
+        SignInComponent(
+            state = state,
+            snackBarHostState = snackBarHostState,
+            coroutineScope = coroutineScope,
+            onEmailChanged = ::onEmailChanged,
+            onPasswordChanged = ::onPasswordChanged,
+            onSignIn = ::signIn,
+            onSocialSignIn = ::signIn
+        )
+    }
 }
 
 @Composable
@@ -84,102 +78,109 @@ private fun SignInComponent(
     onSignIn: () -> Unit,
     onSocialSignIn: (token: String, authType: ExternalProviderAuthTypeEnum) -> Unit
 ) {
-    if (state.loginState is LoginState.OnLoginError) {
-        val loginFailedText = stringResource(id = R.string.signin_login_failed)
-        LaunchedEffect(snackBarHostState) {
-            snackBarHostState.showSnackbar(
-                message = loginFailedText
+    with(state) {
+        if (loginState is LoginState.OnLoginError) {
+            val loginFailedText = stringResource(id = R.string.signin_login_failed)
+            LaunchedEffect(snackBarHostState) {
+                snackBarHostState.showSnackbar(
+                    message = loginFailedText
+                )
+            }
+        }
+
+        LoadingDialog(isShowingDialog = loginState is LoginState.OnLoginInProgress)
+        AccountScreen(
+            snackBarHostState = snackBarHostState,
+            mainTitleRes = R.string.signin_main_title_text,
+            screenBackgroundRes = R.drawable.common_background) {
+            CommonText(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+                type = CommonTextTypeEnum.TITLE_LARGE,
+                titleRes = R.string.onboarding_subtitle_text,
+                textColor = Purple500,
+                textAlign = TextAlign.Center
+            )
+            CommonText(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+                type = CommonTextTypeEnum.TITLE_MEDIUM,
+                titleRes = R.string.signin_secondary_title_text,
+                textColor = Purple700,
+                textAlign = TextAlign.Center
+            )
+            CommonDefaultTextField(
+                labelRes = R.string.signin_input_email_label,
+                placeHolderRes = R.string.signin_input_email_placeholder,
+                keyboardType = KeyboardType.Email,
+                value = email,
+                onValueChanged = onEmailChanged
+            )
+            CommonTextFieldPassword(
+                labelRes = R.string.signin_input_password_label,
+                placeHolderRes = R.string.signin_input_password_placeholder,
+                value = password,
+                onValueChanged = onPasswordChanged
+            )
+            Spacer(modifier = Modifier.padding(bottom = 20.dp))
+            CommonButton(
+                modifier = Modifier.padding(bottom = 8.dp),
+                enabled = isLoginButtonEnabled,
+                text = R.string.signin_login_button_text,
+                onClick = onSignIn
+            )
+            Spacer(modifier = Modifier.padding(bottom = 10.dp))
+            AlternativeLoginDivider()
+            Spacer(modifier = Modifier.padding(bottom = 10.dp))
+            val loginFBCancelledText =
+                stringResource(id = R.string.signin_login_facebook_cancelled)
+            val loginFBFailedText =
+                stringResource(id = R.string.signin_login_facebook_failed)
+            FacebookLoginButton(
+                enabled = loginState !is LoginState.OnLoginInProgress,
+                modifier = Modifier.padding(horizontal = 40.dp),
+                onSuccess = {
+                    onSocialSignIn(it, ExternalProviderAuthTypeEnum.FACEBOOK)
+                },
+                onCancel = {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = loginFBCancelledText
+                        )
+                    }
+                },
+                onError = {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = loginFBFailedText
+                        )
+                    }
+                }
+            )
+            val loginGGFailedText =
+                stringResource(id = R.string.signin_login_google_failed)
+            GoogleLoginButton(
+                enabled = loginState !is LoginState.OnLoginInProgress,
+                modifier = Modifier.padding(horizontal = 40.dp),
+                onAuthFailed = {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar(
+                            message = loginGGFailedText
+                        )
+                    }
+                },
+                onAuthSuccess = {
+                    onSocialSignIn(it, ExternalProviderAuthTypeEnum.GOOGLE)
+                }
             )
         }
-    }
-    LoadingDialog(isShowingDialog = state.loginState is LoginState.OnLoginInProgress)
-    AccountScreen(
-        snackBarHostState = snackBarHostState,
-        mainTitleRes = R.string.signin_main_title_text,
-        screenBackgroundRes = R.drawable.common_background) {
-        CommonText(
-            modifier = Modifier.padding(bottom = 10.dp),
-            type = CommonTextTypeEnum.TITLE_LARGE,
-            titleRes = R.string.onboarding_subtitle_text,
-            textColor = Purple500,
-            textAlign = TextAlign.Center
-        )
-        CommonText(
-            modifier = Modifier.padding(bottom = 10.dp),
-            type = CommonTextTypeEnum.TITLE_MEDIUM,
-            titleRes = R.string.signin_secondary_title_text,
-            textColor = Purple700,
-            textAlign = TextAlign.Center
-        )
-        CommonDefaultTextField(
-            labelRes = R.string.signin_input_email_label,
-            placeHolderRes = R.string.signin_input_email_placeholder,
-            keyboardType = KeyboardType.Email,
-            value = state.email,
-            onValueChanged = onEmailChanged
-        )
-        CommonTextFieldPassword(
-            labelRes = R.string.signin_input_password_label,
-            placeHolderRes = R.string.signin_input_password_placeholder,
-            value = state.password,
-            onValueChanged = onPasswordChanged
-        )
-        CommonButton(
-            modifier = Modifier.padding(bottom = 8.dp),
-            enabled = state.isLoginButtonEnabled,
-            text = R.string.signin_login_button_text,
-            onClick = onSignIn
-        )
-        Spacer(modifier = Modifier.padding(bottom = 10.dp))
-        AlternativeLoginDivider()
-        Spacer(modifier = Modifier.padding(bottom = 10.dp))
-        val loginFBCancelledText =
-            stringResource(id = R.string.signin_login_facebook_cancelled)
-        val loginFBFailedText =
-            stringResource(id = R.string.signin_login_facebook_failed)
-        FacebookLoginButton(
-            enabled = state.loginState !is LoginState.OnLoginInProgress,
-            modifier = Modifier.padding(horizontal = 20.dp),
-            onSuccess = {
-                onSocialSignIn(it, ExternalProviderAuthTypeEnum.FACEBOOK)
-            },
-            onCancel = {
-                coroutineScope.launch {
-                    snackBarHostState.showSnackbar(
-                        message = loginFBCancelledText
-                    )
-                }
-            },
-            onError = {
-                coroutineScope.launch {
-                    snackBarHostState.showSnackbar(
-                        message = loginFBFailedText
-                    )
-                }
-            }
-        )
-        val loginGGFailedText =
-            stringResource(id = R.string.signin_login_google_failed)
-        GoogleLoginButton(
-            enabled = state.loginState !is LoginState.OnLoginInProgress,
-            modifier = Modifier.padding(horizontal = 20.dp),
-            onAuthFailed = {
-                coroutineScope.launch {
-                    snackBarHostState.showSnackbar(
-                        message = loginGGFailedText
-                    )
-                }
-            },
-            onAuthSuccess = {
-                onSocialSignIn(it, ExternalProviderAuthTypeEnum.GOOGLE)
-            }
-        )
     }
 }
 
 @Composable
 internal fun AlternativeLoginDivider() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier.padding(horizontal = 40.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Divider(
             modifier = Modifier.weight(1f),
             thickness = 1.dp,

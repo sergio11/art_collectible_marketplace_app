@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.ui.screens.account.signin
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
@@ -22,6 +23,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onEmailChanged(newEmail: String) {
+        Log.d("ART_COLL", "onEmailChanged newEmail - $newEmail called!")
         updateState {
             it.copy(
                 email = newEmail,
@@ -31,6 +33,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onPasswordChanged(newPassword: String) {
+        Log.d("ART_COLL", "onPasswordChanged newPassword - $newPassword called!")
         updateState {
             it.copy(
                 password = newPassword,

@@ -14,11 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
 @Composable
 fun ArtCollectibleImage(
     context: Context,
-    artCollectible: ArtCollectible
+    artCollectible: ArtCollectible,
+    reverseStyle: Boolean = false
 ) {
     CommonAsyncImage(
         modifier = Modifier
@@ -26,8 +29,12 @@ fun ArtCollectibleImage(
             .fillMaxWidth()
             .padding(10.dp)
             .border(
-                1.dp,
-                color = Color.Transparent,
+                2.dp,
+                color = if (reverseStyle) {
+                    BackgroundWhite
+                } else {
+                    Purple40
+                },
                 shape = RoundedCornerShape(27.dp)
             )
             .clip(RoundedCornerShape(27.dp)),

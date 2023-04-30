@@ -30,8 +30,8 @@
     <string name="onboarding_login_button_text">Login</string>
     <string name="onboarding_signup_button_text">Sign up</string>
     <!-- Sign In -->
-    <string name="signin_main_title_text">Sign in now</string>
-    <string name="signin_secondary_title_text">Share your digital works with the world</string>
+    <string name="signin_main_title_text">Share your digital works with the world</string>
+    <string name="signin_secondary_title_text">Sign in now to discover and buy exclusive NFT, with guaranteed authenticity.</string>
     <string name="signin_login_facebook_cancelled">Login with facebook was cancelled</string>
     <string name="signin_login_facebook_failed">Login with facebook failed</string>
     <string name="signin_login_google_failed">Login with Google failed</string>
@@ -44,8 +44,10 @@
     <string name="signin_login_button_text">Login</string>
     <string name="signin_alternative_login_text" translatable="false">OR</string>
     <!-- Sign Up -->
-    <string name="signup_main_title_text">Sign up now</string>
+    <string name="signup_main_title_text">Share your digital works with the world</string>
+    <string name="signup_secondary_title_text">Sign up to explore exclusive art collectibles by the most in-demand creators</string>
     <string name="signup_signup_button_text">Sign up</string>
+    <string name="signup_already_has_account_text">Sign in</string>
     <string name="signup_input_email_label">Email</string>
     <string name="signup_input_email_placeholder">Introduce email address</string>
     <string name="signup_input_password_label">Password</string>

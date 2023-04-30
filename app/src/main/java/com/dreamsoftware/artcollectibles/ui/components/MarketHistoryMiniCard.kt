@@ -51,7 +51,11 @@ fun MarketHistoryMiniCard(
                 .clickable { onClicked() }
                 .then(modifier)
         ) {
-            MarketItemImage(context, artCollectibleForSale)
+            MarketItemImage(
+                context = context,
+                marketItem = artCollectibleForSale,
+                reverseStyle = reverseStyle
+            )
             Column(
                 Modifier.padding(horizontal = 10.dp)
             ) {

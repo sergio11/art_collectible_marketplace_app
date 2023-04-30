@@ -22,6 +22,7 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 
+
 @Composable
 fun CommonButton(
     modifier: Modifier = Modifier,
@@ -32,6 +33,7 @@ fun CommonButton(
     ),
     widthDp: Dp = 200.dp,
     heightDp: Dp = 50.dp,
+    textType: CommonTextTypeEnum = CommonTextTypeEnum.TITLE_MEDIUM,
     buttonShape: Shape = RoundedCornerShape(percent = 50),
     @StringRes text: Int,
     onClick: () -> Unit,
@@ -55,7 +57,7 @@ fun CommonButton(
     ) {
         CommonText(
             modifier = Modifier.padding(vertical = 4.dp),
-            type = CommonTextTypeEnum.TITLE_MEDIUM,
+            type = textType,
             titleText = stringResource(text),
             textColor = Color.White,
             textAlign = TextAlign.Center

@@ -32,7 +32,7 @@ fun CommonAsyncImage(
                 .data(it)
                 .crossfade(true)
                 .build(),
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             contentDescription = stringResource(R.string.image_content_description),
             colorFilter = colorFilter
         ) {
