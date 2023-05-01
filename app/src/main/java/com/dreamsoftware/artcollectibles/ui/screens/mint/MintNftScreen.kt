@@ -261,7 +261,7 @@ private fun MintNftForm(
                                 .clip(CircleShape)
                                 .border(2.dp, Color.White, CircleShape),
                             context = LocalContext.current,
-                            imageUrl = imageUri?.path
+                            imageUri = imageUri
                         )
                         Image(
                             modifier = Modifier

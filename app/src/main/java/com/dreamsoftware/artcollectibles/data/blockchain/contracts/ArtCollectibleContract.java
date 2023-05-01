@@ -74,6 +74,8 @@ public class ArtCollectibleContract extends Contract {
 
     public static final String FUNC_GETTOKENS = "getTokens";
 
+    public static final String FUNC_GETTOKENSBYMETADATACIDS = "getTokensByMetadataCids";
+
     public static final String FUNC_GETTOKENSCREATEDBY = "getTokensCreatedBy";
 
     public static final String FUNC_GETTOKENSCREATEDBYME = "getTokensCreatedByMe";
@@ -547,6 +549,23 @@ public class ArtCollectibleContract extends Contract {
                 Arrays.<Type>asList(new DynamicArray<Uint256>(
                         Uint256.class,
                         org.web3j.abi.Utils.typeMap(tokenIds, Uint256.class))),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> getTokensByMetadataCids(List<String> metadataCids) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_GETTOKENSBYMETADATACIDS, 
+                Arrays.<Type>asList(new DynamicArray<Utf8String>(
+                        Utf8String.class,
+                        org.web3j.abi.Utils.typeMap(metadataCids, Utf8String.class))),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectible>>() {}));
         return new RemoteFunctionCall<List>(function,
                 new Callable<List>() {

@@ -167,10 +167,10 @@ internal class ArtCollectibleBlockchainDataSourceImpl(
         cidList: Iterable<String>,
         credentials: Credentials
     ): Iterable<ArtCollectibleBlockchainDTO> = withContext(Dispatchers.IO) {
-        val contract = loadContract(credentials, readOnlyMode = true)
-        artCollectibleMapper.mapInListToOutList(cidList.map {
-            contract.getTokenByMetadataCid(it).send()
-        })
+        val collectibleList = loadContract(credentials, readOnlyMode = true)
+            .getTokensByMetadataCids(cidList.toList())
+            .send() as List<ArtCollectible>
+        artCollectibleMapper.mapInListToOutList(collectibleList)
     }
 
     override suspend fun fetchTokensStatisticsByAddress(credentials: Credentials, targetAddress: String): TokenStatisticsDTO = withContext(Dispatchers.IO) {

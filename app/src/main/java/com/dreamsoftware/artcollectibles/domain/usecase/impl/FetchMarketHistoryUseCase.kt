@@ -10,7 +10,7 @@ class FetchMarketHistoryUseCase(
 ): BaseUseCaseWithParams<FetchMarketHistoryUseCase.Params, Iterable<ArtCollectibleForSale>>() {
 
     override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> = with(params) {
-        artMarketplaceRepository.fetchMarketHistory()
+        artMarketplaceRepository.fetchMarketHistory(limit)
     }
 
     data class Params(

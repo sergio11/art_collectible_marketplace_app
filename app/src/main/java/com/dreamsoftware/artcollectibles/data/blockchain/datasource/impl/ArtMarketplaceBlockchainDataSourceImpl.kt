@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.blockchain.config.BlockchainConfig
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
@@ -68,17 +67,14 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
                 val defaultCostOfPuttingForSale =
                     Convert.toWei(DEFAULT_COST_OF_PUTTING_FOR_SALE_IN_ETH, Convert.Unit.ETHER)
                         .toBigInteger()
-                Log.d("ART_COLL", "putItemForSale - priceInEth - $priceInEth - tokenId $tokenId")
                 val putItemForSalePriceInWei =
                     Convert.toWei(priceInEth.toString(), Convert.Unit.ETHER).toBigInteger()
-                Log.d("ART_COLL", "putItemForSalePriceInWei - $putItemForSalePriceInWei")
                 putItemForSale(tokenId, putItemForSalePriceInWei, defaultCostOfPuttingForSale).send()
             }
         }
 
     override suspend fun withdrawFromSale(tokenId: BigInteger, credentials: Credentials) {
         withContext(Dispatchers.IO) {
-            Log.d("ART_COLL", "withdrawFromSale - tokenId -> $tokenId")
             loadContract(credentials).withdrawFromSale(tokenId).send()
         }
     }
@@ -157,8 +153,8 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
         limit: Int?
     ): Iterable<ArtCollectibleForSaleDTO> = withContext(Dispatchers.IO) {
         with(loadContract(credentials)) {
-            val contractCall = limit?.let {
-                fetchPaginatedTokenMarketHistory(tokenId, BigInteger.valueOf(it.toLong()))
+            val contractCall = limit?.toBigInteger()?.let {
+                fetchPaginatedTokenMarketHistory(tokenId, it)
             } ?: fetchTokenMarketHistory(tokenId)
             val marketItems = contractCall
                 .send()
@@ -178,14 +174,18 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials, limit: Int? = null) =
         with(loadContract(credentials)) {
             val marketItems = when (type) {
-                MarketItemType.AVAILABLE -> fetchAvailableMarketItems()
-                MarketItemType.SELLING -> limit?.toLong()?.let {
-                    fetchPaginatedSellingMarketItems(BigInteger.valueOf(it))
+                MarketItemType.AVAILABLE -> limit?.toBigInteger()?.let {
+                    fetchPaginatedAvailableMarketItems(it)
+                } ?: fetchAvailableMarketItems()
+                MarketItemType.SELLING -> limit?.toBigInteger()?.let {
+                    fetchPaginatedSellingMarketItems(it)
                 } ?: fetchSellingMarketItems()
-                MarketItemType.OWNED -> limit?.toLong()?.let {
-                    fetchPaginatedOwnedMarketItems(BigInteger.valueOf(it))
+                MarketItemType.OWNED -> limit?.toBigInteger()?.let {
+                    fetchPaginatedOwnedMarketItems(it)
                 } ?:  fetchOwnedMarketItems()
-                MarketItemType.HISTORY -> fetchMarketHistory()
+                MarketItemType.HISTORY -> limit?.toBigInteger()?.let {
+                    fetchLastMarketHistoryItems(it)
+                } ?: fetchMarketHistory()
             }.send().filterIsInstance<ArtCollectibleForSale>()
             artMarketplaceMapper.mapInListToOutList(marketItems)
         }

@@ -9,7 +9,7 @@ class FetchAvailableMarketItemsUseCase(
 ): BaseUseCaseWithParams<FetchAvailableMarketItemsUseCase.Params, Iterable<ArtCollectibleForSale>>() {
 
     override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> = with(params) {
-        artMarketplaceRepository.fetchAvailableMarketItems()
+        artMarketplaceRepository.fetchAvailableMarketItems(limit)
     }
 
     data class Params(

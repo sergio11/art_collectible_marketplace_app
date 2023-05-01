@@ -44,7 +44,6 @@ class MarketItemDetailViewModel @Inject constructor(
     }
 
     fun buyItem(tokenId: BigInteger) {
-        onLoading()
         with(uiState.value) {
             buyArtCollectibleUseCase.invoke(
                 scope = viewModelScope,
@@ -52,6 +51,9 @@ class MarketItemDetailViewModel @Inject constructor(
                     sellerUid = artCollectibleForSale?.seller?.uid.orEmpty(),
                     tokenId = tokenId
                 ),
+                onBeforeStart = {
+                    onLoading()
+                },
                 onSuccess = { onBuyItemSuccess() },
                 onError = ::onErrorOccurred
             )
@@ -68,11 +70,7 @@ class MarketItemDetailViewModel @Inject constructor(
             scope = viewModelScope,
             params = WithdrawFromSaleUseCase.Params(tokenId),
             onBeforeStart = {
-                updateState {
-                    it.copy(
-                        isLoading = true
-                    )
-                }
+                onLoading()
             },
             onSuccess = {
                 onTokenWithdrawnFromSale()
@@ -121,10 +119,13 @@ class MarketItemDetailViewModel @Inject constructor(
     }
 
     private fun onLoading() {
-        updateState { it.copy(
-            isLoading = true,
-            isConfirmBuyItemDialogVisible = false
-        ) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                isConfirmBuyItemDialogVisible = false,
+                isConfirmWithDrawFromSaleDialogVisible = false
+            )
+        }
     }
 
     private fun onErrorOccurred(ex: Throwable) {

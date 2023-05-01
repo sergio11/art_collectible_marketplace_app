@@ -31,6 +31,8 @@ class MintNftViewModel @Inject constructor(
     }
 
     fun onImageSelected(imageUri: Uri, mimeType: String) {
+        applicationAware.getFileProviderAuthority()
+        Log.d("ART_COLL", "onImageSelected imageUri -> ${imageUri.encodedPath} mimeType -> $mimeType ")
         updateState {
             it.copy(
                 imageUri = imageUri,

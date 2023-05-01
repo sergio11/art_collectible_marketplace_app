@@ -10,9 +10,10 @@ interface IArtMarketplaceRepository {
 
     /**
      * Fetch non sold and non canceled market items
+     * @param limit
      */
     @Throws(FetchAvailableMarketItemsException::class)
-    suspend fun fetchAvailableMarketItems(): Iterable<ArtCollectibleForSale>
+    suspend fun fetchAvailableMarketItems(limit: Int? = null): Iterable<ArtCollectibleForSale>
 
     /**
      * Fetch non sold and non canceled market items by category
@@ -37,9 +38,10 @@ interface IArtMarketplaceRepository {
 
     /**
      * Allow us to fetch market history
+     * @param limit
      */
     @Throws(FetchMarketHistoryException::class)
-    suspend fun fetchMarketHistory(): Iterable<ArtCollectibleForSale>
+    suspend fun fetchMarketHistory(limit: Int? = null): Iterable<ArtCollectibleForSale>
 
     /**
      * Allow us to fetch token market history

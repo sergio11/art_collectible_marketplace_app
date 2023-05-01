@@ -84,6 +84,8 @@ public class ArtMarketplaceContract extends Contract {
 
     public static final String FUNC_FETCHOWNEDMARKETITEMS = "fetchOwnedMarketItems";
 
+    public static final String FUNC_FETCHPAGINATEDAVAILABLEMARKETITEMS = "fetchPaginatedAvailableMarketItems";
+
     public static final String FUNC_FETCHPAGINATEDCREATEDMARKETITEMS = "fetchPaginatedCreatedMarketItems";
 
     public static final String FUNC_FETCHPAGINATEDOWNEDMARKETITEMS = "fetchPaginatedOwnedMarketItems";
@@ -95,6 +97,8 @@ public class ArtMarketplaceContract extends Contract {
     public static final String FUNC_FETCHSELLINGMARKETITEMS = "fetchSellingMarketItems";
 
     public static final String FUNC_FETCHTOKENMARKETHISTORY = "fetchTokenMarketHistory";
+
+    public static final String FUNC_FETCHTOKENMARKETHISTORYPRICES = "fetchTokenMarketHistoryPrices";
 
     public static final String FUNC_FETCHWALLETSTATISTICS = "fetchWalletStatistics";
 
@@ -467,6 +471,21 @@ public class ArtMarketplaceContract extends Contract {
                 });
     }
 
+    public RemoteFunctionCall<List> fetchPaginatedAvailableMarketItems(BigInteger count) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHPAGINATEDAVAILABLEMARKETITEMS, 
+                Arrays.<Type>asList(new Uint256(count)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleForSale>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
     public RemoteFunctionCall<List> fetchPaginatedCreatedMarketItems(BigInteger count) {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHPAGINATEDCREATEDMARKETITEMS, 
                 Arrays.<Type>asList(new Uint256(count)),
@@ -547,6 +566,21 @@ public class ArtMarketplaceContract extends Contract {
         final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHTOKENMARKETHISTORY, 
                 Arrays.<Type>asList(new Uint256(tokenId)),
                 Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleForSale>>() {}));
+        return new RemoteFunctionCall<List>(function,
+                new Callable<List>() {
+                    @Override
+                    @SuppressWarnings("unchecked")
+                    public List call() throws Exception {
+                        List<Type> result = (List<Type>) executeCallSingleValueReturn(function, List.class);
+                        return convertToNative(result);
+                    }
+                });
+    }
+
+    public RemoteFunctionCall<List> fetchTokenMarketHistoryPrices(BigInteger tokenId) {
+        final org.web3j.abi.datatypes.Function function = new org.web3j.abi.datatypes.Function(FUNC_FETCHTOKENMARKETHISTORYPRICES, 
+                Arrays.<Type>asList(new Uint256(tokenId)),
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<ArtCollectibleMarketPrice>>() {}));
         return new RemoteFunctionCall<List>(function,
                 new Callable<List>() {
                     @Override
@@ -750,6 +784,35 @@ public class ArtMarketplaceContract extends Contract {
             this.countAvailable = countAvailable.getValue();
             this.countSold = countSold.getValue();
             this.countCanceled = countCanceled.getValue();
+        }
+    }
+
+    public static class ArtCollectibleMarketPrice extends StaticStruct {
+        public BigInteger marketItemId;
+
+        public BigInteger tokenId;
+
+        public BigInteger price;
+
+        public BigInteger date;
+
+        public ArtCollectibleMarketPrice(BigInteger marketItemId, BigInteger tokenId, BigInteger price, BigInteger date) {
+            super(new Uint256(marketItemId),
+                    new Uint256(tokenId),
+                    new Uint256(price),
+                    new Uint256(date));
+            this.marketItemId = marketItemId;
+            this.tokenId = tokenId;
+            this.price = price;
+            this.date = date;
+        }
+
+        public ArtCollectibleMarketPrice(Uint256 marketItemId, Uint256 tokenId, Uint256 price, Uint256 date) {
+            super(marketItemId, tokenId, price, date);
+            this.marketItemId = marketItemId.getValue();
+            this.tokenId = tokenId.getValue();
+            this.price = price.getValue();
+            this.date = date.getValue();
         }
     }
 

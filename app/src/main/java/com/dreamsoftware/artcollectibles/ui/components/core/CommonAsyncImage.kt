@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components.core
 
 import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
@@ -22,10 +23,11 @@ fun CommonAsyncImage(
     modifier: Modifier,
     context: Context,
     reverseStyle: Boolean = false,
-    imageUrl: String?,
+    imageUrl: String? = null,
+    imageUri: Uri? = null,
     colorFilter: ColorFilter? = null
 ) {
-    imageUrl?.let {
+    (imageUrl ?: imageUri)?.let {
         SubcomposeAsyncImage(
             modifier = modifier,
             model = ImageRequest.Builder(context)
