@@ -142,10 +142,8 @@ fun ArtistDetailComponent(
                         textType = CommonTextTypeEnum.LABEL_MEDIUM,
                         widthDp = 110.dp,
                         enabled = !isLoading,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = PurpleGrey80,
-                            contentColor = Purple40
-                        ),
+                        containerColor = PurpleGrey80,
+                        contentColor = Purple40,
                         buttonShape = ButtonDefaults.outlinedShape,
                         onClick = {
                             userInfo?.uid?.let {
@@ -286,10 +284,8 @@ fun ArtistDetailComponent(
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = R.string.profile_open_instagram_profile,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = instagramPurpleRed,
-                        contentColor = Color.White
-                    ),
+                    containerColor = instagramPurpleRed,
+                    contentColor = Color.White,
                     buttonShape = ButtonDefaults.elevatedShape,
                     onClick = {
                         context.startActivity(
@@ -307,10 +303,8 @@ fun ArtistDetailComponent(
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = R.string.profile_get_more_matic,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Purple40,
-                        contentColor = Color.White
-                    ),
+                    containerColor = Purple40,
+                    contentColor = Color.White,
                     buttonShape = ButtonDefaults.elevatedShape,
                     onClick = {
                         context.startActivity(

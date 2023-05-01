@@ -1,9 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.blockchain.datasource
 
-import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSalePricesDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletStatisticsDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.model.*
 import org.web3j.crypto.Credentials
 import java.math.BigInteger
 
@@ -121,4 +118,11 @@ interface IArtMarketplaceBlockchainDataSource {
      * @param credentials
      */
     suspend fun fetchCurrentItemPrice(tokenId: BigInteger, credentials: Credentials): ArtCollectibleForSalePricesDTO
+
+    /**
+     * Fetch token market history prices
+     * @param tokenId
+     * @param credentials
+     */
+    suspend fun fetchTokenMarketHistoryPrices(tokenId: BigInteger, credentials: Credentials): Iterable<ArtCollectibleMarketHistoryPriceDTO>
 }

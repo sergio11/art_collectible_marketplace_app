@@ -27,6 +27,7 @@ fun <T: Any>CommonVerticalGridScreen(
     appBarTitle: String,
     @StringRes noDataFoundMessageId: Int,
     onRetryCalled: () -> Unit,
+    onBackPressed: () -> Unit,
     onBuildContent: @Composable LazyGridItemScope.(item: T) -> Unit
 ) {
     LoadingDialog(isShowingDialog = isLoading)
@@ -34,6 +35,10 @@ fun <T: Any>CommonVerticalGridScreen(
         snackBarHostState = snackBarHostState,
         titleText = appBarTitle,
         centerTitle = true,
+        navigationAction = TopBarAction(
+            iconRes = R.drawable.back_icon,
+            onActionClicked = onBackPressed
+        ),
         backgroundContent = {
             ErrorStateNotificationComponent(
                 modifier = Modifier.align(Alignment.Center),

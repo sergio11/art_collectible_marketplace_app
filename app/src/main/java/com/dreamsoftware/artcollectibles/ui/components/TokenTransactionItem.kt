@@ -19,6 +19,7 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 
 @Composable
@@ -31,7 +32,7 @@ fun TokenTransactionItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(2.dp, Purple200, RoundedCornerShape(percent = 30))
-                .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
+                .background(BackgroundWhite.copy(alpha = 0.9f), RoundedCornerShape(percent = 30))
                 .padding(8.dp)
                 .then(modifier)
         ) {
@@ -69,7 +70,7 @@ fun TokenTransactionItem(
                     CommonText(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(8.dp),
                         type = CommonTextTypeEnum.BODY_MEDIUM,
                         titleText = if (sold) {
                             stringResource(

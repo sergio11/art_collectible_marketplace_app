@@ -685,4 +685,14 @@ class DomainModule {
     ) = GetMyNotificationsUseCase(
         preferenceRepository, notificationsRepository
     )
+
+    /**
+     * Provide fetch token market history prices use case
+     * @param artMarketplaceRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchTokenMarketHistoryPricesUseCase(
+        artMarketplaceRepository: IArtMarketplaceRepository
+    ) = FetchTokenMarketHistoryPricesUseCase(artMarketplaceRepository)
 }

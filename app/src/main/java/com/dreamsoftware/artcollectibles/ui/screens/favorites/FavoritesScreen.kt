@@ -32,6 +32,7 @@ data class FavoritesScreenArgs(
 fun FavoritesScreen(
     args: FavoritesScreenArgs,
     viewModel: FavoritesViewModel = hiltViewModel(),
+    onBackPressed: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -59,6 +60,7 @@ fun FavoritesScreen(
             state = uiState,
             lazyGridState = lazyGridState,
             onRetryCalled = { load(args.tokenId) },
+            onBackPressed = onBackPressed,
             onGoToArtistDetail = onGoToArtistDetail
         )
     }
@@ -71,6 +73,7 @@ internal fun FavoritesComponent(
     state: FavoritesUiState,
     lazyGridState: LazyGridState,
     onRetryCalled: () -> Unit,
+    onBackPressed: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
@@ -80,6 +83,7 @@ internal fun FavoritesComponent(
             isLoading = isLoading,
             items = userResult,
             onRetryCalled = onRetryCalled,
+            onBackPressed = onBackPressed,
             noDataFoundMessageId = R.string.favorites_detail_not_found_message,
             appBarTitle = getTopAppBarTitle(userResult)
         ) { artist ->

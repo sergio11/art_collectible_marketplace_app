@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
 import com.dreamsoftware.artcollectibles.data.api.exception.*
+import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMarketHistoryPriceMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.MarketplaceStatisticsMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.UserCredentialsMapper
 import com.dreamsoftware.artcollectibles.data.api.repository.IArtCollectibleRepository
@@ -15,6 +16,7 @@ import com.dreamsoftware.artcollectibles.data.firebase.datasource.ICategoriesDat
 import com.dreamsoftware.artcollectibles.data.memory.datasource.IArtMarketItemMemoryCacheDataSource
 import com.dreamsoftware.artcollectibles.data.memory.exception.CacheException
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMarketHistoryPrice
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectiblePrices
 import com.dreamsoftware.artcollectibles.domain.models.MarketplaceStatistics
 import com.google.common.collect.Iterables
@@ -33,6 +35,7 @@ import java.math.BigInteger
  * @param walletRepository
  * @param userCredentialsMapper
  * @param marketplaceStatisticsMapper
+ * @param artCollectibleMarketHistoryPriceMapper
  * @param categoriesDataSource
  * @param marketPricesBlockchainDataSource
  * @param artMarketItemMemoryCacheDataSource
@@ -44,6 +47,7 @@ internal class ArtMarketplaceRepositoryImpl(
     private val walletRepository: IWalletRepository,
     private val userCredentialsMapper: UserCredentialsMapper,
     private val marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
+    private val artCollectibleMarketHistoryPriceMapper: ArtCollectibleMarketHistoryPriceMapper,
     private val categoriesDataSource: ICategoriesDataSource,
     private val marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource,
     private val artMarketItemMemoryCacheDataSource: IArtMarketItemMemoryCacheDataSource
@@ -299,6 +303,29 @@ internal class ArtMarketplaceRepositoryImpl(
             } catch (ex: Exception) {
                 throw FetchMarketplaceStatisticsException(
                     "An error occurred when fetching marketplace statistics",
+                    ex
+                )
+            }
+        }
+
+    @Throws(FetchTokenMarketHistoryPricesException::class)
+    override suspend fun fetchTokenMarketHistoryPrices(tokenId: BigInteger): Iterable<ArtCollectibleMarketHistoryPrice> =
+        withContext(Dispatchers.IO) {
+            try {
+                val credentials = walletRepository.loadCredentials()
+                val artCollectible = artCollectibleRepository.getTokenById(tokenId)
+                artMarketplaceBlockchainDataSource.fetchTokenMarketHistoryPrices(
+                    tokenId = tokenId,
+                    credentials = userCredentialsMapper.mapOutToIn(credentials)
+                ).map {
+                    artCollectibleMarketHistoryPriceMapper.mapInToOut(ArtCollectibleMarketHistoryPriceMapper.InputData(
+                        artCollectible = artCollectible,
+                        artCollectibleMarketHistoryPriceDTO = it
+                    ))
+                }
+            } catch (ex: Exception) {
+                throw FetchTokenMarketHistoryPricesException(
+                    "An error occurred when fetching market history prices",
                     ex
                 )
             }

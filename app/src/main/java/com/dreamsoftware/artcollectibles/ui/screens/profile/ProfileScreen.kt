@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.elevatedShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
@@ -221,10 +220,8 @@ internal fun ProfileComponent(
                         .padding(bottom = 8.dp)
                         .width(300.dp),
                     text = R.string.profile_save_button_text,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Purple700,
-                        contentColor = Color.White
-                    ),
+                    containerColor = Purple700,
+                    contentColor = Color.White,
                     onClick = onSaveClicked
                 )
                 CommonButton(
@@ -310,10 +307,8 @@ internal fun ProfilePicturePicker(
                     .padding(vertical = 10.dp, horizontal = 20.dp)
                     .fillMaxWidth(),
                 text = R.string.profile_pick_image_from_gallery,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple200,
-                    contentColor = Color.White
-                ),
+                containerColor = Purple200,
+                contentColor = Color.White,
                 buttonShape = elevatedShape,
                 onClick = { galleryLauncher.launch("image/*") }
             )
@@ -322,10 +317,8 @@ internal fun ProfilePicturePicker(
                     .padding(vertical = 10.dp, horizontal = 20.dp)
                     .fillMaxWidth(),
                 text = R.string.profile_pick_from_camera,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple40,
-                    contentColor = Color.White
-                ),
+                containerColor = Purple40,
+                contentColor = Color.White,
                 buttonShape = elevatedShape,
                 onClick = {
                     context.checkPermissionState(

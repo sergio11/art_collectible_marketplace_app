@@ -137,6 +137,10 @@ class DataModule {
     @Singleton
     fun provideUserMarketStatisticMapper(): UserMarketStatisticMapper = UserMarketStatisticMapper()
 
+    @Provides
+    @Singleton
+    fun provideArtCollectibleMarketHistoryPriceMapper(): ArtCollectibleMarketHistoryPriceMapper = ArtCollectibleMarketHistoryPriceMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -189,6 +193,7 @@ class DataModule {
      * @param walletRepository
      * @param userCredentialsMapper
      * @param marketplaceStatisticsMapper
+     * @param artCollectibleMarketHistoryPriceMapper
      * @param categoriesDataSource
      * @param marketPricesBlockchainDataSource
      * @param artMarketItemMemoryCacheDataSource
@@ -202,6 +207,7 @@ class DataModule {
         walletRepository: IWalletRepository,
         userCredentialsMapper: UserCredentialsMapper,
         marketplaceStatisticsMapper: MarketplaceStatisticsMapper,
+        artCollectibleMarketHistoryPriceMapper: ArtCollectibleMarketHistoryPriceMapper,
         categoriesDataSource: ICategoriesDataSource,
         marketPricesBlockchainDataSource: IMarketPricesBlockchainDataSource,
         artMarketItemMemoryCacheDataSource: IArtMarketItemMemoryCacheDataSource
@@ -213,6 +219,7 @@ class DataModule {
             walletRepository,
             userCredentialsMapper,
             marketplaceStatisticsMapper,
+            artCollectibleMarketHistoryPriceMapper,
             categoriesDataSource,
             marketPricesBlockchainDataSource,
             artMarketItemMemoryCacheDataSource

@@ -37,6 +37,7 @@ data class FollowersScreenArgs(
 fun FollowersScreen(
     args: FollowersScreenArgs,
     viewModel: FollowersViewModel = hiltViewModel(),
+    onBackPressed: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -74,6 +75,7 @@ fun FollowersScreen(
                 } else {
                     R.string.followers_detail_not_found_message
                 },
+                onBackPressed = onBackPressed,
                 onRetryCalled = {
                     if (viewType == FollowersScreenArgs.ViewTypeEnum.FOLLOWING) {
                         loadFollowing(userUid)
@@ -96,6 +98,7 @@ internal fun FollowersComponent(
     lazyGridState: LazyGridState,
     @StringRes noDataFoundMessageId: Int,
     onRetryCalled: () -> Unit,
+    onBackPressed: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
@@ -106,6 +109,7 @@ internal fun FollowersComponent(
             items = userResult,
             noDataFoundMessageId = noDataFoundMessageId,
             onRetryCalled = onRetryCalled,
+            onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(args, userResult)
         ) { artist ->
             UserInfoArtistCard(

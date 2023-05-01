@@ -6,7 +6,6 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,7 +28,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.data.api.exception.FetchItemForSaleException
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
-import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleRow
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleMiniInfoComponent
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectiblePrice
+import com.dreamsoftware.artcollectibles.ui.components.UserMiniInfoComponent
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
@@ -253,10 +255,8 @@ fun MarketItemDetailComponent(
                         modifier = Modifier
                             .padding(horizontal = 10.dp, vertical = 8.dp)
                             .fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Purple200,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Purple200,
+                        contentColor = Color.White,
                         enabled = enoughFunds,
                         text = R.string.market_item_detail_buy_item_button_text,
                         onClick = {
@@ -269,10 +269,8 @@ fun MarketItemDetailComponent(
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = R.string.market_item_detail_open_item_button_text,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Purple700,
-                        contentColor = Color.White
-                    ),
+                    containerColor = Purple700,
+                    contentColor = Color.White,
                     onClick = {
                         artCollectibleForSale?.token?.id?.let {
                             onOpenTokenDetailCalled(it)
@@ -285,10 +283,8 @@ fun MarketItemDetailComponent(
                             .padding(horizontal = 10.dp, vertical = 8.dp)
                             .fillMaxWidth(),
                         text = R.string.market_item_detail_withdraw_from_sale_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Color.Red,
+                        contentColor = Color.White,
                         onClick = {
                             onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
                         }

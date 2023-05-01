@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +24,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
-import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectiblesRow
+import com.dreamsoftware.artcollectibles.ui.components.UserFollowersInfoComponent
+import com.dreamsoftware.artcollectibles.ui.components.UserStatisticsComponent
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
@@ -171,10 +172,8 @@ fun CommentDetailComponent(
                     .padding(horizontal = 10.dp, vertical = 8.dp)
                     .fillMaxWidth(),
                 text = R.string.comment_detail_artist_detail_button_text,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple700,
-                    contentColor = Color.White
-                ),
+                containerColor = Purple700,
+                contentColor = Color.White,
                 onClick = {
                     comment?.user?.uid?.let(onOpenArtistDetailCalled)
                 }
@@ -185,10 +184,8 @@ fun CommentDetailComponent(
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = R.string.comment_detail_delete_button_text,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    ),
+                    containerColor = Color.Red,
+                    contentColor = Color.White,
                     onClick = {
                         onConfirmDeleteCommentDialogVisibilityChanged(true)
                     }

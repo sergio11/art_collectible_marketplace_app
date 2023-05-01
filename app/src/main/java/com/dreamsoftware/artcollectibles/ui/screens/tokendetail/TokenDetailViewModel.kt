@@ -1,11 +1,9 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
-import com.google.common.collect.Iterables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -27,7 +25,8 @@ class TokenDetailViewModel @Inject constructor(
     private val getLastCommentsByTokenUseCase: GetLastCommentsByTokenUseCase,
     private val getLastTokenMarketTransactionsUseCase: GetLastTokenMarketTransactionsUseCase,
     private val getSimilarTokensUseCase: GetSimilarTokensUseCase,
-    private val fetchTokenCurrentPriceUseCase: FetchTokenCurrentPriceUseCase
+    private val fetchTokenCurrentPriceUseCase: FetchTokenCurrentPriceUseCase,
+    private val fetchTokenMarketHistoryPricesUseCase: FetchTokenMarketHistoryPricesUseCase
 ) : SupportViewModel<TokenDetailUiState>() {
 
     private companion object {
@@ -83,7 +82,6 @@ class TokenDetailViewModel @Inject constructor(
 
     fun putItemForSale(tokenId: BigInteger) {
         with(uiState.value) {
-            Log.d("ART_COLL", "tokenPriceInEth -> $tokenPriceInEth")
             tokenPriceInEth?.let { price ->
                 putItemForSaleUseCase.invoke(
                     scope = viewModelScope,
@@ -208,6 +206,7 @@ class TokenDetailViewModel @Inject constructor(
                     loadLastCommentsByToken(artCollectible.id)
                 }
                 loadLastTokenMarketTransactions(tokenId)
+                loadTokenMarketHistoryPrices(tokenId)
                 loadSimilarTokens(artCollectible.metadata.cid)
                 if (!isTokenOwner && !isTokenCreator) {
                     registerVisitor(tokenId, authUser.walletAddress)
@@ -311,6 +310,23 @@ class TokenDetailViewModel @Inject constructor(
         scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
     )
 
+    private fun loadTokenMarketHistoryPrices(tokenId: BigInteger) =
+        fetchTokenMarketHistoryPricesUseCase.invoke(
+            scope = viewModelScope,
+            params = FetchTokenMarketHistoryPricesUseCase.Params(
+                tokenId = tokenId
+            ),
+            onSuccess = { tokenMarketHistoryPrices ->
+                updateState {
+                    it.copy(tokenMarketHistoryPrices = tokenMarketHistoryPrices)
+                }
+            },
+            onError = {
+                it.printStackTrace()
+                // ignore error
+            }
+        )
+
     private fun loadLastTokenMarketTransactions(tokenId: BigInteger) =
         getLastTokenMarketTransactionsUseCase.invoke(
             scope = viewModelScope,
@@ -319,13 +335,11 @@ class TokenDetailViewModel @Inject constructor(
                 limit = HISTORY_BY_TOKEN_LIMIT
             ),
             onSuccess = { lastMarketHistory ->
-                Log.d("ART_COLL", "lastMarketHistory -> ${Iterables.size(lastMarketHistory)}")
                 updateState {
                     it.copy(lastMarketHistory = lastMarketHistory)
                 }
             },
             onError = {
-                Log.d("ART_COLL", "onError -> ${it.message}")
                 it.printStackTrace()
                 // ignore error
             }
@@ -432,6 +446,7 @@ data class TokenDetailUiState(
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),
     val lastMarketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
+    val tokenMarketHistoryPrices: Iterable<ArtCollectibleMarketHistoryPrice> = emptyList(),
     val similarTokens: Iterable<ArtCollectible> = emptyList(),
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,

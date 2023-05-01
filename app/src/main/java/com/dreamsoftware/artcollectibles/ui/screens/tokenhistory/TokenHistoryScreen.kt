@@ -23,7 +23,8 @@ data class TokenHistoryScreenArgs(
 @Composable
 fun TokenHistoryScreen(
     args: TokenHistoryScreenArgs,
-    viewModel: TokenHistoryViewModel = hiltViewModel()
+    viewModel: TokenHistoryViewModel = hiltViewModel(),
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -46,7 +47,8 @@ fun TokenHistoryScreen(
         TokenHistoryComponent(
             state = uiState,
             snackBarHostState = snackBarHostState,
-            lazyListState = lazyListState
+            lazyListState = lazyListState,
+            onBackPressed = onBackPressed
         )
     }
 }
@@ -55,7 +57,8 @@ fun TokenHistoryScreen(
 internal fun TokenHistoryComponent(
     state: TokenHistoryUiState,
     snackBarHostState: SnackbarHostState,
-    lazyListState: LazyListState
+    lazyListState: LazyListState,
+    onBackPressed: () -> Unit
 ) {
     with(state) {
         CommonVerticalColumnScreen(
@@ -63,6 +66,7 @@ internal fun TokenHistoryComponent(
             snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = tokenHistory,
+            onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(tokenHistory)
         ) { item ->
             TokenTransactionItem(item = item)

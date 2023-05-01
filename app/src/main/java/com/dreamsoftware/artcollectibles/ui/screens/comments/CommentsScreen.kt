@@ -26,6 +26,7 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalColumnScreen
 import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
 import com.google.common.collect.Iterables
 import java.math.BigInteger
@@ -38,7 +39,8 @@ data class CommentsScreenArgs(
 fun CommentsScreen(
     args: CommentsScreenArgs,
     viewModel: CommentsViewModel = hiltViewModel(),
-    onSeeCommentDetail: (comment: Comment) -> Unit
+    onGoToCommentDetail: (comment: Comment) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -62,7 +64,8 @@ fun CommentsScreen(
             state = uiState,
             snackBarHostState = snackBarHostState,
             lazyListState = lazyListState,
-            onSeeCommentDetail = onSeeCommentDetail
+            onGoToCommentDetail = onGoToCommentDetail,
+            onBackPressed = onBackPressed
         )
     }
 }
@@ -72,7 +75,8 @@ internal fun CommentsComponent(
     state: CommentsUiState,
     lazyListState: LazyListState,
     snackBarHostState: SnackbarHostState,
-    onSeeCommentDetail: (comment: Comment) -> Unit
+    onGoToCommentDetail: (comment: Comment) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     with(state) {
         CommonVerticalColumnScreen(
@@ -80,11 +84,12 @@ internal fun CommentsComponent(
             snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = comments,
+            onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(comments)
         ) { comment ->
             CommentItemDetail(
                 modifier = Modifier.clickable {
-                    onSeeCommentDetail(comment)
+                    onGoToCommentDetail(comment)
                 },
                 comment = comment
             )
@@ -99,7 +104,7 @@ private fun CommentItemDetail(modifier: Modifier = Modifier, comment: Comment) {
             modifier = Modifier
                 .fillMaxWidth()
                 .border(2.dp, Purple200, RoundedCornerShape(percent = 30))
-                .background(Color.White.copy(alpha = 0.6f), RoundedCornerShape(percent = 30))
+                .background(BackgroundWhite.copy(alpha = 0.9f), RoundedCornerShape(percent = 30))
                 .padding(16.dp)
                 .then(modifier)
         ) {

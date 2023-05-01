@@ -17,7 +17,8 @@ internal class FollowersDataSourceImpl(
 
     private companion object {
         const val COLLECTION_NAME = "followers"
-        const val COUNT_FIELD_NAME = "count"
+        const val FOLLOWERS_COUNT_FIELD_NAME = "followers_count"
+        const val FOLLOWING_COUNT_FIELD_NAME = "following_count"
         const val FOLLOWING_IDS_FIELD_NAME = "following_ids"
         const val FOLLOWERS_IDS_FIELD_NAME = "followers_ids"
         const val FOLLOWERS_COUNT_SUFFIX = "_followers_count"
@@ -79,7 +80,7 @@ internal class FollowersDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(userId + FOLLOWERS_COUNT_SUFFIX)
                 .get()
-                .await()?.data?.get(COUNT_FIELD_NAME)
+                .await()?.data?.get(FOLLOWERS_COUNT_FIELD_NAME)
                 .toString()
                 .toLongOrDefault(0L)
         } catch (ex: FirebaseException) {
@@ -95,7 +96,7 @@ internal class FollowersDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(userId + FOLLOWING_COUNT_SUFFIX)
                 .get()
-                .await()?.data?.get(COUNT_FIELD_NAME)
+                .await()?.data?.get(FOLLOWING_COUNT_FIELD_NAME)
                 .toString()
                 .toLongOrDefault(0L)
         } catch (ex: FirebaseException) {
@@ -119,7 +120,7 @@ internal class FollowersDataSourceImpl(
                     ).await()
                     document(from + FOLLOWING_COUNT_SUFFIX).set(
                         hashMapOf(
-                            COUNT_FIELD_NAME to FieldValue.increment(
+                            FOLLOWING_COUNT_FIELD_NAME to FieldValue.increment(
                                 1
                             )
                         ), SetOptions.merge()
@@ -133,7 +134,7 @@ internal class FollowersDataSourceImpl(
                     ).await()
                     document(to + FOLLOWERS_COUNT_SUFFIX).set(
                         hashMapOf(
-                            COUNT_FIELD_NAME to FieldValue.increment(
+                            FOLLOWERS_COUNT_FIELD_NAME to FieldValue.increment(
                                 1
                             )
                         ), SetOptions.merge()
@@ -161,12 +162,12 @@ internal class FollowersDataSourceImpl(
                     ).await()
                     val followingCount =
                         document(from + FOLLOWING_COUNT_SUFFIX).get().await()?.data?.get(
-                            COUNT_FIELD_NAME
+                            FOLLOWING_COUNT_FIELD_NAME
                         ).toString().toLongOrDefault(0L)
                     if (followingCount > 0) {
                         document(from + FOLLOWING_COUNT_SUFFIX).set(
                             hashMapOf(
-                                COUNT_FIELD_NAME to FieldValue.increment(
+                                FOLLOWING_COUNT_FIELD_NAME to FieldValue.increment(
                                     -1
                                 )
                             ), SetOptions.merge()
@@ -181,12 +182,12 @@ internal class FollowersDataSourceImpl(
                     ).await()
                     val followersCount =
                         document(to + FOLLOWERS_COUNT_SUFFIX).get().await()?.data?.get(
-                            COUNT_FIELD_NAME
+                            FOLLOWERS_COUNT_FIELD_NAME
                         ).toString().toLongOrDefault(0L)
                     if (followersCount > 0) {
                         document(to + FOLLOWERS_COUNT_SUFFIX).set(
                             hashMapOf(
-                                COUNT_FIELD_NAME to FieldValue.increment(
+                                FOLLOWERS_COUNT_FIELD_NAME to FieldValue.increment(
                                     -1
                                 )
                             ), SetOptions.merge()
@@ -206,7 +207,8 @@ internal class FollowersDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME)
-                    .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
+                    .whereGreaterThan(FOLLOWERS_COUNT_FIELD_NAME, 0)
+                    .orderBy(FOLLOWERS_COUNT_FIELD_NAME, Query.Direction.DESCENDING)
                     .limit(limit.toLong()).get()
                     .await()?.documents?.mapNotNull { it.id }
                     ?.filter { it.contains(FOLLOWERS_COUNT_SUFFIX) }

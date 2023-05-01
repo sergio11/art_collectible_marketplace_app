@@ -33,7 +33,8 @@ data class TokensScreenArgs(
 fun TokensScreen(
     args: TokensScreenArgs,
     viewModel: TokensViewModel = hiltViewModel(),
-    onGoToTokenDetail: (tokenId: BigInteger) -> Unit
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -77,7 +78,8 @@ fun TokensScreen(
                         loadTokensCreatedBy(userAddress)
                     }
                 },
-                onGoToTokenDetail = onGoToTokenDetail
+                onGoToTokenDetail = onGoToTokenDetail,
+                onBackPressed = onBackPressed
             )
         }
     }
@@ -92,6 +94,7 @@ internal fun TokensComponent(
     lazyGridState: LazyGridState,
     @StringRes noDataFoundMessageId: Int,
     onRetryCalled: () -> Unit,
+    onBackPressed: () -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit
 ) {
     with(state) {
@@ -102,6 +105,7 @@ internal fun TokensComponent(
             items = tokensResult,
             noDataFoundMessageId = noDataFoundMessageId,
             onRetryCalled = onRetryCalled,
+            onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(args, tokensResult)
         ) {token ->
             ArtCollectibleMiniCard(context = context, artCollectible = token) {

@@ -6,13 +6,8 @@ import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplac
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.IArtMarketplaceBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.datasource.core.SupportBlockchainDataSource
 import com.dreamsoftware.artcollectibles.data.blockchain.exception.ItemNotAvailableForSale
-import com.dreamsoftware.artcollectibles.data.blockchain.mapper.ArtMarketplaceMapper
-import com.dreamsoftware.artcollectibles.data.blockchain.mapper.MarketStatisticsMapper
-import com.dreamsoftware.artcollectibles.data.blockchain.mapper.WalletStatisticsMapper
-import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSalePricesDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.MarketplaceStatisticsDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.WalletStatisticsDTO
+import com.dreamsoftware.artcollectibles.data.blockchain.mapper.*
+import com.dreamsoftware.artcollectibles.data.blockchain.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.web3j.crypto.Credentials
@@ -26,6 +21,8 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
     private val artMarketplaceMapper: ArtMarketplaceMapper,
     private val marketStatisticsMapper: MarketStatisticsMapper,
     private val walletStatisticsMapper: WalletStatisticsMapper,
+    private val artCollectibleMarketPriceMapper: ArtCollectibleMarketPriceMapper,
+    private val artCollectibleForSalePricesMapper: ArtCollectibleForSalePricesMapper,
     private val blockchainConfig: BlockchainConfig,
     private val web3j: Web3j,
 ) : SupportBlockchainDataSource(blockchainConfig, web3j), IArtMarketplaceBlockchainDataSource {
@@ -165,10 +162,17 @@ internal class ArtMarketplaceBlockchainDataSourceImpl(
 
     override suspend fun fetchCurrentItemPrice(tokenId: BigInteger, credentials: Credentials): ArtCollectibleForSalePricesDTO = withContext(Dispatchers.IO) {
         val price = loadContract(credentials).fetchCurrentItemPrice(tokenId).send()
-        ArtCollectibleForSalePricesDTO(
-            priceInWei = price,
-            priceInEth = price.toBigDecimal().divide(BigDecimal.valueOf(1000000000000000000L))
-        )
+        artCollectibleForSalePricesMapper.mapInToOut(price)
+    }
+
+    override suspend fun fetchTokenMarketHistoryPrices(
+        tokenId: BigInteger,
+        credentials: Credentials
+    ): Iterable<ArtCollectibleMarketHistoryPriceDTO> = withContext(Dispatchers.IO) {
+        val marketPrices = loadContract(credentials)
+            .fetchTokenMarketHistoryPrices(tokenId)
+            .send() as List<ArtMarketplaceContract.ArtCollectibleMarketPrice>
+        artCollectibleMarketPriceMapper.mapInListToOutList(marketPrices)
     }
 
     private fun fetchMarketItemsBy(type: MarketItemType, credentials: Credentials, limit: Int? = null) =

@@ -22,7 +22,8 @@ import java.math.BigInteger
 @Composable
 fun SellingMarketItemsScreen(
     viewModel: SellingMarketItemsViewModel = hiltViewModel(),
-    onMarketItemSelected: (tokenId: BigInteger) -> Unit
+    onMarketItemSelected: (tokenId: BigInteger) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -49,6 +50,7 @@ fun SellingMarketItemsScreen(
             state = uiState,
             lazyGridState = lazyGridState,
             onRetryCalled = ::load,
+            onBackPressed = onBackPressed,
             onMarketItemSelected = onMarketItemSelected
         )
     }
@@ -61,6 +63,7 @@ internal fun SellingMarketItemsComponent(
     state: SellingMarketItemsUiState,
     lazyGridState: LazyGridState,
     onRetryCalled: () -> Unit,
+    onBackPressed: () -> Unit,
     onMarketItemSelected: (tokenId: BigInteger) -> Unit
 ) {
     with(state) {
@@ -71,6 +74,7 @@ internal fun SellingMarketItemsComponent(
             items = sellingItems,
             noDataFoundMessageId = R.string.selling_market_items_not_found_message,
             onRetryCalled = onRetryCalled,
+            onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(sellingItems)
         ) { sellingItem ->
             ArtCollectibleForSaleCard(

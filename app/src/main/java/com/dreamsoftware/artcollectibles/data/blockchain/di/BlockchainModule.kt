@@ -130,7 +130,9 @@ class BlockchainModule {
      */
     @Provides
     @Singleton
-    fun provideArtMarketplaceMapper(): ArtMarketplaceMapper = ArtMarketplaceMapper()
+    fun provideArtMarketplaceMapper(
+        artCollectibleForSalePricesMapper: ArtCollectibleForSalePricesMapper
+    ): ArtMarketplaceMapper = ArtMarketplaceMapper(artCollectibleForSalePricesMapper)
 
     /**
      * Provide art Collectible Minted event mapper
@@ -150,6 +152,17 @@ class BlockchainModule {
     @Provides
     @Singleton
     fun provideMarketStatisticsMapper(): MarketStatisticsMapper = MarketStatisticsMapper()
+
+
+    @Provides
+    @Singleton
+    fun provideArtCollectibleMarketPriceMapper(
+        artCollectibleForSalePricesMapper: ArtCollectibleForSalePricesMapper
+    ): ArtCollectibleMarketPriceMapper = ArtCollectibleMarketPriceMapper(artCollectibleForSalePricesMapper)
+
+    @Provides
+    @Singleton
+    fun provideArtCollectibleForSalePricesMapper(): ArtCollectibleForSalePricesMapper = ArtCollectibleForSalePricesMapper()
 
     /**
      * Provider Wallet Data Source
@@ -191,6 +204,8 @@ class BlockchainModule {
         artMarketplaceMapper: ArtMarketplaceMapper,
         marketStatisticsMapper: MarketStatisticsMapper,
         walletStatisticsMapper: WalletStatisticsMapper,
+        artCollectibleMarketPriceMapper: ArtCollectibleMarketPriceMapper,
+        artCollectibleForSalePricesMapper: ArtCollectibleForSalePricesMapper,
         blockchainConfig: BlockchainConfig,
         web3j: Web3j
     ): IArtMarketplaceBlockchainDataSource =
@@ -198,6 +213,8 @@ class BlockchainModule {
             artMarketplaceMapper,
             marketStatisticsMapper,
             walletStatisticsMapper,
+            artCollectibleMarketPriceMapper,
+            artCollectibleForSalePricesMapper,
             blockchainConfig,
             web3j
         )

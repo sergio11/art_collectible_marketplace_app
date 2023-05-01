@@ -2,7 +2,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.account.signup
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,7 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.*
+import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
@@ -120,10 +119,8 @@ private fun SignUpComponent(
             )
             CommonButton(
                 modifier = Modifier.padding(bottom = 8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Purple700,
-                    contentColor = Color.White
-                ),
+                containerColor = Purple700,
+                contentColor = Color.White,
                 text = R.string.signup_already_has_account_text,
                 onClick = onGoToSignIn
             )

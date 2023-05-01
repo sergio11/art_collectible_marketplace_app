@@ -2,12 +2,12 @@ package com.dreamsoftware.artcollectibles.data.blockchain.mapper
 
 import com.dreamsoftware.artcollectibles.data.blockchain.contracts.ArtMarketplaceContract.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSaleDTO
-import com.dreamsoftware.artcollectibles.data.blockchain.model.ArtCollectibleForSalePricesDTO
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
-import java.math.BigDecimal
 import java.util.*
 
-class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibleForSaleDTO> {
+class ArtMarketplaceMapper(
+    private val artCollectibleForSalePricesMapper: ArtCollectibleForSalePricesMapper
+) : IOneSideMapper<ArtCollectibleForSale, ArtCollectibleForSaleDTO> {
 
     override fun mapInToOut(input: ArtCollectibleForSale): ArtCollectibleForSaleDTO = with(input) {
         ArtCollectibleForSaleDTO(
@@ -17,10 +17,7 @@ class ArtMarketplaceMapper : IOneSideMapper<ArtCollectibleForSale, ArtCollectibl
             creator = creator,
             seller = seller,
             owner = owner,
-            prices = ArtCollectibleForSalePricesDTO(
-                priceInWei = price,
-                priceInEth = price.toBigDecimal().divide(BigDecimal.valueOf(1000000000000000000L))
-            ),
+            prices = artCollectibleForSalePricesMapper.mapInToOut(price),
             sold = sold,
             canceled = canceled,
             putForSaleAt = Date(putForSaleAt.toLong() * 1000),

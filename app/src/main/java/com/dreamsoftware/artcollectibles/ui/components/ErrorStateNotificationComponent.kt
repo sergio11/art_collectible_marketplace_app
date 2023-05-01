@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,10 +67,8 @@ fun ErrorStateNotificationComponent(
                             .padding(vertical = 8.dp)
                             .width(300.dp),
                         text = R.string.retry_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Purple40,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Purple40,
+                        contentColor = Color.White,
                         onClick = onRetryCalled
                     )
                 }

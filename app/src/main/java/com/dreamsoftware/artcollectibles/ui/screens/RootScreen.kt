@@ -102,23 +102,49 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.AvailableMarketItems.route) {
-            AvailableMarketItemsScreen {
-                navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+            with(navigationController) {
+                AvailableMarketItemsScreen(
+                    onMarketItemSelected = {
+                        navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+                    },
+                    onBackPressed = {
+                        popBackStack()
+                    }
+                )
             }
         }
         composable(DestinationItem.SellingMarketItems.route) {
-            SellingMarketItemsScreen {
-                navigationController.navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+            with(navigationController) {
+                SellingMarketItemsScreen(
+                    onMarketItemSelected = {
+                        navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
+                    },
+                    onBackPressed = {
+                        popBackStack()
+                    }
+                )
             }
         }
         composable(DestinationItem.MarketHistory.route) {
-            MarketHistoryScreen {
-                navigationController.navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
+            with(navigationController) {
+                MarketHistoryScreen(
+                    onMarketItemSelected = {
+                        navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
+                    },
+                    onBackPressed = {
+                        popBackStack()
+                    }
+                )
             }
         }
         composable(DestinationItem.Notifications.route) {
-            NotificationsScreen {
-
+            with(navigationController) {
+                NotificationsScreen(
+                    onGoToNotificationDetail = {},
+                    onBackPressed = {
+                        popBackStack()
+                    }
+                )
             }
         }
         composable(DestinationItem.Preferences.route) {
@@ -158,8 +184,16 @@ fun RootScreen(
         composable(DestinationItem.UserFollowers.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.UserFollowers.parseArgs(args)?.let { screenArgs ->
-                    FollowersScreen(screenArgs) {
-                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    with(navigationController) {
+                        FollowersScreen(
+                            args = screenArgs,
+                            onGoToArtistDetail = {
+                                navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                            },
+                            onBackPressed = {
+                                popBackStack()
+                            }
+                        )
                     }
                 }
             }
@@ -167,8 +201,16 @@ fun RootScreen(
         composable(DestinationItem.UserTokens.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.UserTokens.parseArgs(args)?.let { screenArgs ->
-                    TokensScreen(screenArgs) {
-                        navigationController.navigate(DestinationItem.TokenDetail.buildRoute(it))
+                    with(navigationController) {
+                        TokensScreen(
+                            args = screenArgs,
+                            onGoToTokenDetail = {
+                                navigate(DestinationItem.TokenDetail.buildRoute(it))
+                            },
+                            onBackPressed = {
+                                popBackStack()
+                            }
+                        )
                     }
                 }
             }
@@ -190,28 +232,30 @@ fun RootScreen(
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.TokenDetail.parseArgs(args)?.let { screenArgs ->
                     with(navigationController) {
-                        TokenDetailScreen(screenArgs, onSeeArtistDetail = {
+                        TokenDetailScreen(screenArgs, onGoToArtistDetail = {
                             navigate(DestinationItem.ArtistDetail.buildRoute(it))
                         }, onTokenBurned = {
                             popBackStack()
-                        }, onSeeCommentsByToken = {
+                        }, onGoToCommentsByToken = {
                             navigate(DestinationItem.CommentsList.buildRoute(it))
-                        }, onSeeLikesByToken = {
+                        }, onGoToLikesByToken = {
                             navigate(DestinationItem.FavoriteList.buildRoute(it))
-                        }, onSeeVisitorsByToken = {
+                        }, onGoToVisitorsByToken = {
                             navigate(DestinationItem.VisitorsList.buildRoute(it))
-                        }, onSeeCommentDetail = {
+                        }, onGoToCommentDetail = {
                             navigate(DestinationItem.CommentDetail.buildRoute(it))
-                        }, onSeeTokenHistory = {
+                        }, onGoToTokenHistory = {
                             navigate(DestinationItem.TokenHistoryList.buildRoute(it))
-                        }, onSeeMarketItemDetail = {
+                        }, onGoToMarketItemDetail = {
                             navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
-                        }, onSeeTokenDetail = {
+                        }, onGoToTokenDetail = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
                         }, onBackClicked = {
                             popBackStack()
-                        }, onEditToken = {
+                        }, onGoToEditToken = {
                             navigate(DestinationItem.EditTokenMetadata.buildRoute(it))
+                        }, onGoToMarketHistoryItemDetail = {
+                            navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
                         })
                     }
                 }
@@ -220,9 +264,17 @@ fun RootScreen(
         composable(DestinationItem.CommentsList.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.CommentsList.parseArgs(args)?.let { screenArgs ->
-                    CommentsScreen(args = screenArgs, onSeeCommentDetail = {
-                        navigationController.navigate(DestinationItem.CommentDetail.buildRoute(it))
-                    })
+                    with(navigationController) {
+                        CommentsScreen(
+                            args = screenArgs,
+                            onGoToCommentDetail = {
+                                navigate(DestinationItem.CommentDetail.buildRoute(it))
+                            },
+                            onBackPressed = {
+                                popBackStack()
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -248,8 +300,15 @@ fun RootScreen(
         composable(DestinationItem.FavoriteList.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.FavoriteList.parseArgs(args)?.let { screenArgs ->
-                    FavoritesScreen(args = screenArgs) {
-                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    with(navigationController) {
+                        FavoritesScreen(
+                            args = screenArgs,
+                            onGoToArtistDetail = {
+                                navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                            }, onBackPressed = {
+                                popBackStack()
+                            }
+                        )
                     }
                 }
             }
@@ -257,8 +316,16 @@ fun RootScreen(
         composable(DestinationItem.VisitorsList.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.VisitorsList.parseArgs(args)?.let { screenArgs ->
-                    VisitorsScreen(args = screenArgs) {
-                        navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    with(navigationController) {
+                        VisitorsScreen(
+                            args = screenArgs,
+                            onGoToArtistDetail = {
+                                navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                            },
+                            onBackPressed = {
+                                popBackStack()
+                            }
+                        )
                     }
                 }
             }
@@ -266,7 +333,14 @@ fun RootScreen(
         composable(DestinationItem.TokenHistoryList.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
                 DestinationItem.TokenHistoryList.parseArgs(args)?.let { screenArgs ->
-                    TokenHistoryScreen(args = screenArgs)
+                    with(navigationController) {
+                        TokenHistoryScreen(
+                            args = screenArgs,
+                            onBackPressed = {
+                                popBackStack()
+                            }
+                        )
+                    }
                 }
             }
         }

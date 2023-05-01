@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,8 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 
 
@@ -27,10 +24,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 fun CommonButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = Purple500,
-        contentColor = Color.White
-    ),
+    containerColor: Color = Purple500,
+    contentColor: Color = Color.White,
     widthDp: Dp = 200.dp,
     heightDp: Dp = 50.dp,
     textType: CommonTextTypeEnum = CommonTextTypeEnum.TITLE_MEDIUM,
@@ -53,13 +48,16 @@ fun CommonButton(
                 )
         ),
         shape = buttonShape,
-        colors = colors
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = contentColor
+        )
     ) {
         CommonText(
             modifier = Modifier.padding(vertical = 4.dp),
             type = textType,
             titleText = stringResource(text),
-            textColor = Color.White,
+            textColor = contentColor,
             textAlign = TextAlign.Center
         )
     }

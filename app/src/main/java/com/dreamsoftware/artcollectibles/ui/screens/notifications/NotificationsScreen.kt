@@ -32,7 +32,8 @@ import com.google.common.collect.Iterables
 @Composable
 fun NotificationsScreen(
     viewModel: NotificationsViewModel = hiltViewModel(),
-    onSeeNotificationDetail: (notification: Notification) -> Unit
+    onGoToNotificationDetail: (notification: Notification) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -56,7 +57,8 @@ fun NotificationsScreen(
             state = uiState,
             snackBarHostState = snackBarHostState,
             lazyListState = lazyListState,
-            onSeeNotificationDetail = onSeeNotificationDetail
+            onGoToNotificationDetail = onGoToNotificationDetail,
+            onBackPressed = onBackPressed
         )
     }
 }
@@ -66,7 +68,8 @@ private fun CommentsComponent(
     state: NotificationsUiState,
     snackBarHostState: SnackbarHostState,
     lazyListState: LazyListState,
-    onSeeNotificationDetail: (notification: Notification) -> Unit
+    onBackPressed: () -> Unit,
+    onGoToNotificationDetail: (notification: Notification) -> Unit
 ) {
     with(state) {
         CommonVerticalColumnScreen(
@@ -74,11 +77,12 @@ private fun CommentsComponent(
             snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = notifications,
+            onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(notifications)
         ) { notification ->
             NotificationItemDetail(
                 modifier = Modifier.clickable {
-                    onSeeNotificationDetail(notification)
+                    onGoToNotificationDetail(notification)
                 },
                 notification = notification
             )

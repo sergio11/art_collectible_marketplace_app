@@ -9,6 +9,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.google.common.collect.Iterables
 
@@ -19,6 +20,7 @@ fun <T: Any>CommonVerticalColumnScreen(
     isLoading: Boolean,
     items: Iterable<T>,
     appBarTitle: String,
+    onBackPressed: () -> Unit,
     onBuildContent: @Composable LazyItemScope.(item: T) -> Unit
 ) {
     LoadingDialog(isShowingDialog = isLoading)
@@ -26,6 +28,10 @@ fun <T: Any>CommonVerticalColumnScreen(
         snackBarHostState = snackBarHostState,
         titleText = appBarTitle,
         centerTitle = true,
+        navigationAction = TopBarAction(
+            iconRes = R.drawable.back_icon,
+            onActionClicked = onBackPressed
+        ),
         screenContent = {
             LazyColumn(
                 modifier = Modifier.padding(8.dp),

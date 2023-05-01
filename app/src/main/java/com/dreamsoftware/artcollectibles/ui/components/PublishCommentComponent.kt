@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.components
 
 import android.view.KeyEvent.KEYCODE_ENTER
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,8 +17,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -27,6 +31,7 @@ import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
+import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.google.common.collect.Iterables
 
@@ -38,7 +43,7 @@ fun PublishCommentComponent(
     lastComments: Iterable<Comment> = emptyList(),
     onPublishComment: (comment: String) -> Unit = {},
     onSeeCommentDetail: (comment: Comment) -> Unit = {},
-    onSeeAllComments: () -> Unit = {}
+    onSeeAllComments: (() -> Unit)? = null,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -56,14 +61,31 @@ fun PublishCommentComponent(
         modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
-        CommonText(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            type = CommonTextTypeEnum.TITLE_LARGE,
-            titleText = stringResource(id = R.string.token_detail_comments_publish_title_text),
-            singleLine = true
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            CommonText(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 16.dp),
+                type = CommonTextTypeEnum.TITLE_LARGE,
+                titleText = stringResource(id = R.string.token_detail_comments_publish_title_text),
+                singleLine = true
+            )
+            onSeeAllComments?.let {
+                Image(
+                    modifier = Modifier
+                        .padding(end = 5.dp)
+                        .size(35.dp)
+                        .clickable { it() },
+                    painter = painterResource(R.drawable.arrow_right_icon),
+                    contentDescription = "onSeeAllComments",
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(DarkPurple)
+                )
+            }
+        }
         repeat(Iterables.size(lastComments)) {
             with(Iterables.get(lastComments, it)) {
                 CommonText(
@@ -85,7 +107,7 @@ fun PublishCommentComponent(
                         .fillMaxWidth()
                         .padding(8.dp)
                         .clickable {
-                            onSeeAllComments()
+                            onSeeAllComments?.invoke()
                         },
                     type = CommonTextTypeEnum.TITLE_SMALL,
                     titleText = stringResource(id = R.string.token_detail_comments_see_more_text, it),
@@ -151,10 +173,9 @@ fun PublishCommentComponent(
             CommonButton(
                 text = R.string.token_detail_comments_publish_button_text,
                 widthDp = 120.dp,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = Purple40
-                ),
+                containerColor = Color.Transparent,
+                contentColor = Purple40,
+                textType = CommonTextTypeEnum.TITLE_SMALL,
                 buttonShape = ButtonDefaults.textShape,
                 onClick = publishCommentCaller
             )

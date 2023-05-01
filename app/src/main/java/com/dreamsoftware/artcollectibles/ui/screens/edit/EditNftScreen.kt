@@ -3,7 +3,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.edit
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,14 +15,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonDefaultTextField
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTagsInputComponent
-import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonAsyncImage
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonCardColumn
-import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
+import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
 
@@ -134,10 +127,8 @@ internal fun EditNftComponent(
                             .padding(bottom = 8.dp)
                             .width(300.dp),
                         text = R.string.edit_nft_save_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Purple700,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Purple700,
+                        contentColor = Color.White,
                         onClick = onSaveClicked
                     )
                     CommonButton(
@@ -146,10 +137,8 @@ internal fun EditNftComponent(
                             .padding(bottom = 8.dp)
                             .width(300.dp),
                         text = R.string.edit_nft_cancel_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Color.Red,
+                        contentColor = Color.White,
                         onClick = onBackPressed
                     )
                 }

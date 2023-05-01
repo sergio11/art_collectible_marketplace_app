@@ -2,7 +2,6 @@ package com.dreamsoftware.artcollectibles.ui.screens.account.onboarding
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -15,8 +14,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonButton
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
@@ -97,10 +96,8 @@ private fun OnBoardingComponent(
         CommonButton(
             modifier = Modifier.padding(bottom = 4.dp),
             text = R.string.onboarding_signup_button_text,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Purple700,
-                contentColor = Color.White
-            ),
+            containerColor = Purple700,
+            contentColor = Color.White,
             onClick = onSignUpClicked
         )
     }

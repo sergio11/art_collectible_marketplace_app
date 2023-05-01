@@ -32,7 +32,8 @@ data class VisitorsScreenArgs(
 fun VisitorsScreen(
     args: VisitorsScreenArgs,
     viewModel: VisitorsViewModel = hiltViewModel(),
-    onGoToArtistDetail: (userUid: String) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit,
+    onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -59,6 +60,7 @@ fun VisitorsScreen(
             state = uiState,
             lazyGridState = lazyGridState,
             onRetryCalled = { load(args.tokenId) },
+            onBackPressed = onBackPressed,
             onGoToArtistDetail = onGoToArtistDetail
         )
     }
@@ -71,6 +73,7 @@ internal fun VisitorsComponent(
     snackBarHostState: SnackbarHostState,
     lazyGridState: LazyGridState,
     onRetryCalled: () -> Unit,
+    onBackPressed: () -> Unit,
     onGoToArtistDetail: (userUid: String) -> Unit
 ) {
     with(state) {
@@ -79,6 +82,7 @@ internal fun VisitorsComponent(
             snackBarHostState = snackBarHostState,
             isLoading = isLoading,
             items = userResult,
+            onBackPressed = onBackPressed,
             onRetryCalled = onRetryCalled,
             noDataFoundMessageId = R.string.visitors_detail_not_found_message,
             appBarTitle = getTopAppBarTitle(userResult)

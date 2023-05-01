@@ -6,7 +6,6 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -14,6 +13,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -26,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMarketHistoryPrice
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.*
@@ -44,16 +46,17 @@ data class TokenDetailScreenArgs(
 fun TokenDetailScreen(
     args: TokenDetailScreenArgs,
     viewModel: TokenDetailViewModel = hiltViewModel(),
-    onSeeArtistDetail: (userUid: String) -> Unit,
     onTokenBurned: () -> Unit,
-    onSeeCommentDetail: (comment: Comment) -> Unit,
-    onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
-    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
-    onEditToken: (metadataCid: String) -> Unit,
+    onGoToArtistDetail: (userUid: String) -> Unit,
+    onGoToCommentDetail: (comment: Comment) -> Unit,
+    onGoToCommentsByToken: (tokenId: BigInteger) -> Unit,
+    onGoToLikesByToken: (tokenId: BigInteger) -> Unit,
+    onGoToVisitorsByToken: (tokenId: BigInteger) -> Unit,
+    onGoToTokenHistory: (tokenId: BigInteger) -> Unit,
+    onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit,
+    onGoToEditToken: (metadataCid: String) -> Unit,
     onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
@@ -84,7 +87,7 @@ fun TokenDetailScreen(
             uiState = uiState,
             scrollState = scrollState,
             density = density,
-            onSeeArtistDetail = onSeeArtistDetail,
+            onGoToArtistDetail = onGoToArtistDetail,
             onBackClicked = onBackClicked,
             onBurnTokenCalled = ::burnToken,
             onPutItemForSaleCalled = ::putItemForSale,
@@ -96,14 +99,15 @@ fun TokenDetailScreen(
             onConfirmWithDrawFromSaleDialogVisibilityChanged = ::onConfirmWithDrawFromSaleDialogVisibilityChanged,
             onConfirmPutForSaleDialogVisibilityChanged = ::onConfirmPutForSaleDialogVisibilityChanged,
             onPublishComment = ::onPublishComment,
-            onSeeCommentDetail = onSeeCommentDetail,
-            onSeeCommentsByToken = onSeeCommentsByToken,
-            onSeeLikesByToken = onSeeLikesByToken,
-            onSeeVisitorsByToken = onSeeVisitorsByToken,
-            onSeeTokenHistory = onSeeTokenHistory,
-            onSeeMarketItemDetail = onSeeMarketItemDetail,
-            onSeeTokenDetail = onSeeTokenDetail,
-            onEditToken = onEditToken
+            onGoToCommentDetail = onGoToCommentDetail,
+            onGoToCommentsByToken = onGoToCommentsByToken,
+            onGoToLikesByToken = onGoToLikesByToken,
+            onGoToVisitorsByToken = onGoToVisitorsByToken,
+            onGoToTokenHistory = onGoToTokenHistory,
+            onGoToMarketItemDetail = onGoToMarketItemDetail,
+            onGoToTokenDetail = onGoToTokenDetail,
+            onGoToEditToken = onGoToEditToken,
+            onGoToMarketHistoryItemDetail = onGoToMarketHistoryItemDetail
         )
     }
 }
@@ -115,7 +119,7 @@ fun TokenDetailComponent(
     scrollState: ScrollState,
     density: Density,
     onBackClicked: () -> Unit,
-    onSeeArtistDetail: (userUid: String) -> Unit,
+    onGoToArtistDetail: (userUid: String) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -126,14 +130,15 @@ fun TokenDetailComponent(
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onItemPriceChanged: (price: Float) -> Unit,
     onPublishComment: (comment: String) -> Unit,
-    onSeeCommentDetail: (comment: Comment) -> Unit,
-    onSeeCommentsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
-    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
-    onEditToken: (metadataCid: String) -> Unit
+    onGoToCommentDetail: (comment: Comment) -> Unit,
+    onGoToCommentsByToken: (tokenId: BigInteger) -> Unit,
+    onGoToLikesByToken: (tokenId: BigInteger) -> Unit,
+    onGoToVisitorsByToken: (tokenId: BigInteger) -> Unit,
+    onGoToTokenHistory: (tokenId: BigInteger) -> Unit,
+    onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onGoToEditToken: (metadataCid: String) -> Unit,
+    onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -148,7 +153,7 @@ fun TokenDetailComponent(
             TokenDetailBody(
                 context = context,
                 uiState = uiState,
-                onSeeArtistDetail = onSeeArtistDetail,
+                onGoToArtistDetail = onGoToArtistDetail,
                 onBurnTokenCalled = onBurnTokenCalled,
                 onWithDrawFromSaleCalled = onWithDrawFromSaleCalled,
                 onPutItemForSaleCalled = onPutItemForSaleCalled,
@@ -159,14 +164,15 @@ fun TokenDetailComponent(
                 onConfirmWithDrawFromSaleDialogVisibilityChanged = onConfirmWithDrawFromSaleDialogVisibilityChanged,
                 onConfirmPutForSaleDialogVisibilityChanged = onConfirmPutForSaleDialogVisibilityChanged,
                 onPublishComment = onPublishComment,
-                onSeeCommentDetail = onSeeCommentDetail,
-                onSeeAllComments = onSeeCommentsByToken,
-                onSeeLikesByToken = onSeeLikesByToken,
-                onSeeVisitorsByToken = onSeeVisitorsByToken,
-                onSeeTokenHistory = onSeeTokenHistory,
-                onSeeMarketItemDetail = onSeeMarketItemDetail,
-                onSeeTokenDetail = onSeeTokenDetail,
-                onEditToken = onEditToken
+                onGoToCommentDetail = onGoToCommentDetail,
+                onGoToAllComments = onGoToCommentsByToken,
+                onGoToLikesByToken = onGoToLikesByToken,
+                onGoToVisitorsByToken = onGoToVisitorsByToken,
+                onGoToTokenHistory = onGoToTokenHistory,
+                onGoToMarketItemDetail = onGoToMarketItemDetail,
+                onGoToTokenDetail = onGoToTokenDetail,
+                onGoToEditToken = onGoToEditToken,
+                onGoToMarketHistoryItemDetail = onGoToMarketHistoryItemDetail
             )
         }
     }
@@ -177,7 +183,7 @@ fun TokenDetailComponent(
 private fun TokenDetailBody(
     context: Context,
     uiState: TokenDetailUiState,
-    onSeeArtistDetail: (userUid: String) -> Unit,
+    onGoToArtistDetail: (userUid: String) -> Unit,
     onBurnTokenCalled: (tokenId: BigInteger) -> Unit,
     onWithDrawFromSaleCalled: (tokenId: BigInteger) -> Unit,
     onPutItemForSaleCalled: (tokenId: BigInteger) -> Unit,
@@ -188,14 +194,15 @@ private fun TokenDetailBody(
     onConfirmWithDrawFromSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onConfirmPutForSaleDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onPublishComment: (comment: String) -> Unit,
-    onSeeCommentDetail: (comment: Comment) -> Unit,
-    onSeeAllComments: (tokenId: BigInteger) -> Unit,
-    onSeeLikesByToken: (tokenId: BigInteger) -> Unit,
-    onSeeVisitorsByToken: (tokenId: BigInteger) -> Unit,
-    onSeeTokenHistory: (tokenId: BigInteger) -> Unit,
-    onSeeMarketItemDetail: (tokenId: BigInteger) -> Unit,
-    onSeeTokenDetail: (tokenId: BigInteger) -> Unit,
-    onEditToken: (metadataCid: String) -> Unit
+    onGoToCommentDetail: (comment: Comment) -> Unit,
+    onGoToAllComments: (tokenId: BigInteger) -> Unit,
+    onGoToLikesByToken: (tokenId: BigInteger) -> Unit,
+    onGoToVisitorsByToken: (tokenId: BigInteger) -> Unit,
+    onGoToTokenHistory: (tokenId: BigInteger) -> Unit,
+    onGoToMarketItemDetail: (tokenId: BigInteger) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
+    onGoToEditToken: (metadataCid: String) -> Unit,
+    onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit
 ) {
     with(uiState) {
         artCollectible?.let { artCollectible ->
@@ -219,7 +226,7 @@ private fun TokenDetailBody(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .clickable {
-                            onSeeArtistDetail(artCollectible.owner.uid)
+                            onGoToArtistDetail(artCollectible.owner.uid)
                         },
                     userInfo = artCollectible.owner
                 )
@@ -230,7 +237,7 @@ private fun TokenDetailBody(
                         EditButton(
                             modifier = Modifier.size(54.dp),
                             onEditClicked = {
-                                onEditToken(artCollectible.metadata.cid)
+                                onGoToEditToken(artCollectible.metadata.cid)
                             }
                         )
                     }
@@ -252,7 +259,7 @@ private fun TokenDetailBody(
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
-                        .clickable { onSeeMarketItemDetail(artCollectible.id) },
+                        .clickable { onGoToMarketItemDetail(artCollectible.id) },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
@@ -286,10 +293,10 @@ private fun TokenDetailBody(
                     .fillMaxWidth()
                     .padding(10.dp),
                 artCollectible = artCollectible,
-                onSeeAllComments = onSeeAllComments,
-                onSeeLikesByToken = onSeeLikesByToken,
-                onSeeVisitorsByToken = onSeeVisitorsByToken,
-                onSeeCreatorDetail = onSeeArtistDetail
+                onSeeAllComments = onGoToAllComments,
+                onSeeLikesByToken = onGoToLikesByToken,
+                onSeeVisitorsByToken = onGoToVisitorsByToken,
+                onSeeCreatorDetail = onGoToArtistDetail
             )
             TokenTags(
                 modifier = Modifier
@@ -300,22 +307,24 @@ private fun TokenDetailBody(
             TokenMarketHistory(
                 modifier = Modifier.padding(8.dp),
                 tokenMarketHistory = lastMarketHistory,
+                onGoToMarketHistoryItemDetail = onGoToMarketHistoryItemDetail,
                 onSeeAllTokenHistory = {
-                    onSeeTokenHistory(artCollectible.id)
+                    onGoToTokenHistory(artCollectible.id)
                 }
             )
             TokenPricesChart(
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+                tokenMarketHistoryPrices = tokenMarketHistoryPrices
             )
             PublishCommentComponent(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
                 authUserInfo = authUserInfo,
                 commentsCount = artCollectible.commentsCount,
                 lastComments = lastComments,
                 onPublishComment = onPublishComment,
-                onSeeCommentDetail = onSeeCommentDetail,
+                onSeeCommentDetail = onGoToCommentDetail,
                 onSeeAllComments = {
-                    onSeeAllComments(artCollectible.id)
+                    onGoToAllComments(artCollectible.id)
                 }
             )
             ArtCollectiblesRow(
@@ -324,7 +333,7 @@ private fun TokenDetailBody(
                 titleRes = R.string.token_detail_similar_row_title_text,
                 items = similarTokens,
                 onItemSelected = {
-                    onSeeTokenDetail(it.id)
+                    onGoToTokenDetail(it.id)
                 }
             )
             Spacer(modifier = Modifier.height(50.dp))
@@ -334,12 +343,10 @@ private fun TokenDetailBody(
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = R.string.token_detail_go_market_button_text,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Purple700,
-                        contentColor = Color.White
-                    ),
+                    containerColor = Purple700,
+                    contentColor = Color.White,
                     onClick = {
-                        onSeeMarketItemDetail(artCollectible.id)
+                        onGoToMarketItemDetail(artCollectible.id)
                     }
                 )
             }
@@ -353,14 +360,12 @@ private fun TokenDetailBody(
                     } else {
                         R.string.token_detail_put_item_for_sale_button_text
                     },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (isTokenAddedForSale) {
-                            Color.Red
-                        } else {
-                            Purple500
-                        },
-                        contentColor = Color.White
-                    ),
+                    containerColor = if (isTokenAddedForSale) {
+                        Color.Red
+                    } else {
+                        Purple500
+                    },
+                    contentColor = Color.White,
                     onClick = {
                         if (isTokenAddedForSale) {
                             onConfirmWithDrawFromSaleDialogVisibilityChanged(true)
@@ -375,10 +380,8 @@ private fun TokenDetailBody(
                         .fillMaxWidth(),
                     text = R.string.token_detail_burn_token_button_text,
                     enabled = !isTokenAddedForSale,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
-                    ),
+                    containerColor = Color.Red,
+                    contentColor = Color.White,
                     onClick = {
                         onConfirmBurnTokenDialogVisibilityChanged(true)
                     }
@@ -501,25 +504,45 @@ private fun TokenTags(
 private fun TokenMarketHistory(
     modifier: Modifier = Modifier,
     tokenMarketHistory: Iterable<ArtCollectibleForSale>,
-    onSeeAllTokenHistory: () -> Unit
+    onGoToMarketHistoryItemDetail: (marketItemId: BigInteger) -> Unit,
+    onSeeAllTokenHistory: (() -> Unit)? = null
 ) {
     if(Iterables.size(tokenMarketHistory) > 0) {
         Column(
             modifier = modifier
         ) {
-            CommonText(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 16.dp)
-                    .clickable { onSeeAllTokenHistory() },
-                type = CommonTextTypeEnum.TITLE_LARGE,
-                titleRes = R.string.token_detail_last_transactions_title_text,
-                singleLine = true
-            )
-            repeat(Iterables.size(tokenMarketHistory)) {
-                TokenTransactionItem(
-                    item = Iterables.get(tokenMarketHistory, it)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CommonText(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp, vertical = 16.dp),
+                    type = CommonTextTypeEnum.TITLE_LARGE,
+                    titleRes = R.string.token_detail_last_transactions_title_text,
+                    singleLine = true
                 )
+                onSeeAllTokenHistory?.let {
+                    Image(
+                        modifier = Modifier
+                            .padding(end = 5.dp)
+                            .size(35.dp)
+                            .clickable { it() },
+                        painter = painterResource(R.drawable.arrow_right_icon),
+                        contentDescription = "onSeeAllTokenHistory",
+                        contentScale = ContentScale.Crop,
+                        colorFilter = ColorFilter.tint(DarkPurple)
+                    )
+                }
+            }
+            repeat(Iterables.size(tokenMarketHistory)) {
+                with(Iterables.get(tokenMarketHistory, it)) {
+                    TokenTransactionItem(
+                        modifier = Modifier.clickable { onGoToMarketHistoryItemDetail(marketItemId) },
+                        item = this
+                    )
+                }
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }
@@ -528,11 +551,14 @@ private fun TokenMarketHistory(
 
 @Composable
 private fun TokenPricesChart(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tokenMarketHistoryPrices: Iterable<ArtCollectibleMarketHistoryPrice>
 ) {
-    CommonChart(
-        modifier = modifier,
-        titleRes = R.string.token_detail_price_history_title_text,
-        entryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
-    )
+    if(!Iterables.isEmpty(tokenMarketHistoryPrices)) {
+        CommonChart(
+            modifier = modifier,
+            titleRes = R.string.token_detail_price_history_title_text,
+            entryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
+        )
+    }
 }

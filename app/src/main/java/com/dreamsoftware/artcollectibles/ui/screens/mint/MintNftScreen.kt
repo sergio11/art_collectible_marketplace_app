@@ -329,10 +329,8 @@ private fun MintNftForm(
                             .padding(bottom = 8.dp)
                             .width(300.dp),
                         text = R.string.add_nft_create_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Purple700,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Purple700,
+                        contentColor = Color.White,
                         onClick = onCreateClicked
                     )
                     CommonButton(
@@ -341,10 +339,8 @@ private fun MintNftForm(
                             .padding(bottom = 8.dp)
                             .width(300.dp),
                         text = R.string.add_nft_cancel_button_text,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red,
-                            contentColor = Color.White
-                        ),
+                        containerColor = Color.Red,
+                        contentColor = Color.White,
                         onClick = {
                             onConfirmCancelMintNftVisibilityChanged(true)
                         }
