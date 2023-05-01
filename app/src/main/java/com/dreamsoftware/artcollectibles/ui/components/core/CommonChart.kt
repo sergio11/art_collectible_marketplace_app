@@ -68,7 +68,7 @@ fun CommonChart(
                 title = stringResource(id = titleRes),
                 titleComponent = textComponent {
                     color = Purple700.toArgb()
-                    textSizeSp = 20f
+                    textSizeSp = 12f
                     typeface = Typeface.MONOSPACE
                     ellipsize = TextUtils.TruncateAt.END
                 }

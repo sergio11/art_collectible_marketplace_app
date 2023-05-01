@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
-import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.AuthUserMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.SaveUserInfoMapper
@@ -299,7 +298,6 @@ internal class UserRepositoryImpl(
             try {
                 val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
                 followerDataSource.getMostFollowedUsers(limit).map { uid ->
-                    Log.d("ART_COLL", "getMostFollowedUsers uid -> $uid")
                     async { userDataSource.getById(uid) }
                 }.awaitAll().map {
                     mapToUserInfo(it, credentials, true)

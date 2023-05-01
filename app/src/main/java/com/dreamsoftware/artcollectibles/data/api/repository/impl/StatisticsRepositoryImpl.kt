@@ -30,6 +30,7 @@ internal class StatisticsRepositoryImpl(
                     ))
                 }.toList()
         } catch (ex: Exception) {
+            ex.printStackTrace()
             throw FetchMarketStatisticsDataException(
                 "An error occurred when trying to fetch users with more purchases",
                 ex
@@ -50,6 +51,7 @@ internal class StatisticsRepositoryImpl(
                     ))
                 }.toList()
         } catch (ex: Exception) {
+            ex.printStackTrace()
             throw FetchMarketStatisticsDataException(
                 "An error occurred when trying to fetch users with more purchases",
                 ex
@@ -70,6 +72,7 @@ internal class StatisticsRepositoryImpl(
                     ))
                 }.toList()
         } catch (ex: Exception) {
+            ex.printStackTrace()
             throw FetchMarketStatisticsDataException(
                 "An error occurred when trying to fetch users with more purchases",
                 ex

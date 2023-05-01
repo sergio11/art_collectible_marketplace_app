@@ -53,9 +53,13 @@ internal class VisitorsRepositoryImpl(
     override suspend fun getMostVisitedTokens(limit: Int): Iterable<ArtCollectible> =  withContext(Dispatchers.IO) {
         try {
             visitorsDataSource.getMostVisitedTokens(limit)
-                .mapNotNull { runCatching { it.toBigInteger() }.getOrNull() }
+                .mapNotNull {
+                    runCatching { it.toBigInteger() }.getOrNull()
+                }
                 .let { artCollectibleRepository.getTokens(it) }
+                .sortedByDescending { it.visitorsCount }
         } catch (ex: Exception) {
+            ex.printStackTrace()
             throw GetMostVisitedTokensDataException("An error occurred when trying to get most visited tokens", ex)
         }
     }

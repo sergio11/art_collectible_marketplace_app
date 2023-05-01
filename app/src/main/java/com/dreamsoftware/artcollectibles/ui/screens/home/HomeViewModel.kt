@@ -53,7 +53,8 @@ class HomeViewModel @Inject constructor(
                     isLoading = false,
                     categories = categories,
                     mostFollowedUsers = mostFollowedUsers,
-                    mostLikedTokens = mostLikedTokens
+                    mostLikedTokens = mostLikedTokens,
+                    mostVisitedTokens = mostVisitedTokens
                 )
             }
             loadMarketData()

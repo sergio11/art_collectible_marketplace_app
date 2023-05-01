@@ -7,6 +7,9 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchUsersWithMoreS
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.FetchUsersWithMoreTokensCreatedUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import com.google.common.collect.Iterables
+import com.patrykandpatrick.vico.core.entry.ChartEntry
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -41,9 +44,9 @@ class MarketStatisticsViewModel @Inject constructor(
                 updateState {
                     it.copy(
                         isLoading = false,
-                        morePurchasesStatistics = morePurchases,
-                        moreSalesStatistics = moreSales,
-                        moreTokensCreated = moreTokensCreated
+                        morePurchasesChartEntryModel = morePurchases,
+                        moreSalesChartEntryModel = moreSales,
+                        moreTokensCreatedChartEntryModel = moreTokensCreated
                     )
                 }
             }.onFailure(::onErrorOccurred)
@@ -56,23 +59,27 @@ class MarketStatisticsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchUsersWithMorePurchases() =
+    private suspend fun fetchUsersWithMorePurchases(): ChartEntryModel? = runCatching {
         fetchUsersWithMorePurchasesUseCase.invoke(
             scope = viewModelScope,
             params = FetchUsersWithMorePurchasesUseCase.Params(limit = MORE_PURCHASES_LIMIT)
-        )
+        ).let(::mapToChartEntryModel)
+    }.getOrNull()
 
-    private suspend fun fetchUsersWithMoreSales() =
+    private suspend fun fetchUsersWithMoreSales(): ChartEntryModel? = runCatching {
         fetchUsersWithMoreSalesUseCase.invoke(
             scope = viewModelScope,
             params = FetchUsersWithMoreSalesUseCase.Params(limit = MORE_SALES_LIMIT)
-        )
+        ).let(::mapToChartEntryModel)
+    }.getOrNull()
 
-    private suspend fun fetchUsersWithMoreTokensCreated() =
+
+    private suspend fun fetchUsersWithMoreTokensCreated(): ChartEntryModel? = runCatching {
         fetchUsersWithMoreTokensCreatedUseCase.invoke(
             scope = viewModelScope,
             params = FetchUsersWithMoreTokensCreatedUseCase.Params(limit = MORE_TOKENS_CREATED_LIMIT)
-        )
+        ).let(::mapToChartEntryModel)
+    }.getOrNull()
 
     private fun onErrorOccurred(ex: Throwable) {
         ex.printStackTrace()
@@ -81,17 +88,35 @@ class MarketStatisticsViewModel @Inject constructor(
         }
     }
 
+    private fun mapToChartEntryModel(data: Iterable<UserMarketStatistic>) =
+        data.mapIndexed { index, userMarketStatistic ->
+            with(userMarketStatistic) {
+                ChartUiTextEntry(
+                    label = userInfo.name,
+                    x = index.toFloat(),
+                    y = value.toFloat()
+                )
+            }
+        }.let { ChartEntryModelProducer(it) }.getModel()
 }
 
 data class MarketStatisticsUiState(
     val isLoading: Boolean = false,
-    val morePurchasesStatistics: Iterable<UserMarketStatistic> = emptyList(),
-    val moreSalesStatistics: Iterable<UserMarketStatistic> = emptyList(),
-    val moreTokensCreated: Iterable<UserMarketStatistic> = emptyList(),
+    val morePurchasesChartEntryModel: ChartEntryModel? = null,
+    val moreSalesChartEntryModel: ChartEntryModel? = null,
+    val moreTokensCreatedChartEntryModel: ChartEntryModel? = null,
     val error: Throwable? = null
 ) {
     fun hasData() =
-        !Iterables.isEmpty(morePurchasesStatistics) ||
-                !Iterables.isEmpty(moreSalesStatistics) ||
-                !Iterables.isEmpty(moreTokensCreated)
+        morePurchasesChartEntryModel != null ||
+                moreSalesChartEntryModel != null ||
+                moreTokensCreatedChartEntryModel != null
+}
+
+class ChartUiTextEntry(
+    val label: String,
+    override val x: Float,
+    override val y: Float,
+) : ChartEntry {
+    override fun withY(y: Float) = ChartUiTextEntry(label, x, y)
 }

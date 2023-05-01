@@ -18,19 +18,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
-import com.dreamsoftware.artcollectibles.domain.models.UserMarketStatistic
 import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.ChartTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonChart
 import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
-import com.google.common.collect.Iterables
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
-import com.patrykandpatrick.vico.core.entry.ChartEntry
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
-import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 
 @Composable
 fun MarketStatisticsScreen(
@@ -97,22 +93,22 @@ internal fun MarketStatisticsComponent(
             },
             screenContent = {
                 LoadingDialog(isShowingDialog = isLoading)
-                if (!Iterables.isEmpty(morePurchasesStatistics)) {
+                morePurchasesChartEntryModel?.let {
                     UserMarketStatisticChart(
                         titleRes = R.string.market_statistics_users_with_more_purchases_title,
-                        data = morePurchasesStatistics
+                        chartEntryModel = it
                     )
                 }
-                if (!Iterables.isEmpty(moreSalesStatistics)) {
+                moreSalesChartEntryModel?.let {
                     UserMarketStatisticChart(
                         titleRes = R.string.market_statistics_users_with_more_sales_title,
-                        data = moreSalesStatistics
+                        chartEntryModel = it
                     )
                 }
-                if (!Iterables.isEmpty(moreTokensCreated)) {
+                moreTokensCreatedChartEntryModel?.let {
                     UserMarketStatisticChart(
                         titleRes = R.string.market_statistics_users_with_more_tokens_created_title,
-                        data = moreTokensCreated
+                        chartEntryModel = it
                     )
                 }
             }
@@ -123,21 +119,15 @@ internal fun MarketStatisticsComponent(
 @Composable
 private fun UserMarketStatisticChart(
     @StringRes titleRes: Int,
-    data: Iterable<UserMarketStatistic>
+    chartEntryModel: ChartEntryModel
 ) {
     StatisticChart(
         type = ChartTypeEnum.COLUMN,
         titleRes = titleRes,
-        entryModel = data.mapIndexed { index, userMarketStatistic ->
-            TextEntry(
-                userMarketStatistic.userInfo.name,
-                index.toFloat(),
-                userMarketStatistic.value.toFloat()
-            )
-        }.let { ChartEntryModelProducer(it) }.getModel(),
+        entryModel = chartEntryModel,
         bottomAxisValueFormatter = { value, chartValues ->
             (chartValues.chartEntryModel.entries.first()
-                .getOrNull(value.toInt()) as? TextEntry)
+                .getOrNull(value.toInt()) as? ChartUiTextEntry)
                 ?.label
                 .orEmpty()
         }
@@ -168,10 +158,3 @@ private fun StatisticChart(
     }
 }
 
-class TextEntry(
-    val label: String,
-    override val x: Float,
-    override val y: Float,
-) : ChartEntry {
-    override fun withY(y: Float) = TextEntry(label, x, y)
-}

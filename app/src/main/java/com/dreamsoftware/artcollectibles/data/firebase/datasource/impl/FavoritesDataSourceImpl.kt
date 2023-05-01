@@ -18,7 +18,8 @@ internal class FavoritesDataSourceImpl(
 
     private companion object {
         const val COLLECTION_NAME = "favorites"
-        const val COUNT_FIELD_NAME = "count"
+        const val TOKEN_COUNT_FIELD_NAME = "token_count"
+        const val USER_COUNT_FIELD_NAME = "user_count"
         const val IDS_FIELD_NAME = "ids"
         const val USER_KEY_COUNT_SUFFIX = "_user_count"
         const val TOKEN_KEY_COUNT_SUFFIX = "_token_count"
@@ -60,7 +61,7 @@ internal class FavoritesDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX)
                 .get()
-                .await()?.data?.get(COUNT_FIELD_NAME)
+                .await()?.data?.get(TOKEN_COUNT_FIELD_NAME)
                 .toString()
                 .toLongOrDefault(0L)
         } catch (ex: FirebaseException) {
@@ -76,9 +77,9 @@ internal class FavoritesDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(tokenId.toString()).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
-                    document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(TOKEN_COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                     document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId.toString())), SetOptions.merge()).await()
-                    document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(USER_COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
                 throw ex
@@ -94,9 +95,9 @@ internal class FavoritesDataSourceImpl(
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
                     document(tokenId.toString()).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(userAddress)), SetOptions.merge()).await()
-                    document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(tokenId.toString() + TOKEN_KEY_COUNT_SUFFIX).set(hashMapOf(TOKEN_COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                     document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId.toString())), SetOptions.merge()).await()
-                    document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(USER_COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                 }
             } catch (ex: FirebaseException) {
                 throw ex
@@ -111,7 +112,7 @@ internal class FavoritesDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME)
-                    .orderBy(COUNT_FIELD_NAME, Query.Direction.DESCENDING)
+                    .orderBy(TOKEN_COUNT_FIELD_NAME, Query.Direction.DESCENDING)
                     .limit(limit.toLong()).get()
                     .await()?.documents?.mapNotNull { it.id }
                     ?.filter { it.contains(TOKEN_KEY_COUNT_SUFFIX) }

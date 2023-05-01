@@ -9,7 +9,7 @@ class FetchUsersWithMoreTokensCreatedUseCase(
 ): BaseUseCaseWithParams<FetchUsersWithMoreTokensCreatedUseCase.Params, Iterable<UserMarketStatistic>>() {
 
     override suspend fun onExecuted(params: Params): Iterable<UserMarketStatistic> =
-        statisticsRepository.fetchUsersWithMorePurchases(params.limit)
+        statisticsRepository.fetchUsersWithMoreTokensCreated(params.limit)
 
     data class Params(
         val limit: Int
