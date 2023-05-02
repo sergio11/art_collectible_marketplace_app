@@ -59,4 +59,9 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img width="250px" align="left" src="./doc/screenshots/app_picture_17.png" />
  
  
+   ### NFT
+   
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_18.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_19.png" />
+ 
     
