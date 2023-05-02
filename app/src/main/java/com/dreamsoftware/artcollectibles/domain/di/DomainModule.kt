@@ -695,4 +695,24 @@ class DomainModule {
     fun provideFetchTokenMarketHistoryPricesUseCase(
         artMarketplaceRepository: IArtMarketplaceRepository
     ) = FetchTokenMarketHistoryPricesUseCase(artMarketplaceRepository)
+
+    /**
+     * Provide fetch most sold tokens use case
+     * @param statisticsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchMostSoldTokensUseCase(
+        statisticsRepository: IStatisticsRepository
+    ) = FetchMostSoldTokensUseCase(statisticsRepository)
+
+    /**
+     * Provide fetch most cancelled tokens use case
+     * @param statisticsRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideFetchMostCancelledTokensUseCase(
+        statisticsRepository: IStatisticsRepository
+    ) = FetchMostCancelledTokensUseCase(statisticsRepository)
 }

@@ -261,6 +261,8 @@
     <string name="market_statistics_users_with_more_purchases_title">Users with more purchases</string>
     <string name="market_statistics_users_with_more_sales_title">Users with more sales</string>
     <string name="market_statistics_users_with_more_tokens_created_title">Users with more tokens created</string>
+    <string name="market_statistics_most_cancelled_tokens_title">Most cancelled tokens</string>
+    <string name="market_statistics_most_sold_tokens_title">Most sold tokens</string>
     <!-- Edit NFT -->
     <string name="edit_nft_main_title_text">Edit NFT</string>
     <string name="edit_nft_save_button_text">Save</string>

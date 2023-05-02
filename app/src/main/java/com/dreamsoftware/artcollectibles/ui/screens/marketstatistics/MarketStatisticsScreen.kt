@@ -93,31 +93,44 @@ internal fun MarketStatisticsComponent(
             },
             screenContent = {
                 LoadingDialog(isShowingDialog = isLoading)
-                morePurchasesChartEntryModel?.let {
-                    UserMarketStatisticChart(
+                mostPurchasesChartEntryModel?.let {
+                    MarketStatisticChart(
                         titleRes = R.string.market_statistics_users_with_more_purchases_title,
                         chartEntryModel = it
                     )
                 }
-                moreSalesChartEntryModel?.let {
-                    UserMarketStatisticChart(
+                mostSoldTokensChartEntryModel?.let {
+                    MarketStatisticChart(
+                        titleRes = R.string.market_statistics_most_sold_tokens_title,
+                        chartEntryModel = it
+                    )
+                }
+                mostSalesChartEntryModel?.let {
+                    MarketStatisticChart(
                         titleRes = R.string.market_statistics_users_with_more_sales_title,
                         chartEntryModel = it
                     )
                 }
-                moreTokensCreatedChartEntryModel?.let {
-                    UserMarketStatisticChart(
+                mostTokensCreatedChartEntryModel?.let {
+                    MarketStatisticChart(
                         titleRes = R.string.market_statistics_users_with_more_tokens_created_title,
                         chartEntryModel = it
                     )
                 }
+                mostCancelledTokensChartEntryModel?.let {
+                    MarketStatisticChart(
+                        titleRes = R.string.market_statistics_most_cancelled_tokens_title,
+                        chartEntryModel = it
+                    )
+                }
+
             }
         )
     }
 }
 
 @Composable
-private fun UserMarketStatisticChart(
+private fun MarketStatisticChart(
     @StringRes titleRes: Int,
     chartEntryModel: ChartEntryModel
 ) {

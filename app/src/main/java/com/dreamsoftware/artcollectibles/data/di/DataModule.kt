@@ -141,6 +141,10 @@ class DataModule {
     @Singleton
     fun provideArtCollectibleMarketHistoryPriceMapper(): ArtCollectibleMarketHistoryPriceMapper = ArtCollectibleMarketHistoryPriceMapper()
 
+    @Provides
+    @Singleton
+    fun provideArtCollectibleMarketStatisticMapper(): ArtCollectibleMarketStatisticMapper = ArtCollectibleMarketStatisticMapper()
+
     /**
      * Provide Art Collectibles Repository
      * @param artCollectibleDataSource
@@ -476,16 +480,22 @@ class DataModule {
      * @param statisticsDataSource
      * @param userRepository
      * @param userMarketStatisticMapper
+     * @param artCollectibleMarketStatisticMapper
+     * @param artCollectibleRepository
      */
     @Provides
     @Singleton
     fun provideStatisticsRepository(
         statisticsDataSource: IStatisticsDataSource,
         userRepository: IUserRepository,
-        userMarketStatisticMapper: UserMarketStatisticMapper
+        userMarketStatisticMapper: UserMarketStatisticMapper,
+        artCollectibleMarketStatisticMapper: ArtCollectibleMarketStatisticMapper,
+        artCollectibleRepository: IArtCollectibleRepository
     ): IStatisticsRepository = StatisticsRepositoryImpl(
         statisticsDataSource,
         userRepository,
-        userMarketStatisticMapper
+        userMarketStatisticMapper,
+        artCollectibleMarketStatisticMapper,
+        artCollectibleRepository
     )
 }
