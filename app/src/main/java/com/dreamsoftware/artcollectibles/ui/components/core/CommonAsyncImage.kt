@@ -29,7 +29,6 @@ fun CommonAsyncImage(
 ) {
     (imageUrl ?: imageUri)?.let {
         SubcomposeAsyncImage(
-            modifier = modifier,
             model = ImageRequest.Builder(context)
                 .data(it)
                 .crossfade(true)
@@ -42,7 +41,7 @@ fun CommonAsyncImage(
             if (state is AsyncImagePainter.State.Loading || state is AsyncImagePainter.State.Error) {
                 DefaultImagePlaceholder(modifier, reverseStyle)
             } else {
-                SubcomposeAsyncImageContent()
+                SubcomposeAsyncImageContent(modifier)
             }
         }
     } ?: run {

@@ -121,7 +121,6 @@ private fun SignInComponent(
             )
             Spacer(modifier = Modifier.padding(bottom = 20.dp))
             CommonButton(
-                modifier = Modifier.padding(bottom = 8.dp),
                 enabled = isLoginButtonEnabled,
                 text = R.string.signin_login_button_text,
                 onClick = onSignIn

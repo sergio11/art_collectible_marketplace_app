@@ -44,6 +44,7 @@ fun CommonDetailScreen(
     isLoading: Boolean = false,
     imageUrl: String? = null,
     title: String? = null,
+    contentCentered: Boolean = false,
     onBackClicked: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -62,7 +63,11 @@ fun CommonDetailScreen(
         )
         //....................
         Column(
-            horizontalAlignment = Alignment.Start,
+            horizontalAlignment = if (contentCentered) {
+                Alignment.CenterHorizontally
+            } else {
+                Alignment.Start
+            },
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Spacer(Modifier.height(HEADER_HEIGHT))
@@ -168,9 +173,13 @@ private fun BoxScope.CommonDetailToolbar(
     }
 
     onBackClicked?.let {
-        if(!isLoading && !showToolbar) {
+        if (!isLoading && !showToolbar) {
             Image(
-                modifier = Modifier.padding(15.dp).size(35.dp).align(Alignment.TopStart).clickable { it() },
+                modifier = Modifier
+                    .padding(15.dp)
+                    .size(35.dp)
+                    .align(Alignment.TopStart)
+                    .clickable { it() },
                 painter = painterResource(R.drawable.back_icon),
                 contentDescription = "Back Icon",
                 contentScale = ContentScale.Crop,

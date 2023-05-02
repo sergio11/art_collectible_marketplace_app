@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +19,7 @@ import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
 import com.dreamsoftware.artcollectibles.ui.theme.ArtCollectibleMarketplaceTheme
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
@@ -70,7 +70,8 @@ private fun OnBoardingComponent(
     AccountScreen(
         snackBarHostState = snackBarHostState,
         mainTitleRes = R.string.onboarding_main_title_text,
-        screenBackgroundRes = R.drawable.common_background
+        screenBackgroundRes = R.drawable.common_background,
+        enableVerticalScroll = false
     ) {
         CommonText(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
@@ -88,16 +89,12 @@ private fun OnBoardingComponent(
         )
         Spacer(modifier = Modifier.padding(bottom = 20.dp))
         CommonButton(
-            modifier = Modifier.padding(bottom = 4.dp),
             text = R.string.onboarding_login_button_text,
             onClick = onLoginClicked
         )
-        Spacer(modifier = Modifier.padding(bottom = 10.dp))
         CommonButton(
-            modifier = Modifier.padding(bottom = 4.dp),
             text = R.string.onboarding_signup_button_text,
-            containerColor = Purple700,
-            contentColor = Color.White,
+            containerColor = Purple40,
             onClick = onSignUpClicked
         )
     }

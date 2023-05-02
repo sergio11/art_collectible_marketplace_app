@@ -63,12 +63,8 @@ fun ErrorStateNotificationComponent(
                 )
                 if (isRetryButtonVisible) {
                     CommonButton(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .width(300.dp),
                         text = R.string.retry_button_text,
                         containerColor = Purple40,
-                        contentColor = Color.White,
                         onClick = onRetryCalled
                     )
                 }

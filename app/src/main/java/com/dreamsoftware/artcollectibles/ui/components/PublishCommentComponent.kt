@@ -171,8 +171,10 @@ fun PublishCommentComponent(
                 }
             )
             CommonButton(
+                modifier = Modifier.padding(4.dp),
                 text = R.string.token_detail_comments_publish_button_text,
                 widthDp = 120.dp,
+                enableBorder = false,
                 containerColor = Color.Transparent,
                 contentColor = Purple40,
                 textType = CommonTextTypeEnum.TITLE_SMALL,

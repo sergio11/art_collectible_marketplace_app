@@ -107,6 +107,7 @@ fun ArtistDetailComponent(
             density = density,
             isLoading = isLoading,
             imageUrl = userInfo?.photoUrl,
+            contentCentered = true,
             onBackClicked = onBackClicked,
             title = userInfo?.name?.ifBlank {
                 stringResource(id = R.string.search_user_info_name_empty)
@@ -277,9 +278,6 @@ fun ArtistDetailComponent(
             Spacer(modifier = Modifier.height(50.dp))
             userInfo?.instagramNick?.let { nick ->
                 CommonButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
                     text = R.string.profile_open_instagram_profile,
                     containerColor = instagramPurpleRed,
                     contentColor = Color.White,
@@ -296,9 +294,6 @@ fun ArtistDetailComponent(
             }
             if(isAuthUser) {
                 CommonButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
                     text = R.string.profile_get_more_matic,
                     containerColor = Purple40,
                     contentColor = Color.White,

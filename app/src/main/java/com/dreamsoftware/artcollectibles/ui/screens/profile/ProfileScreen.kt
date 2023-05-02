@@ -6,14 +6,16 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults.elevatedShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -216,19 +218,13 @@ internal fun ProfileComponent(
                 )
                 Spacer(modifier = Modifier.height(50.dp))
                 CommonButton(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(300.dp),
                     text = R.string.profile_save_button_text,
                     containerColor = Purple700,
-                    contentColor = Color.White,
                     onClick = onSaveClicked
                 )
                 CommonButton(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .width(300.dp),
                     text = R.string.profile_open_profile_button_text,
+                    containerColor = Purple40,
                     onClick = {
                         state.userInfo?.uid?.let(onGoToUserProfile)
                     }
@@ -303,22 +299,14 @@ internal fun ProfilePicturePicker(
                 textColor = Purple500
             )
             CommonButton(
-                modifier = Modifier
-                    .padding(vertical = 10.dp, horizontal = 20.dp)
-                    .fillMaxWidth(),
                 text = R.string.profile_pick_image_from_gallery,
                 containerColor = Purple200,
-                contentColor = Color.White,
                 buttonShape = elevatedShape,
                 onClick = { galleryLauncher.launch("image/*") }
             )
             CommonButton(
-                modifier = Modifier
-                    .padding(vertical = 10.dp, horizontal = 20.dp)
-                    .fillMaxWidth(),
                 text = R.string.profile_pick_from_camera,
                 containerColor = Purple40,
-                contentColor = Color.White,
                 buttonShape = elevatedShape,
                 onClick = {
                     context.checkPermissionState(

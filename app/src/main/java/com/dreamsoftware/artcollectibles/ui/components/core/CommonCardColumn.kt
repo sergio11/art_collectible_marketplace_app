@@ -26,8 +26,7 @@ fun CommonCardColumn(
         Column(
             modifier = Modifier
                 .padding(vertical = 20.dp)
-                .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
             content = content

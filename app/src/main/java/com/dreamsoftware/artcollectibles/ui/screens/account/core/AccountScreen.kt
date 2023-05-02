@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.account.core
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -19,13 +20,14 @@ fun AccountScreen(
     snackBarHostState: SnackbarHostState,
     @StringRes mainTitleRes: Int,
     @DrawableRes screenBackgroundRes: Int,
+    enableVerticalScroll: Boolean = true,
     screenContent: @Composable ColumnScope.() -> Unit
 ) {
     BasicScreen(
         snackBarHostState = snackBarHostState,
         titleRes = mainTitleRes,
         backgroundRes = screenBackgroundRes,
-        enableVerticalScroll = true,
+        enableVerticalScroll = enableVerticalScroll,
         hasTopBar = false,
         screenContent = {
             CommonText(
@@ -35,6 +37,9 @@ fun AccountScreen(
                 textColor = Color.White,
                 titleRes = mainTitleRes
             )
+            if(!enableVerticalScroll) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
             CommonCardColumn(content = screenContent)
         }
     )

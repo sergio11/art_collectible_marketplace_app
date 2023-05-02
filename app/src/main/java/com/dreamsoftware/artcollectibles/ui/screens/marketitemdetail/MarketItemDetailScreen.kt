@@ -130,6 +130,7 @@ fun MarketItemDetailComponent(
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,
+            contentCentered = true,
             onBackClicked = onBackClicked,
             imageUrl = artCollectibleForSale?.token?.metadata?.imageUrl,
             title = artCollectibleForSale?.token?.displayName
@@ -252,9 +253,6 @@ fun MarketItemDetailComponent(
                         )
                     }
                     CommonButton(
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp, vertical = 8.dp)
-                            .fillMaxWidth(),
                         containerColor = Purple200,
                         contentColor = Color.White,
                         enabled = enoughFunds,
@@ -265,9 +263,6 @@ fun MarketItemDetailComponent(
                     )
                 }
                 CommonButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
                     text = R.string.market_item_detail_open_item_button_text,
                     containerColor = Purple700,
                     contentColor = Color.White,
@@ -279,9 +274,6 @@ fun MarketItemDetailComponent(
                 )
                 if (!isMarketHistoryItem && isTokenAuthor) {
                     CommonButton(
-                        modifier = Modifier
-                            .padding(horizontal = 10.dp, vertical = 8.dp)
-                            .fillMaxWidth(),
                         text = R.string.market_item_detail_withdraw_from_sale_button_text,
                         containerColor = Color.Red,
                         contentColor = Color.White,

@@ -18,6 +18,7 @@ import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.screens.account.core.AccountScreen
+import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
@@ -112,15 +113,12 @@ private fun SignUpComponent(
             )
             Spacer(modifier = Modifier.padding(bottom = 20.dp))
             CommonButton(
-                modifier = Modifier.padding(bottom = 8.dp),
                 enabled = isSignUpButtonEnabled,
                 text = R.string.signup_signup_button_text,
                 onClick = onSignUp
             )
             CommonButton(
-                modifier = Modifier.padding(bottom = 8.dp),
-                containerColor = Purple700,
-                contentColor = Color.White,
+                containerColor = Purple40,
                 text = R.string.signup_already_has_account_text,
                 onClick = onGoToSignIn
             )

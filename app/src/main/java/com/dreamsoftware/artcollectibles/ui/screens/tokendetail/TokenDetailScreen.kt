@@ -34,6 +34,7 @@ import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
+import com.dreamsoftware.artcollectibles.ui.theme.Teal200
 import com.google.common.collect.Iterables
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import java.math.BigInteger
@@ -147,6 +148,7 @@ fun TokenDetailComponent(
             density = density,
             isLoading = isLoading,
             onBackClicked = onBackClicked,
+            contentCentered = true,
             imageUrl = artCollectible?.metadata?.imageUrl,
             title = artCollectible?.displayName
         ) {
@@ -339,9 +341,6 @@ private fun TokenDetailBody(
             Spacer(modifier = Modifier.height(50.dp))
             if (isTokenAddedForSale) {
                 CommonButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
                     text = R.string.token_detail_go_market_button_text,
                     containerColor = Purple700,
                     contentColor = Color.White,
@@ -352,9 +351,6 @@ private fun TokenDetailBody(
             }
             if (isTokenOwner) {
                 CommonButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
                     text = if (isTokenAddedForSale) {
                         R.string.token_detail_with_draw_from_sale_button_text
                     } else {
@@ -375,9 +371,6 @@ private fun TokenDetailBody(
                     }
                 )
                 CommonButton(
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .fillMaxWidth(),
                     text = R.string.token_detail_burn_token_button_text,
                     enabled = !isTokenAddedForSale,
                     containerColor = Color.Red,
