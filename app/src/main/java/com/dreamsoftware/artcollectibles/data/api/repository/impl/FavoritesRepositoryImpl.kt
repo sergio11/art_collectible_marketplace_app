@@ -39,7 +39,10 @@ internal class FavoritesRepositoryImpl(
                     with(artCollectibleMemoryCacheDataSource) {
                         if(hasKey(tokenId)) {
                             findByKey(tokenId).let {
-                                it.copy(favoritesCount = it.favoritesCount + 1)
+                                it.copy(
+                                    favoritesCount = it.favoritesCount + 1,
+                                    hasAddedToFav = true
+                                )
                             }.let {
                                 save(it.id, it)
                             }
@@ -61,7 +64,10 @@ internal class FavoritesRepositoryImpl(
                     with(artCollectibleMemoryCacheDataSource) {
                         if(hasKey(tokenId)) {
                             findByKey(tokenId).let {
-                                it.copy(favoritesCount = it.favoritesCount - 1)
+                                it.copy(
+                                    favoritesCount = it.favoritesCount - 1,
+                                    hasAddedToFav = false
+                                )
                             }.let {
                                 save(it.id, it)
                             }

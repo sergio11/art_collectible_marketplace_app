@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.sp
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectiblePrices
 import com.dreamsoftware.artcollectibles.ui.extensions.format
+import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.MainAxisAlignment
 
 private val DEFAULT_TEXT_SIZE = 13.sp
 private val DEFAULT_TEXT_COLOR = Color.White
@@ -31,10 +34,12 @@ fun ArtCollectiblePrice(
     fullMode: Boolean = false,
     priceData: ArtCollectiblePrices?
 ){
-    Row(
+    FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
+        crossAxisAlignment = FlowCrossAxisAlignment.Center,
+        mainAxisAlignment = MainAxisAlignment.Center,
+        mainAxisSpacing = 8.dp,
+        crossAxisSpacing = 8.dp
     ) {
         Row(
             modifier = Modifier.padding(8.dp),

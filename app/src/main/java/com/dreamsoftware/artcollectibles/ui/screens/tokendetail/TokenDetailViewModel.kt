@@ -275,7 +275,10 @@ class TokenDetailViewModel @Inject constructor(
             it.copy(
                 tokenAddedToFavorites = true,
                 artCollectible = it.artCollectible?.let { token ->
-                    token.copy(favoritesCount = token.favoritesCount + 1)
+                    token.copy(
+                        favoritesCount = token.favoritesCount + 1,
+                        hasAddedToFav = true
+                    )
                 }
             )
         }
@@ -286,7 +289,10 @@ class TokenDetailViewModel @Inject constructor(
             it.copy(
                 tokenAddedToFavorites = false,
                 artCollectible = it.artCollectible?.let { token ->
-                    token.copy(favoritesCount = token.favoritesCount - 1)
+                    token.copy(
+                        favoritesCount = token.favoritesCount - 1,
+                        hasAddedToFav = false
+                    )
                 }
             )
         }

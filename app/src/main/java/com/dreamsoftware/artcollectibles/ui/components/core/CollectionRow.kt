@@ -33,7 +33,7 @@ fun <T: Any>CollectionRow(
             modifier = modifier
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.padding(horizontal = 10.dp).fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -63,6 +63,7 @@ fun <T: Any>CollectionRow(
             }
             LazyRow(
                 modifier = Modifier.padding(vertical = 10.dp),
+                contentPadding = PaddingValues(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(Iterables.size(items)) { idx ->

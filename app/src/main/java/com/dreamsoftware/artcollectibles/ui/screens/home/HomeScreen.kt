@@ -192,7 +192,7 @@ private fun MarketStatisticsRow(
     with(marketplaceStatistics) {
         Column(
             modifier = Modifier
-                .padding(vertical = 10.dp, horizontal = 10.dp)
+                .padding(vertical = 10.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

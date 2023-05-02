@@ -20,7 +20,7 @@ fun ArtCollectiblesRow(
 ) {
     CollectionRow(
         modifier = Modifier
-            .padding(vertical = 10.dp, horizontal = 10.dp),
+            .padding(vertical = 10.dp),
         titleRes = titleRes,
         reverseStyle = reverseStyle,
         items = items,
