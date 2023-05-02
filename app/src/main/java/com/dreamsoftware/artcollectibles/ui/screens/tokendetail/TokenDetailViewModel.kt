@@ -1,9 +1,15 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
+import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
+import com.google.common.collect.Iterables
+import com.patrykandpatrick.vico.core.entry.ChartEntry
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -33,6 +39,7 @@ class TokenDetailViewModel @Inject constructor(
         const val COMMENTS_BY_TOKEN_LIMIT = 4
         const val HISTORY_BY_TOKEN_LIMIT = 4
         const val SIMILAR_TOKENS_LIMIT = 6
+        const val MIN_MARKET_HISTORY_PRICE_SAMPLES = 2
     }
 
     override fun onGetDefaultState(): TokenDetailUiState = TokenDetailUiState()
@@ -322,11 +329,7 @@ class TokenDetailViewModel @Inject constructor(
             params = FetchTokenMarketHistoryPricesUseCase.Params(
                 tokenId = tokenId
             ),
-            onSuccess = { tokenMarketHistoryPrices ->
-                updateState {
-                    it.copy(tokenMarketHistoryPrices = tokenMarketHistoryPrices)
-                }
-            },
+            onSuccess = ::onFetchTokenMarketHistoryPricesSuccess,
             onError = {
                 it.printStackTrace()
                 // ignore error
@@ -438,6 +441,22 @@ class TokenDetailViewModel @Inject constructor(
             }
         )
     }
+
+    private fun onFetchTokenMarketHistoryPricesSuccess(tokenMarketHistoryPrices: Iterable<ArtCollectibleMarketHistoryPrice>) {
+        if(Iterables.size(tokenMarketHistoryPrices) >= MIN_MARKET_HISTORY_PRICE_SAMPLES) {
+            updateState { uiState ->
+                uiState.copy(tokenMarketHistoryChartEntryModel = tokenMarketHistoryPrices.mapIndexed { index, tokenMarketHistoryPrice ->
+                    with(tokenMarketHistoryPrice) {
+                        TokenPriceChartEntry(
+                            dateText = date.format(withTime = false),
+                            x = index.toFloat(),
+                            y = price.priceInEth.toFloat()
+                        )
+                    }
+                }.let { ChartEntryModelProducer(it) }.getModel())
+            }
+        }
+    }
 }
 
 data class TokenDetailUiState(
@@ -452,10 +471,18 @@ data class TokenDetailUiState(
     val tokenAddedToFavorites: Boolean = false,
     val lastComments: Iterable<Comment> = emptyList(),
     val lastMarketHistory: Iterable<ArtCollectibleForSale> = emptyList(),
-    val tokenMarketHistoryPrices: Iterable<ArtCollectibleMarketHistoryPrice> = emptyList(),
+    val tokenMarketHistoryChartEntryModel: ChartEntryModel? = null,
     val similarTokens: Iterable<ArtCollectible> = emptyList(),
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,
     val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,
     val isConfirmPutForSaleDialogVisible: Boolean = false
 )
+
+class TokenPriceChartEntry(
+    val dateText: String,
+    override val x: Float,
+    override val y: Float,
+) : ChartEntry {
+    override fun withY(y: Float) = TokenPriceChartEntry(dateText, x, y)
+}

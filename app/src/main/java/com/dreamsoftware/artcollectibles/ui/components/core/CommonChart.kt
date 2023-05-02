@@ -41,9 +41,9 @@ fun CommonChart(
     ) {
         CommonText(
             modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 16.dp)
+                .padding(10.dp)
                 .fillMaxWidth(),
-            type = CommonTextTypeEnum.TITLE_LARGE,
+            type = CommonTextTypeEnum.TITLE_MEDIUM,
             titleRes = titleRes,
             singleLine = true
         )

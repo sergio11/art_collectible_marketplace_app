@@ -27,16 +27,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
-import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleMarketHistoryPrice
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple500
 import com.dreamsoftware.artcollectibles.ui.theme.Purple700
-import com.dreamsoftware.artcollectibles.ui.theme.Teal200
 import com.google.common.collect.Iterables
-import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import java.math.BigInteger
 
 data class TokenDetailScreenArgs(
@@ -314,10 +312,12 @@ private fun TokenDetailBody(
                     onGoToTokenHistory(artCollectible.id)
                 }
             )
-            TokenPricesChart(
-                modifier = Modifier.padding(8.dp),
-                tokenMarketHistoryPrices = tokenMarketHistoryPrices
-            )
+            tokenMarketHistoryChartEntryModel?.let {
+                TokenPricesChart(
+                    modifier = Modifier.padding(8.dp),
+                    chartEntryModel = it
+                )
+            }
             PublishCommentComponent(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
                 authUserInfo = authUserInfo,
@@ -545,13 +545,19 @@ private fun TokenMarketHistory(
 @Composable
 private fun TokenPricesChart(
     modifier: Modifier = Modifier,
-    tokenMarketHistoryPrices: Iterable<ArtCollectibleMarketHistoryPrice>
+    chartEntryModel: ChartEntryModel
 ) {
-    if(!Iterables.isEmpty(tokenMarketHistoryPrices)) {
+    if(chartEntryModel.entries.isNotEmpty()) {
         CommonChart(
             modifier = modifier,
             titleRes = R.string.token_detail_price_history_title_text,
-            entryModel = entryModelOf(4f, 12f, 8f, 16f, 20f, 30f, 5f, 10f)
+            entryModel = chartEntryModel,
+            bottomAxisValueFormatter = { value, chartValues ->
+                (chartValues.chartEntryModel.entries.first()
+                    .getOrNull(value.toInt()) as? TokenPriceChartEntry)
+                    ?.dateText
+                    .orEmpty()
+            }
         )
     }
 }

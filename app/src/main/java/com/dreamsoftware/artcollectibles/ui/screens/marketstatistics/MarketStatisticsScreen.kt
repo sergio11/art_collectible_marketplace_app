@@ -141,20 +141,22 @@ private fun StatisticChart(
     entryModel: ChartEntryModel,
     bottomAxisValueFormatter: AxisValueFormatter<AxisPosition.Horizontal.Bottom>? = null
 ) {
-    Card(
-        modifier = Modifier.padding(20.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.7f)),
-        shape = RoundedCornerShape(27.dp),
-        border = BorderStroke(3.dp, Color.White)
-    ) {
-        CommonChart(
-            modifier = Modifier.padding(8.dp),
-            titleRes = titleRes,
-            entryModel = entryModel,
-            type = type,
-            bottomAxisValueFormatter = bottomAxisValueFormatter
-        )
+    if(entryModel.entries.firstOrNull()?.isNotEmpty() == true) {
+        Card(
+            modifier = Modifier.padding(20.dp),
+            elevation = CardDefaults.cardElevation(4.dp),
+            colors = CardDefaults.cardColors(Color.White.copy(alpha = 0.7f)),
+            shape = RoundedCornerShape(27.dp),
+            border = BorderStroke(3.dp, Color.White)
+        ) {
+            CommonChart(
+                modifier = Modifier.padding(8.dp),
+                titleRes = titleRes,
+                entryModel = entryModel,
+                type = type,
+                bottomAxisValueFormatter = bottomAxisValueFormatter
+            )
+        }
     }
 }
 

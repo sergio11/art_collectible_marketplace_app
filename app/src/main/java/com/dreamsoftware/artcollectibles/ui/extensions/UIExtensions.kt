@@ -78,8 +78,14 @@ fun Context.getMimeType(uri: Uri): String? =
         MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(uri.path?.let { File(it) }).toString())
     }
 
-fun Date.format(): String =
-    SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(this)
+fun Date.format(withTime: Boolean = true): String =
+    SimpleDateFormat(
+        if (withTime) {
+            "yyyy-MM-dd HH:mm:ss"
+        } else {
+            "yyyy-MM-dd"
+        }, Locale.getDefault()
+    ).format(this)
 
 
 fun Double.format(): String =
