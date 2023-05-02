@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.*
 import com.dreamsoftware.artcollectibles.data.api.repository.ITokenMetadataRepository
@@ -143,6 +144,7 @@ internal class TokenMetadataRepositoryImpl(
     @Throws(FetchByCidDataException::class)
     override suspend fun fetchByCid(cid: String): ArtCollectibleMetadata =
         withContext(Dispatchers.Default) {
+            Log.d("ART_COLL", "fetchByCid - cid: $cid")
             try {
                 tokenMetadataEntityMapper.mapInToOut(
                     tokenMetadataDatabaseDataSource.findOneByCid(cid).let {
@@ -155,6 +157,7 @@ internal class TokenMetadataRepositoryImpl(
             } catch (ex: Exception) {
                 try {
                     ipfsDataSource.fetchByCid(cid).also {
+                        Log.d("ART_COLL", "ipfsDataSource.fetchByCid(cid) - it.name: ${it.name} - it.cid: ${it.cid}")
                         tokenMetadataDatabaseDataSource.save(
                             tokenMetadataToEntityMapper.mapInToOut(it)
                         )
@@ -178,6 +181,7 @@ internal class TokenMetadataRepositoryImpl(
     @Throws(FetchByCidDataException::class)
     override suspend fun fetchByCid(cidList: Iterable<String>): Iterable<ArtCollectibleMetadata> =
         withContext(Dispatchers.Default) {
+            Log.d("ART_COLL", "fetchByCid - cidList: $cidList")
             try {
                 tokenMetadataEntityMapper.mapInListToOutList(
                     tokenMetadataDatabaseDataSource.findByCidList(cidList).map {
@@ -192,6 +196,9 @@ internal class TokenMetadataRepositoryImpl(
                     cidList.map { async { ipfsDataSource.fetchByCid(it) } }
                         .awaitAll()
                         .also {
+                            it.forEach {
+                                Log.d("ART_COLL", "ipfsDataSource.fetchByCid(cid) - it.name: ${it.name} - it.cid: ${it.cid}")
+                            }
                             tokenMetadataDatabaseDataSource.save(
                                 tokenMetadataToEntityMapper.mapInListToOutList(
                                     it

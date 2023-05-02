@@ -7,6 +7,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,14 +28,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonButton
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
-import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
-import com.dreamsoftware.artcollectibles.ui.theme.Purple40
-import com.dreamsoftware.artcollectibles.ui.theme.PurpleGrey80
-import com.dreamsoftware.artcollectibles.ui.theme.instagramPurpleRed
+import com.dreamsoftware.artcollectibles.ui.components.core.*
+import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import java.math.BigInteger
@@ -119,21 +114,22 @@ fun ArtistDetailComponent(
         ) {
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
-            Box(
-                modifier = defaultModifier.fillMaxWidth()
+            Row(
+                modifier = defaultModifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 userInfo?.professionalTitle?.let {
                     CommonText(
-                        modifier = Modifier.align(Alignment.CenterStart),
                         type = CommonTextTypeEnum.TITLE_LARGE,
-                        titleText = it
+                        titleText = it,
+                        maxLines = 2
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
                 if (!isAuthUser) {
                     CommonButton(
                         modifier = Modifier
-                            .padding(start = 8.dp)
-                            .align(Alignment.CenterEnd),
+                            .padding(start = 8.dp),
                         text = if (isFollowing) {
                             R.string.profile_following_button_unfollow_text
                         } else {
@@ -211,14 +207,15 @@ fun ArtistDetailComponent(
                     )
                 }
             }
-            CommonText(
+            ExpandableText(
                 modifier = defaultModifier,
-                type = CommonTextTypeEnum.BODY_LARGE,
-                titleText = userInfo?.info?.let {
+                text = userInfo?.info?.let {
                     it.ifBlank {
                         stringResource(id = R.string.search_user_info_description_empty)
                     }
-                }
+                } ?: stringResource(id = R.string.no_text_value),
+                style = MaterialTheme.typography.bodyLarge,
+                fontFamily = montserratFontFamily
             )
             userInfo?.tags?.let { tags ->
                 if (tags.isNotEmpty()) {

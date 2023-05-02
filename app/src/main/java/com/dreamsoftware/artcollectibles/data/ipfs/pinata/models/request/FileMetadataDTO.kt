@@ -8,6 +8,7 @@ import com.squareup.moshi.Json
 data class FileMetadataDTO(
     @field:Json(name = "name")
     val name: String,
+    // Optional stringified object
     @field:Json(name = "keyvalues")
     val keyValues: Map<String, String>
 )
