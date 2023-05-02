@@ -30,3 +30,13 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
     - Firebase Auth (Social Media integrations) - To authenticate users.
     - Firebase Storage - To save files such us wallets and user profile images.
     - [Web3J](https://docs.web3j.io/4.9.8/) - Web3j is a highly modular, reactive, type safe Java and Android library for working with Smart Contracts and integrating with clients (nodes) on the Ethereum network
+    
+    
+    
+ ### Onboarding & Account management
+ 
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_1.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_2.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_3.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_4.png" />
+    
