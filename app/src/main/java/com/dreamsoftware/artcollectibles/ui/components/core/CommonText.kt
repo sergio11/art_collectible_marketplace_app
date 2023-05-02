@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
@@ -38,6 +39,7 @@ fun CommonText(
     @StringRes titleRes: Int? = null,
     titleText: String? = null,
     singleLine: Boolean = false,
+    textBold: Boolean = false,
     maxLines: Int = DEFAULT_MAX_LINES,
     textColor: Color = DEFAULT_TEXT_COLOR,
     textAlign: TextAlign? = null
@@ -51,8 +53,9 @@ fun CommonText(
         maxLines = maxLines,
         textColor = textColor,
         textAlign = textAlign,
+        textBold = textBold,
         textStyle = with(MaterialTheme.typography) {
-            when(type) {
+            when (type) {
                 CommonTextTypeEnum.TITLE_LARGE -> titleLarge
                 CommonTextTypeEnum.TITLE_MEDIUM -> titleMedium
                 CommonTextTypeEnum.TITLE_SMALL -> titleSmall
@@ -74,9 +77,10 @@ fun CommonText(
 private fun CommonTextComponent(
     modifier: Modifier = Modifier,
     text: String,
-    singleLine: Boolean = false,
+    singleLine: Boolean,
     maxLines: Int,
     textColor: Color,
+    textBold: Boolean,
     textAlign: TextAlign?,
     textStyle: TextStyle
 ) {
@@ -87,7 +91,12 @@ private fun CommonTextComponent(
         fontFamily = montserratFontFamily,
         color = textColor,
         style = textStyle,
-        maxLines = if(singleLine) {
+        fontWeight = if (textBold) {
+            FontWeight.Bold
+        } else {
+            null
+        },
+        maxLines = if (singleLine) {
             1
         } else {
             maxLines

@@ -30,12 +30,16 @@ fun AccountScreen(
         enableVerticalScroll = enableVerticalScroll,
         hasTopBar = false,
         screenContent = {
+            if(!enableVerticalScroll) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
             CommonText(
                 modifier = Modifier
                     .padding(horizontal = 32.dp, vertical = 40.dp),
                 type = CommonTextTypeEnum.HEADLINE_LARGE,
                 textColor = Color.White,
-                titleRes = mainTitleRes
+                titleRes = mainTitleRes,
+                textBold = true
             )
             if(!enableVerticalScroll) {
                 Spacer(modifier = Modifier.weight(1f))

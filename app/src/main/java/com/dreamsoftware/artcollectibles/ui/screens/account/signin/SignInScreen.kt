@@ -97,7 +97,8 @@ private fun SignInComponent(
                 type = CommonTextTypeEnum.TITLE_LARGE,
                 titleRes = R.string.onboarding_subtitle_text,
                 textColor = Purple500,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                textBold = true
             )
             CommonText(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),

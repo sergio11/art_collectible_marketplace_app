@@ -74,14 +74,15 @@ private fun OnBoardingComponent(
         enableVerticalScroll = false
     ) {
         CommonText(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
             type = CommonTextTypeEnum.TITLE_LARGE,
             textColor = Purple500,
             titleRes = R.string.onboarding_subtitle_text,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            textBold = true
         )
         CommonText(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
             type = CommonTextTypeEnum.TITLE_MEDIUM,
             textColor = Purple700,
             titleRes = R.string.onboarding_description_text,

@@ -75,7 +75,8 @@ fun CommonButton(
             type = textType,
             titleText = stringResource(text),
             textColor = contentColor,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            textBold = true
         )
     }
 }

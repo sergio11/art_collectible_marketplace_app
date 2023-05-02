@@ -85,14 +85,15 @@ private fun SignUpComponent(
             screenBackgroundRes = R.drawable.common_background
         ) {
             CommonText(
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                 type = CommonTextTypeEnum.TITLE_LARGE,
                 titleRes = R.string.onboarding_subtitle_text,
                 textColor = Purple500,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                textBold = true
             )
             CommonText(
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
                 type = CommonTextTypeEnum.TITLE_MEDIUM,
                 titleRes = R.string.signup_secondary_title_text,
                 textColor = Purple700,
