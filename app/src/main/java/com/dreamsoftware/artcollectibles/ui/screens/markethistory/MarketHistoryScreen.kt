@@ -22,7 +22,7 @@ import java.math.BigInteger
 @Composable
 fun MarketHistoryScreen(
     viewModel: MarketHistoryViewModel = hiltViewModel(),
-    onMarketItemSelected: (tokenId: BigInteger) -> Unit,
+    onGoToMarketItemHistoryDetail: (marketItemId: BigInteger) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -51,7 +51,7 @@ fun MarketHistoryScreen(
             lazyGridState = lazyGridState,
             onRetryCalled = ::load,
             onBackPressed = onBackPressed,
-            onMarketHistoryItemSelected = onMarketItemSelected
+            onGoToMarketItemHistoryDetail = onGoToMarketItemHistoryDetail
         )
     }
 }
@@ -64,7 +64,7 @@ internal fun MarketHistoryComponent(
     lazyGridState: LazyGridState,
     onRetryCalled: () -> Unit,
     onBackPressed: () -> Unit,
-    onMarketHistoryItemSelected: (marketItemId: BigInteger) -> Unit
+    onGoToMarketItemHistoryDetail: (marketItemId: BigInteger) -> Unit
 ) {
     with(state) {
         CommonVerticalGridScreen(
@@ -81,7 +81,7 @@ internal fun MarketHistoryComponent(
                 context = context,
                 artCollectibleForSale = marketItem,
                 onClicked = {
-                    onMarketHistoryItemSelected(marketItem.marketItemId)
+                    onGoToMarketItemHistoryDetail(marketItem.marketItemId)
                 }
             )
         }

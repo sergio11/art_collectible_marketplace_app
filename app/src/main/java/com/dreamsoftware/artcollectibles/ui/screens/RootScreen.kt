@@ -128,7 +128,7 @@ fun RootScreen(
         composable(DestinationItem.MarketHistory.route) {
             with(navigationController) {
                 MarketHistoryScreen(
-                    onMarketItemSelected = {
+                    onGoToMarketItemHistoryDetail = {
                         navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
                     },
                     onBackPressed = {
@@ -336,6 +336,9 @@ fun RootScreen(
                     with(navigationController) {
                         TokenHistoryScreen(
                             args = screenArgs,
+                            onGoToMarketItemHistoryDetail = {
+                                navigate(DestinationItem.MarketItemDetail.buildHistoryMarketItemRoute(it))
+                            },
                             onBackPressed = {
                                 popBackStack()
                             }

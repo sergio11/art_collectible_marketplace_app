@@ -1,9 +1,11 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokenhistory
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +26,7 @@ data class TokenHistoryScreenArgs(
 fun TokenHistoryScreen(
     args: TokenHistoryScreenArgs,
     viewModel: TokenHistoryViewModel = hiltViewModel(),
+    onGoToMarketItemHistoryDetail: (marketItemId: BigInteger) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -48,6 +51,7 @@ fun TokenHistoryScreen(
             state = uiState,
             snackBarHostState = snackBarHostState,
             lazyListState = lazyListState,
+            onGoToMarketItemHistoryDetail = onGoToMarketItemHistoryDetail,
             onBackPressed = onBackPressed
         )
     }
@@ -58,6 +62,7 @@ internal fun TokenHistoryComponent(
     state: TokenHistoryUiState,
     snackBarHostState: SnackbarHostState,
     lazyListState: LazyListState,
+    onGoToMarketItemHistoryDetail: (marketItemId: BigInteger) -> Unit,
     onBackPressed: () -> Unit
 ) {
     with(state) {
@@ -69,7 +74,10 @@ internal fun TokenHistoryComponent(
             onBackPressed = onBackPressed,
             appBarTitle = getTopAppBarTitle(tokenHistory)
         ) { item ->
-            TokenTransactionItem(item = item)
+            TokenTransactionItem(
+                modifier = Modifier.clickable { onGoToMarketItemHistoryDetail(item.marketItemId) },
+                item = item
+            )
         }
     }
 }
