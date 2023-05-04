@@ -1,19 +1,13 @@
 package com.dreamsoftware.artcollectibles.ui.screens.mytokens
 
 import android.content.Context
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,8 +18,11 @@ import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleMiniCard
 import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.CommonLazyVerticalGrid
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTabsRow
-import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
+import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTitle
+import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTypeOrDefault
+import com.dreamsoftware.artcollectibles.ui.model.MyTokensTabsTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 import java.math.BigInteger
 
@@ -84,14 +81,20 @@ internal fun MyTokensComponent(
         LoadingDialog(isShowingDialog = isLoading)
         BasicScreen(
             snackBarHostState = snackBarHostState,
-            titleRes = tabSelectedTitle ?: R.string.my_tokens_main_title,
+            titleRes = tabs.tabSelectedTitle() ?: R.string.my_tokens_main_title,
             centerTitle = true,
             navController = navController,
             hasBottomBar = true,
             screenContainerColor = Purple40,
             screenContent = {
-                CommonTabsRow(tabs, tabSelectedIndex, onNewTabSelected)
-                MyTokensLazyList(context, state, lazyGridState, onTokenClicked)
+                CommonTabsRow(tabs, onNewTabSelected)
+                if (!isLoading) {
+                    CommonLazyVerticalGrid(state = lazyGridState, tokens) {
+                        ArtCollectibleMiniCard(context = context, artCollectible = it) {
+                            onTokenClicked(it)
+                        }
+                    }
+                }
                 ErrorStateNotificationComponent(
                     isVisible = !isLoading && tokens.isEmpty() || !errorMessage.isNullOrBlank(),
                     imageRes = if (tokens.isEmpty()) {
@@ -100,7 +103,7 @@ internal fun MyTokensComponent(
                         R.drawable.error_occurred
                     },
                     title = errorMessage ?: stringResource(
-                        id = if (tabSelectedType == MyTokensTabsTypeEnum.TOKENS_OWNED) {
+                        id = if (tabs.tabSelectedTypeOrDefault(default = MyTokensTabsTypeEnum.TOKENS_OWNED) == MyTokensTabsTypeEnum.TOKENS_OWNED) {
                             R.string.my_tokens_tab_tokens_owned_not_found_error
                         } else {
                             R.string.my_tokens_tab_tokens_created_not_found_error
@@ -110,33 +113,5 @@ internal fun MyTokensComponent(
                     onRetryCalled = onRetryCalled
                 )
             })
-    }
-}
-
-@Composable
-private fun MyTokensLazyList(
-    context: Context,
-    state: MyTokensUiState,
-    lazyGridState: LazyGridState,
-    onTokenClicked: (token: ArtCollectible) -> Unit
-) {
-    with(state) {
-        if (!isLoading) {
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 8.dp),
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                state = lazyGridState
-            ) {
-                items(tokens.size) { index ->
-                    ArtCollectibleMiniCard(context = context, artCollectible = tokens[index]) {
-                        onTokenClicked(tokens[index])
-                    }
-                }
-            }
-        }
     }
 }

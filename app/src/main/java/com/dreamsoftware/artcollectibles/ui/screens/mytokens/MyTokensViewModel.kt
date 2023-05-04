@@ -7,9 +7,10 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyFavoriteTokensUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyTokensCreatedUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyTokensOwnedUseCase
+import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTypeOrDefault
+import com.dreamsoftware.artcollectibles.ui.model.MyTokensTabsTypeEnum
+import com.dreamsoftware.artcollectibles.ui.model.TabUi
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
-import com.dreamsoftware.artcollectibles.ui.screens.core.model.TabUi
-import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -56,19 +57,11 @@ class MyTokensViewModel @Inject constructor(
 
     fun loadTokens() {
         onLoading()
-        getSelectedTabType()?.let {
-            when (it) {
-                MyTokensTabsTypeEnum.TOKENS_OWNED -> {
-                    loadMyTokensOwned()
-                }
-                MyTokensTabsTypeEnum.TOKENS_LIKED -> {
-                    loadMyFavoriteTokens()
-                }
-                else -> {
-                    loadMyTokensCreated()
-                }
-            }
-        } ?: loadMyTokensOwned()
+        when(uiState.value.tabs.tabSelectedTypeOrDefault(default = MyTokensTabsTypeEnum.TOKENS_OWNED)) {
+            MyTokensTabsTypeEnum.TOKENS_OWNED -> loadMyTokensOwned()
+            MyTokensTabsTypeEnum.TOKENS_CREATED -> loadMyTokensCreated()
+            MyTokensTabsTypeEnum.TOKENS_LIKED -> loadMyFavoriteTokens()
+        }
     }
 
     private fun loadMyTokensCreated() {
@@ -124,9 +117,6 @@ class MyTokensViewModel @Inject constructor(
             )
         }
     }
-
-    private fun getSelectedTabType(): MyTokensTabsTypeEnum? =
-        uiState.value.tabs.find { it.isSelected }?.type
 }
 
 data class MyTokensUiState(
@@ -134,13 +124,4 @@ data class MyTokensUiState(
     val isLoading: Boolean = false,
     val tokens: List<ArtCollectible> = emptyList(),
     val errorMessage: String? = null
-) {
-    val tabSelectedIndex: Int
-        get() = tabs.indexOfFirst { it.isSelected }
-
-    val tabSelectedTitle: Int?
-        get() = tabs.find { it.isSelected }?.titleRes
-
-    val tabSelectedType: MyTokensTabsTypeEnum
-        get() = tabs.find { it.isSelected }?.type ?: MyTokensTabsTypeEnum.TOKENS_OWNED
-}
+)

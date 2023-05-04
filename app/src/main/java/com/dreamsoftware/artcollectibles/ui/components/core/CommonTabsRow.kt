@@ -10,31 +10,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.dreamsoftware.artcollectibles.ui.screens.core.model.TabUi
+import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedIndex
+import com.dreamsoftware.artcollectibles.ui.model.TabUi
 
 @Composable
 fun <T>CommonTabsRow(
     tabs: List<TabUi<T>>,
-    tabSelectedIndex: Int,
     onNewTabSelected: (type: T) -> Unit,
 ) {
-    if (tabs.isNotEmpty()) {
-        TabRow(
-            selectedTabIndex = tabSelectedIndex,
-            containerColor = Color.White.copy(alpha = 0.9f)) {
-            tabs.forEach { tab ->
-                Tab(
-                    selected = tab.isSelected,
-                    onClick = { onNewTabSelected(tab.type) },
-                    icon = {
-                        Image(
-                            painter = painterResource(tab.iconRes),
-                            contentDescription = "Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                )
+    with(tabs) {
+        if (isNotEmpty()) {
+            TabRow(
+                selectedTabIndex = tabSelectedIndex(),
+                containerColor = Color.White.copy(alpha = 0.9f)) {
+                forEach { tab ->
+                    Tab(
+                        selected = tab.isSelected,
+                        onClick = { onNewTabSelected(tab.type) },
+                        icon = {
+                            Image(
+                                painter = painterResource(tab.iconRes),
+                                contentDescription = "Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    )
+                }
             }
         }
     }

@@ -107,8 +107,8 @@ fun CommentDetailComponent(
             onBackClicked = onBackClicked,
             imageUrl = comment?.user?.photoUrl,
             title = comment?.user?.name?.ifBlank {
-                stringResource(id = R.string.search_user_info_name_empty)
-            } ?: stringResource(id = R.string.search_user_info_name_empty)
+                stringResource(id = R.string.default_user_info_name_empty)
+            } ?: stringResource(id = R.string.default_user_info_name_empty)
         ) {
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)

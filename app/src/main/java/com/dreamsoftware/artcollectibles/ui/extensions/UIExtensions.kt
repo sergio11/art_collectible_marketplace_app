@@ -10,6 +10,7 @@ import android.webkit.MimeTypeMap
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.dreamsoftware.artcollectibles.ui.model.TabUi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
 import java.text.DecimalFormat
@@ -90,5 +91,12 @@ fun Date.format(withTime: Boolean = true): String =
 
 fun Double.format(): String =
     DecimalFormat("0.00").format(this)
+
+
+fun <T>Iterable<TabUi<T>>.tabSelectedIndex() = indexOfFirst { it.isSelected }
+
+fun <T>Iterable<TabUi<T>>.tabSelectedTitle() = find { it.isSelected }?.titleRes
+
+fun <T>Iterable<TabUi<T>>.tabSelectedTypeOrDefault(default: T) = find { it.isSelected }?.type ?: default
 
 

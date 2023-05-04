@@ -34,7 +34,7 @@ fun SearchView(
             onTermChanged(value)
         },
         placeholder = {
-          Text(text = context.getString(R.string.search_query_empty), color = Color.White)
+          Text(text = context.getString(R.string.default_query_empty), color = Color.White)
         },
         modifier = Modifier.fillMaxWidth(),
         textStyle = TextStyle(color = Color.White, fontSize = 18.sp),

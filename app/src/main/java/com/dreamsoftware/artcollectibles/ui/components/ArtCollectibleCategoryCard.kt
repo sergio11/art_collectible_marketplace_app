@@ -44,10 +44,11 @@ fun ArtCollectibleCategoryCard(modifier: Modifier = Modifier, context: Context, 
                 .align(Alignment.BottomCenter)
                 .background(color = Purple40.copy(0.6f), shape = RectangleShape)
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 12.dp),
             type = CommonTextTypeEnum.TITLE_MEDIUM,
             textColor = Color.White,
             titleText = title,
+            textBold = true,
             textAlign = TextAlign.Center,
             maxLines = 2
         )

@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.mytokens.model
+package com.dreamsoftware.artcollectibles.ui.model
 
 enum class MyTokensTabsTypeEnum {
     TOKENS_OWNED,

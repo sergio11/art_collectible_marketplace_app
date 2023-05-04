@@ -110,8 +110,8 @@ fun ArtistDetailComponent(
             contentCentered = true,
             onBackClicked = onBackClicked,
             title = userInfo?.name?.ifBlank {
-                stringResource(id = R.string.search_user_info_name_empty)
-            } ?: stringResource(id = R.string.search_user_info_name_empty)
+                stringResource(id = R.string.default_user_info_name_empty)
+            } ?: stringResource(id = R.string.default_user_info_name_empty)
         ) {
             val defaultModifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -212,7 +212,7 @@ fun ArtistDetailComponent(
                 modifier = defaultModifier,
                 text = userInfo?.info?.let {
                     it.ifBlank {
-                        stringResource(id = R.string.search_user_info_description_empty)
+                        stringResource(id = R.string.default_user_info_description_empty)
                     }
                 } ?: stringResource(id = R.string.no_text_value),
                 style = MaterialTheme.typography.bodyLarge,

@@ -26,7 +26,7 @@ import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreen
 import com.dreamsoftware.artcollectibles.ui.screens.notifications.NotificationsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.preferences.PreferencesScreen
 import com.dreamsoftware.artcollectibles.ui.screens.profile.ProfileScreen
-import com.dreamsoftware.artcollectibles.ui.screens.search.SearchScreen
+import com.dreamsoftware.artcollectibles.ui.screens.discovery.DiscoveryScreen
 import com.dreamsoftware.artcollectibles.ui.screens.sellingitems.SellingMarketItemsScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokendetail.TokenDetailScreen
 import com.dreamsoftware.artcollectibles.ui.screens.tokenhistory.TokenHistoryScreen
@@ -177,7 +177,7 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Explore.route) {
-            SearchScreen(navigationController) {
+            DiscoveryScreen(navigationController) {
                 navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
             }
         }

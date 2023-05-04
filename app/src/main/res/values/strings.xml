@@ -23,6 +23,9 @@
     <string name="generic_error_exception">An error occurred, please try again.</string>
     <string name="no_text_value">----</string>
     <string name="no_text_value_small">--</string>
+    <string name="default_user_info_name_empty">Anonymous user</string>
+    <string name="default_user_info_description_empty">This user has preferred not to give details about his profile</string>
+    <string name="default_query_empty">Write something here …</string>
     <!-- Onboarding -->
     <string name="onboarding_main_title_text">Welcome to the art collectible NFT marketplace for digital artists</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>
@@ -85,10 +88,6 @@
     <string name="profile_take_photo_error_occurred">An error occurred when trying to take photo</string>
     <string name="profile_camera_permission_granted">Camera permission granted</string>
     <string name="profile_camera_permission_denied">Camera permission denied</string>
-    <string name="search_user_info_name_empty">Anonymous user</string>
-    <string name="search_user_info_description_empty">This user has preferred not to give details about his profile</string>
-    <string name="search_query_empty">Write something here …</string>
-    <string name="search_main_title_text">Discover new artists</string>
     <string name="profile_following_count_text" formatted="false">%s Following</string>
     <string name="profile_followers_count_text" formatted="false">%s Followers</string>
     <string name="profile_following_button_follow_text">follow</string>
@@ -109,6 +108,12 @@
     <string name="profile_input_instagram_placeholder">Your Instagram Account</string>
     <string name="profile_close_session_title">Do you want to log out?</string>
     <string name="profile_close_session_description">Your session will be closed, your session data will be deleted</string>
+
+    <!-- Discover -->
+    <string name="discovery_main_title_default_text">Discover new artists</string>
+    <string name="discovery_main_digital_artists_text">Discover artists</string>
+    <string name="discovery_main_nft_categories_text">Discover art collectibles</string>
+
     <!-- Add NFT -->
     <string name="add_nft_main_title_text">Mint new NFT</string>
     <string name="add_nft_create_button_text">Create</string>

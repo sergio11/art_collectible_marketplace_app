@@ -1,4 +1,4 @@
-package com.dreamsoftware.artcollectibles.ui.screens.core.model
+package com.dreamsoftware.artcollectibles.ui.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
