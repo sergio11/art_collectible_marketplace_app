@@ -8,7 +8,7 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyFavoriteTokens
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyTokensCreatedUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetMyTokensOwnedUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
-import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabUi
+import com.dreamsoftware.artcollectibles.ui.screens.core.model.TabUi
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.model.MyTokensTabsTypeEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -24,18 +24,18 @@ class MyTokensViewModel @Inject constructor(
     override fun onGetDefaultState(): MyTokensUiState =
         MyTokensUiState(
             tabs = listOf(
-                MyTokensTabUi(
+                TabUi(
                     type = MyTokensTabsTypeEnum.TOKENS_OWNED,
                     iconRes = R.drawable.owned_tab_icon,
                     titleRes = R.string.my_tokens_tokens_owned_title,
                     isSelected = true
                 ),
-                MyTokensTabUi(
+                TabUi(
                     type = MyTokensTabsTypeEnum.TOKENS_CREATED,
                     iconRes = R.drawable.created_tab_icon,
                     titleRes = R.string.my_tokens_tokens_created_title
                 ),
-                MyTokensTabUi(
+                TabUi(
                     type = MyTokensTabsTypeEnum.TOKENS_LIKED,
                     iconRes = R.drawable.favorite_tab_icon,
                     titleRes = R.string.my_tokens_tokens_favorites_title
@@ -130,7 +130,7 @@ class MyTokensViewModel @Inject constructor(
 }
 
 data class MyTokensUiState(
-    val tabs: List<MyTokensTabUi> = emptyList(),
+    val tabs: List<TabUi<MyTokensTabsTypeEnum>> = emptyList(),
     val isLoading: Boolean = false,
     val tokens: List<ArtCollectible> = emptyList(),
     val errorMessage: String? = null
