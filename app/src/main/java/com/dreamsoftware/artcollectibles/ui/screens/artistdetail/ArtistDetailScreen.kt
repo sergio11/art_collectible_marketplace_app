@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,8 +22,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
@@ -45,23 +42,17 @@ fun ArtistDetailScreen(
     onShowFollowers: (userUid: String) -> Unit,
     onShowFollowing: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowTokensOwnedBy: (userUid: String) -> Unit,
-    onShowTokensCreatedBy: (userUid: String) -> Unit,
+    onGoToTokensOwnedBy: (userAddress: String) -> Unit,
+    onGoToTokensCreatedBy: (userAddress: String) -> Unit,
     onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = ArtistDetailUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = ArtistDetailUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val density = LocalDensity.current
     val scrollState: ScrollState = rememberScrollState(0)
     with(viewModel) {
@@ -79,8 +70,8 @@ fun ArtistDetailScreen(
             onShowFollowers = onShowFollowers,
             onShowFollowing = onShowFollowing,
             onGoToTokenDetail = onGoToTokenDetail,
-            onShowTokensOwnedBy = onShowTokensOwnedBy,
-            onShowTokensCreatedBy = onShowTokensCreatedBy
+            onGoToTokensOwnedBy = onGoToTokensOwnedBy,
+            onGoToTokensCreatedBy = onGoToTokensCreatedBy
         )
     }
 }
@@ -97,8 +88,8 @@ fun ArtistDetailComponent(
     onShowFollowers: (userUid: String) -> Unit,
     onShowFollowing: (userUid: String) -> Unit,
     onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
-    onShowTokensOwnedBy: (userUid: String) -> Unit,
-    onShowTokensCreatedBy: (userUid: String) -> Unit
+    onGoToTokensOwnedBy: (userAddress: String) -> Unit,
+    onGoToTokensCreatedBy: (userAddress: String) -> Unit
 ) {
     with(uiState) {
         CommonDetailScreen(
@@ -107,7 +98,6 @@ fun ArtistDetailComponent(
             density = density,
             isLoading = isLoading,
             imageUrl = userInfo?.photoUrl,
-            contentCentered = true,
             onBackClicked = onBackClicked,
             title = userInfo?.name?.ifBlank {
                 stringResource(id = R.string.default_user_info_name_empty)
@@ -257,7 +247,7 @@ fun ArtistDetailComponent(
                 titleRes = R.string.profile_tokens_owned_by_user_text,
                 items = tokensOwned,
                 onShowAllItems = {
-                    userInfo?.uid?.let(onShowTokensOwnedBy)
+                    userInfo?.walletAddress?.let(onGoToTokensOwnedBy)
                 },
                 onItemSelected = {
                     onGoToTokenDetail(it.id)
@@ -269,44 +259,49 @@ fun ArtistDetailComponent(
                 titleRes = R.string.profile_tokens_created_by_user_text,
                 items = tokensCreated,
                 onShowAllItems = {
-                    userInfo?.uid?.let(onShowTokensCreatedBy)
+                    userInfo?.walletAddress?.let(onGoToTokensCreatedBy)
                 },
                 onItemSelected = {
                     onGoToTokenDetail(it.id)
                 }
             )
             Spacer(modifier = Modifier.height(50.dp))
-            userInfo?.instagramNick?.let { nick ->
-                CommonButton(
-                    text = R.string.profile_open_instagram_profile,
-                    containerColor = instagramPurpleRed,
-                    contentColor = Color.White,
-                    buttonShape = ButtonDefaults.elevatedShape,
-                    onClick = {
-                        context.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(BuildConfig.INSTAGRAM_URL + nick)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                userInfo?.instagramNick?.let { nick ->
+                    CommonButton(
+                        text = R.string.profile_open_instagram_profile,
+                        containerColor = instagramPurpleRed,
+                        contentColor = Color.White,
+                        buttonShape = ButtonDefaults.elevatedShape,
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(BuildConfig.INSTAGRAM_URL + nick)
+                                )
                             )
-                        )
-                    }
-                )
-            }
-            if(isAuthUser) {
-                CommonButton(
-                    text = R.string.profile_get_more_matic,
-                    containerColor = Purple40,
-                    contentColor = Color.White,
-                    buttonShape = ButtonDefaults.elevatedShape,
-                    onClick = {
-                        context.startActivity(
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                        }
+                    )
+                }
+                if(isAuthUser) {
+                    CommonButton(
+                        text = R.string.profile_get_more_matic,
+                        containerColor = Purple40,
+                        contentColor = Color.White,
+                        buttonShape = ButtonDefaults.elevatedShape,
+                        onClick = {
+                            context.startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                                )
                             )
-                        )
-                    }
-                )
+                        }
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(30.dp))
         }

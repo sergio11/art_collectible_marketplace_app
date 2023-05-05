@@ -57,7 +57,11 @@ fun <T: Any>CollectionRow(
                         painter = painterResource(R.drawable.arrow_right_icon),
                         contentDescription = "onShowAllItems",
                         contentScale = ContentScale.Crop,
-                        colorFilter = ColorFilter.tint(Color.White)
+                        colorFilter = ColorFilter.tint(if (reverseStyle) {
+                            Color.Black
+                        } else {
+                            Color.White
+                        })
                     )
                 }
             }

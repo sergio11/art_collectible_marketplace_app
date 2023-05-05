@@ -174,11 +174,11 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
         private const val SHOW_TOKENS_OWNED = "TOKENS_OWNED"
         private const val SHOW_TOKENS_CREATED = "TOKENS_CREATED"
 
-        fun buildShowTokensOwnedRoute(userUid: String): String =
-            buildRoute(userUid, SHOW_TOKENS_OWNED)
+        fun buildShowTokensOwnedRoute(userAddress: String): String =
+            buildRoute(userAddress, SHOW_TOKENS_OWNED)
 
-        fun buildShowTokensCreatedRoute(userUid: String): String =
-            buildRoute(userUid, SHOW_TOKENS_CREATED)
+        fun buildShowTokensCreatedRoute(userAddress: String): String =
+            buildRoute(userAddress, SHOW_TOKENS_CREATED)
 
         fun parseArgs(args: Bundle): TokensScreenArgs? = with(args) {
             getString("id")?.let { userAddress ->
@@ -195,10 +195,10 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             }
         }
 
-        private fun buildRoute(userUid: String, type: String): String =
+        private fun buildRoute(userAddress: String, type: String): String =
             route.replace(
                 oldValue = "{id}",
-                newValue = userUid
+                newValue = userAddress
             ).replace(
                 oldValue = "{type}",
                 newValue = type

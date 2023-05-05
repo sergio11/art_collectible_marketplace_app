@@ -384,9 +384,9 @@ fun RootScreen(
                             navigate(DestinationItem.UserFollowers.buildFollowingRoute(it))
                         }, onGoToTokenDetail = {
                             navigate(DestinationItem.TokenDetail.buildRoute(it))
-                        }, onShowTokensOwnedBy = {
+                        }, onGoToTokensOwnedBy = {
                             navigate(DestinationItem.UserTokens.buildShowTokensOwnedRoute(it))
-                        }, onShowTokensCreatedBy = {
+                        }, onGoToTokensCreatedBy = {
                             navigate(DestinationItem.UserTokens.buildShowTokensCreatedRoute(it))
                         }, onBackClicked = {
                             popBackStack()

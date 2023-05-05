@@ -92,13 +92,13 @@
     <string name="profile_followers_count_text" formatted="false">%s Followers</string>
     <string name="profile_following_button_follow_text">follow</string>
     <string name="profile_following_button_unfollow_text">unfollow</string>
-    <string name="profile_tokens_owned_by_user_text">Your owned tokens</string>
-    <string name="profile_tokens_created_by_user_text">Your created tokens</string>
-    <string name="profile_tokens_owned_by_user_title_default">Your owned tokens</string>
-    <string name="profile_tokens_owned_by_user_title_count" formatted="false">Your owned tokens (%d)</string>
+    <string name="profile_tokens_owned_by_user_text">Owned tokens</string>
+    <string name="profile_tokens_created_by_user_text">Created tokens</string>
+    <string name="profile_tokens_owned_by_user_title_default">Owned tokens</string>
+    <string name="profile_tokens_owned_by_user_title_count" formatted="false">Owned tokens (%d)</string>
     <string name="profile_tokens_owned_by_user_not_found_message">No art collectibles owned by this user have been found</string>
-    <string name="profile_tokens_created_by_user_title_default">Your created tokens</string>
-    <string name="profile_tokens_created_by_user_title_count" formatted="false">Your created tokens (%d)</string>
+    <string name="profile_tokens_created_by_user_title_default">Created tokens</string>
+    <string name="profile_tokens_created_by_user_title_count" formatted="false">Created tokens (%d)</string>
     <string name="profile_tokens_created_by_user_not_found_message">No art collectibles created by this user have been found</string>
     <string name="profile_tokens_artist_interested_in">Interested in</string>
     <string name="profile_tokens_artist_account_balance">Account Balance</string>
