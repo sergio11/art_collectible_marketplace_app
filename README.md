@@ -63,5 +63,14 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
    
   <img width="250px" align="left" src="./doc/screenshots/app_picture_18.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_19.png" />
+  
+  
+  # Artist Detail
+  
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_20.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_21.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_22.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_23.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_26.png" />
  
     
