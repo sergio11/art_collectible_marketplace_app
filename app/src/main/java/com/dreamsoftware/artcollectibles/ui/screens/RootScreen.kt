@@ -81,7 +81,7 @@ fun RootScreen(
                 HomeScreen(this, onGoToMarketItemDetail = {
                     navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                 }, onGoToCategoryDetail = {
-                    navigate(DestinationItem.CategoryDetail.buildRoute(it))
+                    navigate(DestinationItem.CategoryDetail.buildShowAvailableMarketItemsByCategoryRoute(it.uid))
                 }, onGoToUserDetail = {
                     navigate(DestinationItem.ArtistDetail.buildRoute(it))
                 }, onGoToTokenDetail = {
@@ -177,8 +177,16 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Explore.route) {
-            DiscoveryScreen(navigationController) {
-                navigationController.navigate(DestinationItem.ArtistDetail.buildRoute(it))
+            with(navigationController) {
+                DiscoveryScreen(
+                    navController = navigationController,
+                    onGoToArtistDetail = {
+                        navigate(DestinationItem.ArtistDetail.buildRoute(it))
+                    },
+                    onGoToCategoryDetail = {
+                        navigate(DestinationItem.CategoryDetail.buildShowArtCollectiblesByCategoryRoute(it))
+                    }
+                )
             }
         }
         composable(DestinationItem.UserFollowers.route) { navBackStackEntry ->
@@ -353,7 +361,10 @@ fun RootScreen(
                     with(navigationController) {
                         CategoryDetailScreen(
                             args = screenArgs,
-                            onShowTokenForSaleDetail = {
+                            onGoToTokenDetail = {
+                                navigate(DestinationItem.TokenDetail.buildRoute(it))
+                            },
+                            onGoToTokenForSaleDetail = {
                                 navigate(DestinationItem.MarketItemDetail.buildForSaleMarketItemRoute(it))
                             }, onBackClicked = {
                                 popBackStack()

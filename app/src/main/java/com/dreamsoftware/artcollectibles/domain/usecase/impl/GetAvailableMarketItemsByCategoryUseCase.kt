@@ -8,9 +8,8 @@ class GetAvailableMarketItemsByCategoryUseCase(
     private val artMarketplaceRepository: IArtMarketplaceRepository
 ): BaseUseCaseWithParams<GetAvailableMarketItemsByCategoryUseCase.Params, Iterable<ArtCollectibleForSale>>() {
 
-    override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> {
-        return artMarketplaceRepository.fetchAvailableMarketItemsByCategory(categoryUid = params.categoryUid)
-    }
+    override suspend fun onExecuted(params: Params): Iterable<ArtCollectibleForSale> =
+        artMarketplaceRepository.fetchAvailableMarketItemsByCategory(categoryUid = params.categoryUid)
 
     data class Params(
         val categoryUid: String

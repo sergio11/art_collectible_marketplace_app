@@ -34,7 +34,8 @@ import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 fun DiscoveryScreen(
     navController: NavController,
     viewModel: DiscoveryViewModel = hiltViewModel(),
-    onGoToArtistDetail: (userUid: String) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit,
+    onGoToCategoryDetail: (categoryUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val uiState by produceState(
@@ -64,7 +65,8 @@ fun DiscoveryScreen(
             onTermChanged = ::onTermChanged,
             onResetSearch = ::onResetSearch,
             onNewTabSelected = ::onNewTabSelected,
-            onGoToArtistDetail = onGoToArtistDetail
+            onGoToArtistDetail = onGoToArtistDetail,
+            onGoToCategoryDetail = onGoToCategoryDetail
         )
     }
 }
@@ -79,7 +81,8 @@ internal fun DiscoveryComponent(
     onTermChanged: (String) -> Unit,
     onResetSearch: () -> Unit,
     onNewTabSelected: (type: DiscoveryTabsTypeEnum) -> Unit,
-    onGoToArtistDetail: (userUid: String) -> Unit
+    onGoToArtistDetail: (userUid: String) -> Unit,
+    onGoToCategoryDetail: (categoryUid: String) -> Unit
 ) {
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -107,6 +110,9 @@ internal fun DiscoveryComponent(
                             )
                         } else if (it is ArtCollectibleCategory) {
                             ArtCollectibleCategoryCard(
+                                modifier = Modifier.clickable {
+                                    onGoToCategoryDetail(it.uid)
+                                },
                                 context = context,
                                 title = it.name,
                                 imageUrl = it.imageUrl

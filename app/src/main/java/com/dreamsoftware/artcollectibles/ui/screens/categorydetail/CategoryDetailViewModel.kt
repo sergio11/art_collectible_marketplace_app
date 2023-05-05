@@ -3,6 +3,7 @@ package com.dreamsoftware.artcollectibles.ui.screens.categorydetail
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
+import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetArtCollectiblesByCategoryUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetAvailableMarketItemsByCategoryUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.GetCategoryDetailUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
@@ -12,25 +13,23 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryDetailViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
-    private val getAvailableMarketItemsByCategoryUseCase: GetAvailableMarketItemsByCategoryUseCase
+    private val getAvailableMarketItemsByCategoryUseCase: GetAvailableMarketItemsByCategoryUseCase,
+    private val getArtCollectiblesByCategoryUseCase: GetArtCollectiblesByCategoryUseCase
 ) : SupportViewModel<CategoryDetailUiState>() {
 
     override fun onGetDefaultState(): CategoryDetailUiState = CategoryDetailUiState()
 
-    fun load(uid: String) {
+
+    fun loadAvailableMarketItemsByCategory(uid: String) {
         onLoading()
-        getCategoryDetailUseCase.invoke(
-            scope = viewModelScope,
-            params = GetCategoryDetailUseCase.Params(uid = uid),
-            onSuccess = ::onCategoryDetailLoaded,
-            onError = ::onErrorOccurred
-        )
-        getAvailableMarketItemsByCategoryUseCase.invoke(
-            scope = viewModelScope,
-            params = GetAvailableMarketItemsByCategoryUseCase.Params(categoryUid = uid),
-            onSuccess = ::onAvailableMarketItemsByCategoryLoaded,
-            onError = ::onErrorOccurred
-        )
+        fetchCategoryDetail(uid)
+        fetchAvailableMarketItemsByCategory(uid)
+    }
+
+    fun loadArtCollectiblesByCategory(uid: String) {
+        onLoading()
+        fetchCategoryDetail(uid)
+        fetchArtCollectiblesByCategory(uid)
     }
 
     private fun onCategoryDetailLoaded(category: ArtCollectibleCategory) {
@@ -39,13 +38,41 @@ class CategoryDetailViewModel @Inject constructor(
         }
     }
 
-    private fun onAvailableMarketItemsByCategoryLoaded(tokenList: Iterable<ArtCollectibleForSale>) {
+    private fun onSuccess(items: Iterable<Any>) {
         updateState {
             it.copy(
                 isLoading = false,
-                tokensForSale = tokenList
+                items = items
             )
         }
+    }
+
+
+    private fun fetchAvailableMarketItemsByCategory(uid: String) {
+        getAvailableMarketItemsByCategoryUseCase.invoke(
+            scope = viewModelScope,
+            params = GetAvailableMarketItemsByCategoryUseCase.Params(categoryUid = uid),
+            onSuccess = ::onSuccess,
+            onError = ::onErrorOccurred
+        )
+    }
+
+    private fun fetchArtCollectiblesByCategory(uid: String) {
+        getArtCollectiblesByCategoryUseCase.invoke(
+            scope = viewModelScope,
+            params = GetArtCollectiblesByCategoryUseCase.Params(categoryUid = uid),
+            onSuccess = ::onSuccess,
+            onError = ::onErrorOccurred
+        )
+    }
+
+    private fun fetchCategoryDetail(uid: String) {
+        getCategoryDetailUseCase.invoke(
+            scope = viewModelScope,
+            params = GetCategoryDetailUseCase.Params(uid = uid),
+            onSuccess = ::onCategoryDetailLoaded,
+            onError = ::onErrorOccurred
+        )
     }
 
     private fun onErrorOccurred(ex: Exception) {
@@ -60,5 +87,5 @@ class CategoryDetailViewModel @Inject constructor(
 data class CategoryDetailUiState(
     val isLoading: Boolean = false,
     val category: ArtCollectibleCategory? = null,
-    val tokensForSale: Iterable<ArtCollectibleForSale> = emptyList()
+    val items: Iterable<Any> = emptyList()
 )

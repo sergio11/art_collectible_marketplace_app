@@ -715,4 +715,14 @@ class DomainModule {
     fun provideFetchMostCancelledTokensUseCase(
         statisticsRepository: IStatisticsRepository
     ) = FetchMostCancelledTokensUseCase(statisticsRepository)
+
+    /**
+     * Provide get art collectibles by category use case
+     * @param artCollectibleRepository
+     */
+    @Provides
+    @ViewModelScoped
+    fun provideGetArtCollectiblesByCategoryUseCase(
+        artCollectibleRepository: IArtCollectibleRepository
+    ) = GetArtCollectiblesByCategoryUseCase(artCollectibleRepository)
 }

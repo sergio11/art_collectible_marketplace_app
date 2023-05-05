@@ -205,23 +205,47 @@ sealed class DestinationItem(var route: String, arguments: List<NamedNavArgument
             )
     }
 
-    object CategoryDetail : DestinationItem(route = "categories/{id}", arguments = listOf(
+    object CategoryDetail : DestinationItem(route = "categories/{id}/{type}", arguments = listOf(
         navArgument("id") {
+            type = NavType.StringType
+        },
+        navArgument("type") {
             type = NavType.StringType
         }
     )) {
 
-        fun buildRoute(artCollectibleCategory: ArtCollectibleCategory): String =
-            route.replace(
-                oldValue = "{id}",
-                newValue = artCollectibleCategory.uid
-            )
+        private const val SHOW_AVAILABLE_MARKET_ITEMS_BY_CATEGORY = "SHOW_AVAILABLE_MARKET_ITEMS_BY_CATEGORY"
+        private const val SHOW_ART_COLLECTIBLES_BY_CATEGORY = "SHOW_LOAD_ART_COLLECTIBLES_BY_CATEGORY"
+
+        fun buildShowAvailableMarketItemsByCategoryRoute(categoryUid: String): String =
+            buildRoute(categoryUid, SHOW_AVAILABLE_MARKET_ITEMS_BY_CATEGORY)
+
+        fun buildShowArtCollectiblesByCategoryRoute(categoryUid: String): String =
+            buildRoute(categoryUid, SHOW_ART_COLLECTIBLES_BY_CATEGORY)
 
         fun parseArgs(args: Bundle): CategoryDetailScreenArgs? = with(args) {
             getString("id")?.let {
-                CategoryDetailScreenArgs(uid = it)
+                getString("type")?.let { type ->
+                    CategoryDetailScreenArgs(
+                        uid = it,
+                        viewType = if (type == SHOW_AVAILABLE_MARKET_ITEMS_BY_CATEGORY) {
+                            CategoryDetailScreenArgs.ViewTypeEnum.AVAILABLE_MARKET_ITEMS
+                        } else {
+                            CategoryDetailScreenArgs.ViewTypeEnum.ALL_ART_COLLECTIBLES
+                        }
+                    )
+                }
             }
         }
+
+        private fun buildRoute(categoryUid: String, viewType: String): String =
+            route.replace(
+                oldValue = "{id}",
+                newValue = categoryUid
+            ).replace(
+                oldValue = "{type}",
+                newValue = viewType
+            )
     }
     object CommentsList : DestinationItem(route = "token/{id}/comments", arguments = listOf(
         navArgument("id") {

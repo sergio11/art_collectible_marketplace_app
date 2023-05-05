@@ -5,11 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -18,14 +14,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
+import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleForSale
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleForSaleCard
+import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleMiniCard
 import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonDetailScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
+import com.dreamsoftware.artcollectibles.ui.components.core.produceUiState
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.MainAxisAlignment
@@ -33,46 +31,58 @@ import com.google.common.collect.Iterables
 import java.math.BigInteger
 
 data class CategoryDetailScreenArgs(
-    val uid: String
-)
+    val uid: String,
+    val viewType: ViewTypeEnum
+) {
+    enum class ViewTypeEnum {
+        AVAILABLE_MARKET_ITEMS,
+        ALL_ART_COLLECTIBLES
+    }
+}
 
 @Composable
 fun CategoryDetailScreen(
     args: CategoryDetailScreenArgs,
     viewModel: CategoryDetailViewModel = hiltViewModel(),
-    onShowTokenForSaleDetail: (tokenId: BigInteger) -> Unit,
+    onGoToTokenForSaleDetail: (tokenId: BigInteger) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onBackClicked: () -> Unit
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = CategoryDetailUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = CategoryDetailUiState(),
+        viewModel = viewModel,
+        lifecycle = lifecycle
+    )
     val density = LocalDensity.current
     val scrollState: ScrollState = rememberScrollState(0)
     with(viewModel) {
-        LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-            load(args.uid)
+        with(args) {
+            LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
+                if(viewType == CategoryDetailScreenArgs.ViewTypeEnum.AVAILABLE_MARKET_ITEMS) {
+                    loadAvailableMarketItemsByCategory(uid)
+                } else {
+                    loadArtCollectiblesByCategory(uid)
+                }
+            }
+            CategoryDetailComponent(
+                context = context,
+                uiState = uiState,
+                scrollState = scrollState,
+                density = density,
+                onGoToTokenForSaleDetail = onGoToTokenForSaleDetail,
+                onGoToTokenDetail = onGoToTokenDetail,
+                onRetryCalled = {
+                    if(viewType == CategoryDetailScreenArgs.ViewTypeEnum.AVAILABLE_MARKET_ITEMS) {
+                        loadAvailableMarketItemsByCategory(uid)
+                    } else {
+                        loadArtCollectiblesByCategory(uid)
+                    }
+                },
+                onBackClicked = onBackClicked
+            )
         }
-        CategoryDetailComponent(
-            context = context,
-            uiState = uiState,
-            scrollState = scrollState,
-            density = density,
-            onTokenForSaleClicked = onShowTokenForSaleDetail,
-            onRetryCalled = {
-                load(args.uid)
-            },
-            onBackClicked = onBackClicked
-        )
     }
 }
 
@@ -82,7 +92,8 @@ fun CategoryDetailComponent(
     uiState: CategoryDetailUiState,
     scrollState: ScrollState,
     density: Density,
-    onTokenForSaleClicked: (tokenId: BigInteger) -> Unit,
+    onGoToTokenForSaleDetail: (tokenId: BigInteger) -> Unit,
+    onGoToTokenDetail: (tokenId: BigInteger) -> Unit,
     onRetryCalled: () -> Unit,
     onBackClicked: () -> Unit
 ) {
@@ -108,13 +119,13 @@ fun CategoryDetailComponent(
                 } ?: stringResource(id = R.string.no_text_value)
             )
             ErrorStateNotificationComponent(
-                isVisible = !isLoading && Iterables.isEmpty(tokensForSale),
+                isVisible = !isLoading && Iterables.isEmpty(items),
                 imageRes = R.drawable.not_data_found,
                 title = stringResource(id = R.string.category_detail_no_tokens_found_title),
                 isRetryButtonVisible = true,
                 onRetryCalled = onRetryCalled
             )
-            if(!Iterables.isEmpty(tokensForSale)) {
+            if(!Iterables.isEmpty(items)) {
                 CommonText(
                     modifier = Modifier
                         .padding(horizontal = 20.dp, vertical = 8.dp)
@@ -133,14 +144,23 @@ fun CategoryDetailComponent(
                 mainAxisSpacing = 8.dp,
                 crossAxisSpacing = 8.dp
             ) {
-                repeat(Iterables.size(tokensForSale)) {
-                    with(Iterables.get(tokensForSale, it)) {
+                repeat(Iterables.size(items)) {
+                    val item = Iterables.get(items, it)
+                    if(item is ArtCollectibleForSale) {
                         ArtCollectibleForSaleCard(
                             context = context,
                             reverseStyle = true,
-                            artCollectibleForSale = this
+                            artCollectibleForSale = item
                         ) {
-                            onTokenForSaleClicked(token.id)
+                            onGoToTokenForSaleDetail(item.token.id)
+                        }
+                    } else if(item is ArtCollectible) {
+                        ArtCollectibleMiniCard(
+                            context = context,
+                            reverseStyle = true,
+                            artCollectible = item
+                        ) {
+                            onGoToTokenDetail(item.id)
                         }
                     }
                 }
