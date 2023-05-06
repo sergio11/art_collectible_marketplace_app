@@ -86,4 +86,8 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" align="left" src="./doc/screenshots/app_picture_24.png" />
  <img width="250px" src="./doc/screenshots/app_picture_25.png" />
  
+ 
+ 
+ <a href="https://www.freepik.com/free-photo/handsome-cheerful-young-man-with-stylish-haircut-dimpled-smile-posing-isolated-against-blank-yellow-wall-dressed-cozy-maroon-sweater-having-confident-look_11891916.htm#page=2&query=person&position=3&from_view=search&track=robertav1_2_sidr">Image by karlyukav</a> on Freepik
+ 
     
