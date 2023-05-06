@@ -97,7 +97,7 @@ internal fun MyTokensComponent(
                 }
                 ErrorStateNotificationComponent(
                     isVisible = !isLoading && tokens.isEmpty() || !errorMessage.isNullOrBlank(),
-                    imageRes = if (tokens.isEmpty()) {
+                    imageRes = if (errorMessage.isNullOrBlank()) {
                         R.drawable.not_data_found
                     } else {
                         R.drawable.error_occurred

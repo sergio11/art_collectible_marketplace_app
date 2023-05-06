@@ -15,21 +15,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
-import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCategoryCard
-import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.components.SearchView
-import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
+import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTitle
 import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTypeOrDefault
 import com.dreamsoftware.artcollectibles.ui.model.DiscoveryTabsTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
+import com.google.common.collect.Iterables
 
 @Composable
 fun DiscoveryScreen(
@@ -58,6 +57,7 @@ fun DiscoveryScreen(
             lazyGridState = lazyGridState,
             navController = navController,
             onSearchingModeChanged = ::onSearchingModeChanged,
+            onRetryCalled = ::load,
             onTermChanged = ::onTermChanged,
             onResetSearch = ::onResetSearch,
             onNewTabSelected = ::onNewTabSelected,
@@ -75,6 +75,7 @@ internal fun DiscoveryComponent(
     lazyGridState: LazyGridState,
     navController: NavController,
     onSearchingModeChanged: (enabled: Boolean) -> Unit,
+    onRetryCalled: () -> Unit,
     onTermChanged: (String) -> Unit,
     onResetSearch: () -> Unit,
     onNewTabSelected: (type: DiscoveryTabsTypeEnum) -> Unit,
@@ -145,6 +146,23 @@ internal fun DiscoveryComponent(
                         }
                     }
                 }
+                ErrorStateNotificationComponent(
+                    isVisible = !isLoading && Iterables.isEmpty(items) || !errorMessage.isNullOrBlank(),
+                    imageRes = if (errorMessage.isNullOrBlank()) {
+                        R.drawable.not_data_found
+                    } else {
+                        R.drawable.error_occurred
+                    },
+                    title = errorMessage ?: stringResource(
+                        id = if (tabs.tabSelectedTypeOrDefault(default = DiscoveryTabsTypeEnum.DIGITAL_ARTISTS) == DiscoveryTabsTypeEnum.DIGITAL_ARTISTS) {
+                            R.string.discovery_tab_digital_artists_not_found_error
+                        } else {
+                            R.string.discovery_tab_nft_categories_not_found_error
+                        }
+                    ),
+                    isRetryButtonVisible = true,
+                    onRetryCalled = onRetryCalled
+                )
             }
         )
     }

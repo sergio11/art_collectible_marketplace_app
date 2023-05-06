@@ -20,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DiscoveryViewModel @Inject constructor(
     private val searchUsersUseCase: SearchUsersUseCase,
-    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase
+    private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
+    private val discoveryScreenErrorMapper: DiscoveryScreenErrorMapper
 ) : SupportViewModel<DiscoveryUiState>() {
 
     override fun onGetDefaultState(): DiscoveryUiState = DiscoveryUiState(
@@ -107,7 +108,12 @@ class DiscoveryViewModel @Inject constructor(
 
 
     private fun onLoading() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+        }
     }
 
     private fun onSearchFinished(userResult: Iterable<UserInfo>) {
@@ -133,7 +139,7 @@ class DiscoveryViewModel @Inject constructor(
             it.copy(
                 items = emptyList(),
                 isLoading = false,
-                error = ex
+                errorMessage = discoveryScreenErrorMapper.mapToMessage(ex)
             )
         }
     }
@@ -145,5 +151,5 @@ data class DiscoveryUiState(
     val searchTerm: String? = null,
     val items: Iterable<Any> = emptyList(),
     val isLoading: Boolean = false,
-    val error: Throwable? = null
+    val errorMessage: String? = null
 )

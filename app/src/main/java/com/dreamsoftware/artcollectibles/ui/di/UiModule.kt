@@ -1,6 +1,7 @@
 package com.dreamsoftware.artcollectibles.ui.di
 
 import android.content.Context
+import com.dreamsoftware.artcollectibles.ui.screens.discovery.DiscoveryScreenErrorMapper
 import com.dreamsoftware.artcollectibles.ui.screens.mytokens.MyTokensScreenErrorMapper
 import dagger.Module
 import dagger.Provides
@@ -16,4 +17,10 @@ class UiModule {
     @Provides
     @ViewModelScoped
     fun provideMyTokensScreenErrorMapper(@ApplicationContext context: Context) = MyTokensScreenErrorMapper(context)
+
+    @Provides
+    @ViewModelScoped
+    fun provideDiscoveryScreenErrorMapper(@ApplicationContext context: Context) = DiscoveryScreenErrorMapper(context)
+
+
 }

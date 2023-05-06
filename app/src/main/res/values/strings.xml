@@ -113,7 +113,10 @@
     <string name="discovery_main_title_default_text">Discover</string>
     <string name="discovery_main_digital_artists_text">Discover talented artists</string>
     <string name="discovery_main_nft_categories_text">Discover art collectibles</string>
-
+    <string name="discovery_tab_digital_artists_not_found_error">No artists found for the specified term</string>
+    <string name="discovery_tab_nft_categories_not_found_error">No available categories found</string>
+    <string name="discovery_get_art_categories_error">An error occurred when trying to get categories</string>
+    <string name="discovery_search_users_error">An error occurred when trying to search artists</string>
     <!-- Add NFT -->
     <string name="add_nft_main_title_text">Mint new NFT</string>
     <string name="add_nft_create_button_text">Create</string>
