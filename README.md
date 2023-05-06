@@ -48,7 +48,8 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" align="left" src="./doc/screenshots/app_picture_9.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_10.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_29.png" />
- <img width="250px" src="./doc/screenshots/app_picture_28.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_28.png" />
+ <img width="250px"  src="./doc/screenshots/app_picture_34.png" />
  
   ## Mint Art Collectible NFT
   
@@ -77,8 +78,9 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img width="250px" align="left" src="./doc/screenshots/app_picture_20.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_21.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_22.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_26.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_23.png" />
-  <img width="250px" src="./doc/screenshots/app_picture_26.png" />
+  <img width="250px" src="./doc/screenshots/app_picture_33.png" />
   
   
  # Art Collectibles Categories
