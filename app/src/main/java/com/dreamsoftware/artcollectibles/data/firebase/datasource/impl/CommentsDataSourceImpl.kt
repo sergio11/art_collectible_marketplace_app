@@ -37,15 +37,9 @@ internal class CommentsDataSourceImpl(
                     .set(saveCommentMapper.mapInToOut(comment), SetOptions.merge())
                     .await()
                 document(comment.tokenId.toString())
-                    .set(
-                        hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayUnion(comment.uid)),
-                        SetOptions.merge()
-                    )
+                    .set(hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayUnion(comment.uid)), SetOptions.merge())
                     .await()
-                document(comment.tokenId.toString() + COMMENTS_COUNT_SUFFIX).set(
-                    hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)),
-                    SetOptions.merge()
-                ).await()
+                document(comment.tokenId.toString() + COMMENTS_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
             }
         } catch (ex: Exception) {
             throw SaveCommentException(
@@ -60,19 +54,9 @@ internal class CommentsDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(uid)
-                        .delete()
-                        .await()
-                    document(tokenId.toString())
-                        .set(
-                            hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayRemove(uid)),
-                            SetOptions.merge()
-                        )
-                        .await()
-                    document(tokenId.toString() + COMMENTS_COUNT_SUFFIX).set(
-                        hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)),
-                        SetOptions.merge()
-                    ).await()
+                    document(uid).delete().await()
+                    document(tokenId.toString()).set(hashMapOf(COMMENTS_FIELD_NAME to FieldValue.arrayRemove(uid)), SetOptions.merge()).await()
+                    document(tokenId.toString() + COMMENTS_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                 }
             } catch (ex: Exception) {
                 throw DeleteCommentException(
@@ -126,10 +110,7 @@ internal class CommentsDataSourceImpl(
                     .document(tokenId.toString())
                     .get()
                     .await()?.data?.let { it[COMMENTS_FIELD_NAME] as? Iterable<String> }
-                    ?.let { getCommentsByIds(it) }
-                    ?: throw GetCommentsByTokenIdException("No comments found")
-            } catch (ex: FirebaseException) {
-                throw ex
+                    ?.let { getCommentsByIds(it) } ?: emptyList()
             } catch (ex: Exception) {
                 throw GetCommentsByTokenIdException(
                     "An error occurred when trying to get comments",
@@ -148,10 +129,7 @@ internal class CommentsDataSourceImpl(
                 .document(tokenId.toString())
                 .get()
                 .await()?.data?.let { it[COMMENTS_FIELD_NAME] as? Iterable<String> }
-                ?.let { getCommentsByIds(it).take(limit) }
-                ?: throw GetCommentsByTokenIdException("No comments found")
-        } catch (ex: FirebaseException) {
-            throw ex
+                ?.let { getCommentsByIds(it).take(limit) } ?: emptyList()
         } catch (ex: Exception) {
             throw GetCommentsByTokenIdException(
                 "An error occurred when trying to get comments",

@@ -50,17 +50,9 @@ internal class AuthDataSourceImpl(
         try {
             firebaseAuth.signInWithCredential(
                 getCredentials(accessToken, externalProviderAuthTypeEnum)
-            ).await()
-                ?.user?.let {
-                    externalUserAuthenticatedMapper.mapInToOut(
-                        Triple(
-                            it,
-                            accessToken,
-                            externalProviderAuthTypeEnum
-                        )
-                    )
-                }
-                ?: throw IllegalStateException("Auth user cannot be null")
+            ).await()?.user?.let {
+                    externalUserAuthenticatedMapper.mapInToOut(Triple(it, accessToken, externalProviderAuthTypeEnum))
+            } ?: throw IllegalStateException("Auth user cannot be null")
         } catch (ex: Exception) {
             throw SignInException("Login failed", ex)
         }

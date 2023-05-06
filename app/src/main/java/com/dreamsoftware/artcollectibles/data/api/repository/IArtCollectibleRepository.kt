@@ -19,26 +19,26 @@ interface IArtCollectibleRepository {
      * Allow us to save an art collectible token
      * @param token
      */
-    @Throws(CreateArtCollectibleException::class)
+    @Throws(CreateArtCollectibleDataException::class)
     suspend fun create(token: CreateArtCollectible): ArtCollectible
 
     /**
      * Allow us to delete an art collectible token
      */
-    @Throws(DeleteArtCollectibleException::class)
+    @Throws(DeleteArtCollectibleDataException::class)
     suspend fun delete(tokenId: BigInteger)
 
     /**
      * Allows you to retrieve the list of tokens owned by current auth user
      */
-    @Throws(GetTokensOwnedException::class)
+    @Throws(GetTokensOwnedDataException::class)
     suspend fun getTokensOwned(): Iterable<ArtCollectible>
 
     /**
      * Allows you to retrieve the list of tokens owned by owner address
      * @param ownerAddress
      */
-    @Throws(GetTokensOwnedException::class)
+    @Throws(GetTokensOwnedDataException::class)
     suspend fun getTokensOwnedBy(ownerAddress: String): Iterable<ArtCollectible>
 
     /**
@@ -46,20 +46,20 @@ interface IArtCollectibleRepository {
      * @param ownerAddress
      * @param limit
      */
-    @Throws(GetTokensOwnedException::class)
+    @Throws(GetTokensOwnedDataException::class)
     suspend fun getTokensOwnedBy(ownerAddress: String, limit: Long): Iterable<ArtCollectible>
 
     /**
      * Allows you to retrieve the list of tokens created by current auth user
      */
-    @Throws(GetTokensCreatedException::class)
+    @Throws(GetTokensCreatedDataException::class)
     suspend fun getTokensCreated(): Iterable<ArtCollectible>
 
     /**
      * Allows you to retrieve the list of tokens created by creator address
      * @param creatorAddress
      */
-    @Throws(GetTokensCreatedException::class)
+    @Throws(GetTokensCreatedDataException::class)
     suspend fun getTokensCreatedBy(creatorAddress: String): Iterable<ArtCollectible>
 
     /**
@@ -67,30 +67,30 @@ interface IArtCollectibleRepository {
      * @param creatorAddress
      * @param limit
      */
-    @Throws(GetTokensCreatedException::class)
+    @Throws(GetTokensCreatedDataException::class)
     suspend fun getTokensCreatedBy(creatorAddress: String, limit: Long): Iterable<ArtCollectible>
 
     /**
      * Retrieve token information by id
      */
-    @Throws(GetTokenByIdException::class)
+    @Throws(GetTokenByIdDataException::class)
     suspend fun getTokenById(tokenId: BigInteger): ArtCollectible
 
     /**
      * Retrieve token list
      */
-    @Throws(GetTokensException::class)
+    @Throws(GetTokensDataException::class)
     suspend fun getTokens(tokenList: Iterable<BigInteger>): Iterable<ArtCollectible>
 
     /**
      * Get tokens by category
      */
-    @Throws(GetTokensByCategoryException::class)
+    @Throws(GetTokensByCategoryDataException::class)
     suspend fun getTokensByCategory(categoryUid: String): Iterable<ArtCollectible>
 
     /**
      * Get Similar tokens
      */
-    @Throws(GetTokensByCategoryException::class)
+    @Throws(GetTokensByCategoryDataException::class)
     suspend fun getSimilarTokens(tokenCid: String, count: Int): Iterable<ArtCollectible>
 }

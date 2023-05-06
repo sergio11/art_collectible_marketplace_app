@@ -93,9 +93,15 @@ internal class UsersDataSourceImpl(
      */
     @Throws(UserErrorException::class)
     override suspend fun getAll(): Iterable<UserDTO> = withContext(Dispatchers.IO) {
-        firebaseStore.collection(USERS_COLLECTION_NAME).get()
-            .await().documents.mapNotNull { it.data }
-            .map { userMapper.mapInToOut(it) }
+        try {
+            firebaseStore.collection(USERS_COLLECTION_NAME)
+                .get()
+                .await().documents.mapNotNull { it.data }
+                .map { userMapper.mapInToOut(it) }
+                .filter { it.isPublicProfile != false }
+        } catch (ex: Exception) {
+            throw UserErrorException("An error occurred when trying to get all users", ex)
+        }
     }
 
     /**
@@ -105,12 +111,16 @@ internal class UsersDataSourceImpl(
     @Throws(UserErrorException::class)
     override suspend fun findUsersByName(term: String): Iterable<UserDTO> =
         withContext(Dispatchers.IO) {
-            firebaseStore.collection(USERS_COLLECTION_NAME)
-                .whereNotEqualTo("isPublicProfile", "false")
-                .whereGreaterThanOrEqualTo("name", term)
-                .whereLessThanOrEqualTo("name", term + "\uf8ff")
-                .get()
-                .await().documents.mapNotNull { it.data }
-                .map { userMapper.mapInToOut(it) }
+            try {
+                firebaseStore.collection(USERS_COLLECTION_NAME)
+                    .whereGreaterThanOrEqualTo("name", term)
+                    .whereLessThanOrEqualTo("name", term + "\uf8ff")
+                    .get()
+                    .await().documents.mapNotNull { it.data }
+                    .map { userMapper.mapInToOut(it) }
+                    .filter { it.isPublicProfile != false }
+            } catch (ex: Exception) {
+                throw UserErrorException("An error occurred when trying find users by name", ex)
+            }
         }
 }

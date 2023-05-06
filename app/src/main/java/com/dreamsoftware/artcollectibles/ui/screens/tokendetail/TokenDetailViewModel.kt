@@ -204,7 +204,7 @@ class TokenDetailViewModel @Inject constructor(
                         authUserInfo = authUser,
                         isLoading = false,
                         isTokenOwner = isTokenOwner,
-                        allowToPublishComments = artCollectible.owner.preferences?.allowPublishComments == true,
+                        allowToPublishComments = isTokenOwner || artCollectible.owner.preferences?.allowPublishComments == true,
                         tokenAddedToFavorites = artCollectible.hasAddedToFav
                     )
                 }
@@ -212,7 +212,7 @@ class TokenDetailViewModel @Inject constructor(
                 if (artCollectible.commentsCount > 0) {
                     loadLastCommentsByToken(artCollectible.id)
                 }
-                if(artCollectible.owner.preferences?.showLastTransactionsOfTokens == true) {
+                if(isTokenOwner || artCollectible.owner.preferences?.showLastTransactionsOfTokens == true) {
                     loadLastTokenMarketTransactions(tokenId)
                 }
                 loadTokenMarketHistoryPrices(tokenId)

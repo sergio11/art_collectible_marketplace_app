@@ -33,7 +33,7 @@ class GetMostLikedTokensException(message: String? = null, cause: Throwable? = n
 class GetUserLikesByTokenException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 // Visitors Data Source
 class AddVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
-class GetVisitorException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
+class GetVisitorsCountException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetVisitorsByTokenException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 class GetMostVisitedTokensException(message: String? = null, cause: Throwable? = null): FirebaseException(message, cause)
 // Followers Data Source

@@ -15,7 +15,7 @@ import okhttp3.internal.toLongOrDefault
 internal class CategoriesDataSourceImpl(
     private val categoriesMapper: CategoriesMapper,
     private val firebaseStore: FirebaseFirestore
-): ICategoriesDataSource {
+) : ICategoriesDataSource {
 
     private companion object {
         const val COLLECTION_NAME = "categories"
@@ -31,9 +31,7 @@ internal class CategoriesDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(CATEGORIES_KEY).get().await()?.data?.let {
                     categoriesMapper.mapInToOut(it)
-            }?.sortedBy { it.name } ?: throw GetCategoriesException("no categories found")
-        } catch (ex: FirebaseException) {
-            throw ex
+                }?.sortedBy { it.name } ?: emptyList()
         } catch (ex: Exception) {
             throw GetCategoriesException("An error occurred when trying to get categories", ex)
         }
@@ -58,12 +56,19 @@ internal class CategoriesDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                    document(categoryUid).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId)), SetOptions.merge()).await()
-                    document(categoryUid + KEY_COUNT_SUFFIX).set(hashMapOf(
-                        COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
+                    document(categoryUid).set(
+                        hashMapOf(
+                            IDS_FIELD_NAME to FieldValue.arrayUnion(
+                                tokenId
+                            )
+                        ), SetOptions.merge()
+                    ).await()
+                    document(categoryUid + KEY_COUNT_SUFFIX).set(
+                        hashMapOf(
+                            COUNT_FIELD_NAME to FieldValue.increment(1)
+                        ), SetOptions.merge()
+                    ).await()
                 }
-            } catch (ex: FirebaseException) {
-                throw ex
             } catch (ex: Exception) {
                 throw AddTokenToCategoryException("An error occurred when trying to add token", ex)
             }
@@ -75,35 +80,46 @@ internal class CategoriesDataSourceImpl(
         withContext(Dispatchers.IO) {
             try {
                 firebaseStore.collection(COLLECTION_NAME).apply {
-                document(categoryUid).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId)), SetOptions.merge()).await()
+                    document(categoryUid).set(
+                        hashMapOf(
+                            IDS_FIELD_NAME to FieldValue.arrayRemove(
+                                tokenId
+                            )
+                        ), SetOptions.merge()
+                    ).await()
                     val tokenCount = document(categoryUid + KEY_COUNT_SUFFIX)
                         .get().await()?.data?.get(COUNT_FIELD_NAME)
                         .toString().toLongOrDefault(0L)
-                    if(tokenCount > 0) {
-                        document(categoryUid + KEY_COUNT_SUFFIX).set(hashMapOf(
-                            COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
+                    if (tokenCount > 0) {
+                        document(categoryUid + KEY_COUNT_SUFFIX).set(
+                            hashMapOf(
+                                COUNT_FIELD_NAME to FieldValue.increment(-1)
+                            ), SetOptions.merge()
+                        ).await()
                     }
                 }
-            } catch (ex: FirebaseException) {
-                throw ex
-            } catch (ex: Exception) {
-                throw RemoveTokenFromCategoryException("An error occurred when trying to remove token", ex)
+            }  catch (ex: Exception) {
+                throw RemoveTokenFromCategoryException(
+                    "An error occurred when trying to remove token",
+                    ex
+                )
             }
         }
     }
 
     @Throws(GetTokensByCategoryException::class)
-    override suspend fun getTokensByUid(uid: String): Iterable<String> = withContext(Dispatchers.IO) {
-        try {
-            firebaseStore.collection(COLLECTION_NAME)
-                .document(uid)
-                .get()
-                .await()?.data?.get(IDS_FIELD_NAME) as? List<String>
-                ?: throw GetTokensByCategoryException("No tokens found")
-        } catch (ex: FirebaseException) {
-            throw ex
-        } catch (ex: Exception) {
-            throw GetTokensByCategoryException("An error occurred when trying to get tokens", ex)
+    override suspend fun getTokensByUid(uid: String): Iterable<String> =
+        withContext(Dispatchers.IO) {
+            try {
+                firebaseStore.collection(COLLECTION_NAME)
+                    .document(uid)
+                    .get()
+                    .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
+            } catch (ex: Exception) {
+                throw GetTokensByCategoryException(
+                    "An error occurred when trying to get tokens",
+                    ex
+                )
+            }
         }
-    }
 }

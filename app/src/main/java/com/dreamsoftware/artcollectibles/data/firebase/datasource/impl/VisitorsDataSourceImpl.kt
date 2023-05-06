@@ -35,15 +35,13 @@ internal class VisitorsDataSourceImpl(
                     document(tokenId.toString()).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(userAddress)), SetOptions.merge()).await()
                     document(tokenId.toString() + KEY_COUNT_SUFFIX).set(hashMapOf(COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
-            } catch (ex: FirebaseException) {
-                throw ex
-            } catch (ex: Exception) {
+            }  catch (ex: Exception) {
                 throw AddVisitorException("An error occurred when trying to add visitor", ex)
             }
         }
     }
 
-    @Throws(GetVisitorException::class)
+    @Throws(GetVisitorsCountException::class)
     override suspend fun count(tokenId: BigInteger) = withContext(Dispatchers.IO) {
         try {
             firebaseStore.collection(COLLECTION_NAME)
@@ -52,10 +50,8 @@ internal class VisitorsDataSourceImpl(
                 .await()?.data?.get(COUNT_FIELD_NAME)
                 .toString()
                 .toLongOrDefault(0L)
-        } catch (ex: FirebaseException) {
-            throw ex
         } catch (ex: Exception) {
-            throw GetFavoritesException("An error occurred when trying to get visitors", ex)
+            throw GetVisitorsCountException("An error occurred when trying to get visitors count", ex)
         }
     }
 
@@ -66,8 +62,6 @@ internal class VisitorsDataSourceImpl(
                 .document(tokenId.toString())
                 .get()
                 .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
-        } catch (ex: FirebaseException) {
-            throw ex
         } catch (ex: Exception) {
             throw GetVisitorsByTokenException("An error occurred when trying to get visitors", ex)
         }
@@ -82,8 +76,6 @@ internal class VisitorsDataSourceImpl(
                 .await()?.documents?.mapNotNull { it.id }
                 ?.filter { it.contains(KEY_COUNT_SUFFIX) }
                 ?.map { it.removeSuffix(KEY_COUNT_SUFFIX) }.orEmpty()
-        } catch (ex: FirebaseException) {
-            throw ex
         } catch (ex: Exception) {
             throw GetMostVisitedTokensException("An error occurred when trying to get most visited tokens", ex)
         }

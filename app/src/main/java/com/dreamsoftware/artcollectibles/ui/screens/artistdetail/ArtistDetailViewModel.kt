@@ -72,10 +72,11 @@ class ArtistDetailViewModel @Inject constructor(
                 val loadProfileUseCaseDeferred = async { loadUserProfile(uid) }
                 val authUser = authUserDeferred.await()
                 val userInfo = loadProfileUseCaseDeferred.await()
+                val isAuthUser = userInfo.uid == authUser.uid
                 updateState {
                     it.copy(
                         isLoading = false,
-                        isAuthUser = userInfo.uid == authUser.uid,
+                        isAuthUser = isAuthUser,
                         followersCount = userInfo.followers,
                         followingCount = userInfo.following,
                         userInfo = userInfo
@@ -84,7 +85,7 @@ class ArtistDetailViewModel @Inject constructor(
                 checkAuthUserIsFollowingTo(uid)
                 loadTokensOwnedByUser(userAddress = userInfo.walletAddress)
                 loadTokensCreatedByUser(userAddress = userInfo.walletAddress)
-                if(userInfo.preferences?.showAccountBalance == true) {
+                if(isAuthUser || userInfo.preferences?.showAccountBalance == true) {
                     loadCurrentBalance(userAddress = userInfo.walletAddress)
                 }
             } catch (ex: Exception) {

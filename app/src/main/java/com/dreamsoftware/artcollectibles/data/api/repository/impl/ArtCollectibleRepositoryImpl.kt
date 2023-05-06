@@ -54,7 +54,7 @@ internal class ArtCollectibleRepositoryImpl(
             }
         }
 
-    @Throws(CreateArtCollectibleException::class)
+    @Throws(CreateArtCollectibleDataException::class)
     override suspend fun create(token: CreateArtCollectible): ArtCollectible =
         withContext(Dispatchers.Default) {
             try {
@@ -77,13 +77,13 @@ internal class ArtCollectibleRepositoryImpl(
                 }
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                throw CreateArtCollectibleException(
+                throw CreateArtCollectibleDataException(
                     "An error occurred when trying to create a new token", ex
                 )
             }
         }
 
-    @Throws(DeleteArtCollectibleException::class)
+    @Throws(DeleteArtCollectibleDataException::class)
     override suspend fun delete(tokenId: BigInteger) {
         try {
             val credentials = userCredentialsMapper.mapOutToIn(walletRepository.loadCredentials())
@@ -96,13 +96,13 @@ internal class ArtCollectibleRepositoryImpl(
             // Delete memory cache entry
             artCollectibleMemoryCacheDataSource.delete(tokenId)
         } catch (ex: Exception) {
-            throw DeleteArtCollectibleException(
+            throw DeleteArtCollectibleDataException(
                 "An error occurred when trying to delete a new token", ex
             )
         }
     }
 
-    @Throws(GetTokensOwnedException::class)
+    @Throws(GetTokensOwnedDataException::class)
     override suspend fun getTokensOwned(): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -112,13 +112,13 @@ internal class ArtCollectibleRepositoryImpl(
                 ))
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                throw GetTokensOwnedException(
+                throw GetTokensOwnedDataException(
                     "An error occurred when trying to get tokens owned", ex
                 )
             }
         }
 
-    @Throws(GetTokensOwnedException::class)
+    @Throws(GetTokensOwnedDataException::class)
     override suspend fun getTokensOwnedBy(ownerAddress: String): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -131,13 +131,13 @@ internal class ArtCollectibleRepositoryImpl(
                 )
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                throw GetTokensOwnedException(
+                throw GetTokensOwnedDataException(
                     "An error occurred when trying to get tokens owned", ex
                 )
             }
         }
 
-    @Throws(GetTokensOwnedException::class)
+    @Throws(GetTokensOwnedDataException::class)
     override suspend fun getTokensOwnedBy(
         ownerAddress: String,
         limit: Long
@@ -153,13 +153,13 @@ internal class ArtCollectibleRepositoryImpl(
             )
         } catch (ex: Exception) {
             ex.printStackTrace()
-            throw GetTokensOwnedException(
+            throw GetTokensOwnedDataException(
                 "An error occurred when trying to get tokens owned", ex
             )
         }
     }
 
-    @Throws(GetTokensCreatedException::class)
+    @Throws(GetTokensCreatedDataException::class)
     override suspend fun getTokensCreated(): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -169,13 +169,13 @@ internal class ArtCollectibleRepositoryImpl(
                 ))
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                throw GetTokensCreatedException(
+                throw GetTokensCreatedDataException(
                     "An error occurred when trying to get tokens created", ex
                 )
             }
         }
 
-    @Throws(GetTokensCreatedException::class)
+    @Throws(GetTokensCreatedDataException::class)
     override suspend fun getTokensCreatedBy(creatorAddress: String): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -188,13 +188,13 @@ internal class ArtCollectibleRepositoryImpl(
                 )
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                throw GetTokensOwnedException(
+                throw GetTokensOwnedDataException(
                     "An error occurred when trying to get tokens owned", ex
                 )
             }
         }
 
-    @Throws(GetTokensCreatedException::class)
+    @Throws(GetTokensCreatedDataException::class)
     override suspend fun getTokensCreatedBy(
         creatorAddress: String,
         limit: Long
@@ -210,13 +210,13 @@ internal class ArtCollectibleRepositoryImpl(
             )
         } catch (ex: Exception) {
             ex.printStackTrace()
-            throw GetTokensOwnedException(
+            throw GetTokensOwnedDataException(
                 "An error occurred when trying to get tokens owned", ex
             )
         }
     }
 
-    @Throws(GetTokenByIdException::class)
+    @Throws(GetTokenByIdDataException::class)
     override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible =
         withContext(Dispatchers.Default) {
             try {
@@ -235,11 +235,11 @@ internal class ArtCollectibleRepositoryImpl(
                     }
                 }
             } catch (ex: Exception) {
-                throw GetTokenByIdException("An error occurred when trying to get token by id", ex)
+                throw GetTokenByIdDataException("An error occurred when trying to get token by id", ex)
             }
         }
 
-    @Throws(GetTokensException::class)
+    @Throws(GetTokensDataException::class)
     override suspend fun getTokens(tokenList: Iterable<BigInteger>): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -269,11 +269,11 @@ internal class ArtCollectibleRepositoryImpl(
                     }
                 }
             } catch (ex: Exception) {
-                throw GetTokensException("An error occurred when trying to get tokens", ex)
+                throw GetTokensDataException("An error occurred when trying to get tokens", ex)
             }
         }
 
-    @Throws(GetTokensByCategoryException::class)
+    @Throws(GetTokensByCategoryDataException::class)
     override suspend fun getTokensByCategory(categoryUid: String): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -286,7 +286,7 @@ internal class ArtCollectibleRepositoryImpl(
                     )
                 )
             } catch (ex: Exception) {
-                throw GetTokensByCategoryException("An error occurred when trying to get tokens by category")
+                throw GetTokensByCategoryDataException("An error occurred when trying to get tokens by category")
             }
         }
 
@@ -295,7 +295,7 @@ internal class ArtCollectibleRepositoryImpl(
      * @param tokenCid
      * @param count
      */
-    @Throws(GetTokensByCategoryException::class)
+    @Throws(GetTokensByCategoryDataException::class)
     override suspend fun getSimilarTokens(tokenCid: String, count: Int): Iterable<ArtCollectible> =
         withContext(Dispatchers.Default) {
             try {
@@ -313,7 +313,7 @@ internal class ArtCollectibleRepositoryImpl(
                     )
                 )
             } catch (ex: Exception) {
-                throw GetTokensByCategoryException("An error occurred when trying to get tokens by category")
+                throw GetTokensByCategoryDataException("An error occurred when trying to get tokens by category")
             }
         }
 

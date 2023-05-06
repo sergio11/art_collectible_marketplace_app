@@ -1,5 +1,6 @@
 package com.dreamsoftware.artcollectibles.data.api.repository.impl
 
+import android.util.Log
 import com.dreamsoftware.artcollectibles.data.api.exception.*
 import com.dreamsoftware.artcollectibles.data.api.mapper.ArtCollectibleMarketHistoryPriceMapper
 import com.dreamsoftware.artcollectibles.data.api.mapper.MarketplaceStatisticsMapper
@@ -53,7 +54,7 @@ internal class ArtMarketplaceRepositoryImpl(
     private val artMarketItemMemoryCacheDataSource: IArtMarketItemMemoryCacheDataSource
 ) : IArtMarketplaceRepository {
 
-    @Throws(FetchAvailableMarketItemsException::class)
+    @Throws(FetchAvailableMarketItemsDataException::class)
     override suspend fun fetchAvailableMarketItems(limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
@@ -63,14 +64,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     limit = limit
                 ))
             } catch (ex: Exception) {
-                throw FetchAvailableMarketItemsException(
+                throw FetchAvailableMarketItemsDataException(
                     "An error occurred when fetching available market items",
                     ex
                 )
             }
         }
 
-    @Throws(FetchAvailableMarketItemsByCategoryException::class)
+    @Throws(FetchAvailableMarketItemsByCategoryDataException::class)
     override suspend fun fetchAvailableMarketItemsByCategory(categoryUid: String): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
@@ -97,11 +98,11 @@ internal class ArtMarketplaceRepositoryImpl(
                         }
                 }
             } catch (ex: Exception) {
-                throw FetchAvailableMarketItemsByCategoryException("An error occurred when fetching available market items", ex)
+                throw FetchAvailableMarketItemsByCategoryDataException("An error occurred when fetching available market items", ex)
             }
         }
 
-    @Throws(FetchSellingMarketItemsException::class)
+    @Throws(FetchSellingMarketItemsDataException::class)
     override suspend fun fetchSellingMarketItems(limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
@@ -112,14 +113,14 @@ internal class ArtMarketplaceRepositoryImpl(
                 )
                 mapToArtCollectibleForSaleList(sellingMarketItems)
             } catch (ex: Exception) {
-                throw FetchSellingMarketItemsException(
+                throw FetchSellingMarketItemsDataException(
                     "An error occurred when fetching selling market items",
                     ex
                 )
             }
         }
 
-    @Throws(FetchOwnedMarketItemsException::class)
+    @Throws(FetchOwnedMarketItemsDataException::class)
     override suspend fun fetchOwnedMarketItems(limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
@@ -129,14 +130,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     limit = limit
                 ))
             } catch (ex: Exception) {
-                throw FetchOwnedMarketItemsException(
+                throw FetchOwnedMarketItemsDataException(
                     "An error occurred when fetching owned market items",
                     ex
                 )
             }
         }
 
-    @Throws(FetchMarketHistoryException::class)
+    @Throws(FetchMarketHistoryDataException::class)
     override suspend fun fetchMarketHistory(limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
@@ -146,14 +147,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     limit = limit
                 ))
             } catch (ex: Exception) {
-                throw FetchMarketHistoryException(
+                throw FetchMarketHistoryDataException(
                     "An error occurred when fetching market history",
                     ex
                 )
             }
         }
 
-    @Throws(FetchMarketHistoryException::class)
+    @Throws(FetchMarketHistoryDataException::class)
     override suspend fun fetchTokenMarketHistory(tokenId: BigInteger, limit: Int?): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.IO) {
             try {
@@ -164,14 +165,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     limit = limit
                 ))
             } catch (ex: Exception) {
-                throw FetchMarketHistoryException(
+                throw FetchMarketHistoryDataException(
                     "An error occurred when fetching the token market history",
                     ex
                 )
             }
         }
 
-    @Throws(FetchTokenCurrentPriceException::class)
+    @Throws(FetchTokenCurrentPriceDataException::class)
     override suspend fun fetchTokenCurrentPrice(tokenId: BigInteger): ArtCollectiblePrices = withContext(Dispatchers.IO) {
         try {
             val credentials = walletRepository.loadCredentials()
@@ -179,14 +180,14 @@ internal class ArtMarketplaceRepositoryImpl(
                 tokenId = tokenId,
                 credentials = userCredentialsMapper.mapOutToIn(credentials)))
         } catch (ex: Exception) {
-            throw FetchMarketHistoryException(
+            throw FetchMarketHistoryDataException(
                 "An error occurred when fetching the token current price",
                 ex
             )
         }
     }
 
-    @Throws(PutItemForSaleException::class)
+    @Throws(PutItemForSaleDataException::class)
     override suspend fun putItemForSale(tokenId: BigInteger, priceInEth: Float) =
         withContext(Dispatchers.IO) {
             try {
@@ -197,14 +198,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     credentials = userCredentialsMapper.mapOutToIn(credentials)
                 )
             } catch (ex: Exception) {
-                throw PutItemForSaleException(
+                throw PutItemForSaleDataException(
                     "An error occurred when trying to put item for sale",
                     ex
                 )
             }
         }
 
-    @Throws(FetchItemForSaleException::class)
+    @Throws(FetchItemForSaleDataException::class)
     override suspend fun fetchItemForSale(tokenId: BigInteger): ArtCollectibleForSale =
         withContext(Dispatchers.IO) {
             try {
@@ -223,14 +224,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     }
                 }
             } catch (ex: Exception) {
-                throw FetchItemForSaleException(
+                throw FetchItemForSaleDataException(
                     "An error occurred when trying to fetch item for sale",
                     ex
                 )
             }
         }
 
-    @Throws(FetchMarketHistoryItemException::class)
+    @Throws(FetchMarketHistoryItemDataException::class)
     override suspend fun fetchMarketHistoryItem(marketItemId: BigInteger): ArtCollectibleForSale = withContext(Dispatchers.IO) {
         try {
             val credentials = walletRepository.loadCredentials()
@@ -248,14 +249,14 @@ internal class ArtMarketplaceRepositoryImpl(
                 }
             }
         } catch (ex: Exception) {
-            throw FetchMarketHistoryItemException(
+            throw FetchMarketHistoryItemDataException(
                 "An error occurred when trying to fetch market history item",
                 ex
             )
         }
     }
 
-    @Throws(WithdrawFromSaleException::class)
+    @Throws(WithdrawFromSaleDataException::class)
     override suspend fun withdrawFromSale(tokenId: BigInteger) = withContext(Dispatchers.IO) {
         try {
             val credentials = walletRepository.loadCredentials()
@@ -266,14 +267,14 @@ internal class ArtMarketplaceRepositoryImpl(
                 artMarketItemMemoryCacheDataSource.delete("token_id_$tokenId")
             }
         } catch (ex: Exception) {
-            throw WithdrawFromSaleException(
+            throw WithdrawFromSaleDataException(
                 "An error occurred when trying to withdraw item from sale",
                 ex
             )
         }
     }
 
-    @Throws(CheckTokenAddedForSaleException::class)
+    @Throws(CheckTokenAddedForSaleDataException::class)
     override suspend fun isTokenAddedForSale(tokenId: BigInteger): Boolean =
         withContext(Dispatchers.IO) {
             try {
@@ -283,14 +284,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     credentials = userCredentialsMapper.mapOutToIn(credentials)
                 )
             } catch (ex: Exception) {
-                throw CheckTokenAddedForSaleException(
+                throw CheckTokenAddedForSaleDataException(
                     "An error occurred when checking if token has been added for sale",
                     ex
                 )
             }
         }
 
-    @Throws(FetchMarketplaceStatisticsException::class)
+    @Throws(FetchMarketplaceStatisticsDataException::class)
     override suspend fun fetchMarketplaceStatistics(): MarketplaceStatistics =
         withContext(Dispatchers.IO) {
             try {
@@ -301,14 +302,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     )
                 marketplaceStatisticsMapper.mapInToOut(marketplaceStatisticsDTO)
             } catch (ex: Exception) {
-                throw FetchMarketplaceStatisticsException(
+                throw FetchMarketplaceStatisticsDataException(
                     "An error occurred when fetching marketplace statistics",
                     ex
                 )
             }
         }
 
-    @Throws(FetchTokenMarketHistoryPricesException::class)
+    @Throws(FetchTokenMarketHistoryPricesDataException::class)
     override suspend fun fetchTokenMarketHistoryPrices(tokenId: BigInteger): Iterable<ArtCollectibleMarketHistoryPrice> =
         withContext(Dispatchers.IO) {
             try {
@@ -324,14 +325,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     ))
                 }
             } catch (ex: Exception) {
-                throw FetchTokenMarketHistoryPricesException(
+                throw FetchTokenMarketHistoryPricesDataException(
                     "An error occurred when fetching market history prices",
                     ex
                 )
             }
         }
 
-    @Throws(BuyItemException::class)
+    @Throws(BuyItemDataException::class)
     override suspend fun buyItem(tokenId: BigInteger) {
         withContext(Dispatchers.IO) {
             try {
@@ -344,12 +345,12 @@ internal class ArtMarketplaceRepositoryImpl(
                 }
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                throw BuyItemException("An error occurred when trying to buy an item", ex)
+                throw BuyItemDataException("An error occurred when trying to buy an item", ex)
             }
         }
     }
 
-    @Throws(GetSimilarMarketItemsException::class)
+    @Throws(GetSimilarMarketItemsDataException::class)
     override suspend fun getSimilarMarketItems(
         tokenId: BigInteger,
         count: Int
@@ -384,14 +385,14 @@ internal class ArtMarketplaceRepositoryImpl(
                     }
             }
         } catch (ex: Exception) {
-            throw GetMarketItemsByCategoryException(
+            throw GetMarketItemsByCategoryDataException(
                 "An error occurred when trying to get similar market items",
                 ex
             )
         }
     }
 
-    @Throws(GetSimilarAuthorMarketItemsException::class)
+    @Throws(GetSimilarAuthorMarketItemsDataException::class)
     override suspend fun getSimilarAuthorMarketItems(
         tokenId: BigInteger,
         count: Int
@@ -404,7 +405,7 @@ internal class ArtMarketplaceRepositoryImpl(
                 .take(count)
                 .let { mapToArtCollectibleForSaleList(it) }
         } catch (ex: Exception) {
-            throw GetMarketItemsByCategoryException(
+            throw GetMarketItemsByCategoryDataException(
                 "An error occurred when trying to get similar author market items",
                 ex
             )
@@ -441,6 +442,10 @@ internal class ArtMarketplaceRepositoryImpl(
 
     private suspend fun mapToArtCollectibleForSaleList(items: Iterable<ArtCollectibleForSaleDTO>): Iterable<ArtCollectibleForSale> =
         withContext(Dispatchers.Default) {
+            Log.d("ART_COLL", "mapToArtCollectibleForSaleList -> items: ${Iterables.size(items)} CALLED!")
+            items.forEach {
+                Log.d("ART_COLL", "it.tokenId -> ${it.tokenId}, t.metadataCID -> ${it.metadataCID}")
+            }
             with(artMarketItemMemoryCacheDataSource) {
                 val marketItemsCached = runCatching {
                     findByKeys(

@@ -8,7 +8,7 @@ interface IVisitorsDataSource {
     @Throws(AddVisitorException::class)
     suspend fun addVisitor(tokenId: BigInteger, userAddress: String)
 
-    @Throws(GetVisitorException::class)
+    @Throws(GetVisitorsCountException::class)
     suspend fun count(tokenId: BigInteger): Long
 
     @Throws(GetVisitorsByTokenException::class)

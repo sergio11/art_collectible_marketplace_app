@@ -19,7 +19,8 @@ class HomeViewModel @Inject constructor(
     private val getArtCollectibleCategoriesUseCase: GetArtCollectibleCategoriesUseCase,
     private val getMostFollowedUsersUseCase: GetMostFollowedUsersUseCase,
     private val getMostLikedTokensUseCase: GetMostLikedTokensUseCase,
-    private val getMostVisitedTokensUseCase: GetMostVisitedTokensUseCase
+    private val getMostVisitedTokensUseCase: GetMostVisitedTokensUseCase,
+    private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase
 ) : SupportViewModel<HomeUiState>() {
 
     companion object {
@@ -61,22 +62,24 @@ class HomeViewModel @Inject constructor(
         }.onFailure(::onErrorOccurred)
     }
 
-    private fun loadMarketData() = viewModelScope.launch  {
+    private fun loadMarketData() = viewModelScope.launch {
+        val getAuthUserProfileDeferred = async { getAuthUserDetail() }
         val fetchMarketplaceStatisticsDeferred = async { fetchMarketplaceStatistics() }
         val fetchAvailableMarketItemsDeferred = async { fetchAvailableMarketItems() }
-        val fetchSellingMarketItemsDeferred = async { fetchSellingMarketItems() }
         val fetchMarketHistoryDeferred = async { fetchMarketHistory() }
+        val authUser = getAuthUserProfileDeferred.await()
         val availableMarketItems = fetchAvailableMarketItemsDeferred.await()
-        val sellingMarketItems = fetchSellingMarketItemsDeferred.await()
         val marketHistory = fetchMarketHistoryDeferred.await()
         val marketplaceStatistics = fetchMarketplaceStatisticsDeferred.await()
         updateState {
             it.copy(
                 availableMarketItems = availableMarketItems,
-                sellingMarketItems = sellingMarketItems,
                 marketHistory = marketHistory,
                 marketplaceStatistics = marketplaceStatistics
             )
+        }
+        if(authUser.preferences?.showSellingTokensRow == true) {
+            fetchSellingMarketItems()
         }
     }
 
@@ -91,12 +94,23 @@ class HomeViewModel @Inject constructor(
         )
     }.getOrDefault(emptyList())
 
-    private suspend fun fetchSellingMarketItems() = runCatching {
+    private fun fetchSellingMarketItems() {
         fetchSellingMarketItemsUseCase.invoke(
             scope = viewModelScope,
-            params = FetchSellingMarketItemsUseCase.Params(limit = SELLING_MARKET_ITEMS_LIMIT)
+            params = FetchSellingMarketItemsUseCase.Params(limit = SELLING_MARKET_ITEMS_LIMIT),
+            onSuccess = { items ->
+                updateState {
+                    it.copy(
+                        sellingMarketItems = items
+                    )
+                }
+            },
+            onError = {
+                // ignore error
+                it.printStackTrace()
+            }
         )
-    }.getOrDefault(emptyList())
+    }
 
     private suspend fun fetchMarketHistory() = runCatching {
         fetchMarketHistoryUseCase.invoke(
@@ -105,26 +119,33 @@ class HomeViewModel @Inject constructor(
         )
     }.getOrDefault(emptyList())
 
-    private suspend fun fetchArtCollectibleCategories() =
+    private suspend fun fetchArtCollectibleCategories() = runCatching {
         getArtCollectibleCategoriesUseCase.invoke(scope = viewModelScope)
+    }.getOrDefault(emptyList())
 
-    private suspend fun fetchMoreFollowedUsers() =
+    private suspend fun fetchMoreFollowedUsers() = runCatching {
         getMostFollowedUsersUseCase.invoke(
             scope = viewModelScope,
             params = GetMostFollowedUsersUseCase.Params(limit = MOST_FOLLOWED_USERS_LIMIT)
         )
+    }.getOrDefault(emptyList())
 
-    private suspend fun fetchMoreLikedTokensUseCase() =
+    private suspend fun fetchMoreLikedTokensUseCase() = runCatching {
         getMostLikedTokensUseCase.invoke(
             scope = viewModelScope,
             params = GetMostLikedTokensUseCase.Params(limit = MOST_LIKED_TOKENS_LIMIT)
         )
+    }.getOrDefault(emptyList())
 
-    private suspend fun fetchMoreVisitedTokensUseCase() =
+    private suspend fun fetchMoreVisitedTokensUseCase() = runCatching {
         getMostVisitedTokensUseCase.invoke(
             scope = viewModelScope,
             params = GetMostVisitedTokensUseCase.Params(limit = MOST_VISITED_TOKENS_LIMIT)
         )
+    }.getOrDefault(emptyList())
+
+    private suspend fun getAuthUserDetail() =
+        getAuthUserProfileUseCase.invoke(scope = viewModelScope)
 
     private fun onLoading() {
         updateState { it.copy(isLoading = true) }

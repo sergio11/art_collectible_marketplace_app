@@ -34,8 +34,6 @@ internal class FavoritesDataSourceImpl(
                 .await()
                 .documents.mapNotNull { it.id }
                 .contains(userAddress)
-        } catch (ex: FirebaseException) {
-            throw ex
         } catch (ex: Exception) {
             throw GetFavoritesException("An error occurred when trying to get favorites", ex)
         }
@@ -48,8 +46,6 @@ internal class FavoritesDataSourceImpl(
                 .document(userAddress)
                 .get()
                 .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
-        } catch (ex: FirebaseException) {
-            throw ex
         } catch (ex: Exception) {
             throw GetFavoritesException("An error occurred when trying to get favorites", ex)
         }
@@ -64,8 +60,6 @@ internal class FavoritesDataSourceImpl(
                 .await()?.data?.get(TOKEN_COUNT_FIELD_NAME)
                 .toString()
                 .toLongOrDefault(0L)
-        } catch (ex: FirebaseException) {
-            throw ex
         } catch (ex: Exception) {
             throw GetFavoritesException("An error occurred when trying to get favorites", ex)
         }
@@ -81,9 +75,7 @@ internal class FavoritesDataSourceImpl(
                     document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayUnion(tokenId.toString())), SetOptions.merge()).await()
                     document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(USER_COUNT_FIELD_NAME to FieldValue.increment(1)), SetOptions.merge()).await()
                 }
-            } catch (ex: FirebaseException) {
-                throw ex
-            } catch (ex: Exception) {
+            }  catch (ex: Exception) {
                 throw AddToFavoritesException("An error occurred when trying to save favorite", ex)
             }
         }
@@ -99,8 +91,6 @@ internal class FavoritesDataSourceImpl(
                     document(userAddress).set(hashMapOf(IDS_FIELD_NAME to FieldValue.arrayRemove(tokenId.toString())), SetOptions.merge()).await()
                     document(userAddress + USER_KEY_COUNT_SUFFIX).set(hashMapOf(USER_COUNT_FIELD_NAME to FieldValue.increment(-1)), SetOptions.merge()).await()
                 }
-            } catch (ex: FirebaseException) {
-                throw ex
             } catch (ex: Exception) {
                 throw RemoveFromFavoritesException("An error occurred when trying to remove from favorites", ex)
             }
@@ -117,8 +107,6 @@ internal class FavoritesDataSourceImpl(
                     .await()?.documents?.mapNotNull { it.id }
                     ?.filter { it.contains(TOKEN_KEY_COUNT_SUFFIX) }
                     ?.map { it.removeSuffix(TOKEN_KEY_COUNT_SUFFIX) }.orEmpty()
-            } catch (ex: FirebaseException) {
-                throw ex
             } catch (ex: Exception) {
                 throw GetMostLikedTokensException("An error occurred when trying to get more liked tokens")
             }
@@ -132,8 +120,6 @@ internal class FavoritesDataSourceImpl(
                     .document(tokenId.toString())
                     .get()
                     .await()?.data?.get(IDS_FIELD_NAME) as? List<String> ?: emptyList()
-            } catch (ex: FirebaseException) {
-                throw ex
             } catch (ex: Exception) {
                 throw GetUserLikesByTokenException("An error occurred when trying to get user likes by token")
             }
