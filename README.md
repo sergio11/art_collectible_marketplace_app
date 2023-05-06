@@ -33,7 +33,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
     
     
     
- ### Onboarding & Account management
+ ## Onboarding & Account management
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_1.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_2.png" />
@@ -41,7 +41,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" align="left" src="./doc/screenshots/app_picture_4.png" />
  <img width="250px" src="./doc/screenshots/app_picture_5.png" />
  
- ### User Profile
+ ## User Profile
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_7.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_8.png" />
@@ -50,7 +50,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" align="left" src="./doc/screenshots/app_picture_29.png" />
  <img width="250px" src="./doc/screenshots/app_picture_28.png" />
  
-  ### Mint Art Collectible NFT
+  ## Mint Art Collectible NFT
   
   <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
@@ -59,7 +59,12 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_16.png" />
   <img width="250px" src="./doc/screenshots/app_picture_17.png" />
- 
+  
+  ## NFT Detail
+  
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_30.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_31.png" />
+  <img width="250px" src="./doc/screenshots/app_picture_32.png" />
  
    ### NFT
    
