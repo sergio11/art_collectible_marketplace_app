@@ -80,7 +80,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img width="250px" align="left" src="./doc/screenshots/app_picture_22.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_26.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_23.png" />
-  <img width="250px" src="./doc/screenshots/app_picture_34.png" />
+  <img width="250px" src="./doc/screenshots/app_picture_33.png" />
   
   
  # Art Collectibles Categories
