@@ -6,10 +6,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ButtonDefaults.elevatedShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
@@ -289,37 +286,43 @@ internal fun ProfilePicturePicker(
             modifier,
             onBottomSheetClosed = onPickerClosed
         ) {
-            CommonText(
-                modifier = Modifier
-                    .padding(vertical = 20.dp, horizontal = 20.dp)
-                    .fillMaxWidth(),
-                type = CommonTextTypeEnum.TITLE_MEDIUM,
-                titleRes = R.string.profile_picture_picker_title,
-                textAlign = TextAlign.Center,
-                textColor = Purple500
-            )
-            CommonButton(
-                text = R.string.profile_pick_image_from_gallery,
-                containerColor = Purple200,
-                buttonShape = elevatedShape,
-                onClick = { galleryLauncher.launch("image/*") }
-            )
-            CommonButton(
-                text = R.string.profile_pick_from_camera,
-                containerColor = Purple40,
-                buttonShape = elevatedShape,
-                onClick = {
-                    context.checkPermissionState(
-                        permission = Manifest.permission.CAMERA,
-                        onPermissionGranted = {
-                            cameraLauncher.launch(photoTmpFile)
-                        },
-                        onPermissionDenied = {
-                            permissionLauncher.launch(Manifest.permission.CAMERA)
-                        }
-                    )
-                }
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CommonText(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    type = CommonTextTypeEnum.TITLE_LARGE,
+                    titleRes = R.string.profile_picture_picker_title,
+                    textAlign = TextAlign.Center,
+                    textColor = Purple500
+                )
+                CommonButton(
+                    text = R.string.profile_pick_image_from_gallery,
+                    containerColor = Purple200,
+                    buttonShape = elevatedShape,
+                    onClick = { galleryLauncher.launch("image/*") }
+                )
+                CommonButton(
+                    text = R.string.profile_pick_from_camera,
+                    containerColor = Purple40,
+                    buttonShape = elevatedShape,
+                    onClick = {
+                        context.checkPermissionState(
+                            permission = Manifest.permission.CAMERA,
+                            onPermissionGranted = {
+                                cameraLauncher.launch(photoTmpFile)
+                            },
+                            onPermissionDenied = {
+                                permissionLauncher.launch(Manifest.permission.CAMERA)
+                            }
+                        )
+                    }
+                )
+            }
         }
     }
 }
