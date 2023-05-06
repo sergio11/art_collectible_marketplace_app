@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.ui.screens.account.signin
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
@@ -9,7 +8,6 @@ import com.dreamsoftware.artcollectibles.domain.usecase.impl.SignInUseCase
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.SocialSignInUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +21,6 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onEmailChanged(newEmail: String) {
-        Log.d("ART_COLL", "onEmailChanged newEmail - $newEmail called!")
         updateState {
             it.copy(
                 email = newEmail,
@@ -33,7 +30,6 @@ class SignInViewModel @Inject constructor(
     }
 
     fun onPasswordChanged(newPassword: String) {
-        Log.d("ART_COLL", "onPasswordChanged newPassword - $newPassword called!")
         updateState {
             it.copy(
                 password = newPassword,

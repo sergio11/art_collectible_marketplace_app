@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.ui.screens.account.onboarding
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.RestoreUserAuthenticatedSessionUseCase
 import com.dreamsoftware.artcollectibles.ui.screens.core.SupportViewModel

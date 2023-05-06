@@ -27,12 +27,12 @@ class MintNftViewModel @Inject constructor(
     override fun onGetDefaultState(): MintNftUiState = MintNftUiState()
 
     fun load() {
+        onRequestingCameraPermission(true)
         fetchArtCollectibleCategories()
     }
 
     fun onImageSelected(imageUri: Uri, mimeType: String) {
         applicationAware.getFileProviderAuthority()
-        Log.d("ART_COLL", "onImageSelected imageUri -> ${imageUri.encodedPath} mimeType -> $mimeType ")
         updateState {
             it.copy(
                 imageUri = imageUri,
@@ -99,6 +99,21 @@ class MintNftViewModel @Inject constructor(
         }
     }
 
+    fun onRequestingCameraPermission(enabled: Boolean) {
+        updateState {
+            it.copy(isRequestingCameraPermission = enabled)
+        }
+    }
+
+    fun onCameraPermissionStateChanged(granted: Boolean) {
+        updateState {
+            it.copy(
+                isRequestingCameraPermission = false,
+                isCameraPermissionGranted = granted
+            )
+        }
+    }
+
     fun onCreate() {
         with(uiState.value) {
             onLoading()
@@ -139,13 +154,11 @@ class MintNftViewModel @Inject constructor(
                 isTokenMinted = true
             )
         }
-        Log.d("ART_COLL", "onCreateSuccess id: ${artCollectible.id}")
     }
 
     private fun onCreateError(ex: Exception) {
         updateState { it.copy(isLoading = false) }
         ex.printStackTrace()
-        Log.d("ART_COLL", "onCreateError EX: ${ex.message}")
     }
 
     private fun onCategoriesLoaded(categories: Iterable<ArtCollectibleCategory>) {
@@ -181,6 +194,8 @@ data class MintNftUiState(
     val description: String? = null,
     val tags: List<String> = emptyList(),
     val royalty: Float = 0f,
+    val isCameraPermissionGranted: Boolean = false,
+    val isRequestingCameraPermission: Boolean = false,
     val categorySelected: ArtCollectibleCategory? = null,
     val isCreateButtonEnabled: Boolean = false,
     val isTokenMinted: Boolean = false,

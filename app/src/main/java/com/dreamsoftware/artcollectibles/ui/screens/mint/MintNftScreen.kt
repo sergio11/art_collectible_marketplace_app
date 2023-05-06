@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.ui.components.*
@@ -46,53 +43,33 @@ private const val ROYALTY_STEPS = 3
 @Composable
 fun MintNftScreen(
     viewModel: MintNftViewModel = hiltViewModel(),
-    onExitClicked: () -> Unit
+    onNftCreated: () -> Unit,
+    onBackCalled: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycle = lifecycleOwner.lifecycle
-    val state by produceState(
-        initialValue = MintNftUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val state by produceUiState(
+        initialState = MintNftUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val context = LocalContext.current
     val outputDirectory = context.getCacheSubDir("nft_images")
     val cameraExecutor = Executors.newSingleThreadExecutor()
-    val isCameraPermissionGranted = rememberSaveable { mutableStateOf(false) }
-    val requestPermissionLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isSuccess ->
-            if (isSuccess) {
-                isCameraPermissionGranted.value = true
-            } else {
-            }
-        }
-    // run on every composition
-    SideEffect {
-        context.checkPermissionState(
-            permission = Manifest.permission.CAMERA,
-            onPermissionGranted = {
-                isCameraPermissionGranted.value = true
-            },
-            onPermissionDenied = {
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-            }
-        )
-    }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             load()
+        }
+        if(state.isRequestingCameraPermission) {
+            CheckCameraPermission(
+                context = context,
+                onCameraPermissionStateChanged = ::onCameraPermissionStateChanged
+            )
         }
         MintNftComponent(
             state = state,
             lifecycleOwner = lifecycleOwner,
             context = context,
-            isCameraPermissionGranted = isCameraPermissionGranted.value,
             outputDirectory = outputDirectory,
             executor = cameraExecutor,
             onImageCaptured = {
@@ -103,11 +80,13 @@ fun MintNftScreen(
                     )
                 }
             },
+            onRequestingCameraPermission = ::onRequestingCameraPermission,
             onNameChanged = ::onNameChanged,
             onDescriptionChanged = ::onDescriptionChanged,
             onRoyaltyChanged = ::onRoyaltyChanged,
             onCreateClicked = ::onCreate,
-            onExitClicked = onExitClicked,
+            onNftCreatedSuccess = onNftCreated,
+            onExitClicked = onBackCalled,
             onAddNewTag = ::onAddNewTag,
             onDeleteTag = ::onDeleteTag,
             onCategoryChanged = ::onCategoryChanged,
@@ -126,12 +105,13 @@ internal fun MintNftComponent(
     context: Context,
     outputDirectory: File,
     executor: Executor,
-    isCameraPermissionGranted: Boolean,
+    onRequestingCameraPermission: (Boolean) -> Unit,
     onImageCaptured: (Uri) -> Unit,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
+    onNftCreatedSuccess: () -> Unit,
     onExitClicked: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit,
@@ -140,86 +120,119 @@ internal fun MintNftComponent(
     onConfirmCancelMintNftVisibilityChanged: (isVisible: Boolean) -> Unit,
     onHelpDialogVisibilityChanged: (isVisible: Boolean) -> Unit
 ) {
-    BackHandler(enabled = true) {
-        onConfirmCancelMintNftVisibilityChanged(true)
-    }
-    CommonDialog(
-        isVisible = state.isConfirmCancelMintNftVisible,
-        titleRes = R.string.add_nft_cancel_confirm_title_text,
-        descriptionRes = R.string.add_nft_cancel_confirm_description_text,
-        acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
-        cancelRes = R.string.add_nft_cancel_cancel_button_text,
-        onAcceptClicked = {
-            onExitClicked()
-            onConfirmCancelMintNftVisibilityChanged(false)
-        },
-        onCancelClicked = { onConfirmCancelMintNftVisibilityChanged(false) }
-    )
-    CommonDialog(
-        isVisible = state.isHelpDialogVisible,
-        titleRes = R.string.add_nft_help_info_title_text,
-        descriptionRes = R.string.add_nft_help_info_description_text,
-        acceptRes = R.string.add_nft_help_info_accept_button_text,
-        onAcceptClicked = {
-            onHelpDialogVisibilityChanged(false)
+    with(state) {
+        BackHandler(enabled = true) {
+            onConfirmCancelMintNftVisibilityChanged(true)
         }
-    )
-    Scaffold(
-        topBar = {
-            CommonTopAppBar(
-                titleRes = R.string.add_nft_main_title_text,
-                centerTitle = true,
-                navigationAction = TopBarAction(
-                    iconRes = R.drawable.back_icon,
-                    onActionClicked = {
-                        onConfirmCancelMintNftVisibilityChanged(true)
-                    }
-                ),
-                menuActions = listOf(
-                    TopBarAction(
-                        iconRes = R.drawable.help_icon,
+        CommonDialog(
+            isVisible = isConfirmCancelMintNftVisible,
+            titleRes = R.string.add_nft_cancel_confirm_title_text,
+            descriptionRes = R.string.add_nft_cancel_confirm_description_text,
+            acceptRes = R.string.add_nft_cancel_confirm_accept_button_text,
+            cancelRes = R.string.add_nft_cancel_cancel_button_text,
+            onAcceptClicked = {
+                onExitClicked()
+                onConfirmCancelMintNftVisibilityChanged(false)
+            },
+            onCancelClicked = { onConfirmCancelMintNftVisibilityChanged(false) }
+        )
+        CommonDialog(
+            isVisible = isHelpDialogVisible,
+            titleRes = R.string.add_nft_help_info_title_text,
+            descriptionRes = R.string.add_nft_help_info_description_text,
+            acceptRes = R.string.add_nft_help_info_accept_button_text,
+            onAcceptClicked = {
+                onHelpDialogVisibilityChanged(false)
+            }
+        )
+        Scaffold(
+            topBar = {
+                CommonTopAppBar(
+                    titleRes = R.string.add_nft_main_title_text,
+                    centerTitle = true,
+                    navigationAction = TopBarAction(
+                        iconRes = R.drawable.back_icon,
                         onActionClicked = {
-                            onHelpDialogVisibilityChanged(true)
+                            onConfirmCancelMintNftVisibilityChanged(true)
                         }
+                    ),
+                    menuActions = listOf(
+                        TopBarAction(
+                            iconRes = R.drawable.help_icon,
+                            onActionClicked = {
+                                onHelpDialogVisibilityChanged(true)
+                            }
+                        )
                     )
                 )
-            )
-        }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
-            if (isCameraPermissionGranted) {
-                if (state.imageUri == null) {
-                    CameraDisplayComponent(
-                        lifecycleOwner = lifecycleOwner,
-                        context = context,
-                        outputDirectory = outputDirectory,
-                        executor = executor,
-                        onImageCaptured = onImageCaptured,
-                        onError = {
-                            Log.d("ART_COLLE", "ImageCaptureException -> ${it.message} CALLED!")
+            }
+        ) { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)) {
+                if (isCameraPermissionGranted) {
+                    if (imageUri == null) {
+                        CameraDisplayComponent(
+                            lifecycleOwner = lifecycleOwner,
+                            context = context,
+                            outputDirectory = outputDirectory,
+                            executor = executor,
+                            onImageCaptured = onImageCaptured,
+                            onError = {
+                                Log.d("ART_COLLE", "ImageCaptureException -> ${it.message} CALLED!")
+                            }
+                        )
+                    } else {
+                        MintNftForm(
+                            state = state,
+                            onNameChanged = onNameChanged,
+                            onDescriptionChanged = onDescriptionChanged,
+                            onRoyaltyChanged = onRoyaltyChanged,
+                            onCreateClicked = onCreateClicked,
+                            onNftCreatedSuccess = onNftCreatedSuccess,
+                            onAddNewTag = onAddNewTag,
+                            onDeleteTag = onDeleteTag,
+                            onCategoryChanged = onCategoryChanged,
+                            onResetImage = onResetImage,
+                            onConfirmCancelMintNftVisibilityChanged = onConfirmCancelMintNftVisibilityChanged
+                        )
+                    }
+                } else {
+                    ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)
+                    ErrorStateNotificationComponent(
+                        isVisible = true,
+                        imageRes = R.drawable.error_occurred,
+                        title = stringResource(id = R.string.add_nft_no_camera_permission_granted_text),
+                        isRetryButtonVisible = true,
+                        onRetryCalled = {
+                            onRequestingCameraPermission(true)
                         }
                     )
-                } else {
-                    MintNftForm(
-                        state = state,
-                        onNameChanged = onNameChanged,
-                        onDescriptionChanged = onDescriptionChanged,
-                        onRoyaltyChanged = onRoyaltyChanged,
-                        onCreateClicked = onCreateClicked,
-                        onExitClicked = onExitClicked,
-                        onAddNewTag = onAddNewTag,
-                        onDeleteTag = onDeleteTag,
-                        onCategoryChanged = onCategoryChanged,
-                        onResetImage = onResetImage,
-                        onConfirmCancelMintNftVisibilityChanged = onConfirmCancelMintNftVisibilityChanged
-                    )
                 }
-            } else {
-
             }
         }
     }
+}
 
+@Composable
+private fun CheckCameraPermission(
+    context: Context,
+    onCameraPermissionStateChanged: (granted: Boolean) -> Unit
+) {
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isSuccess ->
+            onCameraPermissionStateChanged(isSuccess)
+        }
+    // run on every composition
+    SideEffect {
+        context.checkPermissionState(
+            permission = Manifest.permission.CAMERA,
+            onPermissionGranted = {
+                onCameraPermissionStateChanged(true)
+            },
+            onPermissionDenied = {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        )
+    }
 }
 
 @Composable
@@ -229,7 +242,7 @@ private fun MintNftForm(
     onDescriptionChanged: (String) -> Unit,
     onRoyaltyChanged: (Float) -> Unit,
     onCreateClicked: () -> Unit,
-    onExitClicked: () -> Unit,
+    onNftCreatedSuccess: () -> Unit,
     onResetImage: () -> Unit,
     onAddNewTag: (tag: String) -> Unit,
     onDeleteTag: (tag: String) -> Unit,
@@ -243,9 +256,7 @@ private fun MintNftForm(
             titleRes = R.string.add_nft_token_minted_confirm_title_text,
             descriptionRes = R.string.add_nft_token_minted_confirm_description_text,
             acceptRes = R.string.add_nft_token_minted_confirm_accept_button_text,
-            onAcceptClicked = {
-                onExitClicked()
-            }
+            onAcceptClicked = onNftCreatedSuccess
         )
         Box {
             ScreenBackgroundImage(imageRes = R.drawable.screen_background_2)

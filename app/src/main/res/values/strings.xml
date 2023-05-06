@@ -119,6 +119,7 @@
     <string name="add_nft_create_button_text">Create</string>
     <string name="add_nft_cancel_button_text">Cancel</string>
     <string name="add_nft_input_name_label">Name</string>
+    <string name="add_nft_no_camera_permission_granted_text">Camera permission must be granted in order to mint NFT</string>
     <string name="add_nft_subtitle_text">Fill in the following information to be able to publish your Art collectible as NFT</string>
     <string name="add_nft_input_name_placeholder">Art Collectible Name</string>
     <string name="add_nft_input_description_label">Description</string>
@@ -150,10 +151,10 @@
     <!-- Token Detail -->
     <string name="token_detail_burn_token_button_text">Burn token</string>
     <string name="token_detail_edit_token_button_text">Edit token</string>
-    <string name="token_detail_burn_token_confirm_title_text">Burn token</string>
+    <string name="token_detail_burn_token_confirm_title_text">Are you sure to burn this NFT?</string>
     <string name="token_detail_go_market_button_text">See in market</string>
     <string name="token_detail_available_for_sale_text">This collectible is available for sale</string>
-    <string name="token_detail_burn_token_confirm_description_text">Burn token</string>
+    <string name="token_detail_burn_token_confirm_description_text">This NFT no longer will be available after this operation will be completed</string>
     <string name="token_detail_burn_token_confirm_accept_button_text">Accept</string>
     <string name="token_detail_burn_token_confirm_cancel_button_text">Cancel</string>
     <string name="token_detail_put_item_for_sale_button_text">Put for sale</string>

@@ -163,9 +163,19 @@ fun RootScreen(
             }
         }
         composable(DestinationItem.Mint.route) {
-            MintNftScreen {
-                navigationController.popBackStack()
+            with(navigationController) {
+                MintNftScreen(
+                    onNftCreated = {
+                        navigate(DestinationItem.MyTokens.route) {
+                            popUpTo(DestinationItem.MyTokens.route)
+                        }
+                    },
+                    onBackCalled = {
+                        popBackStack()
+                    }
+                )
             }
+
         }
         composable(DestinationItem.EditTokenMetadata.route) { navBackStackEntry ->
             navBackStackEntry.arguments?.let { args ->
