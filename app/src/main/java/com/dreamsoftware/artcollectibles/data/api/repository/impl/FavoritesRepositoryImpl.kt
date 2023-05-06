@@ -86,9 +86,9 @@ internal class FavoritesRepositoryImpl(
         withContext(Dispatchers.IO) {
             try {
                 val authCredentials = walletRepository.loadCredentials()
-                favoritesDataSource.getList(authCredentials.address).map {
-                    async { artCollectibleRepository.getTokenById(BigInteger(it)) }
-                }.awaitAll()
+                val tokenIds = favoritesDataSource.getList(authCredentials.address)
+                    .mapNotNull { it.toBigIntegerOrNull() }
+                artCollectibleRepository.getTokens(tokenIds)
             } catch (ex: Exception) {
                 throw GetMyFavoriteTokensDataException("An error occurred when trying to get my favorite tokens", ex)
             }
@@ -98,9 +98,10 @@ internal class FavoritesRepositoryImpl(
     override suspend fun getMostLikedTokens(limit: Int): Iterable<ArtCollectible> =
         withContext(Dispatchers.IO) {
             try {
-                favoritesDataSource.getMostLikedTokens(limit).map {
-                    async { artCollectibleRepository.getTokenById(BigInteger(it)) }
-                }.awaitAll()
+                val tokenIds = favoritesDataSource.getMostLikedTokens(limit).mapNotNull {
+                    it.toBigIntegerOrNull()
+                }
+                artCollectibleRepository.getTokens(tokenIds)
             } catch (ex: Exception) {
                 throw GetMostLikedTokensDataException("An error occurred when trying to get more liked tokens", ex)
             }

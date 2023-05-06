@@ -5,12 +5,15 @@ import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
 import com.dreamsoftware.artcollectibles.domain.usecase.core.BaseUseCaseWithParams
 import java.math.BigInteger
 
-class GetTokenDetailUseCase(
+class GetTokenFullDetailUseCase(
     private val artCollectibleRepository: IArtCollectibleRepository
-): BaseUseCaseWithParams<GetTokenDetailUseCase.Params, ArtCollectible>() {
+): BaseUseCaseWithParams<GetTokenFullDetailUseCase.Params, ArtCollectible>() {
 
     override suspend fun onExecuted(params: Params): ArtCollectible =
-        artCollectibleRepository.getTokenById(params.tokenId)
+        artCollectibleRepository.getTokenById(
+            tokenId = params.tokenId,
+            fullDetail = true
+        )
 
     data class Params(
         val tokenId: BigInteger

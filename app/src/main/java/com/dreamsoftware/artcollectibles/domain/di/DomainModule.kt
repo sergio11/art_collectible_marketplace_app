@@ -249,7 +249,7 @@ class DomainModule {
     @ViewModelScoped
     fun provideGetTokenDetailUseCase(
         artCollectibleRepository: IArtCollectibleRepository
-    ) = GetTokenDetailUseCase(artCollectibleRepository)
+    ) = GetTokenFullDetailUseCase(artCollectibleRepository)
 
     /**
      * Provide Burn Token Use Case

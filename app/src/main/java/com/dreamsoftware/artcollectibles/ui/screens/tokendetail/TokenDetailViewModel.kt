@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TokenDetailViewModel @Inject constructor(
-    private val getTokenDetailUseCase: GetTokenDetailUseCase,
+    private val getTokenFullDetailUseCase: GetTokenFullDetailUseCase,
     private val burnTokenUseCase: BurnTokenUseCase,
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val putItemForSaleUseCase: PutItemForSaleUseCase,
@@ -321,8 +321,8 @@ class TokenDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadTokenDetail(tokenId: BigInteger) = getTokenDetailUseCase.invoke(
-        scope = viewModelScope, params = GetTokenDetailUseCase.Params(tokenId)
+    private suspend fun loadTokenDetail(tokenId: BigInteger) = getTokenFullDetailUseCase.invoke(
+        scope = viewModelScope, params = GetTokenFullDetailUseCase.Params(tokenId)
     )
 
     private fun loadTokenMarketHistoryPrices(tokenId: BigInteger) =

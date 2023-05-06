@@ -24,6 +24,7 @@ interface IArtCollectibleRepository {
 
     /**
      * Allow us to delete an art collectible token
+     * @param tokenId
      */
     @Throws(DeleteArtCollectibleDataException::class)
     suspend fun delete(tokenId: BigInteger)
@@ -72,24 +73,30 @@ interface IArtCollectibleRepository {
 
     /**
      * Retrieve token information by id
+     * @param tokenId
+     * @param fullDetail
      */
     @Throws(GetTokenByIdDataException::class)
-    suspend fun getTokenById(tokenId: BigInteger): ArtCollectible
+    suspend fun getTokenById(tokenId: BigInteger, fullDetail: Boolean = false): ArtCollectible
 
     /**
      * Retrieve token list
+     * @param tokenList
      */
     @Throws(GetTokensDataException::class)
     suspend fun getTokens(tokenList: Iterable<BigInteger>): Iterable<ArtCollectible>
 
     /**
      * Get tokens by category
+     * @param categoryUid
      */
     @Throws(GetTokensByCategoryDataException::class)
     suspend fun getTokensByCategory(categoryUid: String): Iterable<ArtCollectible>
 
     /**
      * Get Similar tokens
+     * @param tokenCid
+     * @param count
      */
     @Throws(GetTokensByCategoryDataException::class)
     suspend fun getSimilarTokens(tokenCid: String, count: Int): Iterable<ArtCollectible>

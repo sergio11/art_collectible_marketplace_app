@@ -412,18 +412,18 @@ internal class ArtMarketplaceRepositoryImpl(
         }
     }
 
-    private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO, requireUserInfoFullDetail: Boolean): ArtCollectibleForSale =
+    private suspend fun mapToArtCollectibleForSale(item: ArtCollectibleForSaleDTO, requireFullDetail: Boolean): ArtCollectibleForSale =
         withContext(Dispatchers.Default) {
             with(item) {
                 val tokenDeferred = async {
-                    artCollectibleRepository.getTokenById(tokenId)
+                    artCollectibleRepository.getTokenById(tokenId, requireFullDetail)
                 }
                 val ownerDeferred = async {
                     runCatching {
-                        userRepository.getByAddress(owner, requireUserInfoFullDetail)
+                        userRepository.getByAddress(owner, requireFullDetail)
                     }.getOrNull()
                 }
-                val sellerDeferred = async { userRepository.getByAddress(seller, requireUserInfoFullDetail) }
+                val sellerDeferred = async { userRepository.getByAddress(seller, requireFullDetail) }
                 ArtCollectibleForSale(
                     marketItemId = marketItemId,
                     token = tokenDeferred.await(),

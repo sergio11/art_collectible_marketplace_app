@@ -217,20 +217,25 @@ internal class ArtCollectibleRepositoryImpl(
     }
 
     @Throws(GetTokenByIdDataException::class)
-    override suspend fun getTokenById(tokenId: BigInteger): ArtCollectible =
+    override suspend fun getTokenById(tokenId: BigInteger, fullDetail: Boolean): ArtCollectible =
         withContext(Dispatchers.Default) {
             try {
                 val credentials = walletRepository.loadCredentials()
+                val cacheKey = if(fullDetail) {
+                    "${tokenId}_full_detail"
+                } else {
+                    tokenId
+                }
                 with(artCollectibleMemoryCacheDataSource) {
                     try {
-                        findByKey(tokenId)
+                        findByKey(cacheKey)
                     } catch (ex: CacheException) {
                         val token = artCollectibleDataSource.getTokenById(
                             tokenId, userCredentialsMapper.mapOutToIn(credentials)
                         )
                         val tokenMetadata = tokenMetadataRepository.fetchByCid(token.metadataCID)
-                        mapToArtCollectible(credentials, tokenMetadata, token, true).also {
-                            save(tokenId, it)
+                        mapToArtCollectible(credentials, tokenMetadata, token, fullDetail).also {
+                            save(cacheKey, it)
                         }
                     }
                 }
@@ -320,7 +325,7 @@ internal class ArtCollectibleRepositoryImpl(
     private suspend fun mapToArtCollectible(
         credentials: UserWalletCredentials,
         tokensList: Iterable<ArtCollectibleBlockchainDTO>
-    ) = withContext(Dispatchers.Default) {
+    ) = withContext(Dispatchers.IO) {
         with(artCollectibleMemoryCacheDataSource) {
             val tokensIdList = tokensList.map { it.tokenId }
             buildList {
