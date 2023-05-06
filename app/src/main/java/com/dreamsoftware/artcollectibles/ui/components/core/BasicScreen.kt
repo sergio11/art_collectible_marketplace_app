@@ -29,6 +29,7 @@ fun BasicScreen(
     hasBottomBar: Boolean = false,
     hasTopBar: Boolean = true,
     enableVerticalScroll: Boolean = false,
+    onBuildCustomTopBar: @Composable (() -> Unit)? = null,
     screenContent: @Composable ColumnScope.() -> Unit = {},
     backgroundContent: @Composable BoxScope.() -> Unit = {}
 ) {
@@ -43,7 +44,7 @@ fun BasicScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if(hasTopBar) {
-                CommonTopAppBar(
+                onBuildCustomTopBar?.invoke() ?: CommonTopAppBar(
                     titleRes = titleRes,
                     titleText = titleText,
                     navigationAction = navigationAction,

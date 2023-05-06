@@ -58,6 +58,14 @@ class DiscoveryViewModel @Inject constructor(
         load()
     }
 
+    fun onSearchingModeChanged(enabled: Boolean) {
+        updateState {
+            it.copy(
+                isSearchingModeEnabled = enabled
+            )
+        }
+    }
+
     fun onTermChanged(newTerm: String) {
         updateState {
             it.copy(
@@ -133,6 +141,7 @@ class DiscoveryViewModel @Inject constructor(
 
 data class DiscoveryUiState(
     val tabs: List<TabUi<DiscoveryTabsTypeEnum>> = emptyList(),
+    val isSearchingModeEnabled: Boolean = false,
     val searchTerm: String? = null,
     val items: Iterable<Any> = emptyList(),
     val isLoading: Boolean = false,

@@ -110,8 +110,8 @@
     <string name="profile_close_session_description">Your session will be closed, your session data will be deleted</string>
 
     <!-- Discover -->
-    <string name="discovery_main_title_default_text">Discover new artists</string>
-    <string name="discovery_main_digital_artists_text">Discover artists</string>
+    <string name="discovery_main_title_default_text">Discover</string>
+    <string name="discovery_main_digital_artists_text">Discover talented artists</string>
     <string name="discovery_main_nft_categories_text">Discover art collectibles</string>
 
     <!-- Add NFT -->

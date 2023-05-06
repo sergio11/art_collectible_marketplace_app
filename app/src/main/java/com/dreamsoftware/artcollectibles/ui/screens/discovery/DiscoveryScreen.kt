@@ -8,25 +8,26 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectibleCategory
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
 import com.dreamsoftware.artcollectibles.ui.components.ArtCollectibleCategoryCard
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
+import com.dreamsoftware.artcollectibles.ui.components.SearchView
 import com.dreamsoftware.artcollectibles.ui.components.UserInfoArtistCard
-import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonLazyVerticalGrid
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonTabsRow
+import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTitle
+import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTypeOrDefault
 import com.dreamsoftware.artcollectibles.ui.model.DiscoveryTabsTypeEnum
 import com.dreamsoftware.artcollectibles.ui.theme.Purple40
 
@@ -38,17 +39,11 @@ fun DiscoveryScreen(
     onGoToCategoryDetail: (categoryUid: String) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = DiscoveryUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = DiscoveryUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val lazyGridState = rememberLazyGridState()
     val context = LocalContext.current
     val snackBarHostState = remember { SnackbarHostState() }
@@ -62,6 +57,7 @@ fun DiscoveryScreen(
             state = uiState,
             lazyGridState = lazyGridState,
             navController = navController,
+            onSearchingModeChanged = ::onSearchingModeChanged,
             onTermChanged = ::onTermChanged,
             onResetSearch = ::onResetSearch,
             onNewTabSelected = ::onNewTabSelected,
@@ -78,6 +74,7 @@ internal fun DiscoveryComponent(
     state: DiscoveryUiState,
     lazyGridState: LazyGridState,
     navController: NavController,
+    onSearchingModeChanged: (enabled: Boolean) -> Unit,
     onTermChanged: (String) -> Unit,
     onResetSearch: () -> Unit,
     onNewTabSelected: (type: DiscoveryTabsTypeEnum) -> Unit,
@@ -92,12 +89,40 @@ internal fun DiscoveryComponent(
             centerTitle = true,
             navController = navController,
             hasBottomBar = true,
+            menuActions = if (tabs.tabSelectedTypeOrDefault(default = DiscoveryTabsTypeEnum.DIGITAL_ARTISTS) == DiscoveryTabsTypeEnum.DIGITAL_ARTISTS) {
+                listOf(
+                    TopBarAction(
+                        iconRes = R.drawable.search_icon,
+                        onActionClicked = {
+                            onSearchingModeChanged(true)
+                        }
+                    )
+                )
+            } else {
+                emptyList()
+            },
             screenContainerColor = Purple40,
+            onBuildCustomTopBar = if (isSearchingModeEnabled) {
+                {
+                    SearchView(
+                        context = context,
+                        term = searchTerm,
+                        onCloseClicked = {
+                            onResetSearch()
+                            onSearchingModeChanged(false)
+                        },
+                        onTermChanged = onTermChanged,
+                        onClearClicked = onResetSearch
+                    )
+                }
+            } else {
+                null
+            },
             screenContent = {
                 CommonTabsRow(tabs, onNewTabSelected)
                 if (!isLoading) {
                     CommonLazyVerticalGrid(state = lazyGridState, items = items) {
-                        if(it is UserInfo) {
+                        if (it is UserInfo) {
                             UserInfoArtistCard(
                                 modifier = Modifier
                                     .height(262.dp)
@@ -120,12 +145,6 @@ internal fun DiscoveryComponent(
                         }
                     }
                 }
-                /*SearchView(
-                    context = context,
-                    term = state.searchTerm,
-                    onTermChanged = onTermChanged,
-                    onClearClicked = onResetSearch
-                )*/
             }
         )
     }
