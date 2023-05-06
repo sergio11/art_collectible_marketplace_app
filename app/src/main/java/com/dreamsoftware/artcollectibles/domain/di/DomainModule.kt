@@ -274,12 +274,14 @@ class DomainModule {
     /**
      * Provide With draw from sale use case
      * @param artMarketplaceRepository
+     * @param statisticsRepository
      */
     @Provides
     @ViewModelScoped
     fun provideWithdrawFromSaleUseCase(
-        artMarketplaceRepository: IArtMarketplaceRepository
-    ) = WithdrawFromSaleUseCase(artMarketplaceRepository)
+        artMarketplaceRepository: IArtMarketplaceRepository,
+        statisticsRepository: IStatisticsRepository
+    ) = WithdrawFromSaleUseCase(artMarketplaceRepository, statisticsRepository)
 
     /**
      * Provide is token added for sale use case

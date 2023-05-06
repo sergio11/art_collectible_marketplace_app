@@ -31,7 +31,7 @@ internal class CategoriesDataSourceImpl(
             firebaseStore.collection(COLLECTION_NAME)
                 .document(CATEGORIES_KEY).get().await()?.data?.let {
                     categoriesMapper.mapInToOut(it)
-            } ?: throw GetCategoriesException("no categories found")
+            }?.sortedBy { it.name } ?: throw GetCategoriesException("no categories found")
         } catch (ex: FirebaseException) {
             throw ex
         } catch (ex: Exception) {

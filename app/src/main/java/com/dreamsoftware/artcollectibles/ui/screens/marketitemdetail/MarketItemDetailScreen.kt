@@ -246,7 +246,7 @@ fun MarketItemDetailComponent(
                         CommonText(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
                             type = CommonTextTypeEnum.TITLE_MEDIUM,
                             titleRes = R.string.market_item_detail_not_enough_funds_text,
                             textColor = DarkPurple
