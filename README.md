@@ -33,7 +33,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
     
     
     
- ### Onboarding & Account management
+ ## Onboarding & Account management
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_1.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_2.png" />
@@ -41,7 +41,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" align="left" src="./doc/screenshots/app_picture_4.png" />
  <img width="250px" src="./doc/screenshots/app_picture_5.png" />
  
- ### User Profile
+ ## User Profile
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_7.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_8.png" />
@@ -50,7 +50,7 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" align="left" src="./doc/screenshots/app_picture_29.png" />
  <img width="250px" src="./doc/screenshots/app_picture_28.png" />
  
-  ### Mint Art Collectible NFT
+  ## Mint Art Collectible NFT
   
   <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
@@ -59,7 +59,12 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
   <img width="250px" align="left" src="./doc/screenshots/app_picture_16.png" />
   <img width="250px" src="./doc/screenshots/app_picture_17.png" />
- 
+  
+  ## NFT Detail
+  
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_30.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_31.png" />
+  <img width="250px" src="./doc/screenshots/app_picture_32.png" />
  
    ### NFT
    
@@ -80,5 +85,12 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_24.png" />
  <img width="250px" src="./doc/screenshots/app_picture_25.png" />
+ 
+ 
+ 
+ <p><a href="https://www.freepik.com/free-photo/handsome-cheerful-young-man-with-stylish-haircut-dimpled-smile-posing-isolated-against-blank-yellow-wall-dressed-cozy-maroon-sweater-having-confident-look_11891916.htm#page=2&query=person&position=3&from_view=search&track=robertav1_2_sidr">Image by karlyukav</a> on Freepik</p>
+ <p><a href="https://www.freepik.com/free-photo/handsome-cheerful-man-teenager-keeps-arms-folded-looks-pensively-aside-has-gentle-smile-wears-basic-jumper-poses_13844944.htm#page=4&query=person&position=39&from_view=search&track=robertav1_2_sidr">Image by wayhomestudio</a> on Freepik</p>
+ <p><a href="https://www.freepik.com/free-photo/no-problem-concept-bearded-man-makes-okay-gesture-has-everything-control-all-fine-gesture-wears-spectacles-jumper-poses-against-pink-wall-says-i-got-this-guarantees-something_13580471.htm#query=person&position=24&from_view=search&track=robertav1_2_sidr">Image by wayhomestudio</a> on Freepik</p>
+ <p>Image by <a href="https://www.freepik.com/free-photo/portrait-beautiful-blond-woman-with-trendy-hairstyle_27506439.htm#page=9&query=person&position=19&from_view=search&track=sph">Freepik</a></p>
  
     
