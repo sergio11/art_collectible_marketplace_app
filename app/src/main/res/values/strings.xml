@@ -26,6 +26,16 @@
     <string name="default_user_info_name_empty">Anonymous user</string>
     <string name="default_user_info_description_empty">This user has preferred not to give details about his profile</string>
     <string name="default_query_empty">Write something here …</string>
+
+    <!-- Errors -->
+    <string name="get_user_detail_error">An error occurred when trying to get user detail</string>
+    <string name="get_current_balance_error">An error occurred when trying to fetch current balance</string>
+    <string name="update_profile_picture_error">An error occurred when trying to update profile picture</string>
+    <string name="save_user_error">An error occurred when trying to save user data</string>
+    <string name="get_tokens_created_error">An error occurred when trying to get tokens created</string>
+    <string name="get_tokens_owned_error">An error occurred when trying to get tokens owned</string>
+    <string name="un_follow_user_error">An error occurred when trying to unfollow user</string>
+    <string name="follow_user_error">An error occurred when trying to follow user</string>
     <!-- Onboarding -->
     <string name="onboarding_main_title_text">Welcome to the art collectible NFT marketplace for digital artists</string>
     <string name="onboarding_subtitle_text">Explore and Mint NFTs</string>

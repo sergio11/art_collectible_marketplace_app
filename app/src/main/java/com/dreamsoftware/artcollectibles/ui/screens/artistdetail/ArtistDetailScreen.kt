@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,6 +57,7 @@ fun ArtistDetailScreen(
     )
     val density = LocalDensity.current
     val scrollState: ScrollState = rememberScrollState(0)
+    val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
             loadDetail(uid = args.uid)
@@ -62,6 +65,7 @@ fun ArtistDetailScreen(
         ArtistDetailComponent(
             context = context,
             uiState = uiState,
+            snackBarHostState = snackBarHostState,
             scrollState = scrollState,
             density = density,
             onBackClicked = onBackClicked,
@@ -80,6 +84,7 @@ fun ArtistDetailScreen(
 fun ArtistDetailComponent(
     context: Context,
     uiState: ArtistDetailUiState,
+    snackBarHostState: SnackbarHostState,
     scrollState: ScrollState,
     density: Density,
     onBackClicked: () -> Unit,
@@ -94,7 +99,9 @@ fun ArtistDetailComponent(
     with(uiState) {
         CommonDetailScreen(
             context = context,
+            snackBarHostState = snackBarHostState,
             scrollState = scrollState,
+            errorMessage = errorMessage,
             density = density,
             isLoading = isLoading,
             imageUrl = userInfo?.photoUrl,

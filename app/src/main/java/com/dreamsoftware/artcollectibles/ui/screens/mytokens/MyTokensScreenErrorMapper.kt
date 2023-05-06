@@ -9,7 +9,7 @@ import com.dreamsoftware.artcollectibles.utils.IErrorMapper
 class MyTokensScreenErrorMapper(
     private val context: Context
 ): IErrorMapper {
-    override fun mapToMessage(ex: Exception): String = context.getString(when(ex) {
+    override fun mapToMessage(ex: Throwable): String = context.getString(when(ex) {
         is GetTokensCreatedDataException -> R.string.my_tokens_tab_tokens_created_error
         is GetTokensOwnedDataException -> R.string.my_tokens_tab_tokens_owned_error
         else -> R.string.generic_error_exception

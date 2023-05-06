@@ -9,7 +9,7 @@ import com.dreamsoftware.artcollectibles.utils.IErrorMapper
 class DiscoveryScreenErrorMapper(
     private val context: Context
 ): IErrorMapper {
-    override fun mapToMessage(ex: Exception): String = context.getString(when(ex) {
+    override fun mapToMessage(ex: Throwable): String = context.getString(when(ex) {
         is GetCategoriesDataException -> R.string.discovery_get_art_categories_error
         is SearchUserException -> R.string.discovery_search_users_error
         else -> R.string.generic_error_exception

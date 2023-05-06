@@ -22,6 +22,7 @@ import javax.inject.Inject
  * @param getCurrentBalanceUseCase
  * @param updateUserInfoUseCase
  * @param closeSessionUseCase
+ * @param profileScreenErrorMapper
  */
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -29,7 +30,8 @@ class ProfileViewModel @Inject constructor(
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
     private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
     private val updateUserInfoUseCase: UpdateUserInfoUseCase,
-    private val closeSessionUseCase: CloseSessionUseCase
+    private val closeSessionUseCase: CloseSessionUseCase,
+    private val profileScreenErrorMapper: ProfileScreenErrorMapper
 ) : SupportViewModel<ProfileUiState>() {
 
     override fun onGetDefaultState(): ProfileUiState = ProfileUiState()
@@ -186,7 +188,12 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun onLoading() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+        }
     }
 
     private fun onLoadProfileDataCompleted(userInfo: UserInfo, currentBalance: AccountBalance) {
@@ -211,11 +218,22 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun onErrorOccurred(ex: Exception) {
-        updateState { it.copy(isLoading = false) }
+        updateState {
+            it.copy(
+                isLoading = false,
+                errorMessage = profileScreenErrorMapper.mapToMessage(ex)
+            )
+        }
     }
 
     private fun onSessionClosed() {
-        updateState { it.copy(isLoading = false, isSessionClosed = true) }
+        updateState {
+            it.copy(
+                isLoading = false,
+                isSessionClosed = true,
+                errorMessage = null
+            )
+        }
     }
 
     private suspend fun fetchAuthUser() =
@@ -231,5 +249,6 @@ data class ProfileUiState(
     val isProfilePictureUpdated: Boolean = false,
     val isLoading: Boolean = false,
     val isSessionClosed: Boolean = false,
-    val isCloseSessionDialogVisible: Boolean = false
+    val isCloseSessionDialogVisible: Boolean = false,
+    val errorMessage: String? = null
 )

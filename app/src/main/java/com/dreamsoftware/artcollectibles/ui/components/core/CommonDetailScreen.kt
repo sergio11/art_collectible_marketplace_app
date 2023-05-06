@@ -39,11 +39,13 @@ private const val TITLE_FONT_SCALE_END = 0.66f
 @Composable
 fun CommonDetailScreen(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     scrollState: ScrollState,
     density: Density,
     isLoading: Boolean = false,
     imageUrl: String? = null,
     title: String? = null,
+    errorMessage: String? = null,
     contentCentered: Boolean = false,
     onBackClicked: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
@@ -51,46 +53,54 @@ fun CommonDetailScreen(
     LoadingDialog(isShowingDialog = isLoading)
     val headerHeightPx = with(density) { HEADER_HEIGHT.toPx() }
     val toolbarHeightPx = with(density) { TOOLBAR_HEIGHT.toPx() }
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        //....................
-        CommonDetailHeader(
-            context = context,
-            scrollState = scrollState,
-            headerHeightPx = headerHeightPx,
-            imageUrl = imageUrl
-        )
-        //....................
-        Column(
-            horizontalAlignment = if (contentCentered) {
-                Alignment.CenterHorizontally
-            } else {
-                Alignment.Start
-            },
-            modifier = Modifier.verticalScroll(scrollState)
-        ) {
-            Spacer(Modifier.height(HEADER_HEIGHT))
-            content()
+    BasicScreen(
+        snackBarHostState = snackBarHostState,
+        backgroundRes = null,
+        hasTopBar = false,
+        errorMessage = errorMessage,
+        screenContent = {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                //....................
+                CommonDetailHeader(
+                    context = context,
+                    scrollState = scrollState,
+                    headerHeightPx = headerHeightPx,
+                    imageUrl = imageUrl
+                )
+                //....................
+                Column(
+                    horizontalAlignment = if (contentCentered) {
+                        Alignment.CenterHorizontally
+                    } else {
+                        Alignment.Start
+                    },
+                    modifier = Modifier.verticalScroll(scrollState)
+                ) {
+                    Spacer(Modifier.height(HEADER_HEIGHT))
+                    content()
+                }
+                //....................
+                CommonDetailToolbar(
+                    context = context,
+                    scrollState = scrollState,
+                    headerHeightPx = headerHeightPx,
+                    toolbarHeightPx = toolbarHeightPx,
+                    imageUrl = imageUrl,
+                    isLoading = isLoading,
+                    onBackClicked = onBackClicked
+                )
+                //....................
+                CommonDetailTitle(
+                    scrollState = scrollState,
+                    headerHeightPx = headerHeightPx,
+                    toolbarHeightPx = toolbarHeightPx,
+                    title = title
+                )
+            }
         }
-        //....................
-        CommonDetailToolbar(
-            context = context,
-            scrollState = scrollState,
-            headerHeightPx = headerHeightPx,
-            toolbarHeightPx = toolbarHeightPx,
-            imageUrl = imageUrl,
-            isLoading = isLoading,
-            onBackClicked = onBackClicked
-        )
-        //....................
-        CommonDetailTitle(
-            scrollState = scrollState,
-            headerHeightPx = headerHeightPx,
-            toolbarHeightPx = toolbarHeightPx,
-            title = title
-        )
-    }
+    )
 }
 
 @Composable

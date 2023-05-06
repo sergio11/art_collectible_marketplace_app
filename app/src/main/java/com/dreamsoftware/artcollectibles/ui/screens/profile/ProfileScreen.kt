@@ -111,136 +111,139 @@ internal fun ProfileComponent(
     onGoToUserPreferences: () -> Unit,
     onCloseSessionDialogVisibilityChanged: (Boolean) -> Unit
 ) {
-    var isProfilePicturePicker by rememberSaveable { mutableStateOf(false) }
-    LoadingDialog(isShowingDialog = state.isLoading)
-    ConfirmCloseSessionDialog(state, onAcceptClicked = onCloseSessionClicked, onDialogCancelled = {
-        onCloseSessionDialogVisibilityChanged(false)
-    })
-    BasicScreen(
-        snackBarHostState = snackBarHostState,
-        titleRes = R.string.profile_main_title_text,
-        navController = navController,
-        hasBottomBar = true,
-        enableVerticalScroll = true,
-        menuActions = listOf(
-            TopBarAction(
-                iconRes = R.drawable.settings_icon,
-                onActionClicked = onGoToUserPreferences
-            ),
-            TopBarAction(
-                iconRes = R.drawable.close_session_icon,
-                onActionClicked = {
-                    onCloseSessionDialogVisibilityChanged(true)
-                }
-            )
-        ),
-        screenContent = {
-            CommonCardColumn {
-                UserAccountProfilePicture(size = 150.dp, userInfo = state.userInfo) {
-                    if (state.userInfo?.externalProviderAuthType == null) {
-                        isProfilePicturePicker = true
+    with(state) {
+        var isProfilePicturePicker by rememberSaveable { mutableStateOf(false) }
+        LoadingDialog(isShowingDialog = isLoading)
+        ConfirmCloseSessionDialog(state, onAcceptClicked = onCloseSessionClicked, onDialogCancelled = {
+            onCloseSessionDialogVisibilityChanged(false)
+        })
+        BasicScreen(
+            snackBarHostState = snackBarHostState,
+            titleRes = R.string.profile_main_title_text,
+            navController = navController,
+            hasBottomBar = true,
+            enableVerticalScroll = true,
+            errorMessage = errorMessage,
+            menuActions = listOf(
+                TopBarAction(
+                    iconRes = R.drawable.settings_icon,
+                    onActionClicked = onGoToUserPreferences
+                ),
+                TopBarAction(
+                    iconRes = R.drawable.close_session_icon,
+                    onActionClicked = {
+                        onCloseSessionDialogVisibilityChanged(true)
                     }
-                }
-                state.accountBalance?.let {
-                    CurrentAccountBalance(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        iconSize = 30.dp,
-                        textSize = 20.sp,
-                        textColor = DarkPurple,
-                        accountBalance = it
+                )
+            ),
+            screenContent = {
+                CommonCardColumn {
+                    UserAccountProfilePicture(size = 150.dp, userInfo = userInfo) {
+                        if (userInfo?.externalProviderAuthType == null) {
+                            isProfilePicturePicker = true
+                        }
+                    }
+                    accountBalance?.let {
+                        CurrentAccountBalance(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            iconSize = 30.dp,
+                            textSize = 20.sp,
+                            textColor = DarkPurple,
+                            accountBalance = it
+                        )
+                    }
+                    CommonDefaultTextField(
+                        labelRes = R.string.profile_input_name_label,
+                        placeHolderRes = R.string.profile_input_name_placeholder,
+                        value = userInfo?.name,
+                        onValueChanged = onNameChanged
+                    )
+                    CommonDefaultTextField(
+                        labelRes = R.string.profile_input_professional_title_label,
+                        placeHolderRes = R.string.profile_input_professional_title_placeholder,
+                        value = userInfo?.professionalTitle,
+                        onValueChanged = onProfessionalTitleChanged
+                    )
+                    CountryPickerField(
+                        labelRes = R.string.profile_input_country_label,
+                        placeHolderRes = R.string.profile_input_country_placeholder,
+                        selectedCountry = userInfo?.country,
+                        pickedCountry = onCountryChanged
+                    )
+                    CommonDefaultTextField(
+                        labelRes = R.string.profile_input_location_label,
+                        placeHolderRes = R.string.profile_input_location_placeholder,
+                        value = userInfo?.location,
+                        onValueChanged = onLocationChanged
+                    )
+                    CommonDefaultTextField(
+                        isReadOnly = true,
+                        labelRes = R.string.profile_input_contact_label,
+                        placeHolderRes = R.string.profile_input_contact_placeholder,
+                        value = userInfo?.contact
+                    )
+                    CommonDefaultTextField(
+                        isReadOnly = true,
+                        labelRes = R.string.profile_input_wallet_address_label,
+                        placeHolderRes = R.string.profile_input_wallet_address_placeholder,
+                        value = userInfo?.walletAddress
+                    )
+                    CommonDatePicker(
+                        labelRes = R.string.profile_input_birthdate_label,
+                        placeHolderRes = R.string.profile_input_birthdate_placeholder,
+                        value = userInfo?.birthdate,
+                        onValueChange = onBirthdateChanged
+                    )
+                    CommonTagsInputComponent(
+                        tagList = userInfo?.tags.orEmpty(),
+                        titleRes = R.string.profile_input_tags_label,
+                        placeholderRes = R.string.profile_input_tags_placeholder,
+                        onAddNewTag = onAddNewTag,
+                        onDeleteTag = onDeleteTag
+                    )
+                    SocialNetworkField(
+                        labelRes = R.string.profile_input_instagram_label,
+                        placeHolderRes = R.string.profile_input_instagram_placeholder,
+                        value = userInfo?.instagramNick,
+                        onValueChanged = onInstagramNickChanged
+                    )
+                    CommonDefaultTextField(
+                        modifier = CommonDefaultTextFieldModifier.height(200.dp),
+                        labelRes = R.string.profile_input_info_label,
+                        placeHolderRes = R.string.profile_input_info_placeholder,
+                        value = userInfo?.info,
+                        isSingleLine = false,
+                        onValueChanged = onInfoChanged
+                    )
+                    Spacer(modifier = Modifier.height(50.dp))
+                    CommonButton(
+                        text = R.string.profile_save_button_text,
+                        containerColor = Purple700,
+                        onClick = onSaveClicked
+                    )
+                    CommonButton(
+                        text = R.string.profile_open_profile_button_text,
+                        containerColor = Purple40,
+                        onClick = {
+                            userInfo?.uid?.let(onGoToUserProfile)
+                        }
                     )
                 }
-                CommonDefaultTextField(
-                    labelRes = R.string.profile_input_name_label,
-                    placeHolderRes = R.string.profile_input_name_placeholder,
-                    value = state.userInfo?.name,
-                    onValueChanged = onNameChanged
-                )
-                CommonDefaultTextField(
-                    labelRes = R.string.profile_input_professional_title_label,
-                    placeHolderRes = R.string.profile_input_professional_title_placeholder,
-                    value = state.userInfo?.professionalTitle,
-                    onValueChanged = onProfessionalTitleChanged
-                )
-                CountryPickerField(
-                    labelRes = R.string.profile_input_country_label,
-                    placeHolderRes = R.string.profile_input_country_placeholder,
-                    selectedCountry = state.userInfo?.country,
-                    pickedCountry = onCountryChanged
-                )
-                CommonDefaultTextField(
-                    labelRes = R.string.profile_input_location_label,
-                    placeHolderRes = R.string.profile_input_location_placeholder,
-                    value = state.userInfo?.location,
-                    onValueChanged = onLocationChanged
-                )
-                CommonDefaultTextField(
-                    isReadOnly = true,
-                    labelRes = R.string.profile_input_contact_label,
-                    placeHolderRes = R.string.profile_input_contact_placeholder,
-                    value = state.userInfo?.contact
-                )
-                CommonDefaultTextField(
-                    isReadOnly = true,
-                    labelRes = R.string.profile_input_wallet_address_label,
-                    placeHolderRes = R.string.profile_input_wallet_address_placeholder,
-                    value = state.userInfo?.walletAddress
-                )
-                CommonDatePicker(
-                    labelRes = R.string.profile_input_birthdate_label,
-                    placeHolderRes = R.string.profile_input_birthdate_placeholder,
-                    value = state.userInfo?.birthdate,
-                    onValueChange = onBirthdateChanged
-                )
-                CommonTagsInputComponent(
-                    tagList = state.userInfo?.tags.orEmpty(),
-                    titleRes = R.string.profile_input_tags_label,
-                    placeholderRes = R.string.profile_input_tags_placeholder,
-                    onAddNewTag = onAddNewTag,
-                    onDeleteTag = onDeleteTag
-                )
-                SocialNetworkField(
-                    labelRes = R.string.profile_input_instagram_label,
-                    placeHolderRes = R.string.profile_input_instagram_placeholder,
-                    value = state.userInfo?.instagramNick,
-                    onValueChanged = onInstagramNickChanged
-                )
-                CommonDefaultTextField(
-                    modifier = CommonDefaultTextFieldModifier.height(200.dp),
-                    labelRes = R.string.profile_input_info_label,
-                    placeHolderRes = R.string.profile_input_info_placeholder,
-                    value = state.userInfo?.info,
-                    isSingleLine = false,
-                    onValueChanged = onInfoChanged
-                )
-                Spacer(modifier = Modifier.height(50.dp))
-                CommonButton(
-                    text = R.string.profile_save_button_text,
-                    containerColor = Purple700,
-                    onClick = onSaveClicked
-                )
-                CommonButton(
-                    text = R.string.profile_open_profile_button_text,
-                    containerColor = Purple40,
-                    onClick = {
-                        state.userInfo?.uid?.let(onGoToUserProfile)
-                    }
-                )
+            },
+            backgroundContent = {
+                ProfilePicturePicker(
+                    context = context,
+                    fileProviderId = fileProviderId,
+                    modifier = Modifier
+                        .zIndex(2f)
+                        .height(400.dp)
+                        .align(Alignment.BottomCenter),
+                    isVisible = isProfilePicturePicker,
+                    onImageSelected = onPictureChanged
+                ) { isProfilePicturePicker = false }
             }
-        },
-        backgroundContent = {
-            ProfilePicturePicker(
-                context = context,
-                fileProviderId = fileProviderId,
-                modifier = Modifier
-                    .zIndex(2f)
-                    .height(400.dp)
-                    .align(Alignment.BottomCenter),
-                isVisible = isProfilePicturePicker,
-                onImageSelected = onPictureChanged
-            ) { isProfilePicturePicker = false }
-        }
-    )
+        )
+    }
 }
 
 @Composable

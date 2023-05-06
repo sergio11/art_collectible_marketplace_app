@@ -5,6 +5,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +58,7 @@ fun CategoryDetailScreen(
     )
     val density = LocalDensity.current
     val scrollState: ScrollState = rememberScrollState(0)
+    val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         with(args) {
             LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
@@ -68,6 +70,7 @@ fun CategoryDetailScreen(
             }
             CategoryDetailComponent(
                 context = context,
+                snackBarHostState = snackBarHostState,
                 uiState = uiState,
                 scrollState = scrollState,
                 density = density,
@@ -89,6 +92,7 @@ fun CategoryDetailScreen(
 @Composable
 fun CategoryDetailComponent(
     context: Context,
+    snackBarHostState: SnackbarHostState,
     uiState: CategoryDetailUiState,
     scrollState: ScrollState,
     density: Density,
@@ -100,6 +104,7 @@ fun CategoryDetailComponent(
     with(uiState) {
         CommonDetailScreen(
             context = context,
+            snackBarHostState = snackBarHostState,
             scrollState = scrollState,
             density = density,
             isLoading = isLoading,

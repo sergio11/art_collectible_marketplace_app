@@ -12,7 +12,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(
     private val getAuthUserProfileUseCase: GetAuthUserProfileUseCase,
-    private val updateUserInfoUseCase: UpdateUserInfoUseCase
+    private val updateUserInfoUseCase: UpdateUserInfoUseCase,
+    private val preferencesScreenErrorMapper: PreferencesScreenErrorMapper
 ): SupportViewModel<PreferencesUiState>() {
 
     override fun onGetDefaultState(): PreferencesUiState = PreferencesUiState()
@@ -89,24 +90,34 @@ class PreferencesViewModel @Inject constructor(
         updateState {
             it.copy(
                 isLoading = false,
-                userPreferences = userInfo.preferences
+                userPreferences = userInfo.preferences,
+                errorMessage = null
             )
         }
     }
 
     private fun onErrorOccurred(ex: Throwable) {
         updateState {
-            it.copy(isLoading = false)
+            it.copy(
+                isLoading = false,
+                errorMessage = preferencesScreenErrorMapper.mapToMessage(ex)
+            )
         }
     }
 
     private fun onLoading() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+        }
     }
 
 }
 
 data class PreferencesUiState(
     val isLoading: Boolean = false,
-    val userPreferences: UserPreferences? = null
+    val userPreferences: UserPreferences? = null,
+    val errorMessage: String? = null
 )

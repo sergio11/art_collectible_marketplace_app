@@ -20,7 +20,8 @@ class ArtistDetailViewModel @Inject constructor(
     private val checkAuthUserIsFollowingToUseCase: CheckAuthUserIsFollowingToUseCase,
     private val getTokensOwnedByUserUseCase: GetTokensOwnedByUserUseCase,
     private val getTokensCreatedByUserUseCase: GetTokensCreatedByUserUseCase,
-    private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase
+    private val getCurrentBalanceUseCase: GetCurrentBalanceUseCase,
+    private val artistDetailScreenErrorMapper: ArtistDetailScreenErrorMapper
 ) : SupportViewModel<ArtistDetailUiState>() {
 
     private companion object {
@@ -183,12 +184,20 @@ class ArtistDetailViewModel @Inject constructor(
     }
 
     private fun onLoading() {
-        updateState { it.copy(isLoading = true) }
+        updateState {
+            it.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+        }
     }
 
     private fun onErrorOccurred(ex: Exception) {
         updateState {
-            it.copy(isLoading = false)
+            it.copy(
+                isLoading = false,
+                errorMessage = artistDetailScreenErrorMapper.mapToMessage(ex)
+            )
         }
     }
 }
@@ -202,5 +211,6 @@ data class ArtistDetailUiState(
     val followingCount: Long = 0L,
     val currentBalance: AccountBalance? = null,
     val tokensOwned: Iterable<ArtCollectible> = emptyList(),
-    val tokensCreated: Iterable<ArtCollectible> = emptyList()
+    val tokensCreated: Iterable<ArtCollectible> = emptyList(),
+    val errorMessage: String? = null
 )
