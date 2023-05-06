@@ -286,6 +286,13 @@
     <string name="preferences_screen_profile_visibility_description">Allow users to find out your profile on discovery artists screen</string>
     <string name="preferences_screen_account_balance_title">Account balance</string>
     <string name="preferences_screen_account_balance_description">Allow users to see your current account balance</string>
+    <string name="preferences_screen_selling_tokens_title">Selling NFTs</string>
+    <string name="preferences_screen_selling_tokens_description">Allow you to see your current selling NFTs on the Market</string>
+    <string name="preferences_screen_last_transactions_title">Last Transactions</string>
+    <string name="preferences_screen_last_transactions_description">Allow users to see the last transactions of your NFTs</string>
+    <string name="preferences_screen_allow_publish_comments_title">Allow to publish comments</string>
+    <string name="preferences_screen_allow_publish_comments_description">Allow users to publish comments on your NFTs</string>
     <string name="preferences_screen_subtitle_text">Set some privacy or app functionality options</string>
     <string name="preferences_screen_bottom_text">ArtNiche - An Art Collectible NFT Marketplace | Created By Sergio Sánchez Sánchez | © 2023</string>
+    <string name="preferences_screen_save_button_text">Save</string>
 </resources>

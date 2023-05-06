@@ -7,7 +7,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,15 +18,10 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.ErrorStateNotificationComponent
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
-import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
-import com.dreamsoftware.artcollectibles.ui.components.core.ChartTypeEnum
-import com.dreamsoftware.artcollectibles.ui.components.core.CommonChart
-import com.dreamsoftware.artcollectibles.ui.components.core.TopBarAction
+import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
@@ -34,17 +32,11 @@ fun MarketStatisticsScreen(
     onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = MarketStatisticsUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = MarketStatisticsUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {

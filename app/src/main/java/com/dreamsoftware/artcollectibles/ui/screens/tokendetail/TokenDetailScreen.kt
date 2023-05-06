@@ -286,7 +286,6 @@ private fun TokenDetailBody(
                         }
                     }
                 }
-
             }
             ArtCollectibleMiniInfoComponent(
                 modifier = Modifier
@@ -323,6 +322,7 @@ private fun TokenDetailBody(
                 authUserInfo = authUserInfo,
                 commentsCount = artCollectible.commentsCount,
                 lastComments = lastComments,
+                enabled = allowToPublishComments,
                 onPublishComment = onPublishComment,
                 onSeeCommentDetail = onGoToCommentDetail,
                 onSeeAllComments = {

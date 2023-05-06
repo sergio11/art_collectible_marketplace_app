@@ -19,6 +19,11 @@ class UserMapper: IOneSideMapper<Map<String, Any?>, UserDTO> {
         const val TAGS_KEY = "tags"
         const val COUNTRY_KEY = "country"
         const val INSTAGRAM_NICK_KEY = "instagramNick"
+        const val IS_PUBLIC_PROFILE_KEY = "isPublicProfile"
+        const val SHOW_SELLING_TOKENS_ROW_KEY = "showSellingTokensRow"
+        const val SHOW_LAST_TRANSACTIONS_OF_TOKENS_KEY = "showLastTransactionsOfTokens"
+        const val ALLOW_PUBLISH_COMMENTS_KEY = "allowPublishComments"
+        const val SHOW_ACCOUNT_BALANCE_KEY = "showAccountBalance"
     }
 
     override fun mapInToOut(input: Map<String, Any?>): UserDTO = with(input) {
@@ -35,7 +40,12 @@ class UserMapper: IOneSideMapper<Map<String, Any?>, UserDTO> {
             location = get(LOCATION_KEY) as? String,
             country = get(COUNTRY_KEY) as? String,
             tags = (get(TAGS_KEY) as? String)?.split(","),
-            instagramNick = get(INSTAGRAM_NICK_KEY) as? String
+            instagramNick = get(INSTAGRAM_NICK_KEY) as? String,
+            isPublicProfile = get(IS_PUBLIC_PROFILE_KEY)?.toString()?.toBoolean(),
+            showSellingTokensRow = get(SHOW_SELLING_TOKENS_ROW_KEY)?.toString()?.toBoolean(),
+            showLastTransactionsOfTokens = get(SHOW_LAST_TRANSACTIONS_OF_TOKENS_KEY)?.toString()?.toBoolean(),
+            allowPublishComments = get(ALLOW_PUBLISH_COMMENTS_KEY)?.toString()?.toBoolean(),
+            showAccountBalance = get(SHOW_ACCOUNT_BALANCE_KEY)?.toString()?.toBoolean()
         )
     }
 

@@ -4,7 +4,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -12,8 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.*
@@ -32,17 +33,11 @@ fun EditNftScreen(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycle = lifecycleOwner.lifecycle
-    val state by produceState(
-        initialValue = EditNftUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val state by produceUiState(
+        initialState = EditNftUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {

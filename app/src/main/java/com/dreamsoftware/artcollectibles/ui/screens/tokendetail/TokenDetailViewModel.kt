@@ -1,6 +1,5 @@
 package com.dreamsoftware.artcollectibles.ui.screens.tokendetail
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.dreamsoftware.artcollectibles.domain.models.*
 import com.dreamsoftware.artcollectibles.domain.usecase.impl.*
@@ -205,6 +204,7 @@ class TokenDetailViewModel @Inject constructor(
                         authUserInfo = authUser,
                         isLoading = false,
                         isTokenOwner = isTokenOwner,
+                        allowToPublishComments = artCollectible.owner.preferences?.allowPublishComments == true,
                         tokenAddedToFavorites = artCollectible.hasAddedToFav
                     )
                 }
@@ -212,7 +212,9 @@ class TokenDetailViewModel @Inject constructor(
                 if (artCollectible.commentsCount > 0) {
                     loadLastCommentsByToken(artCollectible.id)
                 }
-                loadLastTokenMarketTransactions(tokenId)
+                if(artCollectible.owner.preferences?.showLastTransactionsOfTokens == true) {
+                    loadLastTokenMarketTransactions(tokenId)
+                }
                 loadTokenMarketHistoryPrices(tokenId)
                 loadSimilarTokens(artCollectible.metadata.cid)
                 if (!isTokenOwner && !isTokenCreator) {
@@ -476,7 +478,8 @@ data class TokenDetailUiState(
     val isPutTokenForSaleConfirmButtonEnabled: Boolean = false,
     val isConfirmBurnTokenDialogVisible: Boolean = false,
     val isConfirmWithDrawFromSaleDialogVisible: Boolean = false,
-    val isConfirmPutForSaleDialogVisible: Boolean = false
+    val isConfirmPutForSaleDialogVisible: Boolean = false,
+    val allowToPublishComments: Boolean = false
 )
 
 class TokenPriceChartEntry(

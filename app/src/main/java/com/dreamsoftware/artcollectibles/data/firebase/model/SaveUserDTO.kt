@@ -13,5 +13,10 @@ data class SaveUserDTO(
     val externalAuthProvider: String? = null,
     val location: String? = null,
     val country: String? = null,
-    val instagramNick: String? = null
+    val instagramNick: String? = null,
+    val isPublicProfile: Boolean? = null,
+    val showSellingTokensRow: Boolean? = null,
+    val showLastTransactionsOfTokens: Boolean? = null,
+    val allowPublishComments: Boolean? = null,
+    val showAccountBalance: Boolean? = null
 )

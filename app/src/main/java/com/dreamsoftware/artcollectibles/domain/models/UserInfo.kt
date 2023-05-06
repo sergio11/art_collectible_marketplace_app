@@ -21,5 +21,14 @@ data class UserInfo(
     val tokensOwnedCount: BigInteger = BigInteger.ZERO,
     val tokensCreatedCount: BigInteger = BigInteger.ZERO,
     val followers: Long = 0,
-    val following: Long = 0
+    val following: Long = 0,
+    val preferences: UserPreferences? = null
+)
+
+data class UserPreferences(
+    val isPublicProfile: Boolean,
+    val showAccountBalance: Boolean,
+    val showSellingTokensRow: Boolean,
+    val showLastTransactionsOfTokens: Boolean,
+    val allowPublishComments: Boolean
 )

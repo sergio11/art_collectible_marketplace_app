@@ -40,6 +40,7 @@ fun PublishCommentComponent(
     modifier: Modifier = Modifier,
     authUserInfo: UserInfo? = null,
     commentsCount: Long? = null,
+    enabled: Boolean = true,
     lastComments: Iterable<Comment> = emptyList(),
     onPublishComment: (comment: String) -> Unit = {},
     onSeeCommentDetail: (comment: Comment) -> Unit = {},
@@ -149,6 +150,7 @@ fun PublishCommentComponent(
                 onValueChange = {
                     comment = it
                 },
+                enabled = enabled,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
@@ -175,6 +177,7 @@ fun PublishCommentComponent(
                 text = R.string.token_detail_comments_publish_button_text,
                 widthDp = 120.dp,
                 enableBorder = false,
+                enabled = enabled,
                 containerColor = Color.Transparent,
                 contentColor = Purple40,
                 textType = CommonTextTypeEnum.TITLE_SMALL,

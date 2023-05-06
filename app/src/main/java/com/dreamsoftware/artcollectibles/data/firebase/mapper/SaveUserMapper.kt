@@ -19,6 +19,11 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
         const val COUNTRY_KEY = "country"
         const val TAGS_KEY = "tags"
         const val INSTAGRAM_NICK_KEY = "instagramNick"
+        const val IS_PUBLIC_PROFILE_KEY = "isPublicProfile"
+        const val SHOW_SELLING_TOKENS_ROW_KEY = "showSellingTokensRow"
+        const val SHOW_LAST_TRANSACTIONS_OF_TOKENS_KEY = "showLastTransactionsOfTokens"
+        const val ALLOW_PUBLISH_COMMENTS_KEY = "allowPublishComments"
+        const val SHOW_ACCOUNT_BALANCE_KEY = "showAccountBalance"
     }
 
     override fun mapInToOut(input: SaveUserDTO): Map<String, Any?> = with(input) {
@@ -37,6 +42,11 @@ class SaveUserMapper : IOneSideMapper<SaveUserDTO, Map<String, Any?>> {
             country?.let { put(COUNTRY_KEY, it) }
             tags?.let { put(TAGS_KEY, it.joinToString(",")) }
             instagramNick?.let { put(INSTAGRAM_NICK_KEY, it) }
+            isPublicProfile?.let { put(IS_PUBLIC_PROFILE_KEY, it.toString()) }
+            showSellingTokensRow?.let { put(SHOW_SELLING_TOKENS_ROW_KEY, it.toString()) }
+            showLastTransactionsOfTokens?.let { put(SHOW_LAST_TRANSACTIONS_OF_TOKENS_KEY, it.toString()) }
+            allowPublishComments?.let { put(ALLOW_PUBLISH_COMMENTS_KEY, it.toString()) }
+            showAccountBalance?.let { put(SHOW_ACCOUNT_BALANCE_KEY, it.toString()) }
         }
     }
 

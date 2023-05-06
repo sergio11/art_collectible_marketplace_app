@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,14 +19,13 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.*
 import com.dreamsoftware.artcollectibles.ui.theme.DarkPurple
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
+import com.dreamsoftware.artcollectibles.ui.theme.Purple700
 
 @Composable
 fun PreferencesScreen(
@@ -32,26 +33,26 @@ fun PreferencesScreen(
     onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = PreferencesUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = PreferencesUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val snackBarHostState = remember { SnackbarHostState() }
     with(viewModel) {
         LaunchedEffect(key1 = lifecycle, key2 = viewModel) {
-
+            load()
         }
         PreferencesComponent(
             state = uiState,
             snackBarHostState = snackBarHostState,
-            onBackPressed = onBackPressed
+            onBackPressed = onBackPressed,
+            onSavePressed = ::saveData,
+            onIsPublicProfilePreferenceChanged = ::onIsPublicProfilePreferenceChanged,
+            onShowAccountBalancePreferenceChanged = ::onShowAccountBalancePreferenceChanged,
+            onShowSellingTokensRowPreferenceChanged = ::onShowSellingTokensRowPreferenceChanged,
+            onShowLastTransactionsOfTokensPreferenceChanged = ::onShowLastTransactionsOfTokensPreferenceChanged,
+            onAllowPublishCommentsPreferenceChanged = ::onAllowPublishCommentsPreferenceChanged
         )
     }
 }
@@ -60,7 +61,13 @@ fun PreferencesScreen(
 private fun PreferencesComponent(
     state: PreferencesUiState,
     snackBarHostState: SnackbarHostState,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    onSavePressed: () -> Unit,
+    onIsPublicProfilePreferenceChanged: (Boolean) -> Unit,
+    onShowAccountBalancePreferenceChanged: (Boolean) -> Unit,
+    onShowSellingTokensRowPreferenceChanged: (Boolean) -> Unit,
+    onShowLastTransactionsOfTokensPreferenceChanged: (Boolean) -> Unit,
+    onAllowPublishCommentsPreferenceChanged: (Boolean) -> Unit
 ) {
     with(state) {
         LoadingDialog(isShowingDialog = isLoading)
@@ -87,29 +94,52 @@ private fun PreferencesComponent(
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
                     PreferenceItem(
+                        enabled = !isLoading,
+                        checked = userPreferences?.isPublicProfile,
+                        onCheckedChange = onIsPublicProfilePreferenceChanged,
                         titleRes = R.string.preferences_screen_profile_visibility_title,
                         descriptionRes = R.string.preferences_screen_profile_visibility_description
                     )
                     PreferenceItem(
+                        enabled = !isLoading,
+                        checked = userPreferences?.showAccountBalance,
+                        onCheckedChange = onShowAccountBalancePreferenceChanged,
                         titleRes = R.string.preferences_screen_account_balance_title,
                         descriptionRes = R.string.preferences_screen_account_balance_description
                     )
+                    PreferenceItem(
+                        enabled = !isLoading,
+                        checked = userPreferences?.showSellingTokensRow,
+                        onCheckedChange = onShowSellingTokensRowPreferenceChanged,
+                        titleRes = R.string.preferences_screen_selling_tokens_title,
+                        descriptionRes = R.string.preferences_screen_selling_tokens_description
+                    )
+                    PreferenceItem(
+                        enabled = !isLoading,
+                        checked = userPreferences?.showLastTransactionsOfTokens,
+                        onCheckedChange = onShowLastTransactionsOfTokensPreferenceChanged,
+                        titleRes = R.string.preferences_screen_last_transactions_title,
+                        descriptionRes = R.string.preferences_screen_last_transactions_description
+                    )
+                    PreferenceItem(
+                        enabled = !isLoading,
+                        checked = userPreferences?.allowPublishComments,
+                        onCheckedChange = onAllowPublishCommentsPreferenceChanged,
+                        titleRes = R.string.preferences_screen_allow_publish_comments_title,
+                        descriptionRes = R.string.preferences_screen_allow_publish_comments_description
+                    )
                     Spacer(modifier = Modifier.padding(20.dp))
-                    CommonText(
-                        modifier = defaultModifier,
-                        type = CommonTextTypeEnum.BODY_MEDIUM,
-                        titleRes = R.string.preferences_screen_bottom_text,
-                        textColor = DarkPurple,
-                        textAlign = TextAlign.Center
+                    CommonButton(
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .width(300.dp),
+                        text = R.string.preferences_screen_save_button_text,
+                        containerColor = Purple700,
+                        contentColor = Color.White,
+                        onClick = onSavePressed
                     )
-                    CommonText(
-                        modifier = defaultModifier,
-                        type = CommonTextTypeEnum.BODY_SMALL,
-                        titleText = "Version Name: ${BuildConfig.VERSION_NAME} | Version Code: ${BuildConfig.VERSION_CODE}",
-                        textColor = DarkPurple,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.padding(10.dp))
+                    AppInfo(modifier = defaultModifier)
                 }
             }
         )
@@ -120,7 +150,7 @@ private fun PreferencesComponent(
 private fun PreferenceItem(
     @StringRes titleRes: Int,
     @StringRes descriptionRes: Int,
-    checked: Boolean = false,
+    checked: Boolean? = null,
     enabled: Boolean = true,
     onCheckedChange: ((Boolean) -> Unit)? = null
 ) {
@@ -139,7 +169,7 @@ private fun PreferenceItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.padding(8.dp).weight(1f),
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp).weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
                 CommonText(
@@ -156,7 +186,7 @@ private fun PreferenceItem(
                 )
             }
             Switch(
-                checked = checked,
+                checked = checked ?: false,
                 enabled = enabled,
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
@@ -165,4 +195,27 @@ private fun PreferenceItem(
             )
         }
     }
+}
+
+
+@Composable
+private fun AppInfo(
+    modifier: Modifier
+) {
+    Spacer(modifier = Modifier.padding(20.dp))
+    CommonText(
+        modifier = modifier,
+        type = CommonTextTypeEnum.BODY_MEDIUM,
+        titleRes = R.string.preferences_screen_bottom_text,
+        textColor = DarkPurple,
+        textAlign = TextAlign.Center
+    )
+    CommonText(
+        modifier = modifier,
+        type = CommonTextTypeEnum.BODY_SMALL,
+        titleText = "Version Name: ${BuildConfig.VERSION_NAME} | Version Code: ${BuildConfig.VERSION_CODE}",
+        textColor = DarkPurple,
+        textAlign = TextAlign.Center
+    )
+    Spacer(modifier = Modifier.padding(10.dp))
 }

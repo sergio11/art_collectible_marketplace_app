@@ -20,7 +20,12 @@ class SaveUserInfoMapper: IOneSideMapper<UserInfo, SaveUserDTO> {
             externalAuthProvider = externalProviderAuthType?.name,
             location = location,
             country = country,
-            instagramNick = instagramNick
+            instagramNick = instagramNick,
+            isPublicProfile = preferences?.isPublicProfile,
+            showSellingTokensRow = preferences?.showSellingTokensRow,
+            showLastTransactionsOfTokens = preferences?.showLastTransactionsOfTokens,
+            allowPublishComments = preferences?.allowPublishComments,
+            showAccountBalance = preferences?.showAccountBalance
         )
     }
 

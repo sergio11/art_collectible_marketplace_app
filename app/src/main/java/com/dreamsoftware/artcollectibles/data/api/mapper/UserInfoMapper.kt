@@ -3,10 +3,19 @@ package com.dreamsoftware.artcollectibles.data.api.mapper
 import com.dreamsoftware.artcollectibles.data.firebase.model.UserDTO
 import com.dreamsoftware.artcollectibles.domain.models.ExternalProviderAuthTypeEnum
 import com.dreamsoftware.artcollectibles.domain.models.UserInfo
+import com.dreamsoftware.artcollectibles.domain.models.UserPreferences
 import com.dreamsoftware.artcollectibles.utils.IOneSideMapper
 import java.math.BigInteger
 
 class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
+
+    private companion object {
+        const val DEFAULT_IS_PUBLIC_PROFILE_PREFERENCE = true
+        const val DEFAULT_SHOW_SELLING_TOKENS_ROW_PREFERENCE = true
+        const val DEFAULT_SHOW_LAST_TRANSACTIONS_OF_TOKENS_PREFERENCE = true
+        const val DEFAULT_ALLOW_PUBLISH_COMMENTS_PREFERENCE = true
+        const val DEFAULT_SHOW_ACCOUNT_BALANCE_PREFERENCE = true
+    }
 
     override fun mapInToOut(input: InputData): UserInfo = with(input) {
         with(user) {
@@ -31,7 +40,14 @@ class UserInfoMapper: IOneSideMapper<UserInfoMapper.InputData, UserInfo> {
                 tokensSoldCount = tokensSoldCount,
                 tokensBoughtCount = tokensBoughtCount,
                 tokensOwnedCount = tokensOwnedCount,
-                tokensCreatedCount = tokensCreatedCount
+                tokensCreatedCount = tokensCreatedCount,
+                preferences = UserPreferences(
+                    isPublicProfile = isPublicProfile ?: DEFAULT_IS_PUBLIC_PROFILE_PREFERENCE,
+                    showSellingTokensRow = showSellingTokensRow ?: DEFAULT_SHOW_SELLING_TOKENS_ROW_PREFERENCE,
+                    showLastTransactionsOfTokens = showLastTransactionsOfTokens ?: DEFAULT_SHOW_LAST_TRANSACTIONS_OF_TOKENS_PREFERENCE,
+                    allowPublishComments = allowPublishComments ?: DEFAULT_ALLOW_PUBLISH_COMMENTS_PREFERENCE,
+                    showAccountBalance = showAccountBalance ?: DEFAULT_SHOW_ACCOUNT_BALANCE_PREFERENCE
+                )
             )
         }
     }

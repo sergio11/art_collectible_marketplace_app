@@ -27,6 +27,6 @@ class UpdateUserInfoUseCase(
 
     data class Params(
         val userInfo: UserInfo,
-        val isProfilePictureUpdated: Boolean
+        val isProfilePictureUpdated: Boolean = false
     )
 }

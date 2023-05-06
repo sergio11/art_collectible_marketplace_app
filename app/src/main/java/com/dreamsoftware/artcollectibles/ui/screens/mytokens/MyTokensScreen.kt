@@ -4,13 +4,14 @@ import android.content.Context
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.ArtCollectible
@@ -20,6 +21,7 @@ import com.dreamsoftware.artcollectibles.ui.components.LoadingDialog
 import com.dreamsoftware.artcollectibles.ui.components.core.BasicScreen
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonLazyVerticalGrid
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTabsRow
+import com.dreamsoftware.artcollectibles.ui.components.core.produceUiState
 import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTitle
 import com.dreamsoftware.artcollectibles.ui.extensions.tabSelectedTypeOrDefault
 import com.dreamsoftware.artcollectibles.ui.model.MyTokensTabsTypeEnum
@@ -34,17 +36,11 @@ fun MyTokensScreen(
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = MyTokensUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = MyTokensUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val snackBarHostState = remember { SnackbarHostState() }
     val lazyGridState = rememberLazyGridState()
     with(viewModel) {

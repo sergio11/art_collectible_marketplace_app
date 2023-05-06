@@ -84,7 +84,9 @@ class ArtistDetailViewModel @Inject constructor(
                 checkAuthUserIsFollowingTo(uid)
                 loadTokensOwnedByUser(userAddress = userInfo.walletAddress)
                 loadTokensCreatedByUser(userAddress = userInfo.walletAddress)
-                loadCurrentBalance(userAddress = userInfo.walletAddress)
+                if(userInfo.preferences?.showAccountBalance == true) {
+                    loadCurrentBalance(userAddress = userInfo.walletAddress)
+                }
             } catch (ex: Exception) {
                 onErrorOccurred(ex)
             }

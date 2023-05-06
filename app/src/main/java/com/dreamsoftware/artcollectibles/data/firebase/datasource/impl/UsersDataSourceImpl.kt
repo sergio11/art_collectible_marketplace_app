@@ -106,6 +106,7 @@ internal class UsersDataSourceImpl(
     override suspend fun findUsersByName(term: String): Iterable<UserDTO> =
         withContext(Dispatchers.IO) {
             firebaseStore.collection(USERS_COLLECTION_NAME)
+                .whereNotEqualTo("isPublicProfile", "false")
                 .whereGreaterThanOrEqualTo("name", term)
                 .whereLessThanOrEqualTo("name", term + "\uf8ff")
                 .get()

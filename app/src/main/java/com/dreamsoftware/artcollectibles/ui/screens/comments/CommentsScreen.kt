@@ -9,7 +9,10 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,14 +20,13 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.domain.models.Comment
 import com.dreamsoftware.artcollectibles.ui.components.UserAccountProfilePicture
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonText
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonTextTypeEnum
 import com.dreamsoftware.artcollectibles.ui.components.core.CommonVerticalColumnScreen
+import com.dreamsoftware.artcollectibles.ui.components.core.produceUiState
 import com.dreamsoftware.artcollectibles.ui.extensions.format
 import com.dreamsoftware.artcollectibles.ui.theme.BackgroundWhite
 import com.dreamsoftware.artcollectibles.ui.theme.Purple200
@@ -43,17 +45,11 @@ fun CommentsScreen(
     onBackPressed: () -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val uiState by produceState(
-        initialValue = CommentsUiState(),
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.uiState.collect {
-                value = it
-            }
-        }
-    }
+    val uiState by produceUiState(
+        initialState = CommentsUiState(),
+        lifecycle = lifecycle,
+        viewModel = viewModel
+    )
     val snackBarHostState = remember { SnackbarHostState() }
     val lazyListState = rememberLazyListState()
     with(viewModel) {
