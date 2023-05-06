@@ -89,5 +89,6 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  
  
  <a href="https://www.freepik.com/free-photo/handsome-cheerful-young-man-with-stylish-haircut-dimpled-smile-posing-isolated-against-blank-yellow-wall-dressed-cozy-maroon-sweater-having-confident-look_11891916.htm#page=2&query=person&position=3&from_view=search&track=robertav1_2_sidr">Image by karlyukav</a> on Freepik
+ <a href="https://www.freepik.com/free-photo/handsome-cheerful-man-teenager-keeps-arms-folded-looks-pensively-aside-has-gentle-smile-wears-basic-jumper-poses_13844944.htm#page=4&query=person&position=39&from_view=search&track=robertav1_2_sidr">Image by wayhomestudio</a> on Freepik
  
     
