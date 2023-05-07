@@ -56,6 +56,7 @@ class DiscoveryViewModel @Inject constructor(
                         isSelected = tab.type == newTabSelectedType
                     )
                 },
+                items = emptyList(),
                 isSearchingModeEnabled = false,
                 searchTerm = null
             )
