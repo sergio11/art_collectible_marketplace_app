@@ -9,7 +9,11 @@
 
 Explore exclusive art collectibles by the most in-demand creators, trade with other collectors in the Marketplace, and mint your own NFTs all in one place!
 
-
+</br>
+</br>
+</br>
+</br>
+</br>
 
  ## Tech stack & Open-source libraries
  - Minimum SDK level 23
@@ -19,9 +23,13 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
    - Lifecycle - dispose observing data when lifecycle state changes.
    - ViewModel - UI related data holder, lifecycle aware.
    - [Coil](https://coil-kt.github.io/coil/) - An image loading library for Android backed by Kotlin Coroutines.
-   - Jetpack Camera X - CameraX is a Jetpack support library, built to help you make camera app development easier.
+   - [Jetpack Camera X](https://developer.android.com/jetpack/androidx/releases/camera) - CameraX is a Jetpack support library, built to help you make camera app development easier.
    - Palette API - The Palette library provides a powerful and intuitive API for creating more engaging apps extracting prominent colors from images.
-   - Jetpack Compose - Jetpack Compose is a modern toolkit for building native Android UI. Jetpack Compose simplifies and accelerates UI development on Android with less code,   powerful tools, and intuitive Kotlin APIs. 
+   - [Jetpack Compose](https://developer.android.com/jetpack/compose) - Jetpack Compose is a modern toolkit for building native Android UI. Jetpack Compose simplifies and accelerates UI development on Android with less code, powerful tools, and intuitive Kotlin APIs. 
+   - [Jetpack Compose Material 3](https://developer.android.com/jetpack/androidx/releases/compose-material3) - Build Jetpack Compose UIs with components from Material Design 3, the next evolution of Material Design. Material 3 includes updated themes and components, and Material You customization features such as dynamic color.
+   - [Accompanist FlowLayout](https://github.com/google/accompanist) - A collection of extension libraries for Jetpack Compose from Google.
+   - [Vico](https://github.com/patrykandpatrick/vico) - Vico is a light and extensible chart library for Android. It’s compatible with both Jetpack Compose and the view system, but its two main modules—compose and views—are independent.
+   - [SplashScreen API](https://developer.android.com/develop/ui/views/launch/splash-screen) - Starting in Android 12, the SplashScreen API lets apps launch with animation, including an into-app motion at launch, a splash screen showing your app icon, and a transition to your app itself. A SplashScreen is a Window and therefore covers an Activity.
   - Data Layer
     - [Retrofit2 + Moshi](https://github.com/square/retrofit) - constructing the REST API
     - [OkHttp3](https://github.com/square/okhttp) - implementing interceptor, logging and mocking web server
@@ -30,6 +38,8 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
     - Firebase Auth (Social Media integrations) - To authenticate users.
     - Firebase Storage - To save files such us wallets and user profile images.
     - [Web3J](https://docs.web3j.io/4.9.8/) - Web3j is a highly modular, reactive, type safe Java and Android library for working with Smart Contracts and integrating with clients (nodes) on the Ethereum network
+    - [Cache4k](https://github.com/ReactiveCircus/cache4k) cache4k provides a simple in-memory key-value cache, with support for time-based (expiration) and size-based evictions.
+    - [Jetpack Datastore](https://developer.android.com/topic/libraries/architecture/datastore) - Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers.
     
     
     
