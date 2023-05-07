@@ -11,6 +11,15 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
 
 **ArtNiche** try to eliminate some of the hurdles usually met by content creators who desire to monetize their art by serving it directly to the public. Not only is owning an NFT a trend nowadays, but it has also become a status symbol for those who get into it. In any case, it is an actual investment that has become profitable for both collectors and buyers.
 
+</br>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white" />
+  <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/web3j-F16822?style=for-the-badge&logo=web3.js&logoColor=white" />
+</p>
+
 ## What are NFT art collectibles?
 
 NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items whether.
