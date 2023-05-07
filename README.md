@@ -21,6 +21,12 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img src="https://img.shields.io/badge/Blockchain.com-121D33?logo=blockchaindotcom&logoColor=fff&style=for-the-badge" />
 </p>
 
+ArtNiche interacts with the smart contracts designed in the **ERC721** dapp implemented in this [repository](https://github.com/sergio11/art_collectibles_marketplace), currently it is deployed in the Polygon tesnet (Mumbai)
+
+Please, take a look this repository if you are interested in further information about how this ERC721 dapp has been implemented:
+
+[ArtNiche - An NFT Marketplace for trading Art Collectibles built with Hardhat and Solidity](https://github.com/sergio11/art_collectibles_marketplace)
+
 ## What are NFT Art Collectibles?
 
 NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items whether.
