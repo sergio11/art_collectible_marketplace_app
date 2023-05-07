@@ -182,6 +182,7 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  
  ## Attributions
  
+ <div> Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik"> Freepik </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div>
  <p><a href="https://www.freepik.com/free-photo/handsome-cheerful-young-man-with-stylish-haircut-dimpled-smile-posing-isolated-against-blank-yellow-wall-dressed-cozy-maroon-sweater-having-confident-look_11891916.htm#page=2&query=person&position=3&from_view=search&track=robertav1_2_sidr">Image by karlyukav</a> on Freepik</p>
  <p><a href="https://www.freepik.com/free-photo/handsome-cheerful-man-teenager-keeps-arms-folded-looks-pensively-aside-has-gentle-smile-wears-basic-jumper-poses_13844944.htm#page=4&query=person&position=39&from_view=search&track=robertav1_2_sidr">Image by wayhomestudio</a> on Freepik</p>
  <p><a href="https://www.freepik.com/free-photo/no-problem-concept-bearded-man-makes-okay-gesture-has-everything-control-all-fine-gesture-wears-spectacles-jumper-poses-against-pink-wall-says-i-got-this-guarantees-something_13580471.htm#query=person&position=24&from_view=search&track=robertav1_2_sidr">Image by wayhomestudio</a> on Freepik</p>
