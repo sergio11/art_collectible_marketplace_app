@@ -1,4 +1,4 @@
-# ArtNiche - An art collectible NFT marketplace for digital artists
+# ArtNiche - A NFT Art collectibles marketplace for digital artists
 
 <p>
   <img src="https://img.shields.io/github/last-commit/sergio11/art_collectible_marketplace_app.svg" />
@@ -18,9 +18,10 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
   <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" />
   <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
   <img src="https://img.shields.io/badge/web3j-F16822?style=for-the-badge&logo=web3.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/Blockchain.com-121D33?logo=blockchaindotcom&logoColor=fff&style=for-the-badge" />
 </p>
 
-## What are NFT art collectibles?
+## What are NFT Art Collectibles?
 
 NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items whether.
 
@@ -31,6 +32,8 @@ Factors like digital scarcity and unchangeable ownership generally affect the va
 While Art Collectible NFTs may be copied or downloaded, only the creators own it and may sell it. **Ownership may not be manipulated**, since NFTs live on the blockchain where records are immutable, and purchasers may always directly verify a product’s authenticity before a sale.
 
 An ArtNiche creator or seller can search for an art collectible NFTs as weel as they also can mint new NFTs, which is essentially uploading the file to be transformed into an NFT and details pertaining to it. Minting is the online process where the files of the item or collectible is recorded on the blockchain.
+
+ArtNiche provide you some free funds of MATIC cryptocurrency and a digital wallet in order to transact with NFT in the marketplace. You could also get more matic from Mumbai faucet from your artist profile.
 
 </br>
 </br>
