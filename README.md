@@ -198,6 +198,8 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
   
 ## Alchemy screenshots
 
+Through the Alchemy dashboard it is possible to review the transactions sent from the app and their status.
+
 <img src="./doc/alchemy/alchemy_picture_1.png" />
 <img src="./doc/alchemy/alchemy_picture_2.png" />
 <img src="./doc/alchemy/alchemy_picture_3.png" />
