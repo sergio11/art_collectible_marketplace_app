@@ -74,52 +74,41 @@ An ArtNiche creator or seller can search for an art collectible NFTs as weel as 
     
  ### Onboarding & Account management.
  
-  <p>
-    <img width="250px" src="./doc/screenshots/app_picture_1.png" />
-    <img width="250px" src="./doc/screenshots/app_picture_2.png" />
-    <img width="250px" src="./doc/screenshots/app_picture_3.png" /> 
-  </p>
-  
-  <p>
-   <img width="250px" src="./doc/screenshots/app_picture_4.png" />
-   <img width="250px" src="./doc/screenshots/app_picture_5.png" />
-  </p>
+ Digital creators and buyers will be able to register on ArtNiche using their *Facebook/Google* account or create a user with *email/password*.
+ 
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_1.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_2.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_3.png" /> 
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_4.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_5.png" />
  
  ### User profile and user preferences.
  
- <p>
-   <img width="250px" src="./doc/screenshots/app_picture_7.png" />
-   <img width="250px" src="./doc/screenshots/app_picture_8.png" />
-   <img width="250px" src="./doc/screenshots/app_picture_9.png" />
- </p>
-
- <p>
-   <img width="250px" src="./doc/screenshots/app_picture_10.png" />
-   <img width="250px" src="./doc/screenshots/app_picture_29.png" />
-   <img width="250px" src="./doc/screenshots/app_picture_28.png" />
- <p>
+ ArtNiche users will be able to update their personal data to make themselves known better, inform about their interests, their instagram profile on social networks, information about their work.
  
- <p>
-  <img width="250px"  src="./doc/screenshots/app_picture_34.png" />
- </p>
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_7.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_8.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_9.png" />
+ 
+ In addition to this, they will be able to edit some preferences related to privacy and the functionality of the application.
+
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_10.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_29.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_28.png" />
+ 
+ <img width="250px" src="./doc/screenshots/app_picture_34.png" />
  
   ## Mint an new art collectible NFT.
   
-  <p>
-    <img width="250px" src="./doc/screenshots/app_picture_11.png" />
-    <img width="250px" src="./doc/screenshots/app_picture_12.png" />
-    <img width="250px" src="./doc/screenshots/app_picture_13.png" />
-  </p>
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
+  <img width="250px" src="./doc/screenshots/app_picture_13.png" />
   
-  <p>
-    <img width="250px" src="./doc/screenshots/app_picture_14.png" />
-    <img width="250px" src="./doc/screenshots/app_picture_15.png" />
-    <img width="250px" src="./doc/screenshots/app_picture_16.png" />
-  </p>
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_14.png" />
+  <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
+  <img width="250px" src="./doc/screenshots/app_picture_16.png" />
   
-  <p>
-    <img width="250px" src="./doc/screenshots/app_picture_17.png" />
-  </p>
+  <img width="250px" src="./doc/screenshots/app_picture_17.png" />
   
   ## NFT Detail
   
