@@ -70,35 +70,56 @@ An ArtNiche creator or seller can search for an art collectible NFTs as weel as 
     - [Cache4k](https://github.com/ReactiveCircus/cache4k) cache4k provides a simple in-memory key-value cache, with support for time-based (expiration) and size-based evictions.
     - [Jetpack Datastore](https://developer.android.com/topic/libraries/architecture/datastore) - Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers.
     
+ ## Screenshots and demo.
     
-    
- ## Onboarding & Account management
+ ### Onboarding & Account management.
  
- <img width="250px" align="left" src="./doc/screenshots/app_picture_1.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_2.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_3.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_4.png" />
- <img width="250px" src="./doc/screenshots/app_picture_5.png" />
- 
- ## User Profile
- 
- <img width="250px" align="left" src="./doc/screenshots/app_picture_7.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_8.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_9.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_10.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_29.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_28.png" />
- <img width="250px"  src="./doc/screenshots/app_picture_34.png" />
- 
-  ## Mint Art Collectible NFT
+  <p>
+    <img width="250px" src="./doc/screenshots/app_picture_1.png" />
+    <img width="250px" src="./doc/screenshots/app_picture_2.png" />
+    <img width="250px" src="./doc/screenshots/app_picture_3.png" /> 
+  </p>
   
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_13.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_14.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_16.png" />
-  <img width="250px" src="./doc/screenshots/app_picture_17.png" />
+  <p>
+   <img width="250px" src="./doc/screenshots/app_picture_4.png" />
+   <img width="250px" src="./doc/screenshots/app_picture_5.png" />
+  </p>
+ 
+ ### User profile and user preferences.
+ 
+ <p>
+   <img width="250px" src="./doc/screenshots/app_picture_7.png" />
+   <img width="250px" src="./doc/screenshots/app_picture_8.png" />
+   <img width="250px" src="./doc/screenshots/app_picture_9.png" />
+ </p>
+
+ <p>
+   <img width="250px" src="./doc/screenshots/app_picture_10.png" />
+   <img width="250px" src="./doc/screenshots/app_picture_29.png" />
+   <img width="250px" src="./doc/screenshots/app_picture_28.png" />
+ <p>
+ 
+ <p>
+  <img width="250px"  src="./doc/screenshots/app_picture_34.png" />
+ </p>
+ 
+  ## Mint an new art collectible NFT.
+  
+  <p>
+    <img width="250px" src="./doc/screenshots/app_picture_11.png" />
+    <img width="250px" src="./doc/screenshots/app_picture_12.png" />
+    <img width="250px" src="./doc/screenshots/app_picture_13.png" />
+  </p>
+  
+  <p>
+    <img width="250px" src="./doc/screenshots/app_picture_14.png" />
+    <img width="250px" src="./doc/screenshots/app_picture_15.png" />
+    <img width="250px" src="./doc/screenshots/app_picture_16.png" />
+  </p>
+  
+  <p>
+    <img width="250px" src="./doc/screenshots/app_picture_17.png" />
+  </p>
   
   ## NFT Detail
   
