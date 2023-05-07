@@ -18,6 +18,12 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  ## Tech stack & Open-source libraries
  - Minimum SDK level 23
  - 100% [Kotlin](https://kotlinlang.org/)
+ - Using [Android Architecture Starter Templates](https://github.com/android/architecture-templates).
+ - Android Studio Flamingo.
+ - Architecture
+   - MVI, Immutability and UDF (Unidirectional Data Flow).
+   - Clean architecture approach.
+   - [Dagger Hilt](https://developer.android.com/training/dependency-injection/hilt-android) - dependency injection
  - UI Layer
    - LiveData - notify domain layer data to views.
    - Lifecycle - dispose observing data when lifecycle state changes.
