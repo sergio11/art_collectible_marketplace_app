@@ -81,7 +81,7 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
     
  ### Onboarding & Account management.
  
- Digital creators and buyers will be able to register on ArtNiche using their *Facebook/Google* account or create a user with *email/password*.
+ Digital creators and buyers will be able to register on ArtNiche using their **Facebook/Google** account or create a user with **email/password**.
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_1.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_2.png" />
@@ -89,11 +89,15 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  <img width="250px" align="left" src="./doc/screenshots/app_picture_4.png" />
  <img width="250px" src="./doc/screenshots/app_picture_5.png" />
  
- ## Home Market 
+ ### Home Marketplace
+ 
+ Market statistics, art collectibles for sale, featured artists and the latest market movements, all in one place!.
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_45.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_46.png" />
  <img width="250px" src="./doc/screenshots/app_picture_47.png" />
+ 
+ Make purchases of the art collectibles that you like the most! You can resell them later and make a profit if the artist is revalued.
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_48.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_49.png" />
@@ -101,21 +105,29 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  
  <img width="250px" src="./doc/screenshots/app_picture_44.png" />
  
+ ### Discover talented artists and their NFTs
  
- # Art Collectibles Categories
+ Discover talented artists, learn about their interests and information about them.
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_37.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_40.png" />
  <img width="250px" src="./doc/screenshots/app_picture_38.png" />
+ 
+ Browse and discover truly unique art collectibles organized by art categories!.
+ 
  <img width="250px" align="left" src="./doc/screenshots/app_picture_39.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_24.png" />
  <img width="250px" src="./doc/screenshots/app_picture_25.png" />
  
- ## Mint an new art collectible NFT.
+ ### Mint an new art collectible NFT.
+  
+  Become a creator of NFTs and make the most of your digital resources! You can take a photo or attach a file stored on your device.
   
  <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
  <img width="250px" src="./doc/screenshots/app_picture_13.png" />
+ 
+ Add the metadata related to your digital resource, explain its purpose, specify the royalty you want to ensure as the original creator of it.
   
  <img width="250px" align="left" src="./doc/screenshots/app_picture_14.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
@@ -123,21 +135,29 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
   
  <img width="250px" src="./doc/screenshots/app_picture_17.png" />
  
- ## Art Collectible NFTs
+ ### Managing my art collectibles.
   
+ You will be able to view your favorite art collectibles or those you have created or purchased, all in one place!.
+ 
  <img width="250px" align="left" src="./doc/screenshots/app_picture_18.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_19.png" />
  <img width="250px" src="./doc/screenshots/app_picture_30.png" />
+ 
+ You can put them up for sale or withdraw them from the market
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_31.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_32.png" />
  <img width="250px" src="./doc/screenshots/app_picture_35.png" />
  
+ You will be able to consult metrics of the number of visits it has received, the history of NFT transactions in the market, the price history...
+ 
  <img width="250px" align="left" src="./doc/screenshots/app_picture_41.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_50.png" />
  <img width="250px" src="./doc/screenshots/app_picture_42.png" />
  
-  # Artist Detail
+  # Public profile for digital artists.
+  
+  Check your public profile or that of other artists! you will be able to check his followers list, the art collectibles created and his current balance too!
   
  <img width="250px" align="left" src="./doc/screenshots/app_picture_20.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_21.png" />
@@ -163,7 +183,6 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  <img width="250px" src="./doc/screenshots/app_picture_34.png" />
  
   
- 
 ## Alchemy screenshots
 
 <img src="./doc/alchemy/alchemy_picture_1.png" />
