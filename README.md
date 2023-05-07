@@ -99,6 +99,15 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
  <img width="250px" src="./doc/screenshots/app_picture_25.png" />
  
  
+ ## Please Share & Star the repository to keep me motivated.
+  <a href = "https://github.com/sergio11/art_collectible_marketplace_app/stargazers">
+     <img src = "https://img.shields.io/github/stars/sergio11/art_collectible_marketplace_app" />
+  </a>
+  <a href = "https://twitter.com/SergioReact418">
+     <img src = "https://img.shields.io/twitter/url?label=follow&style=social&url=https%3A%2F%2Ftwitter.com%2FSergioReact418" />
+  </a>
+ 
+ ## Attributions
  
  <p><a href="https://www.freepik.com/free-photo/handsome-cheerful-young-man-with-stylish-haircut-dimpled-smile-posing-isolated-against-blank-yellow-wall-dressed-cozy-maroon-sweater-having-confident-look_11891916.htm#page=2&query=person&position=3&from_view=search&track=robertav1_2_sidr">Image by karlyukav</a> on Freepik</p>
  <p><a href="https://www.freepik.com/free-photo/handsome-cheerful-man-teenager-keeps-arms-folded-looks-pensively-aside-has-gentle-smile-wears-basic-jumper-poses_13844944.htm#page=4&query=person&position=39&from_view=search&track=robertav1_2_sidr">Image by wayhomestudio</a> on Freepik</p>
