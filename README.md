@@ -77,7 +77,7 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
     - [Cache4k](https://github.com/ReactiveCircus/cache4k) cache4k provides a simple in-memory key-value cache, with support for time-based (expiration) and size-based evictions.
     - [Jetpack Datastore](https://developer.android.com/topic/libraries/architecture/datastore) - Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers.
     
- ## Screenshots and demo.
+ ## App screenshots and demo.
     
  ### Onboarding & Account management.
  
@@ -143,6 +143,14 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  
  <img width="250px" align="left" src="./doc/screenshots/app_picture_24.png" />
  <img width="250px" src="./doc/screenshots/app_picture_25.png" />
+ 
+ 
+## Alchemy screenshots
+
+<img src="./doc/alchemy/alchemy_picture_1.png" />
+<img src="./doc/alchemy/alchemy_picture_2.png" />
+<img src="./doc/alchemy/alchemy_picture_3.png" />
+<img src="./doc/alchemy/alchemy_picture_4.png" />
  
  
  ## Please Share & Star the repository to keep me motivated.
