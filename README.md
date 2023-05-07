@@ -89,6 +89,60 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  <img width="250px" align="left" src="./doc/screenshots/app_picture_4.png" />
  <img width="250px" src="./doc/screenshots/app_picture_5.png" />
  
+ ## Home Market 
+ 
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_45.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_46.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_47.png" />
+ 
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_48.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_49.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_43.png" />
+ 
+ <img width="250px" src="./doc/screenshots/app_picture_44.png" />
+ 
+ 
+ # Art Collectibles Categories
+ 
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_37.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_40.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_38.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_39.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_24.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_25.png" />
+ 
+ ## Mint an new art collectible NFT.
+  
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_13.png" />
+  
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_14.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_16.png" />
+  
+ <img width="250px" src="./doc/screenshots/app_picture_17.png" />
+ 
+ ## Art Collectible NFTs
+  
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_18.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_19.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_30.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_31.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_32.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_35.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_41.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_42.png" />
+ 
+  # Artist Detail
+  
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_20.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_21.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_22.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_26.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_23.png" />
+ <img width="250px" src="./doc/screenshots/app_picture_33.png" />
+ 
  ### User profile and user preferences.
  
  ArtNiche users will be able to update their personal data to make themselves known better, inform about their interests, their instagram profile on social networks, information about their work.
@@ -105,47 +159,7 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  
  <img width="250px" src="./doc/screenshots/app_picture_34.png" />
  
-  ## Mint an new art collectible NFT.
   
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_11.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_12.png" />
-  <img width="250px" src="./doc/screenshots/app_picture_13.png" />
-  
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_14.png" />
-  <img width="250px" align="left" src="./doc/screenshots/app_picture_15.png" />
-  <img width="250px" src="./doc/screenshots/app_picture_16.png" />
-  
-  <img width="250px" src="./doc/screenshots/app_picture_17.png" />
-  
-  ## Art Collectible NFTs
-  
- <img width="250px" align="left" src="./doc/screenshots/app_picture_18.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_19.png" />
- <img width="250px" src="./doc/screenshots/app_picture_30.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_31.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_32.png" />
- <img width="250px" src="./doc/screenshots/app_picture_35.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_41.png" />
- <img width="250px" src="./doc/screenshots/app_picture_42.png" />
- 
- # Art Collectibles Categories
- 
- <img width="250px" align="left" src="./doc/screenshots/app_picture_37.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_40.png" />
- <img width="250px" src="./doc/screenshots/app_picture_38.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_39.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_24.png" />
- <img width="250px" src="./doc/screenshots/app_picture_25.png" />
- 
- # Artist Detail
-  
- <img width="250px" align="left" src="./doc/screenshots/app_picture_20.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_21.png" />
- <img width="250px" src="./doc/screenshots/app_picture_22.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_26.png" />
- <img width="250px" align="left" src="./doc/screenshots/app_picture_23.png" />
- <img width="250px" src="./doc/screenshots/app_picture_33.png" />
- 
  
 ## Alchemy screenshots
 
