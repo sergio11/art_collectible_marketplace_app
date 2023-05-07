@@ -35,11 +35,10 @@ An ArtNiche creator or seller can search for an art collectible NFTs as weel as 
 
 ArtNiche provide you some free funds of MATIC cryptocurrency and a digital wallet in order to transact with NFT in the marketplace. You could also get more matic from Mumbai faucet from your artist profile.
 
-</br>
-</br>
-</br>
-</br>
-</br>
+## How ArtNiche works?
+
+<img  src="./doc/art_niche_diagram.drawio.svg" />
+
 
  ## Tech stack & Open-source libraries
  - Minimum SDK level 23
