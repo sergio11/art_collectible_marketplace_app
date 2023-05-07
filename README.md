@@ -27,6 +27,8 @@ Please, take a look this repository if you are interested in further information
 
 [ArtNiche - An NFT Marketplace for trading Art Collectibles built with Hardhat and Solidity](https://github.com/sergio11/art_collectibles_marketplace)
 
+<img width="250px" src="./doc/Polygon_blockchain_logo.png" />
+
 ## What are NFT Art Collectibles?
 
 NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items whether.
