@@ -1,6 +1,8 @@
 package com.dreamsoftware.artcollectibles.ui.extensions
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.ContextWrapper
@@ -28,6 +30,11 @@ fun Context.findActivity(): Activity {
     throw IllegalStateException("Activity cannot be found")
 }
 
+fun Context.copyToClipboard(text: CharSequence){
+    val clipboard = ContextCompat.getSystemService(this, ClipboardManager::class.java)
+    val clip = ClipData.newPlainText("label", text)
+    clipboard?.setPrimaryClip(clip)
+}
 fun Context.createTempImageFile(providerId: String): Uri {
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     val imageFileName = "JPEG_" + timeStamp + "_"

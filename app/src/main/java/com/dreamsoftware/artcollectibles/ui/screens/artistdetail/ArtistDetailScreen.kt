@@ -28,6 +28,8 @@ import com.dreamsoftware.artcollectibles.BuildConfig
 import com.dreamsoftware.artcollectibles.R
 import com.dreamsoftware.artcollectibles.ui.components.*
 import com.dreamsoftware.artcollectibles.ui.components.core.*
+import com.dreamsoftware.artcollectibles.ui.extensions.copyToClipboard
+import com.dreamsoftware.artcollectibles.ui.screens.marketitemdetail.MarketUiState
 import com.dreamsoftware.artcollectibles.ui.theme.*
 import com.google.accompanist.flowlayout.FlowCrossAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
@@ -71,6 +73,7 @@ fun ArtistDetailScreen(
             onBackClicked = onBackClicked,
             onFollowUser = ::followUser,
             onUnfollowUser = ::unfollowUser,
+            onConfirmGetMoreMaticDialogVisibilityChanged = ::onConfirmGetMoreMaticDialogVisibilityChanged,
             onShowFollowers = onShowFollowers,
             onShowFollowing = onShowFollowing,
             onGoToTokenDetail = onGoToTokenDetail,
@@ -88,6 +91,7 @@ fun ArtistDetailComponent(
     scrollState: ScrollState,
     density: Density,
     onBackClicked: () -> Unit,
+    onConfirmGetMoreMaticDialogVisibilityChanged: (isVisible: Boolean) -> Unit,
     onFollowUser: (userUid: String) -> Unit,
     onUnfollowUser: (userUid: String) -> Unit,
     onShowFollowers: (userUid: String) -> Unit,
@@ -97,6 +101,19 @@ fun ArtistDetailComponent(
     onGoToTokensCreatedBy: (userAddress: String) -> Unit
 ) {
     with(uiState) {
+        ConfirmGetMoreMaticDialog(
+            context = context,
+            uiState = uiState,
+            onConfirmCalled = {
+                onConfirmGetMoreMaticDialogVisibilityChanged(false)
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
+                    )
+                )
+            }
+        )
         CommonDetailScreen(
             context = context,
             snackBarHostState = snackBarHostState,
@@ -300,17 +317,34 @@ fun ArtistDetailComponent(
                         contentColor = Color.White,
                         buttonShape = ButtonDefaults.elevatedShape,
                         onClick = {
-                            context.startActivity(
-                                Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse(BuildConfig.MUMBAI_FAUCET_URL)
-                                )
-                            )
+                            onConfirmGetMoreMaticDialogVisibilityChanged(true)
                         }
                     )
                 }
             }
             Spacer(modifier = Modifier.height(30.dp))
         }
+    }
+}
+
+@Composable
+private fun ConfirmGetMoreMaticDialog(
+    context: Context,
+    uiState: ArtistDetailUiState,
+    onConfirmCalled: () -> Unit,
+) {
+    with(uiState) {
+        CommonDialog(
+            isVisible = isConfirmGetMoreMaticDialogVisible,
+            titleRes = R.string.profile_confirm_get_more_matic_dialog_title,
+            descriptionRes = R.string.profile_confirm_get_more_matic_dialog_description,
+            acceptRes = R.string.profile_confirm_get_more_matic_dialog_accept_button,
+            onAcceptClicked = {
+                userInfo?.walletAddress?.let { address ->
+                    context.copyToClipboard(address)
+                    onConfirmCalled()
+                }
+            }
+        )
     }
 }

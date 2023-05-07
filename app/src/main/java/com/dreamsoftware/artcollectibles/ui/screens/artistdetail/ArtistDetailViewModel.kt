@@ -66,6 +66,14 @@ class ArtistDetailViewModel @Inject constructor(
         )
     }
 
+    fun onConfirmGetMoreMaticDialogVisibilityChanged(isVisible: Boolean) {
+        updateState {
+            it.copy(
+                isConfirmGetMoreMaticDialogVisible = isVisible
+            )
+        }
+    }
+
     private fun loadAllDataForUser(uid: String) {
         viewModelScope.launch {
             try {
@@ -210,6 +218,7 @@ data class ArtistDetailUiState(
     val followersCount: Long = 0L,
     val followingCount: Long = 0L,
     val currentBalance: AccountBalance? = null,
+    val isConfirmGetMoreMaticDialogVisible: Boolean = false,
     val tokensOwned: Iterable<ArtCollectible> = emptyList(),
     val tokensCreated: Iterable<ArtCollectible> = emptyList(),
     val errorMessage: String? = null

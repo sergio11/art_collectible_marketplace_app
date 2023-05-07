@@ -90,7 +90,7 @@
     <string name="profile_input_contact_label">Contact</string>
     <string name="profile_input_contact_placeholder">Your contact info</string>
     <string name="profile_current_matic">%.3f MATIC</string>
-    <string name="profile_get_more_matic">Get more</string>
+    <string name="profile_get_more_matic">Get more MATIC</string>
     <string name="profile_open_instagram_profile">Open instagram profile</string>
     <string name="profile_picture_picker_title">Pick image from gallery or camera</string>
     <string name="profile_pick_image_from_gallery">Pick Image From Gallery</string>
@@ -118,7 +118,9 @@
     <string name="profile_input_instagram_placeholder">Your Instagram Account</string>
     <string name="profile_close_session_title">Do you want to log out?</string>
     <string name="profile_close_session_description">Your session will be closed, your session data will be deleted</string>
-
+    <string name="profile_confirm_get_more_matic_dialog_title">Get more MATIC</string>
+    <string name="profile_confirm_get_more_matic_dialog_description">You will be redirect to Mumbai faucet website in order to get more MATIC. Your wallet address has been copied to your clipboard, please paste it on the website to complete de process.</string>
+    <string name="profile_confirm_get_more_matic_dialog_accept_button">Accept</string>
     <!-- Discover -->
     <string name="discovery_main_title_default_text">Discover</string>
     <string name="discovery_main_digital_artists_text">Discover talented artists</string>

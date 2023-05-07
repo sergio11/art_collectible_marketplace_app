@@ -52,8 +52,12 @@ class DiscoveryViewModel @Inject constructor(
         updateState {
             it.copy(
                 tabs = it.tabs.map { tab ->
-                    tab.copy(isSelected = tab.type == newTabSelectedType)
-                }
+                    tab.copy(
+                        isSelected = tab.type == newTabSelectedType
+                    )
+                },
+                isSearchingModeEnabled = false,
+                searchTerm = null
             )
         }
         load()
