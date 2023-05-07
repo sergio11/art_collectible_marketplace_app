@@ -128,10 +128,13 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  <img width="250px" align="left" src="./doc/screenshots/app_picture_18.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_19.png" />
  <img width="250px" src="./doc/screenshots/app_picture_30.png" />
+ 
  <img width="250px" align="left" src="./doc/screenshots/app_picture_31.png" />
  <img width="250px" align="left" src="./doc/screenshots/app_picture_32.png" />
  <img width="250px" src="./doc/screenshots/app_picture_35.png" />
+ 
  <img width="250px" align="left" src="./doc/screenshots/app_picture_41.png" />
+ <img width="250px" align="left" src="./doc/screenshots/app_picture_50.png" />
  <img width="250px" src="./doc/screenshots/app_picture_42.png" />
  
   # Artist Detail
