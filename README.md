@@ -205,6 +205,9 @@ Through the Alchemy dashboard it is possible to review the transactions sent fro
 <img src="./doc/alchemy/alchemy_picture_3.png" />
 <img src="./doc/alchemy/alchemy_picture_4.png" />
  
+ ## Visitors Count
+
+<img width="auto" src="https://profile-counter.glitch.me/art_collectible_marketplace_app/count.svg" />
  
  ## Please Share & Star the repository to keep me motivated.
   <a href = "https://github.com/sergio11/art_collectible_marketplace_app/stargazers">
