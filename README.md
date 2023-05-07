@@ -9,6 +9,20 @@
 
 Explore exclusive art collectibles by the most in-demand creators, trade with other collectors in the Marketplace, and mint your own NFTs all in one place!
 
+**ArtNiche** try to eliminate some of the hurdles usually met by content creators who desire to monetize their art by serving it directly to the public. Not only is owning an NFT a trend nowadays, but it has also become a status symbol for those who get into it. In any case, it is an actual investment that has become profitable for both collectors and buyers.
+
+## What are NFT art collectibles?
+
+NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items whether.
+
+Art Collectibles NFTs may be memorable artworks,  the properties of which are be specified through smart contract rules that govern NFTs.
+
+Factors like digital scarcity and unchangeable ownership generally affect the value of NFTs in ArtNiche. There is so much online content that people usually do not consider these virtual commodities to have real monetary value, so the rarer the digital item and the more it has historical and cultural relevance, the more valuable it will be.
+
+While Art Collectible NFTs may be copied or downloaded, only the creators own it and may sell it. **Ownership may not be manipulated**, since NFTs live on the blockchain where records are immutable, and purchasers may always directly verify a product’s authenticity before a sale.
+
+An ArtNiche creator or seller can search for an art collectible NFTs as weel as they also can mint new NFTs, which is essentially uploading the file to be transformed into an NFT and details pertaining to it. Minting is the online process where the files of the item or collectible is recorded on the blockchain.
+
 </br>
 </br>
 </br>
