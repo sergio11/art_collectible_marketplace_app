@@ -35,11 +35,15 @@ An ArtNiche creator or seller can search for an art collectible NFTs as weel as 
 
 ArtNiche provide you some free funds of MATIC cryptocurrency and a digital wallet in order to transact with NFT in the marketplace. You could also get more matic from Mumbai faucet from your artist profile.
 
-</br>
-</br>
-</br>
-</br>
-</br>
+## How ArtNiche works?
+
+NFTs at ArtNiche are created in two clearly differentiated steps. The image file and the metadata linked to the NFT are formatted and registered in IPFS through the services of the Pinata platform. Once the metadata registration is completed, ArtNiche uses the CID (Content Identifier) to complete the Mint process in the ArtNiche DAPP deployed in a Polygon (Mumbai) tesnet through the wrappers of the smart contracts generated with the Web3J CLI.
+
+Once this process is completed, the user will be informed of the success of the registration, he will be the original owner and creator of that NFT. As the original creator you will have the possibility to define a "royalty" to obtain benefits in future sales.
+
+ArtNiche uses firestore to store complementary information to the NFTs and the use made of them.
+
+<img  src="./doc/art_niche_diagram.drawio.svg" />
 
  ## Tech stack & Open-source libraries
  - Minimum SDK level 23
