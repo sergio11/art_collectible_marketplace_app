@@ -112,7 +112,7 @@ android {
 
 
 dependencies {
-    implementation("androidx.lifecycle:lifecycle-service:2.4.1")
+    implementation("androidx.lifecycle:lifecycle-service:2.6.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
     // Core Android dependencies
     implementation(libs.androidx.core.ktx)
@@ -150,7 +150,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
-    implementation("androidx.compose.material:material-icons-extended:1.4.2")
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.google.accompanist:accompanist-flowlayout:0.28.0")
 
@@ -176,7 +176,7 @@ dependencies {
     // Cloud Storage library
     implementation("com.google.firebase:firebase-storage-ktx")
     // Google Play services library
-    implementation("com.google.android.gms:play-services-auth:20.4.1")
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
