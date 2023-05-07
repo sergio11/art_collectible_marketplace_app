@@ -86,7 +86,7 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
     - [Jetpack Datastore](https://developer.android.com/topic/libraries/architecture/datastore) - Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers.
     
  ## App screenshots and demo.
-    
+ 
  ### Onboarding & Account management.
  
  Digital creators and buyers will be able to register on ArtNiche using their **Facebook/Google** account or create a user with **email/password**.
@@ -189,6 +189,11 @@ ArtNiche uses firestore to store complementary information to the NFTs and the u
  <img width="250px" src="./doc/screenshots/app_picture_28.png" />
  
  <img width="250px" src="./doc/screenshots/app_picture_34.png" />
+ 
+ 
+ ### Video demo
+ 
+  [![ArtNiche App](https://img.youtube.com/vi/VJv9h60mZg4/maxresdefault.jpg)](https://youtu.be/VJv9h60mZg4)
  
   
 ## Alchemy screenshots
