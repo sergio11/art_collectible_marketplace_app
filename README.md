@@ -39,9 +39,9 @@ Factors like digital scarcity and unchangeable ownership generally affect the va
 
 While Art Collectible NFTs may be copied or downloaded, only the creators own it and may sell it. **Ownership may not be manipulated**, since NFTs live on the blockchain where records are immutable, and purchasers may always directly verify a product’s authenticity before a sale.
 
-An ArtNiche creator or seller can search for an art collectible NFTs as weel as they also can mint new NFTs, which is essentially uploading the file to be transformed into an NFT and details pertaining to it. Minting is the online process where the files of the item or collectible is recorded on the blockchain.
+An ArtNiche creator or seller can search for an art collectible NFTs as well as they also can mint new NFTs, which is essentially uploading the file to be transformed into an NFT and details pertaining to it. Minting is the online process where the files of the item or collectible is recorded on the blockchain.
 
-ArtNiche provide you some free funds of MATIC cryptocurrency and a digital wallet in order to transact with NFT in the marketplace. You could also get more matic from Mumbai faucet from your artist profile.
+ArtNiche provide you some free funds of MATIC cryptocurrency and a digital wallet in order to operate with NFT in the marketplace. You could also get more matic from Mumbai faucet from your artist profile.
 
 ## How ArtNiche works?
 
