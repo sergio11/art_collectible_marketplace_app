@@ -31,7 +31,7 @@ Please, take a look this repository if you are interested in further information
 
 ## What are NFT Art Collectibles?
 
-NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items whether.
+NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items.
 
 Art Collectibles NFTs may be memorable artworks,  the properties of which are be specified through smart contract rules that govern NFTs.
 
