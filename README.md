@@ -11,6 +11,8 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
 
 **ArtNiche** try to eliminate some of the hurdles usually met by content creators who desire to monetize their art by serving it directly to the public. Not only is owning an NFT a trend nowadays, but it has also become a status symbol for those who get into it. In any case, it is an actual investment that has become profitable for both collectors and buyers.
 
+Also you can read more detail information about this project [in this Medium article](https://sanchezsanchezsergio418.medium.com/artniche-revolutionizing-the-world-of-digital-art-with-nfts-and-cutting-edge-architecture-a6cc50d0e8a6).
+
 </br>
 
 <p align="center">
