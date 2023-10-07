@@ -27,7 +27,7 @@ ArtNiche interacts with the smart contracts designed in the **ERC721** dapp impl
 
 Please, take a look this repository if you are interested in further information about how this ERC721 dapp has been implemented:
 
-[ArtNiche - An NFT Marketplace for trading Art Collectibles built with Hardhat and Solidity](https://github.com/sergio11/art_collectibles_marketplace)
+[ArtNiche - An NFT Marketplace for trading Art Collectibles built with Hardhat and Solidity](https://github.com/sergio11/art_niche_nft_marketplace_hardhat_solidity)
 
 <img width="250px" src="./doc/Polygon_blockchain_logo.png" />
 
