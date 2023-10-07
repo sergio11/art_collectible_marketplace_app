@@ -1,4 +1,4 @@
-# ArtNiche - A NFT Art collectibles marketplace for digital artists
+# 🎨 ArtNiche - An NFT Art Collectibles Marketplace for Digital Artists, Crafted with Jetpack Compose for a Seamless Creative Experience. 💼🖼️🚀
 
 <p>
   <img src="https://img.shields.io/github/last-commit/sergio11/art_collectible_marketplace_app.svg" />
