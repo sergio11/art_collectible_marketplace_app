@@ -27,6 +27,16 @@ Please, take a look this repository if you are interested in further information
 
 <img width="250px" src="./doc/Polygon_blockchain_logo.png" />
 
+<p align="center">
+  <img width="250px" src="doc/previewed/image1.jpeg" />
+  <img width="250px" src="doc/previewed/image2.jpeg" />
+  <img width="250px" src="doc/previewed/image3.jpeg" />
+  <img width="250px" src="doc/previewed/image4.jpeg" />
+  <img width="250px" src="doc/previewed/image5.jpeg" />
+</p>
+
+Slides are built using the  template from [Previewed](https://previewed.app/template/AFC0B4CB). I extend my gratitude to them for their remarkable work and contribution.
+
 ## What are NFT Art Collectibles?
 
 NFT stands for non-fungible token, a digital asset the ownership of which is recorded on a tamper-proof blockchain that cannot be forged. NFTs represent real-world objects and properties. Compared to cryptocurrencies and fiat currencies, each NFT is unique and cannot be exchanged for another or used to purchase items.
