@@ -9,6 +9,8 @@ Explore exclusive art collectibles by the most in-demand creators, trade with ot
 
 Also you can read more detail information about this project [in this Medium article](https://sanchezsanchezsergio418.medium.com/artniche-revolutionizing-the-world-of-digital-art-with-nfts-and-cutting-edge-architecture-a6cc50d0e8a6).
 
+This app, **ArtNiche**, includes images and resources designed by [Freepik](https://www.freepik.com). We would like to acknowledge and thank Freepik for their incredible design assets. The images used in the app are provided with attribution, as required by Freepik's licensing terms. For more information on Freepik's resources, please visit [www.freepik.com](https://www.freepik.com).
+
 </br>
 
 <p align="center">
